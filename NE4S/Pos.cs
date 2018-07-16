@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NE4S.Notes
+namespace NE4S
 {
-    public class LongNote : Note
+    public class Pos
     {
-        public LongNote()
+        private int bar, count;
+
+        public Pos()
         {
-            
+            bar = count = 0;
         }
     }
 }

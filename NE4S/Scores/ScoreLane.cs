@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NE4S.Notes
+namespace NE4S.Scores
 {
-    public class LongNote : Note
+    public class ScoreLane
     {
-        public LongNote()
+        public ScoreLane()
         {
-            
+
         }
     }
 }
