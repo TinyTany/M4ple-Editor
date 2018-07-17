@@ -54,6 +54,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Model.cs" />
     <Compile Include="Notes\AirAction.cs" />
     <Compile Include="Notes\AirDownC.cs" />
     <Compile Include="Notes\AirDownL.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Notes\AirUpL.cs" />
     <Compile Include="Notes\AirUpR.cs" />
     <Compile Include="Notes\AwesomeExTap.cs" />
+    <Compile Include="Notes\NoteBook.cs" />
     <Compile Include="Notes\ExTap.cs" />
     <Compile Include="Notes\Flick.cs" />
     <Compile Include="Notes\HellTap.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Notes\Tap.cs" />
     <Compile Include="Scores\Score.cs" />
+    <Compile Include="Scores\ScoreBook.cs" />
     <Compile Include="Scores\ScoreInfo.cs" />
     <Compile Include="Scores\ScoreLane.cs" />
     <EmbeddedResource Include="MainForm.resx">

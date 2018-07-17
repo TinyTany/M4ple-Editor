@@ -16,7 +16,7 @@ namespace NE4S.Scores
         public ScoreInfo(int beatNumer, int beatDenom)
         {
             width = leftMargin + rightMargin + laneWidth * 16;
-            height = topMargin + bottomMargin + laneHeight * maxBeatDiv * beatNumer / beatDenom;
+            if(beatDenom != 0) height = topMargin + bottomMargin + laneHeight * maxBeatDiv * beatNumer / beatDenom;
         }
 
         public int Width

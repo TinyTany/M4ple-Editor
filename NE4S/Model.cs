@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NE4S.Notes;
+using NE4S.Scores;
+
+namespace NE4S
+{
+    public class Model
+    {
+        private NoteBook noteBook;
+        private ScoreBook scoreBook;
+
+        public Model()
+        {
+            noteBook = new NoteBook();
+            scoreBook = new ScoreBook();
+        }
+    }
+}

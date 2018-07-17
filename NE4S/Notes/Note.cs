@@ -26,5 +26,10 @@ namespace NE4S.Notes
         {
             get { return this.lane; }
         }
+
+        public Pos Pos
+        {
+            get { return this.pos; }
+        }
     }
 }

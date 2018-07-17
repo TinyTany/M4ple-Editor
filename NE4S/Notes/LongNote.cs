@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace NE4S.Notes
 {
-    public class LongNote : Note
+    public class LongNote
     {
+        private List<Note> notes;
+
         public LongNote()
         {
-            
+            notes = new List<Note>();
+        }
+
+        public List<Note> Notes
+        {
+            get { return this.notes; }
         }
     }
 }
