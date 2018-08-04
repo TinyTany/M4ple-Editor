@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NE4S.Scores
 {
+    /// <summary>
+    /// 譜面そのものをすべてここで管理する
+    /// </summary>
     public class ScoreBook
     {
         private List<Score> scores;

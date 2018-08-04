@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NE4S.Notes
 {
+    /// <summary>
+    /// 短いノーツ1つ分を表す
+    /// </summary>
     public class Note
     {
         private int size, lane;

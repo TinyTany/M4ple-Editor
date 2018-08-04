@@ -89,6 +89,7 @@
     <Compile Include="Scores\ScoreBook.cs" />
     <Compile Include="Scores\ScoreInfo.cs" />
     <Compile Include="Scores\ScoreLane.cs" />
+    <Compile Include="Scores\ScorePanel.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

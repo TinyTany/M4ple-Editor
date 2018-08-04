@@ -6,25 +6,33 @@ using System.Threading.Tasks;
 
 namespace NE4S.Scores
 {
+    /// <summary>
+    /// 譜面そのものを作るのにとりあえず必要な値たち
+    /// </summary>
     public class ScoreInfo
     {
-        private int width, height;
-        private const int laneWidth = 12, laneHeight = 2;
-        private const int leftMargin = 30, rightMargin = 30, topMargin = 5, bottomMargin = 5;
+        private double width, height;
+        private const double laneWidth = 12, laneHeight = 2;
+        private const double leftMargin = 30, rightMargin = 30, topMargin = 5, bottomMargin = 5;
         private const int maxBeatDiv = 192;
 
+        /// <summary>
+        /// beatNumber/beatDenom 拍子の譜面を一小節分つくる
+        /// </summary>
+        /// <param name="beatNumer"></param>
+        /// <param name="beatDenom"></param>
         public ScoreInfo(int beatNumer, int beatDenom)
         {
             width = leftMargin + rightMargin + laneWidth * 16;
             if(beatDenom != 0) height = topMargin + bottomMargin + laneHeight * maxBeatDiv * beatNumer / beatDenom;
         }
 
-        public int Width
+        public double Width
         {
             get { return this.width; }
         }
 
-        public int Height
+        public double Height
         {
             get { return this.height; }
         }

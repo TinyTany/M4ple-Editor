@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NE4S.Scores
 {
+    /// <summary>
+    /// 譜面そのもの
+    /// </summary>
     public class Score : ScoreInfo
     {
         private int beatNumer, beatDenom;

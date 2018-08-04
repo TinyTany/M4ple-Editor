@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NE4S.Notes
 {
+    /// <summary>
+    /// 置かれている全ノーツをまとめる
+    /// </summary>
     public class NoteBook
     {
         private List<Note> shortNotes;
