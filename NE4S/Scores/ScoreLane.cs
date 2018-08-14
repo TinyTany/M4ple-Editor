@@ -28,10 +28,10 @@ namespace NE4S.Scores
         {
             scores = new List<Score>();
             notes = new List<Note>();
-            #if DEBUG
-            Width = 100;
-            Height = 100;
-            #endif
+#if DEBUG
+            Width = 12 * 16 + 60;
+            Height = 768;
+#endif
         }
 
         public void PaintLane(PaintEventArgs e, int drawPosX, int drawPosY)

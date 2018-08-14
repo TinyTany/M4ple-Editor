@@ -111,10 +111,10 @@
             this.tabScore.Controls.Add(this.Score1);
             this.tabScore.Controls.Add(this.Score2);
             this.tabScore.Controls.Add(this.Score3);
-            this.tabScore.Location = new System.Drawing.Point(213, 105);
+            this.tabScore.Location = new System.Drawing.Point(213, 71);
             this.tabScore.Name = "tabScore";
             this.tabScore.SelectedIndex = 0;
-            this.tabScore.Size = new System.Drawing.Size(1039, 804);
+            this.tabScore.Size = new System.Drawing.Size(1039, 834);
             this.tabScore.TabIndex = 2;
             // 
             // Score1
@@ -122,7 +122,7 @@
             this.Score1.Location = new System.Drawing.Point(4, 4);
             this.Score1.Name = "Score1";
             this.Score1.Padding = new System.Windows.Forms.Padding(3);
-            this.Score1.Size = new System.Drawing.Size(1031, 778);
+            this.Score1.Size = new System.Drawing.Size(1031, 808);
             this.Score1.TabIndex = 1;
             this.Score1.Text = "Score1";
             this.Score1.UseVisualStyleBackColor = true;
@@ -132,7 +132,7 @@
             this.Score2.Location = new System.Drawing.Point(4, 4);
             this.Score2.Name = "Score2";
             this.Score2.Padding = new System.Windows.Forms.Padding(3);
-            this.Score2.Size = new System.Drawing.Size(1031, 778);
+            this.Score2.Size = new System.Drawing.Size(1031, 808);
             this.Score2.TabIndex = 2;
             this.Score2.Text = "Score2";
             this.Score2.UseVisualStyleBackColor = true;
@@ -142,7 +142,7 @@
             this.Score3.Location = new System.Drawing.Point(4, 4);
             this.Score3.Name = "Score3";
             this.Score3.Padding = new System.Windows.Forms.Padding(3);
-            this.Score3.Size = new System.Drawing.Size(1031, 778);
+            this.Score3.Size = new System.Drawing.Size(1031, 808);
             this.Score3.TabIndex = 3;
             this.Score3.Text = "Score3";
             this.Score3.UseVisualStyleBackColor = true;
