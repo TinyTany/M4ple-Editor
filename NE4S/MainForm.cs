@@ -20,7 +20,7 @@ namespace NE4S
             InitializeComponent();
             Score1.MouseWheel += new MouseEventHandler(Score_MouseWheel);
             Score1.Paint += new PaintEventHandler(Score_Paint);
-            scorePanel = new ScorePanel(Score1.Height);
+            scorePanel = new ScorePanel(Score1.Width, Score1.Height);
         }
 
         private void Score_MouseWheel(object sender, MouseEventArgs e)

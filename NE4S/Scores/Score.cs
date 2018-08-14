@@ -9,11 +9,18 @@ namespace NE4S.Scores
     /// <summary>
     /// 譜面そのもの
     /// </summary>
-    public class Score : ScoreInfo
+    public class Score
     {
         private int beatNumer, beatDenom;
+        private int width, height;
 
-        public Score(int beatNumer, int beatDenom) : base(beatNumer, beatDenom)
+        struct ScoreInfo
+        {
+            private const double laneWidth = 12, laneHeight = 2;
+            private const int maxBeatDiv = 192;
+        }
+
+        public Score(int beatNumer, int beatDenom)
         {
             this.beatNumer = beatNumer;
             this.beatDenom = beatDenom;
