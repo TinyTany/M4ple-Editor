@@ -7,34 +7,29 @@ using System.Threading.Tasks;
 namespace NE4S.Scores
 {
     /// <summary>
-    /// 譜面そのものを作るのにとりあえず必要な値たち
+    /// 各種譜面関係部品に関わる定数たち
     /// </summary>
     public class ScoreInfo
     {
-        private double width, height;
-        private const double laneWidth = 12, laneHeight = 2;
-        private const double leftMargin = 30, rightMargin = 30, topMargin = 5, bottomMargin = 5;
-        private const int maxBeatDiv = 192;
+        public static double LaneWidth { get; } = 12;
+        public static double LaneHeight { get; } = 2;
+        public static int MaxBeatDiv { get; } = 192;
+        public static int Lanes { get; } = 16;
 
-        /// <summary>
-        /// beatNumber/beatDenom 拍子の譜面を一小節分つくる
-        /// </summary>
-        /// <param name="beatNumer"></param>
-        /// <param name="beatDenom"></param>
-        public ScoreInfo(int beatNumer, int beatDenom)
+        public class LaneMargin
         {
-            width = leftMargin + rightMargin + laneWidth * 16;
-            if(beatDenom != 0) height = topMargin + bottomMargin + laneHeight * maxBeatDiv * beatNumer / beatDenom;
+            public static int Top { get; } = 5;
+            public static int Bottom { get; } = 5;
+            public static int Left { get; } = 30;
+            public static int Right { get; } = 30;
         }
 
-        public double Width
+        public class PanelMargin
         {
-            get { return this.width; }
-        }
-
-        public double Height
-        {
-            get { return this.height; }
+            public static int Top { get; } = 10;
+            public static int Bottom { get; } = 10;
+            public static int Left { get; } = 10;
+            public static int Right { get; } = 10;
         }
     }
 }

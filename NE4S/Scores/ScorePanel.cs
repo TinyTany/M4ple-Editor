@@ -13,33 +13,48 @@ namespace NE4S.Scores
     public class ScorePanel
     {
         private const int widthMax = 40000;
-        private int width, height, tabScoreWidth, tabScoreHeight;
-        private int currentPositionX;
+        private int width, height;
+        private int currentPositionX, currentWidthMax;
         private List<ScoreLane> lanes;
+        private Model model;
 
-        struct Margin
+        class Margin
         {
-            public const int Top = 10, Bottom = 10, Left = 10, Right = 10;
+            public static int
+                Top = ScoreInfo.PanelMargin.Top,
+                Bottom = ScoreInfo.PanelMargin.Bottom,
+                Left = ScoreInfo.PanelMargin.Left,
+                Right = ScoreInfo.PanelMargin.Right;
         }
 
         public ScorePanel(int tabScoreWidth, int tabScoreHeight)
         {
-            width = widthMax;
+            width = tabScoreWidth;
             height = tabScoreHeight;
-            this.tabScoreWidth = tabScoreWidth;
-            this.tabScoreHeight = tabScoreHeight;
             currentPositionX = 0;
             lanes = new List<ScoreLane>();
+            model = new Model();
 #if DEBUG
             for(int i=0; i<100; ++i) lanes.Add(new ScoreLane());
 #endif
         }
 
-        public void MouseScroll(int delta)
+        private void SetLane(int length)
+        {
+            currentWidthMax = (int)ScoreLane.Width * length;
+        }
+
+        public void MouseScroll(int delta, HScrollBar hSBar)
         {
             currentPositionX -= delta;
             if (currentPositionX < 0) currentPositionX = 0;
             else if (widthMax < currentPositionX) currentPositionX = widthMax;
+            hSBar.Value = currentPositionX;
+        }
+
+        public void HSBarScroll(ScrollEventArgs e)
+        {
+            currentPositionX += (e.NewValue - e.OldValue);
         }
 
         public void PaintPanel(PaintEventArgs e)
@@ -50,7 +65,7 @@ namespace NE4S.Scores
             for(int i = 0; i < lanes.Count; ++i)
             {
                 if(currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
-                    (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + tabScoreWidth)//ScoreLaneが表示範囲内にあるか
+                    (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + width)//ScoreLaneが表示範囲内にあるか
                 {
                     int drawPosX = ((int)ScoreLane.Width + Margin.Left + Margin.Right) * i - currentPositionX + Margin.Left;//ScoreLaneの相対位置のX座標を設定
                     int drawPosY = Margin.Top;

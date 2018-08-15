@@ -44,6 +44,11 @@ namespace NE4S
                 pBoxes[i].MouseWheel += new MouseEventHandler(Score_MouseWheel);
                 pBoxes[i].Paint += new PaintEventHandler(Score_Paint);
                 hScrolls[i].Scroll += new ScrollEventHandler(Score_Scroll);
+                //
+#if DEBUG
+                hScrolls[i].Maximum = 26200;
+                hScrolls[i].Minimum = 0;
+#endif
             }
         }
 
@@ -53,7 +58,7 @@ namespace NE4S
             {
                 if (((PictureBox)sender).Equals(pBoxes[i]))
                 {
-                    sPanels[i].MouseScroll(e.Delta);
+                    sPanels[i].MouseScroll(e.Delta, hScrolls[i]);
                     break;
                 }
             }
@@ -74,7 +79,15 @@ namespace NE4S
 
         private void Score_Scroll(object sender, ScrollEventArgs e)
         {
-
+            for(int i = 0; i < tabScore.TabCount; ++i)
+            {
+                if (((HScrollBar)sender).Equals(hScrolls[i]))
+                {
+                    sPanels[i].HSBarScroll(e);
+                    pBoxes[i].Refresh();
+                    break;
+                }
+            }
         }
     }
 }

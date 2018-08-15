@@ -19,9 +19,13 @@ namespace NE4S.Scores
         private List<Score> scores;
         private List<Note> notes;
 
-        struct Margin
+        class Margin
         {
-            public const int Top = 5, Bottom = 5, Left = 30, Right = 30;
+            public static int 
+                Top = ScoreInfo.LaneMargin.Top,
+                Bottom = ScoreInfo.LaneMargin.Bottom,
+                Left = ScoreInfo.LaneMargin.Left,
+                Right = ScoreInfo.LaneMargin.Right;
         }
 
         public ScoreLane()
