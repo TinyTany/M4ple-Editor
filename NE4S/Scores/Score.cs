@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Drawing;
 
 namespace NE4S.Scores
 {
@@ -30,6 +32,11 @@ namespace NE4S.Scores
         public double Height
         {
             get { return this.height; }
+        }
+
+        public void PaintScore(PaintEventArgs e, int DrawPosX, int DrawPosY)
+        {
+
         }
     }
 }

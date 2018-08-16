@@ -11,11 +11,30 @@ namespace NE4S.Scores
     /// </summary>
     public class ScoreInfo
     {
+        /// <summary>
+        /// 1最小レーンの横幅
+        /// </summary>
         public static double LaneWidth { get; } = 12;
+        /// <summary>
+        /// 最大分数時の縦幅
+        /// </summary>
         public static double LaneHeight { get; } = 2;
+        /// <summary>
+        /// 最大分数
+        /// </summary>
         public static int MaxBeatDiv { get; } = 192;
+        /// <summary>
+        /// 各レーンでの4/4拍子が最大何小節分入るか
+        /// </summary>
+        public static double BarPerLane { get; } = 2;
+        /// <summary>
+        /// レーン数（不変）
+        /// </summary>
         public static int Lanes { get; } = 16;
 
+        /// <summary>
+        /// ScoreLaneのMargin
+        /// </summary>
         public class LaneMargin
         {
             public static int Top { get; } = 5;
@@ -24,6 +43,9 @@ namespace NE4S.Scores
             public static int Right { get; } = 30;
         }
 
+        /// <summary>
+        /// ScorePanelのMargin
+        /// </summary>
         public class PanelMargin
         {
             public static int Top { get; } = 10;

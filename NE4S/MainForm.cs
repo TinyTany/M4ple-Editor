@@ -31,8 +31,6 @@ namespace NE4S
                 pBoxes[i].Size = tabScore.TabPages[i].Size;
                 //TabPageに初期化したPictureBoxを入れる
                 tabScore.TabPages[i].Controls.Add(pBoxes[i]);
-                //初期化したPictureBoxを使用してScorePanelを追加
-                sPanels.Add(new ScorePanel(pBoxes[i].Width, pBoxes[i].Height));
                 //HScrollBarの追加と初期化
                 hScrolls.Add(new HScrollBar());
                 hScrolls[i].Size = new Size(pBoxes[i].Width, 17);
@@ -40,15 +38,13 @@ namespace NE4S
                 pBoxes[i].Controls.Add(hScrolls[i]);
                 //HScrollBarの親コントロール内での位置を設定
                 hScrolls[i].Dock = DockStyle.Bottom;
+                //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
+                sPanels.Add(new ScorePanel(pBoxes[i].Size, hScrolls[i]));
                 //PictureBoxとHScrollBarの各種デリゲートの設定
                 pBoxes[i].MouseWheel += new MouseEventHandler(Score_MouseWheel);
                 pBoxes[i].Paint += new PaintEventHandler(Score_Paint);
                 hScrolls[i].Scroll += new ScrollEventHandler(Score_Scroll);
                 //
-#if DEBUG
-                hScrolls[i].Maximum = 26200;
-                hScrolls[i].Minimum = 0;
-#endif
             }
         }
 
@@ -58,7 +54,7 @@ namespace NE4S
             {
                 if (((PictureBox)sender).Equals(pBoxes[i]))
                 {
-                    sPanels[i].MouseScroll(e.Delta, hScrolls[i]);
+                    sPanels[i].MouseScroll(e.Delta);
                     break;
                 }
             }

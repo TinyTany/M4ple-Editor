@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace NE4S.Scores
 {
@@ -13,10 +14,11 @@ namespace NE4S.Scores
     public class ScorePanel
     {
         private const int widthMax = 40000;
-        private int width, height;
+        private Size panelSize;
         private int currentPositionX, currentWidthMax;
         private List<ScoreLane> lanes;
         private Model model;
+        private HScrollBar hSBar;
 
         class Margin
         {
@@ -27,28 +29,29 @@ namespace NE4S.Scores
                 Right = ScoreInfo.PanelMargin.Right;
         }
 
-        public ScorePanel(int tabScoreWidth, int tabScoreHeight)
+        public ScorePanel(Size tabScoreSize, HScrollBar hSBar)
         {
-            width = tabScoreWidth;
-            height = tabScoreHeight;
+            panelSize = tabScoreSize;
             currentPositionX = 0;
             lanes = new List<ScoreLane>();
             model = new Model();
-#if DEBUG
-            for(int i=0; i<100; ++i) lanes.Add(new ScoreLane());
-#endif
+            this.hSBar = hSBar;
+            SetLane(100);
         }
 
         private void SetLane(int length)
         {
-            currentWidthMax = (int)ScoreLane.Width * length;
+            currentWidthMax = (int)(ScoreInfo.Lanes * ScoreInfo.LaneWidth + ScoreInfo.LaneMargin.Left + ScoreInfo.LaneMargin.Right + Margin.Left + Margin.Right) * length;
+            hSBar.Minimum = 0;
+            hSBar.Maximum = currentWidthMax - panelSize.Width;
+            for (int i = 0; i < length; ++i) lanes.Add(new ScoreLane());
         }
 
-        public void MouseScroll(int delta, HScrollBar hSBar)
+        public void MouseScroll(int delta)
         {
             currentPositionX -= delta;
             if (currentPositionX < 0) currentPositionX = 0;
-            else if (widthMax < currentPositionX) currentPositionX = widthMax;
+            else if (currentWidthMax - panelSize.Width < currentPositionX) currentPositionX = currentWidthMax - panelSize.Width;
             hSBar.Value = currentPositionX;
         }
 
@@ -65,7 +68,7 @@ namespace NE4S.Scores
             for(int i = 0; i < lanes.Count; ++i)
             {
                 if(currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
-                    (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + width)//ScoreLaneが表示範囲内にあるか
+                    (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + panelSize.Width)//ScoreLaneが表示範囲内にあるか
                 {
                     int drawPosX = ((int)ScoreLane.Width + Margin.Left + Margin.Right) * i - currentPositionX + Margin.Left;//ScoreLaneの相対位置のX座標を設定
                     int drawPosY = Margin.Top;

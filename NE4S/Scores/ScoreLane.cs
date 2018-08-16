@@ -14,8 +14,8 @@ namespace NE4S.Scores
     /// </summary>
     public class ScoreLane
     {
-        public static double Width { get; set; }
-        public static double Height { get; set; }
+        public static double Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
+        public static double Height { get; set; } = ScoreInfo.LaneHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.BarPerLane;
         private List<Score> scores;
         private List<Note> notes;
 
@@ -32,10 +32,6 @@ namespace NE4S.Scores
         {
             scores = new List<Score>();
             notes = new List<Note>();
-#if DEBUG
-            Width = 12 * 16 + 60;
-            Height = 768;
-#endif
         }
 
         public void PaintLane(PaintEventArgs e, int drawPosX, int drawPosY)
