@@ -17,5 +17,15 @@ namespace NE4S.Scores
         {
             scores = new List<Score>();
         }
+
+        public void Add(int beatNumer, int beatDenom)
+        {
+            scores.Add(new Score(beatNumer, beatDenom));
+        }
+
+        public void Append(List<Score> newScores)
+        {
+            scores.AddRange(newScores);
+        }
     }
 }

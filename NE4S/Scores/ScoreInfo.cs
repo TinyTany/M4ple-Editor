@@ -18,7 +18,7 @@ namespace NE4S.Scores
         /// <summary>
         /// 最大分数時の縦幅
         /// </summary>
-        public static double LaneHeight { get; } = 2;
+        public static double MaxBeatHeight { get; } = 2;
         /// <summary>
         /// 最大分数
         /// </summary>

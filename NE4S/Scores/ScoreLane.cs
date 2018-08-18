@@ -15,7 +15,8 @@ namespace NE4S.Scores
     public class ScoreLane
     {
         public static double Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
-        public static double Height { get; set; } = ScoreInfo.LaneHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.BarPerLane;
+        public static double Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.BarPerLane + Margin.Top + Margin.Bottom;
+        public double CurrentBarSize { get; set; }
         private List<Score> scores;
         private List<Note> notes;
 
@@ -32,11 +33,28 @@ namespace NE4S.Scores
         {
             scores = new List<Score>();
             notes = new List<Note>();
+            CurrentBarSize = 0;
+        }
+
+        public void AddScore(Score newScore)
+        {
+            if(newScore != null) scores.Add(newScore);
         }
 
         public void PaintLane(PaintEventArgs e, int drawPosX, int drawPosY)
         {
             e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, (float)Width, (float)Height));
+            double currentDrawPosY = drawPosY + Height - Margin.Bottom;
+            e.Graphics.DrawLine(
+                new Pen(Color.Yellow, 1),
+                drawPosX + Margin.Left, (float)currentDrawPosY,
+                (float)(drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth), (float)currentDrawPosY
+                );
+            foreach (Score score in scores)
+            {
+                currentDrawPosY -= score.Height;
+                score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY);
+            }
         }
     }
 }

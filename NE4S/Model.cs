@@ -18,5 +18,18 @@ namespace NE4S
             noteBook = new NoteBook();
             scoreBook = new ScoreBook();
         }
+
+        public void AddScore(int beatNumer, int beatDenom, int barCount)
+        {
+            for(int i = 0; i < barCount; ++i)
+            {
+                scoreBook.Add(beatNumer, beatDenom);
+            }
+        }
+
+        public void AppendScore(List<Score> newScores)
+        {
+            scoreBook.Append(newScores);
+        }
     }
 }

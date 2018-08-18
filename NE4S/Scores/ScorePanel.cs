@@ -33,18 +33,57 @@ namespace NE4S.Scores
         {
             panelSize = tabScoreSize;
             currentPositionX = 0;
+            currentWidthMax = 0;
             lanes = new List<ScoreLane>();
             model = new Model();
             this.hSBar = hSBar;
-            SetLane(100);
+            hSBar.Minimum = 0;
+            SetScore(3, 4, 5);
+            SetScore(3, 8, 6);
+            SetScore(4, 4, 3);
+            SetScore(4, 32, 10);
         }
 
-        private void SetLane(int length)
+        /// <summary>
+        /// 末尾に指定した拍子数の譜面を指定した個数追加
+        /// </summary>
+        /// <param name="beatNumer">拍子分子</param>
+        /// <param name="beatDenom">拍子分母</param>
+        /// <param name="barCount">個数</param>
+        private void SetScore(int beatNumer, int beatDenom, int barCount)
         {
-            currentWidthMax = (int)(ScoreInfo.Lanes * ScoreInfo.LaneWidth + ScoreInfo.LaneMargin.Left + ScoreInfo.LaneMargin.Right + Margin.Left + Margin.Right) * length;
-            hSBar.Minimum = 0;
-            hSBar.Maximum = currentWidthMax - panelSize.Width;
-            for (int i = 0; i < length; ++i) lanes.Add(new ScoreLane());
+            List<Score> newScores = new List<Score>();
+            for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
+            model.AppendScore(newScores);
+            int requiredLane = 0;
+            foreach(Score newScore in newScores)
+            {
+                if(newScore.BarSize <= ScoreInfo.BarPerLane)
+                {
+                    if (!lanes.Any())
+                    {
+                        lanes.Add(new ScoreLane());
+                        requiredLane++;
+                        lanes.Last().AddScore(newScore);
+                        lanes.Last().CurrentBarSize += newScore.BarSize;
+                        continue;
+                    }
+                    if (lanes.Last().CurrentBarSize % ScoreInfo.BarPerLane + newScore.BarSize > ScoreInfo.BarPerLane || lanes.Last().CurrentBarSize % ScoreInfo.BarPerLane == 0)
+                    {
+                        lanes.Add(new ScoreLane());
+                        requiredLane++;
+                    }
+                    lanes.Last().AddScore(newScore);
+                    lanes.Last().CurrentBarSize += newScore.BarSize;
+                }
+                else
+                {
+
+                }
+            }
+            currentWidthMax += (int)(ScoreInfo.Lanes * ScoreInfo.LaneWidth + ScoreInfo.LaneMargin.Left + ScoreInfo.LaneMargin.Right + Margin.Left + Margin.Right) * requiredLane;
+            currentWidthMax = Math.Max(currentWidthMax, panelSize.Width);
+            hSBar.Maximum = currentWidthMax - panelSize.Width; 
         }
 
         public void MouseScroll(int delta)
@@ -62,9 +101,6 @@ namespace NE4S.Scores
 
         public void PaintPanel(PaintEventArgs e)
         {
-#if DEBUG
-            int cnt = 0;
-#endif
             for(int i = 0; i < lanes.Count; ++i)
             {
                 if(currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
@@ -73,14 +109,8 @@ namespace NE4S.Scores
                     int drawPosX = ((int)ScoreLane.Width + Margin.Left + Margin.Right) * i - currentPositionX + Margin.Left;//ScoreLaneの相対位置のX座標を設定
                     int drawPosY = Margin.Top;
                     lanes[i].PaintLane(e, drawPosX, drawPosY);//ScoreLaneを描画
-#if DEBUG
-                    ++cnt;
-#endif
                 }
             }
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine(cnt);
-#endif
         }
     }
 }
