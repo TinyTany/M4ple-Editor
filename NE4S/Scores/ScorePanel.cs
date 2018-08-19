@@ -13,7 +13,6 @@ namespace NE4S.Scores
     /// </summary>
     public class ScorePanel
     {
-        private const int widthMax = 40000;
         private Size panelSize;
         private int currentPositionX, currentWidthMax;
         private List<ScoreLane> lanes;
@@ -38,10 +37,10 @@ namespace NE4S.Scores
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
+            SetScore(4, 4, 4);
             SetScore(3, 4, 5);
-            SetScore(3, 8, 6);
-            SetScore(4, 4, 3);
-            SetScore(4, 32, 10);
+            SetScore(6, 8, 8);
+            SetScore(2, 64, 32);
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace NE4S.Scores
             int requiredLane = 0;
             foreach(Score newScore in newScores)
             {
-                if(newScore.BarSize <= ScoreInfo.BarPerLane)
+                if(newScore.BarSize <= ScoreInfo.LaneMaxBar)
                 {
                     if (!lanes.Any())
                     {
@@ -68,7 +67,7 @@ namespace NE4S.Scores
                         lanes.Last().CurrentBarSize += newScore.BarSize;
                         continue;
                     }
-                    if (lanes.Last().CurrentBarSize % ScoreInfo.BarPerLane + newScore.BarSize > ScoreInfo.BarPerLane || lanes.Last().CurrentBarSize % ScoreInfo.BarPerLane == 0)
+                    if (lanes.Last().CurrentBarSize % ScoreInfo.LaneMaxBar + newScore.BarSize > ScoreInfo.LaneMaxBar || lanes.Last().CurrentBarSize % ScoreInfo.LaneMaxBar == 0)
                     {
                         lanes.Add(new ScoreLane());
                         requiredLane++;
@@ -81,16 +80,15 @@ namespace NE4S.Scores
 
                 }
             }
-            currentWidthMax += (int)(ScoreInfo.Lanes * ScoreInfo.LaneWidth + ScoreInfo.LaneMargin.Left + ScoreInfo.LaneMargin.Right + Margin.Left + Margin.Right) * requiredLane;
-            currentWidthMax = Math.Max(currentWidthMax, panelSize.Width);
-            hSBar.Maximum = currentWidthMax - panelSize.Width; 
+            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * requiredLane;
+            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width; 
         }
 
         public void MouseScroll(int delta)
         {
             currentPositionX -= delta;
-            if (currentPositionX < 0) currentPositionX = 0;
-            else if (currentWidthMax - panelSize.Width < currentPositionX) currentPositionX = currentWidthMax - panelSize.Width;
+            if (currentPositionX < hSBar.Minimum) currentPositionX = hSBar.Minimum;
+            else if (hSBar.Maximum < currentPositionX) currentPositionX = hSBar.Maximum;
             hSBar.Value = currentPositionX;
         }
 
@@ -103,12 +101,15 @@ namespace NE4S.Scores
         {
             for(int i = 0; i < lanes.Count; ++i)
             {
-                if(currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
-                    (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + panelSize.Width)//ScoreLaneが表示範囲内にあるか
+                //ScoreLaneが表示範囲内にあるか
+                if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
+                    (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + panelSize.Width)
                 {
-                    int drawPosX = ((int)ScoreLane.Width + Margin.Left + Margin.Right) * i - currentPositionX + Margin.Left;//ScoreLaneの相対位置のX座標を設定
+                    //ScoreLaneの相対位置のX座標を設定
+                    int drawPosX = ((int)ScoreLane.Width + Margin.Left + Margin.Right) * i - currentPositionX + Margin.Left;
                     int drawPosY = Margin.Top;
-                    lanes[i].PaintLane(e, drawPosX, drawPosY);//ScoreLaneを描画
+                    //ScoreLaneを描画
+                    lanes[i].PaintLane(e, drawPosX, drawPosY);
                 }
             }
         }
