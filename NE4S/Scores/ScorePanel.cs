@@ -37,8 +37,9 @@ namespace NE4S.Scores
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
+#if DEBUG
             //*
-            SetScore(4, 4, 4);
+            SetScore(4, 4, 8);
             SetScore(3, 4, 5);
             SetScore(6, 8, 8);
             //*/
@@ -46,7 +47,8 @@ namespace NE4S.Scores
             SetScore(13, 4, 2);
             SetScore(2, 4, 8);
             SetScore(26, 8, 2);
-#if DEBUG
+            SetScore(1, 32, 32);
+
             System.Diagnostics.Debug.WriteLine(lanes.Count);
 #endif
         }

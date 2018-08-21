@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace NE4S.Scores
 {
@@ -31,6 +32,14 @@ namespace NE4S.Scores
         /// レーン数（不変）
         /// </summary>
         public static int Lanes { get; } = 16;
+        /// <summary>
+        /// フォントサイズ（小節番号など）
+        /// </summary>
+        public static float FontSize { get; } = 8;
+        /// <summary>
+        /// 小節番号描画時の位置ずれ分の座標
+        /// </summary>
+        public static PointF ScoreIndexPos { get; } = new PointF(-26.5f, -7);
 
         /// <summary>
         /// ScoreLaneのMargin

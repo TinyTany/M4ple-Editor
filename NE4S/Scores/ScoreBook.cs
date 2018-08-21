@@ -21,11 +21,18 @@ namespace NE4S.Scores
         public void Add(int beatNumer, int beatDenom)
         {
             scores.Add(new Score(beatNumer, beatDenom));
+            SetScoreIndex();
         }
 
         public void Append(List<Score> newScores)
         {
             scores.AddRange(newScores);
+            SetScoreIndex();
+        }
+
+        private void SetScoreIndex()
+        {
+            for (int i = 0; i < scores.Count; ++i) scores[i].ScoreIndex = i + 1;
         }
     }
 }

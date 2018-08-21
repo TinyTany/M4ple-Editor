@@ -13,7 +13,7 @@ namespace NE4S.Scores
     /// </summary>
     public class Score
     {
-        private int beatNumer, beatDenom;
+        private int beatNumer, beatDenom, scoreIndex;
         private double width, height, barSize;
 
         public Score(int beatNumer, int beatDenom)
@@ -51,6 +51,12 @@ namespace NE4S.Scores
         {
             get { return barSize; }
             set { barSize = value; }
+        }
+
+        public int ScoreIndex
+        {
+            get { return scoreIndex; }
+            set { scoreIndex = value; }
         }
 
         /// <summary>
@@ -103,6 +109,14 @@ namespace NE4S.Scores
                     (float)(drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth),
                     (float)(drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer)
                     );
+                //小節数を描画
+                e.Graphics.DrawString(
+                    scoreIndex.ToString().PadLeft(3, '0'),
+                    new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold),
+                    Brushes.White,
+                    new PointF(
+                        (float)drawPosX + ScoreInfo.ScoreIndexPos.X,
+                        (float)(drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer) + ScoreInfo.ScoreIndexPos.Y));
             }
             else
             {
