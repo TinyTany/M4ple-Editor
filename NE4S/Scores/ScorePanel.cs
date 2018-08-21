@@ -37,10 +37,18 @@ namespace NE4S.Scores
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
+            //*
             SetScore(4, 4, 4);
             SetScore(3, 4, 5);
             SetScore(6, 8, 8);
+            //*/
             SetScore(2, 64, 32);
+            SetScore(13, 4, 2);
+            SetScore(2, 4, 8);
+            SetScore(26, 8, 2);
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(lanes.Count);
+#endif
         }
 
         /// <summary>
@@ -51,36 +59,52 @@ namespace NE4S.Scores
         /// <param name="barCount">個数</param>
         private void SetScore(int beatNumer, int beatDenom, int barCount)
         {
+            //新たに追加する譜面たちをリストでまとめる
             List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
+            //まとめた譜面たちをmodelに入れる
             model.AppendScore(newScores);
-            int requiredLane = 0;
+            //新規追加前のレーンリストの要素数を記録
+            int pastLaneCount = lanes.Count;
+            //新譜面たちをレーンに割り当て
             foreach(Score newScore in newScores)
             {
+                //newScoreが1つのレーンの最大サイズで収まるか判定
                 if(newScore.BarSize <= ScoreInfo.LaneMaxBar)
                 {
+                    //そもそも現在のレーンリストが空の時は新レーンを1つ補充
                     if (!lanes.Any())
                     {
                         lanes.Add(new ScoreLane());
-                        requiredLane++;
-                        lanes.Last().AddScore(newScore);
-                        lanes.Last().CurrentBarSize += newScore.BarSize;
-                        continue;
                     }
-                    if (lanes.Last().CurrentBarSize % ScoreInfo.LaneMaxBar + newScore.BarSize > ScoreInfo.LaneMaxBar || lanes.Last().CurrentBarSize % ScoreInfo.LaneMaxBar == 0)
+                    //現在のリストにあるレーンの末尾にまだnewScoreを入れる余裕があるか判定
+                    if (lanes.Last().CurrentBarSize + newScore.BarSize > ScoreInfo.LaneMaxBar)
                     {
+                        //余裕がないときは新たな空レーンを追加
                         lanes.Add(new ScoreLane());
-                        requiredLane++;
                     }
-                    lanes.Last().AddScore(newScore);
-                    lanes.Last().CurrentBarSize += newScore.BarSize;
+                    //レーン末尾にnewScoreを格納
+                    lanes.Last().AddScore(newScore, new Range(1, newScore.BeatNumer));
                 }
+                //収まらなかった場合
                 else
                 {
-
+                    //なんやかんやで分割して複数レーンに格納する
+                    for(int i = 0; i < newScore.BarSize % ScoreInfo.LaneMaxBar; ++i)
+                    {
+                        //新たにレーンを追加
+                        lanes.Add(new ScoreLane());
+                        //末尾のレーンに新たなScoreを範囲を指定して格納
+                        lanes.Last().AddScore(
+                            newScore, 
+                            new Range(
+                                (int)(i * newScore.BeatDenom * ScoreInfo.LaneMaxBar + 1),
+                                Math.Min(newScore.BeatNumer, (int)((i + 1) * newScore.BeatDenom * ScoreInfo.LaneMaxBar))));
+                    }
                 }
             }
-            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * requiredLane;
+            //レーンの増分だけパネルの最大幅を更新
+            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
             hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width; 
         }
 

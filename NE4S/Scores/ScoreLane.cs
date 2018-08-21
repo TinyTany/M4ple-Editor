@@ -16,9 +16,14 @@ namespace NE4S.Scores
     {
         public static double Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
         public static double Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar + Margin.Top + Margin.Bottom;
-        public double CurrentBarSize { get; set; }
-        private List<Score> scores;
+        private double currentBarSize;
         private List<Note> notes;
+        private List<Tuple<Score, Range>> tScores;
+
+        public double CurrentBarSize
+        {
+            get { return currentBarSize; }
+        }
 
         class Margin
         {
@@ -31,14 +36,19 @@ namespace NE4S.Scores
 
         public ScoreLane()
         {
-            scores = new List<Score>();
             notes = new List<Note>();
-            CurrentBarSize = 0;
+            tScores = new List<Tuple<Score, Range>>();
+            currentBarSize = 0;
         }
 
-        public void AddScore(Score newScore)
+        public void AddScore(Score newScore, Range newRange)
         {
-            if(newScore != null) scores.Add(newScore);
+            if (newScore != null && newRange != null)
+            {
+                //各リストに新たなScoreとその範囲を格納し、currentBarSizeを更新する
+                tScores.Add(new Tuple<Score, Range>(newScore, newRange));
+                currentBarSize += newRange.Size() / (double)newScore.BeatDenom;
+            }
         }
 
         /// <summary>
@@ -51,25 +61,31 @@ namespace NE4S.Scores
         {
             //レーン背景を黒塗り
             e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, (float)Width, (float)Height));
-            //Score描画用のY座標の初期座標を最下に設定
+            //Score描画用のY座標の初期座標を画面最下に設定
             double currentDrawPosY = drawPosY + Height - Margin.Bottom;
             //リスト内のScoreについてY座標を変更しながら描画
-            foreach (Score score in scores)
+            foreach (Tuple<Score, Range> tScore in tScores)
             {
-                currentDrawPosY -= score.Height;
-                score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY);
+                currentDrawPosY -= tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer;
+                tScore.Item1.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, tScore.Item2);
             }
-            //最後の小節を黄色線で閉じる
-            e.Graphics.DrawLine(
-                new Pen(Color.Yellow, 1),
-                drawPosX + Margin.Left, (float)currentDrawPosY,
-                (float)(drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth), (float)currentDrawPosY
-                );
+            //tScoresの最後の要素のScoreが閉じているか判定
+            if (tScores.Last().Item2.Sup == tScores.Last().Item1.BeatNumer)
+            {
+                //閉じていた場合
+                //最後の小節を黄色線で閉じる
+                e.Graphics.DrawLine(
+                    new Pen(Color.Yellow, 1),
+                    drawPosX + Margin.Left, (float)currentDrawPosY,
+                    (float)(drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth), (float)currentDrawPosY
+                    );
+            }
             //レーン上部の余白の部分は灰色(黒以外の色)に描画して未使用領域とする
             currentDrawPosY -= Margin.Top;
             //上部が余ってるか余ってない（ぴったり描画された）か判定
             if(currentDrawPosY > drawPosY)
             {
+                //余ってる部分は塗りつぶす
                 e.Graphics.FillRectangle(Brushes.White, new RectangleF(drawPosX, drawPosY, (float)Width, (float)(currentDrawPosY - drawPosY)));
             }
         }
