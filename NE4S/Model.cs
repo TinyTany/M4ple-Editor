@@ -31,5 +31,25 @@ namespace NE4S
         {
             scoreBook.Append(newScores);
         }
+
+        public void DeleteScore(int begin, int count)
+        {
+            scoreBook.Delete(begin, count);
+        }
+
+        public Score ScorePrev(Score score)
+        {
+            return ScoreAt(score.ScoreIndex - 1);
+        }
+
+        public Score ScoreNext(Score score)
+        {
+            return ScoreAt(score.ScoreIndex + 1);
+        }
+
+        public Score ScoreAt(int index)
+        {
+            return scoreBook.At(index);
+        }
     }
 }

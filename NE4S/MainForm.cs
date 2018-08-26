@@ -13,77 +13,68 @@ namespace NE4S
 {
     public partial class MainForm : Form
     {
-        private List<ScorePanel> sPanels;
-        private List<PictureBox> pBoxes;
-        private List<HScrollBar> hScrolls;
-
+        private List<Tuple<ScorePanel, PictureBox, HScrollBar>> viewComponents;
 
         public MainForm()
         {
             InitializeComponent();
-            sPanels = new List<ScorePanel>();
-            pBoxes = new List<PictureBox>();
-            hScrolls = new List<HScrollBar>();
+            viewComponents = new List<Tuple<ScorePanel, PictureBox, HScrollBar>>();
             for(int i = 0; i < tabScore.TabCount; ++i)
             {
                 //PictureBoxの追加と初期化
-                pBoxes.Add(new PictureBox());
-                pBoxes[i].Size = tabScore.TabPages[i].Size;
+                PictureBox pBox = new PictureBox();
+                pBox.Size = tabScore.TabPages[i].Size;
                 //TabPageに初期化したPictureBoxを入れる
-                tabScore.TabPages[i].Controls.Add(pBoxes[i]);
+                tabScore.TabPages[i].Controls.Add(pBox);
                 //HScrollBarの追加と初期化
-                hScrolls.Add(new HScrollBar());
-                hScrolls[i].Size = new Size(pBoxes[i].Width, 17);
+                HScrollBar hScroll = new HScrollBar();
+                hScroll.Size = new Size(pBox.Width, 17);
                 //HScrollBarをPictureBoxに入れる
-                pBoxes[i].Controls.Add(hScrolls[i]);
+                pBox.Controls.Add(hScroll);
                 //HScrollBarの親コントロール内での位置を設定
-                hScrolls[i].Dock = DockStyle.Bottom;
+                hScroll.Dock = DockStyle.Bottom;
                 //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
-                sPanels.Add(new ScorePanel(pBoxes[i].Size, hScrolls[i]));
+                ScorePanel sPanel = new ScorePanel(pBox, hScroll);
                 //PictureBoxとHScrollBarの各種デリゲートの設定
-                pBoxes[i].MouseWheel += new MouseEventHandler(Score_MouseWheel);
-                pBoxes[i].Paint += new PaintEventHandler(Score_Paint);
-                hScrolls[i].Scroll += new ScrollEventHandler(Score_Scroll);
-                //
+                pBox.MouseWheel += new MouseEventHandler(Score_MouseWheel);
+                pBox.Paint += new PaintEventHandler(Score_Paint);
+                pBox.MouseClick += new MouseEventHandler(Score_MouseClick);
+                hScroll.Scroll += new ScrollEventHandler(Score_Scroll);
+                //初期化した部品たちをタプルにしてリストに追加
+                viewComponents.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
+        }
+
+        private void Score_MouseClick(object sender, MouseEventArgs e)
+        {
+            //クリックされたPictureBoxに対応するScorePanelで処理
+            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
+                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+            selectedComponent.Item1.MouseClick(e);
+            selectedComponent.Item2.Refresh();
         }
 
         private void Score_MouseWheel(object sender, MouseEventArgs e)
         {
-            for(int i = 0; i < tabScore.TabCount; ++i)
-            {
-                if (((PictureBox)sender).Equals(pBoxes[i]))
-                {
-                    sPanels[i].MouseScroll(e.Delta);
-                    break;
-                }
-            }
-            ((PictureBox)sender).Refresh();
+            //クリックされたPictureBoxに対応するScorePanelで処理
+            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
+                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+            selectedComponent.Item1.MouseScroll(e.Delta);
+            selectedComponent.Item2.Refresh();
         }
 
         private void Score_Paint(object sender, PaintEventArgs e)
         {
-            for (int i = 0; i < tabScore.TabCount; ++i)
-            {
-                if (((PictureBox)sender).Equals(pBoxes[i]))
-                {
-                    sPanels[i].PaintPanel(e);
-                    break;
-                }
-            }
+            viewComponents.Find(x => x.Item2.Equals((PictureBox)sender)).Item1.PaintPanel(e);
         }
 
         private void Score_Scroll(object sender, ScrollEventArgs e)
         {
-            for(int i = 0; i < tabScore.TabCount; ++i)
-            {
-                if (((HScrollBar)sender).Equals(hScrolls[i]))
-                {
-                    sPanels[i].HSBarScroll(e);
-                    pBoxes[i].Refresh();
-                    break;
-                }
-            }
+            //クリックされたHScrollBarに対応するScorePanelで処理
+            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
+                viewComponents.Find(x => x.Item3.Equals((HScrollBar)sender));
+            selectedComponent.Item1.HSBarScroll(e);
+            selectedComponent.Item2.Refresh();
         }
     }
 }

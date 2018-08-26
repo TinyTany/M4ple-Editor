@@ -30,9 +30,29 @@ namespace NE4S.Scores
             SetScoreIndex();
         }
 
+        public void Delete(int begin, int count)
+        {
+            if (scores.Count < begin + count) count = scores.Count - begin;
+            scores.RemoveRange(begin, count);
+            SetScoreIndex();
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(scores.Count.ToString());
+#endif
+        }
+
+        public Score At(int index)
+        {
+            if (scores.Count <= index) return null;
+            return scores.ElementAt(index);
+        }
+
+        /// <summary>
+        /// scores内のScoreのインデックスを更新
+        /// リストscoresの内容が変更された際に必ず呼ぶ
+        /// </summary>
         private void SetScoreIndex()
         {
-            for (int i = 0; i < scores.Count; ++i) scores[i].ScoreIndex = i + 1;
+            for (int i = 0; i < scores.Count; ++i) scores[i].ScoreIndex = i;
         }
     }
 }

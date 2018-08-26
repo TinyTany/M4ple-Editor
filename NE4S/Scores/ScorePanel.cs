@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using NE4S.Component;
 
 namespace NE4S.Scores
 {
@@ -18,6 +19,7 @@ namespace NE4S.Scores
         private List<ScoreLane> lanes;
         private Model model;
         private HScrollBar hSBar;
+        private PictureBox pBox;
 
         class Margin
         {
@@ -28,9 +30,10 @@ namespace NE4S.Scores
                 Right = ScoreInfo.PanelMargin.Right;
         }
 
-        public ScorePanel(Size tabScoreSize, HScrollBar hSBar)
+        public ScorePanel(PictureBox pBox, HScrollBar hSBar)
         {
-            panelSize = tabScoreSize;
+            this.pBox = pBox;
+            panelSize = pBox.Size;
             currentPositionX = 0;
             currentWidthMax = 0;
             lanes = new List<ScoreLane>();
@@ -39,17 +42,22 @@ namespace NE4S.Scores
             hSBar.Minimum = 0;
 #if DEBUG
             //*
-            SetScore(4, 4, 8);
+            SetScore(4, 4, 10);
             SetScore(3, 4, 5);
             SetScore(6, 8, 8);
-            //*/
+            
             SetScore(2, 64, 32);
             SetScore(13, 4, 2);
             SetScore(2, 4, 8);
             SetScore(26, 8, 2);
             SetScore(1, 32, 32);
+            //*/
+            SetScore(7, 1, 1);
+            SetScore(4, 4, 1);
+            SetScore(8, 8, 1);
+            SetScore(16, 16, 1);
 
-            System.Diagnostics.Debug.WriteLine(lanes.Count);
+            //System.Diagnostics.Debug.WriteLine(lanes.Count);
 #endif
         }
 
@@ -92,7 +100,7 @@ namespace NE4S.Scores
                 else
                 {
                     //なんやかんやで分割して複数レーンに格納する
-                    for(int i = 0; i < newScore.BarSize % ScoreInfo.LaneMaxBar; ++i)
+                    for(int i = 0; i < newScore.BarSize / ScoreInfo.LaneMaxBar; ++i)
                     {
                         //新たにレーンを追加
                         lanes.Add(new ScoreLane());
@@ -107,7 +115,115 @@ namespace NE4S.Scores
             }
             //レーンの増分だけパネルの最大幅を更新
             currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
-            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width; 
+            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
+            //ScoreLaneのインデックスを設定
+            SetLaneIndex();
+        }
+
+        /// <summary>
+        /// indexの直後に新たにScoreを挿入
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="beatNumer"></param>
+        /// <param name="beatDenom"></param>
+        /// <param name="barCount"></param>
+        public void InsertScoreForward(int index, int beatNumer, int beatDenom, int barCount)
+        {
+            
+        }
+
+        /// <summary>
+        /// indexの直前に新たにScoreを挿入
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="beatNumer"></param>
+        /// <param name="beatDenom"></param>
+        /// <param name="barCount"></param>
+        public void InsertScoreBackward(int index, int beatNumer, int beatDenom, int barCount)
+        {
+            
+        }
+
+        /// <summary>
+        /// 指定されたScore削除
+        /// </summary>
+        /// <param name="lane">対象のScoreが入っているレーン</param>
+        /// <param name="score">削除対象のScore</param>
+        public void DeleteScore(ScoreLane lane, Score score)
+        {
+            DeleteScore(lane, score, 1);
+        }
+
+        /// <summary>
+        /// 指定されたScoreからcount個のScoreを削除
+        /// </summary>
+        /// <param name="lane">対象のScoreが入っているレーン</param>
+        /// <param name="score">削除開始のScore</param>
+        /// <param name="count">削除する個数</param>
+        public void DeleteScore(ScoreLane lane, Score score, int count)
+        {
+            //削除前のレーンリストの要素数を記録
+            int pastLaneCount = lanes.Count;
+            //scoreからcount個Scoreを削除
+            for(Score itrScore = score; itrScore != null && itrScore.ScoreIndex - score.ScoreIndex < count; itrScore = model.ScoreNext(itrScore))
+            {
+                //選択されたScoreが初めて含まれるレーンを特定
+                ScoreLane laneBegin = lanes.Find(x => x.Contains(itrScore));
+                if (laneBegin.IsScoreClose(itrScore))
+                {
+                    laneBegin.DeleteScore(itrScore);
+                    //削除処理によってレーンが空になっていないか判定
+                    if (!laneBegin.Any()) lanes.Remove(laneBegin);
+                }
+                else
+                {
+                    //初めて含まれるレーンから削除するScoreのサイズに応じて複数レーンにわたってScoreを削除
+                    //空レーン判定は後でまとめて行う（そうしないとうまくいかない）
+                    for (int i = 0; i < itrScore.BarSize / ScoreInfo.LaneMaxBar; ++i)
+                    {
+                        lanes.ElementAt(laneBegin.LaneIndex + i).DeleteScore(itrScore);
+                    }
+                    //空レーン判定を行い空のレーンは削除
+                    for (int i = 0; i < itrScore.BarSize / ScoreInfo.LaneMaxBar; ++i)
+                    {
+                        //削除処理によってレーンが空になっていないか判定
+                        if (!lanes.ElementAt(laneBegin.LaneIndex).Any()) lanes.RemoveAt(laneBegin.LaneIndex);
+                    }
+                }
+                //ScoreLaneのインデックスを設定
+                SetLaneIndex();
+            }
+            //modelから該当範囲のScoreを削除
+            model.DeleteScore(score.ScoreIndex, count);
+            //レーンの増分だけパネルの最大幅を更新
+            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
+            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
+            //PictureBoxを更新
+            pBox.Refresh();
+        }
+
+        private void SetLaneIndex()
+        {
+            for (int i = 0; i < lanes.Count; ++i)
+            {
+                //LaneIndexを設定
+                lanes[i].LaneIndex = i;
+                //レーンの当たり判定はLaneIndexに依存しているので同時に設定する
+                lanes[i].UpdateHitRect();
+            }
+        }
+
+        public void MouseClick(MouseEventArgs e)
+        {
+#if DEBUG
+            //クリックされたレーンを特定
+            ScoreLane selectedLane =
+                lanes.Find(x => x.HitRect.Contains(e.X + currentPositionX, e.Y));
+            if (selectedLane != null && selectedLane.SelectedScore(e) != null && e.Button == MouseButtons.Right)
+            {
+                new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e)).Show(pBox, e.Location);
+            }
+#endif
         }
 
         public void MouseScroll(int delta)

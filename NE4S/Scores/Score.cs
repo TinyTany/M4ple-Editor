@@ -111,7 +111,7 @@ namespace NE4S.Scores
                     );
                 //小節数を描画
                 e.Graphics.DrawString(
-                    scoreIndex.ToString().PadLeft(3, '0'),
+                    (scoreIndex + 1).ToString().PadLeft(3, '0'),
                     new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold),
                     Brushes.White,
                     new PointF(

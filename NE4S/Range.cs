@@ -26,6 +26,10 @@ namespace NE4S
             Sup = sup;
         }
 
+        /// <summary>
+        /// Rangeの範囲サイズ
+        /// </summary>
+        /// <returns></returns>
         public int Size()
         {
             return Sup - Inf + 1;
