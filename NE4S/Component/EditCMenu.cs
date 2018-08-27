@@ -58,27 +58,27 @@ namespace NE4S.Component
 
         private void BarDeleteSelected(object sender, EventArgs e)
         {
-            sPanel.DeleteScore(selectedLane, selectedScore);
+            sPanel.DeleteScore(selectedScore);
         }
 
         private void BarDeleteCustom(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            new BarDeleteCustomForm(sPanel, selectedScore).Show();
         }
 
         private void BarAddCustom(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            new BarAddCustomForm(sPanel, selectedScore).Show();
         }
 
         private void BarAddForward(object sender, EventArgs e)
         {
-            sPanel.InsertScoreForward(selectedScore.ScoreIndex, selectedScore.BeatNumer, selectedScore.BeatDenom, 1);
+            sPanel.InsertScoreForward(selectedScore, selectedScore.BeatNumer, selectedScore.BeatDenom, 1);
         }
 
         private void BarAddBackward(object sender, EventArgs e)
         {
-            sPanel.InsertScoreBackward(selectedScore.ScoreIndex, selectedScore.BeatNumer, selectedScore.BeatDenom, 1);
+            sPanel.InsertScoreBackward(selectedScore, selectedScore.BeatNumer, selectedScore.BeatDenom, 1);
         }
     }
 }

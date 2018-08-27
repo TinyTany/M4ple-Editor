@@ -27,7 +27,14 @@ namespace NE4S.Scores
         /// </summary>
         public double CurrentBarSize
         {
-            get { return currentBarSize; }
+            get {
+                currentBarSize = 0;
+                foreach(Tuple<Score, Range> tScore in tScores)
+                {
+                    currentBarSize += tScore.Item2.Size() / (double)tScore.Item1.BeatDenom;
+                }
+                return currentBarSize;
+            }
         }
 
         /// <summary>
@@ -100,9 +107,21 @@ namespace NE4S.Scores
         {
             if (newScore != null && newRange != null)
             {
-                //各リストに新たなScoreとその範囲を格納し、currentBarSizeを更新する
+                //各リストに新たなScoreとその範囲を格納
                 tScores.Add(new Tuple<Score, Range>(newScore, newRange));
                 currentBarSize += newRange.Size() / (double)newScore.BeatDenom;
+            }
+        }
+
+        /// <summary>
+        /// 新たなScoreの全体を追加
+        /// </summary>
+        /// <param name="newScore"></param>
+        public void AddScore(Score newScore)
+        {
+            if(newScore != null)
+            {
+                AddScore(newScore, new Range(1, newScore.BeatNumer));
             }
         }
 
@@ -112,7 +131,16 @@ namespace NE4S.Scores
         /// <param name="score">削除対象のScore</param>
         public void DeleteScore(Score score)
         {
-            tScores.Remove(tScores.Find(x => x.Item1.Equals(score)));
+            if(score != null)
+            {
+                currentBarSize -= tScores.Find(x => x.Item1.Equals(score)).Item2.Size() / (double)score.BeatDenom;
+                tScores.Remove(tScores.Find(x => x.Item1.Equals(score)));
+            }
+        }
+
+        public Score BeginScore()
+        {
+            return tScores[0].Item1;
         }
 
         /// <summary>

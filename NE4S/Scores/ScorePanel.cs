@@ -121,46 +121,45 @@ namespace NE4S.Scores
         }
 
         /// <summary>
-        /// indexの直後に新たにScoreを挿入
+        /// scoreの直後に新たにscoreを挿入
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="score"></param>
         /// <param name="beatNumer"></param>
         /// <param name="beatDenom"></param>
         /// <param name="barCount"></param>
-        public void InsertScoreForward(int index, int beatNumer, int beatDenom, int barCount)
+        public void InsertScoreForward(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            ScoreLane lane = lanes.FindLast(x => x.Contains(score));
+
+        }
+
+        /// <summary>
+        /// scoreの直前に新たにscoreを挿入
+        /// </summary>
+        /// <param name="score"></param>
+        /// <param name="beatNumer"></param>
+        /// <param name="beatDenom"></param>
+        /// <param name="barCount"></param>
+        public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
         {
             
         }
 
         /// <summary>
-        /// indexの直前に新たにScoreを挿入
+        /// 指定されたscore削除
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="beatNumer"></param>
-        /// <param name="beatDenom"></param>
-        /// <param name="barCount"></param>
-        public void InsertScoreBackward(int index, int beatNumer, int beatDenom, int barCount)
-        {
-            
-        }
-
-        /// <summary>
-        /// 指定されたScore削除
-        /// </summary>
-        /// <param name="lane">対象のScoreが入っているレーン</param>
         /// <param name="score">削除対象のScore</param>
-        public void DeleteScore(ScoreLane lane, Score score)
+        public void DeleteScore(Score score)
         {
-            DeleteScore(lane, score, 1);
+            DeleteScore(score, 1);
         }
 
         /// <summary>
-        /// 指定されたScoreからcount個のScoreを削除
+        /// 指定されたscoreからcount個のScoreを削除
         /// </summary>
-        /// <param name="lane">対象のScoreが入っているレーン</param>
         /// <param name="score">削除開始のScore</param>
         /// <param name="count">削除する個数</param>
-        public void DeleteScore(ScoreLane lane, Score score, int count)
+        public void DeleteScore(Score score, int count)
         {
             //削除前のレーンリストの要素数を記録
             int pastLaneCount = lanes.Count;
@@ -195,6 +194,8 @@ namespace NE4S.Scores
             }
             //modelから該当範囲のScoreを削除
             model.DeleteScore(score.ScoreIndex, count);
+            //レーンを詰める
+            FillLane();
             //レーンの増分だけパネルの最大幅を更新
             currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
             hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
@@ -210,6 +211,42 @@ namespace NE4S.Scores
                 lanes[i].LaneIndex = i;
                 //レーンの当たり判定はLaneIndexに依存しているので同時に設定する
                 lanes[i].UpdateHitRect();
+            }
+        }
+
+        /// <summary>
+        /// レーンを詰める
+        /// </summary>
+        public void FillLane()
+        {
+            ScoreLane nextLane;
+            Score nextScore;
+            foreach(ScoreLane lane in lanes.ToArray())
+            {
+                for (;;)
+                {
+                    //laneが末尾の時はbreakで抜けて終わる
+                    if (lane.LaneIndex == lanes.Count - 1) break;
+                    nextLane = lanes[lane.LaneIndex + 1];
+                    nextScore = nextLane.BeginScore();
+                    //laneにnextScoreが入る余裕があるか判定
+                    if (lane.CurrentBarSize + nextScore.BarSize <= ScoreInfo.LaneMaxBar)
+                    {
+                        lane.AddScore(nextScore);
+                        nextLane.DeleteScore(nextScore);
+                    }
+                    //余裕がない時はbreakで抜けて次のlaneについて処理を行う
+                    else break;
+                    //nextLaneが空になったか判定
+                    if (!nextLane.Any())
+                    {
+                        //空になったレーンは削除し、インデックスを更新する
+                        lanes.Remove(nextLane);
+                        SetLaneIndex();
+                    }
+                    //laneの当たり判定を更新する
+                    lane.UpdateHitRect();
+                }
             }
         }
 

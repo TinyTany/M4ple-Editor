@@ -47,6 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\BarAddCustomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\BarAddCustomForm.Designer.cs">
+      <DependentUpon>BarAddCustomForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Component\BarDeleteCustomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\BarDeleteCustomForm.Designer.cs">
+      <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -94,6 +106,12 @@
     <Compile Include="Scores\ScoreInfo.cs" />
     <Compile Include="Scores\ScoreLane.cs" />
     <Compile Include="Scores\ScorePanel.cs" />
+    <EmbeddedResource Include="Component\BarAddCustomForm.resx">
+      <DependentUpon>BarAddCustomForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\BarDeleteCustomForm.resx">
+      <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -119,9 +137,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Form\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
