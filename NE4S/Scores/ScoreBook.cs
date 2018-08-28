@@ -30,6 +30,12 @@ namespace NE4S.Scores
             SetScoreIndex();
         }
 
+        public void InsertRange(int index, List<Score> newScores)
+        {
+            scores.InsertRange(index, newScores);
+            SetScoreIndex();
+        }
+
         public void Delete(int begin, int count)
         {
             if (scores.Count < begin + count) count = scores.Count - begin;

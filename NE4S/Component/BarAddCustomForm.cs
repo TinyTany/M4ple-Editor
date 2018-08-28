@@ -29,9 +29,11 @@ namespace NE4S.Component
             {
                 switch (Direction.SelectedIndex)
                 {
+                    //選択小節の1つ先
                     case 0:
                         sPanel.InsertScoreForward(score, int.Parse(BeatNumer.Text), int.Parse(BeatDenom.Text), (int)BarCount.Value);
                         break;
+                    //選択小節の1つ前
                     case 1:
                         sPanel.InsertScoreBackward(score, int.Parse(BeatNumer.Text), int.Parse(BeatDenom.Text), (int)BarCount.Value);
                         break;

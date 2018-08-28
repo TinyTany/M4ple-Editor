@@ -27,14 +27,7 @@ namespace NE4S.Scores
         /// </summary>
         public double CurrentBarSize
         {
-            get {
-                currentBarSize = 0;
-                foreach(Tuple<Score, Range> tScore in tScores)
-                {
-                    currentBarSize += tScore.Item2.Size() / (double)tScore.Item1.BeatDenom;
-                }
-                return currentBarSize;
-            }
+            get { return currentBarSize; }
         }
 
         /// <summary>
@@ -72,6 +65,11 @@ namespace NE4S.Scores
             hitRect = new RectangleF();
         }
 
+        /// <summary>
+        /// scoreがレーンに含まれているか判定
+        /// </summary>
+        /// <param name="score"></param>
+        /// <returns></returns>
         public bool Contains(Score score)
         {
             if (tScores.Find(x => x.Item1.Equals(score)) != null) return true;
@@ -111,6 +109,12 @@ namespace NE4S.Scores
                 tScores.Add(new Tuple<Score, Range>(newScore, newRange));
                 currentBarSize += newRange.Size() / (double)newScore.BeatDenom;
             }
+            else
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("AddScore失敗");
+#endif
+            }
         }
 
         /// <summary>
@@ -119,10 +123,7 @@ namespace NE4S.Scores
         /// <param name="newScore"></param>
         public void AddScore(Score newScore)
         {
-            if(newScore != null)
-            {
-                AddScore(newScore, new Range(1, newScore.BeatNumer));
-            }
+            AddScore(newScore, new Range(1, newScore.BeatNumer));
         }
 
         /// <summary>
@@ -131,16 +132,41 @@ namespace NE4S.Scores
         /// <param name="score">削除対象のScore</param>
         public void DeleteScore(Score score)
         {
-            if(score != null)
+            if (score != null && Contains(score))
             {
                 currentBarSize -= tScores.Find(x => x.Item1.Equals(score)).Item2.Size() / (double)score.BeatDenom;
                 tScores.Remove(tScores.Find(x => x.Item1.Equals(score)));
+            }
+            else
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("DeleteScore失敗");
+#endif
             }
         }
 
         public Score BeginScore()
         {
-            return tScores[0].Item1;
+            if(tScores.Any()) return tScores.First().Item1;
+            else
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("tScoresは空です");
+#endif
+                return null;
+            }
+        }
+
+        public Range BeginRange()
+        {
+            if (tScores.Any()) return tScores.First().Item2;
+            else
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("tScoresは空です");
+#endif
+                return null;
+            }
         }
 
         /// <summary>

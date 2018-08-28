@@ -121,7 +121,7 @@ namespace NE4S.Scores
         }
 
         /// <summary>
-        /// scoreの直後に新たにscoreを挿入
+        /// scoreの1つ先に新たにscoreを挿入
         /// </summary>
         /// <param name="score"></param>
         /// <param name="beatNumer"></param>
@@ -129,12 +129,11 @@ namespace NE4S.Scores
         /// <param name="barCount"></param>
         public void InsertScoreForward(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            ScoreLane lane = lanes.FindLast(x => x.Contains(score));
-
+            DivideLane(score);
         }
 
         /// <summary>
-        /// scoreの直前に新たにscoreを挿入
+        /// scoreの1つ前に新たにscoreを挿入
         /// </summary>
         /// <param name="score"></param>
         /// <param name="beatNumer"></param>
@@ -142,7 +141,52 @@ namespace NE4S.Scores
         /// <param name="barCount"></param>
         public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            
+            //scoreを初めて含むレーンを取得
+            ScoreLane lane = lanes.Find(x => x.Contains(score));
+            //新たに追加する譜面たちをリストでまとめる
+            List<Score> newScores = new List<Score>();
+            for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
+            //まとめた譜面たちをmodelに入れる
+            model.InsertScore(score.ScoreIndex, newScores);
+            //新規追加前のレーンリストの要素数を記録
+            int pastLaneCount = lanes.Count;
+
+
+            //レーンの増分だけパネルの最大幅を更新
+            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
+            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
+            //ScoreLaneのインデックスを設定
+            SetLaneIndex();
+        }
+
+        /// <summary>
+        /// 指定したscoreとその1つ前のScoreでレーンを2つに分割する
+        /// </summary>
+        /// <param name="score"></param>
+        private void DivideLane(Score score)
+        {
+            //scoreを初めて含むレーンを取得
+            ScoreLane lane = lanes.Find(x => x.Contains(score));
+            //scoreがlaneの最初の要素の時は分割の意味がないので何もせずメソッドを抜ける
+            if (lane.BeginScore().Equals(score)) return;
+            //新規追加前のレーンリストの要素数を記録
+            int pastLaneCount = lanes.Count;
+            ScoreLane newLane = new ScoreLane();
+            lanes.Insert(lane.LaneIndex, newLane);
+            while (!lane.BeginScore().Equals(score))
+            {
+                newLane.AddScore(lane.BeginScore(), lane.BeginRange());
+                lane.DeleteScore(lane.BeginScore());
+            }
+            //ScoreLaneのインデックスを設定
+            SetLaneIndex();
+            //lane以降のレーンを詰める
+            FillLane(lane);
+            //レーンの増分だけパネルの最大幅を更新
+            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
+            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
+            //PictureBoxを更新
+            pBox.Refresh();
         }
 
         /// <summary>
@@ -215,18 +259,35 @@ namespace NE4S.Scores
         }
 
         /// <summary>
-        /// レーンを詰める
+        /// レーン全体を詰める
         /// </summary>
-        public void FillLane()
+        private void FillLane()
+        {
+            if(lanes.Any()) FillLane(lanes.First());
+        }
+
+        /// <summary>
+        /// begin以降のレーンを詰める
+        /// </summary>
+        /// <param name="begin"></param>
+        private void FillLane(ScoreLane begin)
         {
             ScoreLane nextLane;
             Score nextScore;
-            foreach(ScoreLane lane in lanes.ToArray())
+#if DEBUG
+            int loopCount;
+#endif
+            foreach (ScoreLane lane in lanes.ToArray())
             {
-                for (;;)
+#if DEBUG
+                loopCount = 0;
+#endif
+                while (true)
                 {
                     //laneが末尾の時はbreakで抜けて終わる
                     if (lane.LaneIndex == lanes.Count - 1) break;
+                    //beginより前のレーンは詰めない
+                    if (lane.LaneIndex < begin.LaneIndex) break;
                     nextLane = lanes[lane.LaneIndex + 1];
                     nextScore = nextLane.BeginScore();
                     //laneにnextScoreが入る余裕があるか判定
@@ -246,6 +307,14 @@ namespace NE4S.Scores
                     }
                     //laneの当たり判定を更新する
                     lane.UpdateHitRect();
+#if DEBUG
+                    ++loopCount;
+                    if (loopCount > 128)
+                    {
+                        System.Diagnostics.Debug.WriteLine("FillLaneで無限ループが起こっている可能性があります。");
+                        break;
+                    }
+#endif
                 }
             }
         }

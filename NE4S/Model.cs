@@ -32,6 +32,11 @@ namespace NE4S
             scoreBook.Append(newScores);
         }
 
+        public void InsertScore(int index, List<Score> newScores)
+        {
+            scoreBook.InsertRange(index, newScores);
+        }
+
         public void DeleteScore(int begin, int count)
         {
             scoreBook.Delete(begin, count);

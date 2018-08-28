@@ -19,8 +19,8 @@ namespace NE4S.Component
         {
             barAddItems = new ToolStripItem[]
             {
-                new ToolStripMenuItem("選択小節の直前", null, new EventHandler(BarAddBackward)),
-                new ToolStripMenuItem("選択小節の直後", null, new EventHandler(BarAddForward)),
+                new ToolStripMenuItem("選択小節の1つ前", null, new EventHandler(BarAddBackward)),
+                new ToolStripMenuItem("選択小節の1つ先", null, new EventHandler(BarAddForward)),
                 new ToolStripMenuItem("カスタム...", null, new EventHandler(BarAddCustom))
             };
             barDeleteItems = new ToolStripItem[]
