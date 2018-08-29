@@ -101,6 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Notes\Tap.cs" />
     <Compile Include="Range.cs" />
+    <Compile Include="Scores\LaneBook.cs" />
     <Compile Include="Scores\Score.cs" />
     <Compile Include="Scores\ScoreBook.cs" />
     <Compile Include="Scores\ScoreInfo.cs" />

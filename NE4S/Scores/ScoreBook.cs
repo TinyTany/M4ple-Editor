@@ -42,7 +42,7 @@ namespace NE4S.Scores
             scores.RemoveRange(begin, count);
             SetScoreIndex();
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(scores.Count.ToString());
+            //System.Diagnostics.Debug.WriteLine(scores.Count.ToString());
 #endif
         }
 
@@ -52,6 +52,11 @@ namespace NE4S.Scores
             return scores.ElementAt(index);
         }
 
+        public Score Last()
+        {
+            return scores.Last();
+        }
+
         /// <summary>
         /// scores内のScoreのインデックスを更新
         /// リストscoresの内容が変更された際に必ず呼ぶ
@@ -59,6 +64,9 @@ namespace NE4S.Scores
         private void SetScoreIndex()
         {
             for (int i = 0; i < scores.Count; ++i) scores[i].ScoreIndex = i;
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(scores.Count.ToString());
+#endif
         }
     }
 }

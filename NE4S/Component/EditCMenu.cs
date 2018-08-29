@@ -10,7 +10,7 @@ namespace NE4S.Component
 {
     public class EditCMenu : ContextMenuStrip
     {
-        private ToolStripItem[] stripItems, barAddItems, barDeleteItems;
+        private ToolStripItem[] stripItems, barAddItems, barDeleteItems, laneFillItems;
         private ScorePanel sPanel;
         private ScoreLane selectedLane;
         private Score selectedScore;
@@ -28,15 +28,23 @@ namespace NE4S.Component
                 new ToolStripMenuItem("選択小節", null, new EventHandler(BarDeleteSelected)),
                 new ToolStripMenuItem("カスタム...", null, new EventHandler(BarDeleteCustom))
             };
+            laneFillItems = new ToolStripItem[]
+            {
+                new ToolStripMenuItem("レーン全体", null, new EventHandler(LaneFillAll)),
+                new ToolStripMenuItem("選択レーン以降", null, new EventHandler(LaneFill))
+            };
             ToolStripMenuItem barAdd = new ToolStripMenuItem("小節を挿入", null);
             barAdd.DropDownItems.AddRange(barAddItems);
             ToolStripMenuItem barDelete = new ToolStripMenuItem("小節を削除", null);
             barDelete.DropDownItems.AddRange(barDeleteItems);
+            ToolStripMenuItem laneFill = new ToolStripMenuItem("レーンを詰める", null);
+            laneFill.DropDownItems.AddRange(laneFillItems);
             stripItems = new ToolStripMenuItem[]
             {
                 barAdd,
                 barDelete,
-                new ToolStripMenuItem("小節を編集...", null, new EventHandler(BarEdit)),
+                new ToolStripMenuItem("小節を分割", null, new EventHandler(BarDivide)),
+                laneFill,
                 new ToolStripMenuItem("貼り付け", null, new EventHandler(Paste))
             };
             Items.AddRange(stripItems);
@@ -46,9 +54,19 @@ namespace NE4S.Component
             this.selectedScore = selectedScore;
         }
 
-        private void BarEdit(object sender, EventArgs e)
+        private void LaneFill(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            sPanel.FillLane(selectedLane);
+        }
+
+        private void LaneFillAll(object sender, EventArgs e)
+        {
+            sPanel.FillLane();
+        }
+
+        private void BarDivide(object sender, EventArgs e)
+        {
+            sPanel.DivideLane(selectedScore);
         }
 
         private void Paste(object sender, EventArgs e)

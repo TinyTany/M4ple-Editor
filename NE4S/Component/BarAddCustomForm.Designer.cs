@@ -101,8 +101,8 @@
             // 
             this.Direction.FormattingEnabled = true;
             this.Direction.Items.AddRange(new object[] {
-            "選択小節の1つ前",
-            "選択小節の1つ先"});
+            "選択小節の1つ先",
+            "選択小節の1つ前"});
             this.Direction.Location = new System.Drawing.Point(260, 34);
             this.Direction.Name = "Direction";
             this.Direction.Size = new System.Drawing.Size(185, 26);

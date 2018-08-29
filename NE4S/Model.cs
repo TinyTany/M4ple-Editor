@@ -56,5 +56,10 @@ namespace NE4S
         {
             return scoreBook.At(index);
         }
+
+        public Score ScoreLast()
+        {
+            return scoreBook.Last();
+        }
     }
 }
