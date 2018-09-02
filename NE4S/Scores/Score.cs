@@ -23,6 +23,7 @@ namespace NE4S.Scores
             barSize = beatNumer / (double)beatDenom;
             width = ScoreInfo.LaneWidth * ScoreInfo.Lanes;
             height = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * barSize;
+            scoreIndex = -1;
         }
 
         public double Width

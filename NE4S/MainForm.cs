@@ -39,10 +39,16 @@ namespace NE4S
                 pBox.MouseWheel += new MouseEventHandler(Score_MouseWheel);
                 pBox.Paint += new PaintEventHandler(Score_Paint);
                 pBox.MouseClick += new MouseEventHandler(Score_MouseClick);
+                pBox.MouseEnter += new EventHandler(Score_MouseEnter);
                 hScroll.Scroll += new ScrollEventHandler(Score_Scroll);
                 //初期化した部品たちをタプルにしてリストに追加
                 viewComponents.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
+        }
+
+        private void Score_MouseEnter(object sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         private void Score_MouseClick(object sender, MouseEventArgs e)
