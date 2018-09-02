@@ -16,7 +16,7 @@ namespace NE4S.Scores
     {
         private Size panelSize;
         private int currentPositionX, currentWidthMax;
-        private LaneBook lanes;
+        private List<ScoreLane> lanes;
         private Model model;
         private HScrollBar hSBar;
         private PictureBox pBox;
@@ -36,7 +36,7 @@ namespace NE4S.Scores
             panelSize = pBox.Size;
             currentPositionX = 0;
             currentWidthMax = 0;
-            lanes = new LaneBook();
+            lanes = new List<ScoreLane>();
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
@@ -116,6 +116,8 @@ namespace NE4S.Scores
             //レーンの増分だけパネルの最大幅を更新
             currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
             hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
+            //ScoreLaneのインデックスを設定
+            SetLaneIndex();
         }
 
         /// <summary>
@@ -197,7 +199,9 @@ namespace NE4S.Scores
             //scoreとその1つ前のScoreでレーンを分割
             DivideLane(score);
             //
-            lanes.InsertRange(lanes.IndexOf(lane), newLanes);
+            lanes.InsertRange(lane.LaneIndex, newLanes);
+            //ScoreLaneのインデックスを設定
+            SetLaneIndex();
             //
             FillLane();
             //レーンの増分だけパネルの最大幅を更新
@@ -220,12 +224,14 @@ namespace NE4S.Scores
             //新規追加前のレーンリストの要素数を記録
             int pastLaneCount = lanes.Count;
             ScoreLane newLane = new ScoreLane();
-            lanes.Insert(lanes.IndexOf(lane), newLane);
+            lanes.Insert(lane.LaneIndex, newLane);
             while (!lane.BeginScore().Equals(score))
             {
                 newLane.AddScore(lane.BeginScore(), lane.BeginRange());
                 lane.DeleteScore(lane.BeginScore());
             }
+            //ScoreLaneのインデックスを設定
+            SetLaneIndex();
             //lane以降のレーンを詰める
             FillLane(lane);
             //レーンの増分だけパネルの最大幅を更新
@@ -253,11 +259,8 @@ namespace NE4S.Scores
         {
             //削除前のレーンリストの要素数を記録
             int pastLaneCount = lanes.Count;
-            //イテレータ
-            Score itrScore;
-            int itrCount;
             //scoreからcount個Scoreを削除
-            for(itrScore = score, itrCount = count; itrScore != null && itrCount > 0; itrScore = model.ScoreNext(itrScore), --itrCount)
+            for(Score itrScore = score; itrScore != null && itrScore.ScoreIndex - score.ScoreIndex < count; itrScore = model.ScoreNext(itrScore))
             {
                 //選択されたScoreが初めて含まれるレーンを特定
                 ScoreLane laneBegin = lanes.Find(x => x.Contains(itrScore));
@@ -269,8 +272,21 @@ namespace NE4S.Scores
                 }
                 else
                 {
-                    
+                    //初めて含まれるレーンから削除するScoreのサイズに応じて複数レーンにわたってScoreを削除
+                    //空レーン判定は後でまとめて行う（そうしないとうまくいかない）
+                    for (int i = 0; i < itrScore.BarSize / ScoreInfo.LaneMaxBar; ++i)
+                    {
+                        lanes.ElementAt(laneBegin.LaneIndex + i).DeleteScore(itrScore);
+                    }
+                    //空レーン判定を行い空のレーンは削除
+                    for (int i = 0; i < itrScore.BarSize / ScoreInfo.LaneMaxBar; ++i)
+                    {
+                        //削除処理によってレーンが空になっていないか判定
+                        if (!lanes.ElementAt(laneBegin.LaneIndex).Any()) lanes.RemoveAt(laneBegin.LaneIndex);
+                    }
                 }
+                //ScoreLaneのインデックスを設定
+                SetLaneIndex();
             }
             //modelから該当範囲のScoreを削除
             model.DeleteScore(score.ScoreIndex, count);
@@ -281,6 +297,17 @@ namespace NE4S.Scores
             hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
             //PictureBoxを更新
             pBox.Refresh();
+        }
+
+        private void SetLaneIndex()
+        {
+            for (int i = 0; i < lanes.Count; ++i)
+            {
+                //LaneIndexを設定
+                lanes[i].LaneIndex = i;
+                //レーンの当たり判定はLaneIndexに依存しているので同時に設定する
+                lanes[i].UpdateHitRect();
+            }
         }
 
         /// <summary>
@@ -295,25 +322,58 @@ namespace NE4S.Scores
         /// begin以降のレーンを詰める
         /// </summary>
         /// <param name="begin"></param>
-        public void FillLane(ScoreLane begin)
+        public void FillLane(ScoreLane begin)//挙動が怪しい...
         {
-            //lanesの末尾1つ前のレーンまで処理対象
-            for(ScoreLane itrLane = begin; lanes.Next(itrLane) != null; itrLane = lanes.Next(itrLane))
+            ScoreLane nextLane;
+            Score nextScore;
+            int pastLaneCount = lanes.Count;
+#if DEBUG
+            int loopCount;
+#endif
+            foreach (ScoreLane lane in lanes.ToArray())
             {
-                //nextLaneに何かScoreが入っていて、そのnextLaneの最初のScoreをitrLaneに詰める余裕がある場合のみ処理を行う
-                for(ScoreLane nextLane = lanes.Next(itrLane); 
-                    nextLane != null && nextLane.Any() && itrLane.CurrentBarSize + nextLane.BeginScore().BarSize <= ScoreInfo.LaneMaxBar;
-                    nextLane = lanes.Next(itrLane)
-                    )
+#if DEBUG
+                loopCount = 0;
+#endif
+                while (true)
                 {
-                    //itrLaneとnextLaneの間でScoreを詰める
-                    itrLane.AddScore(nextLane.BeginScore());
-                    nextLane.DeleteScore(nextLane.BeginScore());
-                    //詰めた結果nextLaneが空になったらnextLaneを削除
-                    if (!nextLane.Any()) lanes.Remove(nextLane);
+                    //laneが末尾の時はbreakで抜けて終わる
+                    if (lane.LaneIndex == lanes.Count - 1) break;
+                    //beginより前のレーンは詰めない
+                    if (lane.LaneIndex < begin.LaneIndex) break;
+                    nextLane = lanes[lane.LaneIndex + 1];
+                    nextScore = nextLane.BeginScore();
+                    //laneにnextScoreが入る余裕があるか判定
+                    if (lane.CurrentBarSize + nextScore.BarSize <= ScoreInfo.LaneMaxBar)
+                    {
+                        lane.AddScore(nextScore);
+                        nextLane.DeleteScore(nextScore);
+                    }
+                    //余裕がない時はbreakで抜けて次のlaneについて処理を行う
+                    else break;
+                    //nextLaneが空になったか判定
+                    if (!nextLane.Any())
+                    {
+                        //空になったレーンは削除し、インデックスを更新する
+                        lanes.Remove(nextLane);
+                        SetLaneIndex();
+                    }
+                    //laneの当たり判定を更新する
+                    lane.UpdateHitRect();
+#if DEBUG
+                    ++loopCount;
+                    if (loopCount > 128)
+                    {
+                        System.Diagnostics.Debug.WriteLine("FillLaneで無限ループが起こっている可能性があります。");
+                        break;
+                    }
+#endif
                 }
             }
-            //pBoxを更新
+            //レーンの増分だけパネルの最大幅を更新
+            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
+            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
+            //PictureBoxを更新
             pBox.Refresh();
         }
 
@@ -321,17 +381,8 @@ namespace NE4S.Scores
         {
 #if DEBUG
             //クリックされたレーンを特定
-            ScoreLane selectedLane = null;
-            for(int i = 0; i < lanes.Count; ++i)
-            {
-                if(lanes[i].HitRect.Contains(
-                    (float)(currentPositionX + e.X - i * (ScoreLane.Width + Margin.Left + Margin.Right)),
-                    e.Y
-                    ))
-                {
-                    selectedLane = lanes[i];
-                }
-            }
+            ScoreLane selectedLane =
+                lanes.Find(x => x.HitRect.Contains(e.X + currentPositionX, e.Y));
             if (selectedLane != null && selectedLane.SelectedScore(e) != null && e.Button == MouseButtons.Right)
             {
                 new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e)).Show(pBox, e.Location);
