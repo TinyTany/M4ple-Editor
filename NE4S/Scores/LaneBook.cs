@@ -6,15 +6,28 @@ using System.Threading.Tasks;
 
 namespace NE4S.Scores
 {
-    public class LaneBook
+    public class LaneBook : List<ScoreLane>
     {
-        private List<ScoreLane> lanes;
-
         public LaneBook()
         {
-            lanes = new List<ScoreLane>();
+            
         }
 
-
+        /// <summary>
+        /// 指定されたlaneの次の要素を返します
+        /// </summary>
+        /// <param name="lane"></param>
+        /// <returns></returns>
+        public ScoreLane Next(ScoreLane lane)
+        {
+            if(!Contains(lane) || IndexOf(lane) == Count - 1)
+            {
+                return null;
+            }
+            else
+            {
+                return this.ElementAt(IndexOf(lane) + 1);
+            }
+        }
     }
 }
