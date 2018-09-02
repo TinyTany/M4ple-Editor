@@ -17,7 +17,6 @@ namespace NE4S.Scores
         public static double Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
         public static double Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar + Margin.Top + Margin.Bottom;
         private double currentBarSize;
-        private int laneIndex;
         private RectangleF hitRect;
         private List<Note> notes;
         private List<Tuple<Score, Range>> tScores;
@@ -36,16 +35,10 @@ namespace NE4S.Scores
         /// </summary>
         public RectangleF HitRect
         {
-            get { return hitRect; }
-        }
-
-        /// <summary>
-        /// 範囲は[0, lanes.count - 1]
-        /// </summary>
-        public int LaneIndex
-        {
-            get { return laneIndex; }
-            set { laneIndex = value; }
+            get {
+                hitRect.Size = new SizeF((float)Width, (float)(Height * currentBarSize / ScoreInfo.LaneMaxBar));
+                hitRect.Location = new PointF(ScoreInfo.PanelMargin.Left, (float)(Height - hitRect.Size.Height) + ScoreInfo.PanelMargin.Top);
+                return hitRect; }
         }
 
         class Margin
@@ -151,7 +144,7 @@ namespace NE4S.Scores
             else
             {
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine("tScoresは空です");
+                System.Diagnostics.Debug.WriteLine("BeginScore() : tScoresは空です");
 #endif
                 return null;
             }
@@ -163,23 +156,10 @@ namespace NE4S.Scores
             else
             {
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine("tScoresは空です");
+                System.Diagnostics.Debug.WriteLine("BeginRange() : tScoresは空です");
 #endif
                 return null;
             }
-        }
-
-        /// <summary>
-        /// レーンの当たり判定を設定
-        /// laneIndexに依存
-        /// </summary>
-        public void UpdateHitRect()
-        {
-            hitRect.Size = new SizeF((float)Width, (float)(Height * currentBarSize / ScoreInfo.LaneMaxBar));
-            hitRect.Location = 
-                new PointF(
-                    (float)(laneIndex * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left),
-                    (float)(Height - hitRect.Size.Height + ScoreInfo.PanelMargin.Top));
         }
 
         /// <summary>
@@ -242,10 +222,10 @@ namespace NE4S.Scores
             if(currentDrawPosY > drawPosY)
             {
                 //余ってる部分は塗りつぶす
-                e.Graphics.FillRectangle(Brushes.White, new RectangleF(drawPosX, drawPosY, (float)Width, (float)(currentDrawPosY - drawPosY)));
+                e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, (float)Width, (float)(currentDrawPosY - drawPosY)));
             }
 #if DEBUG
-            e.Graphics.DrawString(laneIndex.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
+            //e.Graphics.DrawString(laneIndex.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
             e.Graphics.DrawString(hitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 20));
 #endif
         }
