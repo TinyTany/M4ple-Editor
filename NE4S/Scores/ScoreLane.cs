@@ -101,6 +101,8 @@ namespace NE4S.Scores
                 //各リストに新たなScoreとその範囲を格納
                 tScores.Add(new Tuple<Score, Range>(newScore, newRange));
                 currentBarSize += newRange.Size() / (double)newScore.BeatDenom;
+                //
+                newScore.LinkCount++;
             }
             else
             {
@@ -129,6 +131,8 @@ namespace NE4S.Scores
             {
                 currentBarSize -= tScores.Find(x => x.Item1.Equals(score)).Item2.Size() / (double)score.BeatDenom;
                 tScores.Remove(tScores.Find(x => x.Item1.Equals(score)));
+                //
+                score.LinkCount--;
             }
             else
             {

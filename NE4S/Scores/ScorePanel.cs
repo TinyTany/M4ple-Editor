@@ -261,16 +261,24 @@ namespace NE4S.Scores
             {
                 //選択されたScoreが初めて含まれるレーンを特定
                 ScoreLane laneBegin = lanes.Find(x => x.Contains(itrScore));
-                if (laneBegin.IsScoreClose(itrScore))
+                int linkCount = itrScore.LinkCount;
+                for(int i = 0; i < linkCount; ++i)
                 {
                     laneBegin.DeleteScore(itrScore);
-                    //削除処理によってレーンが空になっていないか判定
-                    if (!laneBegin.Any()) lanes.Remove(laneBegin);
+                    if(!laneBegin.Any())
+                    {
+                        ScoreLane blankLane = laneBegin;
+                        laneBegin = lanes.Next(laneBegin);
+                        lanes.Remove(blankLane);
+                    }
+                    else
+                    {
+                        laneBegin = lanes.Next(laneBegin);
+                    }
                 }
-                else
-                {
-                    
-                }
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine("LinkCount : " + linkCount.ToString());
+#endif
             }
             //modelから該当範囲のScoreを削除
             model.DeleteScore(score.ScoreIndex, count);

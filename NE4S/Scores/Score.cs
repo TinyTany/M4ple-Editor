@@ -13,7 +13,7 @@ namespace NE4S.Scores
     /// </summary>
     public class Score
     {
-        private int beatNumer, beatDenom, scoreIndex;
+        private int beatNumer, beatDenom, scoreIndex, linkCount;
         private double width, height, barSize;
 
         public Score(int beatNumer, int beatDenom)
@@ -24,6 +24,7 @@ namespace NE4S.Scores
             width = ScoreInfo.LaneWidth * ScoreInfo.Lanes;
             height = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * barSize;
             scoreIndex = -1;
+            linkCount = 0;
         }
 
         public double Width
@@ -58,6 +59,12 @@ namespace NE4S.Scores
         {
             get { return scoreIndex; }
             set { scoreIndex = value; }
+        }
+
+        public int LinkCount
+        {
+            get { return linkCount; }
+            set { linkCount = value; }
         }
 
         /// <summary>
