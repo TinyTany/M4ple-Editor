@@ -56,8 +56,6 @@ namespace NE4S.Scores
             SetScore(4, 4, 1);
             SetScore(8, 8, 1);
             SetScore(16, 16, 1);
-
-            //System.Diagnostics.Debug.WriteLine(lanes.Count);
 #endif
         }
 
@@ -74,8 +72,6 @@ namespace NE4S.Scores
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
             //まとめた譜面たちをmodelに入れる
             model.AppendScore(newScores);
-            //新規追加前のレーンリストの要素数を記録
-            int pastLaneCount = lanes.Count;
             //新譜面たちをレーンに割り当て
             foreach(Score newScore in newScores)
             {
@@ -113,9 +109,7 @@ namespace NE4S.Scores
                     }
                 }
             }
-            //レーンの増分だけパネルの最大幅を更新
-            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
-            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
+            Update();
         }
 
         /// <summary>
@@ -152,9 +146,7 @@ namespace NE4S.Scores
             List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
             //まとめた譜面たちをmodelに挿入
-            model.InsertScore(score.ScoreIndex, newScores);
-            //新規追加前のレーンリストの要素数を記録
-            int pastLaneCount = lanes.Count;
+            model.InsertScore(score.Index, newScores);
             //挿入する譜面を格納するためのレーンリストを作成
             List<ScoreLane> newLanes = new List<ScoreLane>();
             //新譜面たちをnewLanesに割り当て
@@ -200,11 +192,7 @@ namespace NE4S.Scores
             lanes.InsertRange(lanes.IndexOf(lane), newLanes);
             //
             FillLane();
-            //レーンの増分だけパネルの最大幅を更新
-            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
-            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
-            //PictureBoxを更新
-            pBox.Refresh();
+            Update();
         }
 
         /// <summary>
@@ -217,8 +205,6 @@ namespace NE4S.Scores
             ScoreLane lane = lanes.Find(x => x.Contains(score));
             //scoreがlaneの最初の要素の時は分割の意味がないので何もせずメソッドを抜ける
             if (lane.BeginScore().Equals(score)) return;
-            //新規追加前のレーンリストの要素数を記録
-            int pastLaneCount = lanes.Count;
             ScoreLane newLane = new ScoreLane();
             lanes.Insert(lanes.IndexOf(lane), newLane);
             while (!lane.BeginScore().Equals(score))
@@ -228,11 +214,7 @@ namespace NE4S.Scores
             }
             //lane以降のレーンを詰める
             FillLane(lane);
-            //レーンの増分だけパネルの最大幅を更新
-            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
-            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
-            //PictureBoxを更新
-            pBox.Refresh();
+            Update();
         }
 
         /// <summary>
@@ -281,14 +263,10 @@ namespace NE4S.Scores
 #endif
             }
             //modelから該当範囲のScoreを削除
-            model.DeleteScore(score.ScoreIndex, count);
+            model.DeleteScore(score.Index, count);
             //レーンを詰める
             FillLane();
-            //レーンの増分だけパネルの最大幅を更新
-            currentWidthMax += (int)(ScoreLane.Width + Margin.Left + Margin.Right) * (lanes.Count - pastLaneCount);
-            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
-            //PictureBoxを更新
-            pBox.Refresh();
+            Update();
         }
 
         /// <summary>
@@ -321,6 +299,13 @@ namespace NE4S.Scores
                     if (!nextLane.Any()) lanes.Remove(nextLane);
                 }
             }
+            Update();
+        }
+
+        private void Update()
+        {
+            currentWidthMax = (int)(ScoreLane.Width + Margin.Left + Margin.Right) * lanes.Count;
+            hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
             //pBoxを更新
             pBox.Refresh();
         }

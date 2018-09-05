@@ -41,9 +41,6 @@ namespace NE4S.Scores
             if (scores.Count < begin + count) count = scores.Count - begin;
             scores.RemoveRange(begin, count);
             SetScoreIndex();
-#if DEBUG
-            //System.Diagnostics.Debug.WriteLine(scores.Count.ToString());
-#endif
         }
 
         public Score At(int index)
@@ -63,9 +60,9 @@ namespace NE4S.Scores
         /// </summary>
         private void SetScoreIndex()
         {
-            for (int i = 0; i < scores.Count; ++i) scores[i].ScoreIndex = i;
+            for (int i = 0; i < scores.Count; ++i) scores[i].Index = i;
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(scores.Count.ToString());
+            System.Diagnostics.Debug.WriteLine("ScoreCount : " + scores.Count.ToString());
 #endif
         }
     }

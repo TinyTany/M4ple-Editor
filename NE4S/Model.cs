@@ -44,12 +44,12 @@ namespace NE4S
 
         public Score ScorePrev(Score score)
         {
-            return ScoreAt(score.ScoreIndex - 1);
+            return ScoreAt(score.Index - 1);
         }
 
         public Score ScoreNext(Score score)
         {
-            return ScoreAt(score.ScoreIndex + 1);
+            return ScoreAt(score.Index + 1);
         }
 
         public Score ScoreAt(int index)

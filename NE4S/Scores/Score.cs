@@ -13,7 +13,7 @@ namespace NE4S.Scores
     /// </summary>
     public class Score
     {
-        private int beatNumer, beatDenom, scoreIndex, linkCount;
+        private int beatNumer, beatDenom, index, linkCount;
         private double width, height, barSize;
 
         public Score(int beatNumer, int beatDenom)
@@ -23,7 +23,7 @@ namespace NE4S.Scores
             barSize = beatNumer / (double)beatDenom;
             width = ScoreInfo.LaneWidth * ScoreInfo.Lanes;
             height = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * barSize;
-            scoreIndex = -1;
+            index = -1;
             linkCount = 0;
         }
 
@@ -55,10 +55,10 @@ namespace NE4S.Scores
             set { barSize = value; }
         }
 
-        public int ScoreIndex
+        public int Index
         {
-            get { return scoreIndex; }
-            set { scoreIndex = value; }
+            get { return index; }
+            set { index = value; }
         }
 
         public int LinkCount
@@ -119,7 +119,7 @@ namespace NE4S.Scores
                     );
                 //小節数を描画
                 e.Graphics.DrawString(
-                    (scoreIndex + 1).ToString().PadLeft(3, '0'),
+                    (index + 1).ToString().PadLeft(3, '0'),
                     new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold),
                     Brushes.White,
                     new PointF(
