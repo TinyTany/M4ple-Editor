@@ -78,11 +78,11 @@
             // 
             this.tabNoteButton.Controls.Add(this.tabPage1);
             this.tabNoteButton.Controls.Add(this.tabPage2);
-            this.tabNoteButton.Location = new System.Drawing.Point(11, 26);
+            this.tabNoteButton.Location = new System.Drawing.Point(11, 27);
             this.tabNoteButton.Multiline = true;
             this.tabNoteButton.Name = "tabNoteButton";
             this.tabNoteButton.SelectedIndex = 0;
-            this.tabNoteButton.Size = new System.Drawing.Size(200, 883);
+            this.tabNoteButton.Size = new System.Drawing.Size(200, 834);
             this.tabNoteButton.TabIndex = 1;
             // 
             // tabPage1
@@ -90,7 +90,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(192, 857);
+            this.tabPage1.Size = new System.Drawing.Size(192, 808);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Normal";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -111,7 +111,7 @@
             this.tabScore.Controls.Add(this.Score1);
             this.tabScore.Controls.Add(this.Score2);
             this.tabScore.Controls.Add(this.Score3);
-            this.tabScore.Location = new System.Drawing.Point(213, 71);
+            this.tabScore.Location = new System.Drawing.Point(213, 27);
             this.tabScore.Name = "tabScore";
             this.tabScore.SelectedIndex = 0;
             this.tabScore.Size = new System.Drawing.Size(1039, 834);
@@ -151,7 +151,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 921);
+            this.ClientSize = new System.Drawing.Size(1264, 873);
             this.Controls.Add(this.tabScore);
             this.Controls.Add(this.tabNoteButton);
             this.Controls.Add(this.menuStrip1);
