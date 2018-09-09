@@ -40,15 +40,37 @@ namespace NE4S
                 pBox.Paint += new PaintEventHandler(Score_Paint);
                 pBox.MouseClick += new MouseEventHandler(Score_MouseClick);
                 pBox.MouseEnter += new EventHandler(Score_MouseEnter);
+                pBox.MouseDown += new MouseEventHandler(Score_MouseDown);
+                pBox.MouseMove += new MouseEventHandler(Score_MouseMove);
+                pBox.MouseUp += new MouseEventHandler(Score_MouseUp);
                 hScroll.Scroll += new ScrollEventHandler(Score_Scroll);
                 //初期化した部品たちをタプルにしてリストに追加
                 viewComponents.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
         }
 
-        private void Score_MouseEnter(object sender, EventArgs e)
+        private void Score_MouseUp(object sender, MouseEventArgs e)
         {
             //throw new NotImplementedException();
+        }
+
+        private void Score_MouseMove(object sender, MouseEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void Score_MouseDown(object sender, MouseEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void Score_MouseEnter(object sender, EventArgs e)
+        {
+            //クリックされたPictureBoxに対応するScorePanelで処理
+            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
+                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+            selectedComponent.Item1.MouseEnter(e);
+            selectedComponent.Item2.Refresh();
         }
 
         private void Score_MouseClick(object sender, MouseEventArgs e)
