@@ -9,49 +9,42 @@ namespace NE4S.Scores
     /// <summary>
     /// 譜面そのものをすべてここで管理する
     /// </summary>
-    public class ScoreBook
+    public class ScoreBook : List<Score>
     {
-        private List<Score> scores;
-
         public ScoreBook()
         {
-            scores = new List<Score>();
+            
         }
 
         public void Add(int beatNumer, int beatDenom)
         {
-            scores.Add(new Score(beatNumer, beatDenom));
+            base.Add(new Score(beatNumer, beatDenom));
             SetScoreIndex();
         }
 
         public void Append(List<Score> newScores)
         {
-            scores.AddRange(newScores);
+            AddRange(newScores);
             SetScoreIndex();
         }
 
         public void InsertRange(int index, List<Score> newScores)
         {
-            scores.InsertRange(index, newScores);
+            base.InsertRange(index, newScores);
             SetScoreIndex();
         }
 
         public void Delete(int begin, int count)
         {
-            if (scores.Count < begin + count) count = scores.Count - begin;
-            scores.RemoveRange(begin, count);
+            if (Count < begin + count) count = Count - begin;
+            RemoveRange(begin, count);
             SetScoreIndex();
         }
 
         public Score At(int index)
         {
-            if (scores.Count <= index) return null;
-            return scores.ElementAt(index);
-        }
-
-        public Score Last()
-        {
-            return scores.Last();
+            if (Count <= index) return null;
+            return this.ElementAt(index);
         }
 
         /// <summary>
@@ -60,9 +53,9 @@ namespace NE4S.Scores
         /// </summary>
         private void SetScoreIndex()
         {
-            for (int i = 0; i < scores.Count; ++i) scores[i].Index = i;
+            for (int i = 0; i < Count; ++i) this[i].Index = i;
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine("ScoreCount : " + scores.Count.ToString());
+            System.Diagnostics.Debug.WriteLine("ScoreCount : " + Count.ToString());
 #endif
         }
     }
