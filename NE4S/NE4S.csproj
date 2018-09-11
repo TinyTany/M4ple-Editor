@@ -91,6 +91,7 @@
     <Compile Include="Notes\HoldEnd.cs" />
     <Compile Include="Notes\LongNote.cs" />
     <Compile Include="Notes\Note.cs" />
+    <Compile Include="Notes\PreviewNote.cs" />
     <Compile Include="Notes\Slide.cs" />
     <Compile Include="Notes\SlideBegin.cs" />
     <Compile Include="Notes\SlideCurve.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Scores\ScoreInfo.cs" />
     <Compile Include="Scores\ScoreLane.cs" />
     <Compile Include="Scores\ScorePanel.cs" />
+    <Compile Include="Status.cs" />
     <EmbeddedResource Include="Component\BarAddCustomForm.resx">
       <DependentUpon>BarAddCustomForm.cs</DependentUpon>
     </EmbeddedResource>
