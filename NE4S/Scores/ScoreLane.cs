@@ -14,9 +14,9 @@ namespace NE4S.Scores
     /// </summary>
     public class ScoreLane
     {
-        public static double Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
-        public static double Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar + Margin.Top + Margin.Bottom;
-        private double currentBarSize;
+        public static float Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
+        public static float Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar + Margin.Top + Margin.Bottom;
+        private float currentBarSize;
         private RectangleF hitRect;
         private List<Note> notes;
         private List<Tuple<Score, Range>> tScores;
@@ -36,8 +36,8 @@ namespace NE4S.Scores
         public RectangleF HitRect
         {
             get {
-                hitRect.Size = new SizeF((float)Width, (float)(Height * currentBarSize / ScoreInfo.LaneMaxBar));
-                hitRect.Location = new PointF(ScoreInfo.PanelMargin.Left, (float)(Height - hitRect.Size.Height) + ScoreInfo.PanelMargin.Top);
+                hitRect.Size = new SizeF(Width, Height * currentBarSize / ScoreInfo.LaneMaxBar);
+                hitRect.Location = new PointF(ScoreInfo.PanelMargin.Left, Height - hitRect.Size.Height + ScoreInfo.PanelMargin.Top);
                 return hitRect; }
         }
 
@@ -100,7 +100,7 @@ namespace NE4S.Scores
             {
                 //各リストに新たなScoreとその範囲を格納
                 tScores.Add(new Tuple<Score, Range>(newScore, newRange));
-                currentBarSize += newRange.Size() / (double)newScore.BeatDenom;
+                currentBarSize += newRange.Size() / (float)newScore.BeatDenom;
                 //
                 newScore.LinkCount++;
             }
@@ -129,7 +129,7 @@ namespace NE4S.Scores
         {
             if (score != null && Contains(score))
             {
-                currentBarSize -= tScores.Find(x => x.Item1.Equals(score)).Item2.Size() / (double)score.BeatDenom;
+                currentBarSize -= tScores.Find(x => x.Item1.Equals(score)).Item2.Size() / (float)score.BeatDenom;
                 tScores.Remove(tScores.Find(x => x.Item1.Equals(score)));
                 //
                 score.LinkCount--;
@@ -177,7 +177,7 @@ namespace NE4S.Scores
             double posY = Height - Margin.Bottom;
             foreach(Tuple<Score, Range> tScore in tScores)
             {
-                if(posY - tScore.Item1.Height * tScore.Item2.Size() / (double)tScore.Item1.BeatNumer < e.Y - ScoreInfo.PanelMargin.Top && 
+                if(posY - tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer < e.Y - ScoreInfo.PanelMargin.Top && 
                     e.Y - ScoreInfo.PanelMargin.Top <= posY)
                 {
                     selectedScore = tScore.Item1;
@@ -185,7 +185,7 @@ namespace NE4S.Scores
                 }
                 else
                 {
-                    posY -= tScore.Item1.Height * tScore.Item2.Size() / (double)tScore.Item1.BeatNumer;
+                    posY -= tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer;
                 }
             }
             return selectedScore;
@@ -200,9 +200,9 @@ namespace NE4S.Scores
         public void PaintLane(PaintEventArgs e, int drawPosX, int drawPosY)
         {
             //レーン背景を黒塗り
-            e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, (float)Width, (float)Height));
+            e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, Width, Height));
             //Score描画用のY座標の初期座標を画面最下に設定
-            double currentDrawPosY = drawPosY + Height - Margin.Bottom;
+            float currentDrawPosY = drawPosY + Height - Margin.Bottom;
             //リスト内のScoreについてY座標を変更しながら描画
             foreach (Tuple<Score, Range> tScore in tScores)
             {
@@ -216,8 +216,8 @@ namespace NE4S.Scores
                 //最後の小節を黄色線で閉じる
                 e.Graphics.DrawLine(
                     new Pen(Color.Yellow, 1),
-                    drawPosX + Margin.Left, (float)currentDrawPosY,
-                    (float)(drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth), (float)currentDrawPosY
+                    drawPosX + Margin.Left, currentDrawPosY,
+                    drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth, currentDrawPosY
                     );
             }
             //レーン上部の余白の部分は灰色(黒以外の色)に描画して未使用領域とする
@@ -226,7 +226,7 @@ namespace NE4S.Scores
             if(currentDrawPosY > drawPosY)
             {
                 //余ってる部分は塗りつぶす
-                e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, (float)Width, (float)(currentDrawPosY - drawPosY)));
+                e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
             }
 #if DEBUG
             //e.Graphics.DrawString(laneIndex.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));

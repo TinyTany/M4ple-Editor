@@ -15,11 +15,11 @@ namespace NE4S.Scores
         /// <summary>
         /// 1最小レーンの横幅
         /// </summary>
-        public static double LaneWidth { get; } = 12;
+        public static float LaneWidth { get; } = 12;
         /// <summary>
         /// 最大分数時の縦幅
         /// </summary>
-        public static double MaxBeatHeight { get; } = 2;
+        public static float MaxBeatHeight { get; } = 2;
         /// <summary>
         /// 最大分数
         /// </summary>
@@ -27,7 +27,7 @@ namespace NE4S.Scores
         /// <summary>
         /// 各レーンでの4/4拍子が最大何小節分入るか
         /// </summary>
-        public static double LaneMaxBar { get; } = 2;
+        public static float LaneMaxBar { get; } = 2;
         /// <summary>
         /// レーン数（不変）
         /// </summary>
@@ -40,6 +40,10 @@ namespace NE4S.Scores
         /// 小節番号描画時の位置ずれ分の座標
         /// </summary>
         public static PointF ScoreIndexPos { get; } = new PointF(-26.5f, -7);
+        /// <summary>
+        /// ノーツの縦幅
+        /// </summary>
+        public static float NoteHeight { get; } = 5;
 
         /// <summary>
         /// ScoreLaneのMargin
