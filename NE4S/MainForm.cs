@@ -51,17 +51,29 @@ namespace NE4S
 
         private void Score_MouseUp(object sender, MouseEventArgs e)
         {
-            //throw new NotImplementedException();
+            //クリックされたPictureBoxに対応するScorePanelで処理
+            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
+                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+            selectedComponent.Item1.MouseUp(e);
+            selectedComponent.Item2.Refresh();
         }
 
         private void Score_MouseMove(object sender, MouseEventArgs e)
         {
-            //throw new NotImplementedException();
+            //クリックされたPictureBoxに対応するScorePanelで処理
+            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
+                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+            selectedComponent.Item1.MouseMove(e);
+            selectedComponent.Item2.Refresh();
         }
 
         private void Score_MouseDown(object sender, MouseEventArgs e)
         {
-            //throw new NotImplementedException();
+            //クリックされたPictureBoxに対応するScorePanelで処理
+            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
+                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+            selectedComponent.Item1.MouseDown(e);
+            selectedComponent.Item2.Refresh();
         }
 
         private void Score_MouseEnter(object sender, EventArgs e)
