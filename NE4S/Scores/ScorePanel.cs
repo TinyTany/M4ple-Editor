@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Component;
+using NE4S.Notes;
 
 namespace NE4S.Scores
 {
@@ -20,6 +21,10 @@ namespace NE4S.Scores
         private Model model;
         private HScrollBar hSBar;
         private PictureBox pBox;
+#if DEBUG
+        //private Rectangle rec;
+        private PreviewNote pNote;
+#endif
 
         class Margin
         {
@@ -56,6 +61,9 @@ namespace NE4S.Scores
             SetScore(4, 4, 1);
             SetScore(8, 8, 1);
             SetScore(16, 16, 1);
+
+            //rec = new Rectangle(0, 0, 48, 5);
+            pNote = new PreviewNote();
 #endif
         }
 
@@ -160,7 +168,7 @@ namespace NE4S.Scores
             for(int i = 0; i < lanes.Count; ++i)
             {
                 if(lanes[i].HitRect.Contains(
-                    (float)(currentPositionX + e.X - i * (ScoreLane.Width + Margin.Left + Margin.Right)),
+                    currentPositionX + e.X - i * (ScoreLane.Width + Margin.Left + Margin.Right),
                     e.Y
                     ))
                 {
@@ -174,7 +182,30 @@ namespace NE4S.Scores
 #endif
         }
 
+        public void MouseDown(MouseEventArgs e)
+        {
+
+        }
+
+        public void MouseMove(MouseEventArgs e)
+        {
+            if(Status.Mode == Define.ADD)
+            {
+                pNote.Location = e.Location;
+            }
+        }
+
+        public void MouseUp(MouseEventArgs e)
+        {
+
+        }
+
         public void MouseEnter(EventArgs e)
+        {
+
+        }
+
+        public void MouseLeave(EventArgs e)
         {
 
         }
@@ -207,6 +238,10 @@ namespace NE4S.Scores
                     lanes[i].PaintLane(e, drawPosX, drawPosY);
                 }
             }
+#if DEBUG
+            //e.Graphics.FillRectangle(Brushes.Red, rec);
+            pNote.Paint(e);
+#endif
         }
     }
 }
