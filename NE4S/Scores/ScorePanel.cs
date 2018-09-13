@@ -182,7 +182,15 @@ namespace NE4S.Scores
         {
             if(Status.Mode == Define.ADD)
             {
-                pNote.Location = e.Location;
+                ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
+                if (selectedLane != null)
+                {
+                    pNote.Location = PointToGrid(e.Location, selectedLane);
+                    pNote.Visible = true;
+                }else
+                {
+                    pNote.Visible = false;
+                }
             }
         }
 
@@ -219,10 +227,15 @@ namespace NE4S.Scores
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        private Point PointToGrid(Point p)
+        private Point PointToGrid(Point p, ScoreLane lane)
         {
             Point gridP = new Point();
-
+            Point relativeP = new Point(p.X + currentPositionX - (int)lane.HitRect.X, p.Y - (int)lane.HitRect.Y);
+            Point deltaP = new Point();
+            //後で直す
+            deltaP.X = 0;
+            gridP.X = p.X + deltaP.X;
+            gridP.Y = p.Y + deltaP.Y;
             return gridP;
         }
 

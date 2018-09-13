@@ -9,7 +9,7 @@ namespace NE4S
     public class Status
     {
         public static int Mode { get; set; } = Define.ADD;
-        public static int Beat { get; set; } = 8;
+        public static int Beat { get; set; } = 16;
         public static int Grid { get; set; } = 16;
         public static int Note { get; set; } = Define.TAP;
         public static int NoteSize { get; set; } = 4;
