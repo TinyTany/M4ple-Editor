@@ -57,6 +57,7 @@ namespace NE4S.Scores
                     }
                 }
             }
+            RefreshIndex();
         }
 
         public void InsetScoreForward(Model model, Score score, int beatNumer, int beatDenom, int barCount)
@@ -122,7 +123,8 @@ namespace NE4S.Scores
             //scoreとその1つ前のScoreでレーンを分割
             DivideLane(score);
             //
-            InsertRange(IndexOf(lane), newLanes);
+            InsertRange(lane.Index, newLanes);
+            RefreshIndex();
             //
             FillLane();
         }
@@ -134,13 +136,13 @@ namespace NE4S.Scores
         /// <returns></returns>
         public ScoreLane Next(ScoreLane lane)
         {
-            if(!Contains(lane) || IndexOf(lane) == Count - 1)
+            if(!Contains(lane) || lane.Index == Count - 1)
             {
                 return null;
             }
             else
             {
-                return this.ElementAt(IndexOf(lane) + 1);
+                return this.ElementAt(lane.Index + 1);
             }
         }
 
@@ -183,7 +185,7 @@ namespace NE4S.Scores
             //scoreがlaneの最初の要素の時は分割の意味がないので何もせずメソッドを抜ける
             if (lane.BeginScore().Equals(score)) return;
             ScoreLane newLane = new ScoreLane();
-            Insert(IndexOf(lane), newLane);
+            Insert(lane.Index, newLane);
             while (!lane.BeginScore().Equals(score))
             {
                 newLane.AddScore(lane.BeginScore(), lane.BeginRange());
@@ -228,10 +230,20 @@ namespace NE4S.Scores
                 System.Diagnostics.Debug.WriteLine("LinkCount : " + linkCount.ToString());
 #endif
             }
+            //レーンのインデックスを更新
+            RefreshIndex();
             //modelから該当範囲のScoreを削除
             model.DeleteScore(score.Index, count);
             //レーンを詰める
             FillLane();
+        }
+
+        /// <summary>
+        /// レーンのインデックスを更新
+        /// </summary>
+        private void RefreshIndex()
+        {
+            for (int i = 0; i < Count; ++i) this[i].Index = i;
         }
     }
 }

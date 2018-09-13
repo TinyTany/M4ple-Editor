@@ -17,6 +17,7 @@ namespace NE4S.Scores
         public static float Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar + Margin.Top + Margin.Bottom;
         private float currentBarSize;
+        private int index;
         private RectangleF hitRect;
         private List<Note> notes;
         private List<Tuple<Score, Range>> tScores;
@@ -37,8 +38,16 @@ namespace NE4S.Scores
         {
             get {
                 hitRect.Size = new SizeF(Width, Height * currentBarSize / ScoreInfo.LaneMaxBar);
-                hitRect.Location = new PointF(ScoreInfo.PanelMargin.Left, Height - hitRect.Size.Height + ScoreInfo.PanelMargin.Top);
+                hitRect.Location = new PointF(
+                    index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left,
+                    Height - hitRect.Size.Height + ScoreInfo.PanelMargin.Top);
                 return hitRect; }
+        }
+
+        public int Index
+        {
+            get { return index; }
+            set { index = value; }
         }
 
         class Margin
@@ -56,6 +65,7 @@ namespace NE4S.Scores
             tScores = new List<Tuple<Score, Range>>();
             currentBarSize = 0;
             hitRect = new RectangleF();
+            index = -1;
         }
 
         /// <summary>
@@ -229,7 +239,7 @@ namespace NE4S.Scores
                 e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
             }
 #if DEBUG
-            //e.Graphics.DrawString(laneIndex.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
+            e.Graphics.DrawString(Index.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
             e.Graphics.DrawString(hitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 20));
 #endif
         }
