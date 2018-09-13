@@ -12,6 +12,8 @@ namespace NE4S.Notes
     public class PreviewNote
     {
         private RectangleF note;
+        public bool Visible { get; set; } = true;
+        public bool Enable { get; set; } = true;
 
         public PreviewNote()
         {
@@ -20,8 +22,12 @@ namespace NE4S.Notes
 
         public void Paint(PaintEventArgs e)
         {
+            if (!Visible || !Enable) return;
             note.Size = new SizeF(ScoreInfo.LaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
-            e.Graphics.FillRectangle(Brushes.Red, note);
+            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(128, 255, 0, 0)))
+            {
+                e.Graphics.FillRectangle(myBrush, note);
+            }
         }
 
         public PointF Location

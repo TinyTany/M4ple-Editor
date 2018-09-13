@@ -86,67 +86,85 @@ namespace NE4S.Scores
                 if(i % 2 != 0)
                 {
                     //副線の描画
-                    e.Graphics.DrawLine(
-                    new Pen(laneSub, 1),
-                    drawPosX + i * ScoreInfo.LaneWidth,
-                    drawPosY,
-                    drawPosX + i * ScoreInfo.LaneWidth,
-                    drawPosY + height * range.Size() / beatNumer
-                    );
+                    using (Pen myPen = new Pen(laneSub, 1))
+                    {
+                        e.Graphics.DrawLine(
+                        myPen,
+                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosY,
+                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosY + height * range.Size() / beatNumer
+                        );
+                    }
                 }
                 else
                 {
                     //主線の描画
-                    e.Graphics.DrawLine(
-                    new Pen(laneMain, 1),
-                    drawPosX + i * ScoreInfo.LaneWidth,
-                    drawPosY,
-                    drawPosX + i * ScoreInfo.LaneWidth,
-                    drawPosY + height * range.Size() / beatNumer
-                    );
+                    using(Pen myPen = new Pen(laneMain, 1))
+                    {
+                        e.Graphics.DrawLine(
+                        myPen,
+                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosY,
+                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosY + height * range.Size() / beatNumer
+                        );
+                    }
                 }
             }
             //指定範囲の開始が1拍目か判定
             if(range.Inf == 1)
             {
                 //1拍目に小節開始の黄色線を描画
-                e.Graphics.DrawLine(
-                    new Pen(Color.Yellow, 1),
-                    drawPosX,
-                    drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
-                    drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
-                    drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
-                    );
+                using (Pen myPen = new Pen(Color.Yellow, 1))
+                {
+                    e.Graphics.DrawLine(
+                        myPen,
+                        drawPosX,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
+                        );
+                }
                 //小節数を描画
-                e.Graphics.DrawString(
+                using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
+                {
+                    e.Graphics.DrawString(
                     (index + 1).ToString().PadLeft(3, '0'),
-                    new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold),
+                    myFont,
                     Brushes.White,
                     new PointF(
                         drawPosX + ScoreInfo.ScoreIndexPos.X,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer + ScoreInfo.ScoreIndexPos.Y));
+                }
             }
             else
             {
                 //白線を描画
-                e.Graphics.DrawLine(
-                    new Pen(laneMain, 1),
-                    drawPosX,
-                    drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
-                    drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
-                    drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
-                    );
+                using (Pen myPen = new Pen(laneMain, 1))
+                {
+                    e.Graphics.DrawLine(
+                        myPen,
+                        drawPosX,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
+                        );
+                }
             }
             //拍子分母の間隔で白線を描画
             for(int i = 0; i < range.Size(); ++i)
             {
-                e.Graphics.DrawLine(
-                    new Pen(laneMain, 1),
-                    drawPosX,
-                    drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom,
-                    drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
-                    drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom
-                    );
+                using (Pen myPen = new Pen(laneMain, 1))
+                {
+                    e.Graphics.DrawLine(
+                        myPen,
+                        drawPosX,
+                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
+                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom
+                        );
+                } 
             }
         }
     }

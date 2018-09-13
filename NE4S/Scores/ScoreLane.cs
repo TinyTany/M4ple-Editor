@@ -224,11 +224,14 @@ namespace NE4S.Scores
             {
                 //閉じていた場合
                 //最後の小節を黄色線で閉じる
-                e.Graphics.DrawLine(
-                    new Pen(Color.Yellow, 1),
-                    drawPosX + Margin.Left, currentDrawPosY,
-                    drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth, currentDrawPosY
-                    );
+                using (Pen myPen = new Pen(Color.Yellow, 1))
+                {
+                    e.Graphics.DrawLine(
+                        myPen,
+                        drawPosX + Margin.Left, currentDrawPosY,
+                        drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth, currentDrawPosY
+                        );
+                }
             }
             //レーン上部の余白の部分は灰色(黒以外の色)に描画して未使用領域とする
             currentDrawPosY -= Margin.Top;
