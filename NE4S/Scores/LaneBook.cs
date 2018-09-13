@@ -57,7 +57,6 @@ namespace NE4S.Scores
                     }
                 }
             }
-            RefreshIndex();
         }
 
         public void InsetScoreForward(Model model, Score score, int beatNumer, int beatDenom, int barCount)
@@ -124,7 +123,6 @@ namespace NE4S.Scores
             DivideLane(score);
             //
             InsertRange(lane.Index, newLanes);
-            RefreshIndex();
             //
             FillLane();
         }
@@ -136,7 +134,7 @@ namespace NE4S.Scores
         /// <returns></returns>
         public ScoreLane Next(ScoreLane lane)
         {
-            if(!Contains(lane) || lane.Index == Count - 1)
+            if(!Contains(lane) || lane.Index == Count - 1 || lane.Index == -1)
             {
                 return null;
             }
@@ -230,8 +228,6 @@ namespace NE4S.Scores
                 System.Diagnostics.Debug.WriteLine("LinkCount : " + linkCount.ToString());
 #endif
             }
-            //レーンのインデックスを更新
-            RefreshIndex();
             //modelから該当範囲のScoreを削除
             model.DeleteScore(score.Index, count);
             //レーンを詰める
@@ -244,6 +240,30 @@ namespace NE4S.Scores
         private void RefreshIndex()
         {
             for (int i = 0; i < Count; ++i) this[i].Index = i;
+        }
+
+        public new void Add(ScoreLane item)
+        {
+            base.Add(item);
+            RefreshIndex();
+        }
+
+        public new void Remove(ScoreLane item)
+        {
+            base.Remove(item);
+            RefreshIndex();
+        }
+
+        public new void Insert(int index, ScoreLane item)
+        {
+            base.Insert(index, item);
+            RefreshIndex();
+        }
+
+        public new void InsertRange(int index, IEnumerable<ScoreLane> collection)
+        {
+            base.InsertRange(index, collection);
+            RefreshIndex();
         }
     }
 }
