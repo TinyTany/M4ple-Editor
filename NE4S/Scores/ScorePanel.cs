@@ -50,19 +50,20 @@ namespace NE4S.Scores
             SetScore(4, 4, 10);
             SetScore(3, 4, 5);
             SetScore(6, 8, 8);
-            
+            //
             SetScore(2, 64, 32);
             SetScore(13, 4, 2);
             SetScore(2, 4, 8);
             SetScore(26, 8, 2);
             SetScore(1, 32, 32);
-            //*/
+            //
             SetScore(7, 1, 1);
             SetScore(4, 4, 1);
             SetScore(8, 8, 1);
             SetScore(16, 16, 1);
-
-            //rec = new Rectangle(0, 0, 48, 5);
+            //*/
+            //SetScore(4, 4, 1000);
+            
             pNote = new PreviewNote();
 #endif
         }
@@ -211,6 +212,18 @@ namespace NE4S.Scores
         public void HSBarScroll(ScrollEventArgs e)
         {
             currentPositionX += (e.NewValue - e.OldValue);
+        }
+
+        /// <summary>
+        /// 与えられた座標を現在のグリッド情報に合わせて変換します
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        private Point PointToGrid(Point p)
+        {
+            Point gridP = new Point();
+
+            return gridP;
         }
 
         public void PaintPanel(PaintEventArgs e)
