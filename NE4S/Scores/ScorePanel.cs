@@ -232,8 +232,12 @@ namespace NE4S.Scores
             Point gridP = new Point();
             Point relativeP = new Point(p.X + currentPositionX - (int)lane.HitRect.X, p.Y - (int)lane.HitRect.Y);
             Point deltaP = new Point();
-            //後で直す
-            deltaP.X = 0;
+			float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
+			float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
+			float maxGridX = (ScoreInfo.Lanes - Status.NoteSize) * ScoreInfo.MinLaneWidth;
+			//現在の自由座標とそこから計算したグリッド座標の差分
+			deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
+			deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
             gridP.X = p.X + deltaP.X;
             gridP.Y = p.Y + deltaP.Y;
             return gridP;
