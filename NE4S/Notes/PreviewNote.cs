@@ -23,8 +23,10 @@ namespace NE4S.Notes
         public void Paint(PaintEventArgs e)
         {
             if (!Visible || !Enable) return;
-            note.Size = new SizeF(ScoreInfo.LaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
-            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(128, 255, 0, 0)))
+            note.Size = new SizeF(ScoreInfo.MinLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
+			//描画時にレーンの線の間にノーツがうまくハマるようにする
+			++note.X; --note.Width; note.Y -= 2;
+            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(150, 255, 0, 0)))
             {
                 e.Graphics.FillRectangle(myBrush, note);
             }
