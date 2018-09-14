@@ -14,7 +14,7 @@ namespace NE4S.Scores
     /// </summary>
     public class ScoreLane
     {
-        public static float Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.LaneWidth + Margin.Left + Margin.Right;
+        public static float Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar + Margin.Top + Margin.Bottom;
         private float currentBarSize;
         private int index;
@@ -32,15 +32,17 @@ namespace NE4S.Scores
 
         /// <summary>
         /// ScoreLane当たり判定領域
-        /// 絶対座標的な値
+        /// PictureBoxの左上を原点としたときの座標
         /// </summary>
         public RectangleF HitRect
         {
             get {
-                hitRect.Size = new SizeF(Width, Height * currentBarSize / ScoreInfo.LaneMaxBar);
+                hitRect.Size = new SizeF(
+					ScoreInfo.Lanes * ScoreInfo.MinLaneWidth, 
+					ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * currentBarSize);
                 hitRect.Location = new PointF(
-                    index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left,
-                    Height - hitRect.Size.Height + ScoreInfo.PanelMargin.Top);
+                    index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
+                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRect.Height);
                 return hitRect; }
         }
 
@@ -229,7 +231,7 @@ namespace NE4S.Scores
                     e.Graphics.DrawLine(
                         myPen,
                         drawPosX + Margin.Left, currentDrawPosY,
-                        drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.LaneWidth, currentDrawPosY
+                        drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth, currentDrawPosY
                         );
                 }
             }
