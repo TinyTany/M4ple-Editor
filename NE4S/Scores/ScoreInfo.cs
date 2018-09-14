@@ -15,7 +15,7 @@ namespace NE4S.Scores
         /// <summary>
         /// 1最小レーンの横幅
         /// </summary>
-        public static float LaneWidth { get; } = 12;
+        public static float MinLaneWidth { get; } = 12;
         /// <summary>
         /// 最大分数時の縦幅
         /// </summary>

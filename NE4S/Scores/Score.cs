@@ -21,7 +21,7 @@ namespace NE4S.Scores
             this.beatNumer = beatNumer;//非負整数
             this.beatDenom = beatDenom;//非負整数かつ2のべき乗のもの
             barSize = beatNumer / (float)beatDenom;
-            width = ScoreInfo.LaneWidth * ScoreInfo.Lanes;
+            width = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes;
             height = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * barSize;
             index = -1;
             linkCount = 0;
@@ -90,9 +90,9 @@ namespace NE4S.Scores
                     {
                         e.Graphics.DrawLine(
                         myPen,
-                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY,
-                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY + height * range.Size() / beatNumer
                         );
                     }
@@ -104,9 +104,9 @@ namespace NE4S.Scores
                     {
                         e.Graphics.DrawLine(
                         myPen,
-                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY,
-                        drawPosX + i * ScoreInfo.LaneWidth,
+                        drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY + height * range.Size() / beatNumer
                         );
                     }
@@ -122,7 +122,7 @@ namespace NE4S.Scores
                         myPen,
                         drawPosX,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
-                        drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
                         );
                 }
@@ -147,7 +147,7 @@ namespace NE4S.Scores
                         myPen,
                         drawPosX,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
-                        drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
                         );
                 }
@@ -161,7 +161,7 @@ namespace NE4S.Scores
                         myPen,
                         drawPosX,
                         drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom,
-                        drawPosX + ScoreInfo.Lanes * ScoreInfo.LaneWidth,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
                         drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom
                         );
                 } 
