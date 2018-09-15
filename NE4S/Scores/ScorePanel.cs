@@ -175,8 +175,14 @@ namespace NE4S.Scores
 
         public void MouseDown(MouseEventArgs e)
         {
-
-        }
+#if DEBUG
+			ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
+			if (selectedLane != null && e.Button == MouseButtons.Left)
+			{
+				selectedLane.GetPos(e.Location);
+			}
+#endif
+		}
 
         public void MouseMove(MouseEventArgs e)
         {

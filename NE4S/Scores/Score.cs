@@ -67,14 +67,29 @@ namespace NE4S.Scores
             set { linkCount = value; }
         }
 
-        /// <summary>
-        /// 描画する
-        /// </summary>
-        /// <param name="e">描画対象</param>
-        /// <param name="drawPosX">描画位置の右上のX座標</param>
-        /// <param name="drawPosY">描画位置の右上のY座標</param>
-        /// <param name="range">描画するScoreの範囲</param>
-        public void PaintScore(PaintEventArgs e, float drawPosX, float drawPosY, Range range)
+#if DEBUG
+		/// <summary>
+		/// 試作
+		/// </summary>
+		/// <param name="p"></param>
+		public void CalculatePos(Point p)
+		{
+			Pos pos = new Pos();
+			pos.Bar = index + 1;
+			pos.BaseBeat = ScoreInfo.MaxBeatDiv;
+			pos.BeatCount = (int)(p.Y / ScoreInfo.MaxBeatHeight);
+			pos.PrintPos();
+		}
+#endif
+
+		/// <summary>
+		/// 描画する
+		/// </summary>
+		/// <param name="e">描画対象</param>
+		/// <param name="drawPosX">描画位置の右上のX座標</param>
+		/// <param name="drawPosY">描画位置の右上のY座標</param>
+		/// <param name="range">描画するScoreの範囲</param>
+		public void PaintScore(PaintEventArgs e, float drawPosX, float drawPosY, Range range)
         {
             //主線の色情報
             Color laneMain = Color.FromArgb(180, 255, 255, 255);

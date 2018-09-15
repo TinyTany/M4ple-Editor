@@ -11,11 +11,35 @@ namespace NE4S
     /// </summary>
     public class Pos
     {
-        private int bar, count;
+		public int Bar { get; set; } = 1;
+		private int baseBeat, beatCount;
 
         public Pos()
         {
-            bar = count = 0;
+			baseBeat = 1;
+			beatCount = 1;
         }
+
+		public void PrintPos()
+		{
+			System.Diagnostics.Debug.WriteLine(Bar + "(" + beatCount + "/" + baseBeat + ")");
+		}
+
+		public int BaseBeat
+		{
+			get { return baseBeat; }
+			set { baseBeat = value; RefreshPos(); }
+		}
+
+		public int BeatCount
+		{
+			get { return beatCount; }
+			set { beatCount = value; RefreshPos(); }
+		}
+
+		private void RefreshPos()
+		{
+			
+		}
     }
 }

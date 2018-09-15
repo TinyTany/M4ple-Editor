@@ -203,13 +203,29 @@ namespace NE4S.Scores
             return selectedScore;
         }
 
-        /// <summary>
-        /// 描画する
-        /// </summary>
-        /// <param name="e">描画対象</param>
-        /// <param name="drawPosX">描画位置の右上のX座標</param>
-        /// <param name="drawPosY">描画位置の右上のY座標</param>
-        public void PaintLane(PaintEventArgs e, int drawPosX, int drawPosY)
+#if DEBUG
+		/// <summary>
+		/// 試作
+		/// </summary>
+		/// <param name="p"></param>
+		public void GetPos(Point p)
+		{
+			Score selectedScore = SelectedScore(p);
+			if (selectedScore != null)
+			{
+				Point regularP = new Point(p.X - (int)hitRect.X, p.Y - (int)hitRect.Y);
+				selectedScore.CalculatePos(p);
+			}
+		}
+#endif
+
+		/// <summary>
+		/// 描画する
+		/// </summary>
+		/// <param name="e">描画対象</param>
+		/// <param name="drawPosX">描画位置の右上のX座標</param>
+		/// <param name="drawPosY">描画位置の右上のY座標</param>
+		public void PaintLane(PaintEventArgs e, int drawPosX, int drawPosY)
         {
             //レーン背景を黒塗り
             e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, Width, Height));
