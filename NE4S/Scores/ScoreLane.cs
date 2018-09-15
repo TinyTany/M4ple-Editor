@@ -183,14 +183,14 @@ namespace NE4S.Scores
         /// </summary>
         /// <param name="e">クリックされたマウス情報</param>
         /// <returns>クリックされたScore</returns>
-        public Score SelectedScore(MouseEventArgs e)
+        public Score SelectedScore(Point p)
         {
             Score selectedScore = null;
             double posY = Height - Margin.Bottom;
             foreach(Tuple<Score, Range> tScore in tScores)
             {
-                if(posY - tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer < e.Y - ScoreInfo.PanelMargin.Top && 
-                    e.Y - ScoreInfo.PanelMargin.Top <= posY)
+                if(posY - tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer < p.Y - ScoreInfo.PanelMargin.Top && 
+                    p.Y - ScoreInfo.PanelMargin.Top <= posY)
                 {
                     selectedScore = tScore.Item1;
                     break;
