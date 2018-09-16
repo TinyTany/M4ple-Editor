@@ -12,6 +12,7 @@ namespace NE4S.Notes
     public class PreviewNote
     {
         private RectangleF note;
+		public PointF Location { get; set; }
         public bool Visible { get; set; } = true;
         public bool Enable { get; set; } = true;
 
@@ -24,18 +25,13 @@ namespace NE4S.Notes
         {
             if (!Visible || !Enable) return;
             note.Size = new SizeF(ScoreInfo.MinLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
+			note.Location = Location;
 			//描画時にレーンの線の間にノーツがうまくハマるようにする
 			++note.X; --note.Width; note.Y -= 2;
             using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(150, 255, 0, 0)))
             {
                 e.Graphics.FillRectangle(myBrush, note);
             }
-        }
-
-        public PointF Location
-        {
-            get { return note.Location; }
-            set { note.Location = value; }
         }
     }
 }
