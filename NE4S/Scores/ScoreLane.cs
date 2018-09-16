@@ -14,13 +14,15 @@ namespace NE4S.Scores
     /// </summary>
     public class ScoreLane
     {
-        public static float Width { get; set; } = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth + Margin.Left + Margin.Right;
-        public static float Height { get; set; } = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar + Margin.Top + Margin.Bottom;
+		private static float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
+		private static float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
+        public static float Width { get; set; } = scoreWidth + Margin.Left + Margin.Right;
+        public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
         private float currentBarSize;
         private int index;
         private RectangleF hitRect;
         private List<Note> notes;
-        private List<Tuple<Score, Range>> tScores;
+        private List<Tuple<Score, Range, RectangleF>> tScores;
 
         /// <summary>
         /// ScoreLaneに入っているScoreたちの総サイズ
@@ -38,7 +40,7 @@ namespace NE4S.Scores
         {
             get {
                 hitRect.Size = new SizeF(
-					ScoreInfo.Lanes * ScoreInfo.MinLaneWidth, 
+					scoreWidth, 
 					ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * currentBarSize);
                 hitRect.Location = new PointF(
                     index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
@@ -64,7 +66,7 @@ namespace NE4S.Scores
         public ScoreLane()
         {
             notes = new List<Note>();
-            tScores = new List<Tuple<Score, Range>>();
+            tScores = new List<Tuple<Score, Range, RectangleF>>();
             currentBarSize = 0;
             hitRect = new RectangleF();
             index = -1;
@@ -110,8 +112,14 @@ namespace NE4S.Scores
         {
             if (newScore != null && newRange != null)
             {
-                //各リストに新たなScoreとその範囲を格納
-                tScores.Add(new Tuple<Score, Range>(newScore, newRange));
+				//Scoreの当たり判定矩形を作成
+				RectangleF newScoreHitRect = new RectangleF(
+					HitRect.X,
+					ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * (ScoreInfo.LaneMaxBar - currentBarSize),
+					newScore.Width,
+					newScore.Height);
+                //各リストに新たなScoreとその範囲と当たり判定を格納
+                tScores.Add(new Tuple<Score, Range, RectangleF>(newScore, newRange, newScoreHitRect));
                 currentBarSize += newRange.Size() / (float)newScore.BeatDenom;
                 //
                 newScore.LinkCount++;
@@ -143,7 +151,17 @@ namespace NE4S.Scores
             {
                 currentBarSize -= tScores.Find(x => x.Item1.Equals(score)).Item2.Size() / (float)score.BeatDenom;
                 tScores.Remove(tScores.Find(x => x.Item1.Equals(score)));
-                //
+				//Scoreの当たり判定を更新する
+				float sumHeight = 0;
+				for(int i = 0; i < tScores.Count; ++i)
+				{
+					tScores[i] = new Tuple<Score, Range, RectangleF>(
+						tScores[i].Item1,
+						tScores[i].Item2,
+						new RectangleF(HitRect.X, maxScoreHeight - sumHeight - tScores[i].Item1.Height, tScores[i].Item1.Width, tScores[i].Item1.Height));
+					sumHeight += tScores[i].Item1.Height;
+				}
+				//
                 score.LinkCount--;
             }
             else
@@ -183,24 +201,15 @@ namespace NE4S.Scores
         /// </summary>
         /// <param name="e">クリックされたマウス情報</param>
         /// <returns>クリックされたScore</returns>
-        public Score SelectedScore(Point p)
+        public Score SelectedScore(float pX, float pY)
         {
-            Score selectedScore = null;
-            double posY = Height - Margin.Bottom;
-            foreach(Tuple<Score, Range> tScore in tScores)
-            {
-                if(posY - tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer < p.Y - ScoreInfo.PanelMargin.Top && 
-                    p.Y - ScoreInfo.PanelMargin.Top <= posY)
-                {
-                    selectedScore = tScore.Item1;
-                    break;
-                }
-                else
-                {
-                    posY -= tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer;
-                }
-            }
-            return selectedScore;
+			//FIX: エラーが出るから修正する。クリックに対して正しくScoreを検索できていない。
+			if(tScores.Find(x => x.Item3.Contains(pX, pY)) == null)
+			{
+				System.Diagnostics.Debug.WriteLine("SelectedScore(Point) : null");
+				return null;
+			}
+			return tScores.Find(x => x.Item3.Contains(pX, pY)).Item1;
         }
 
 #if DEBUG
@@ -210,7 +219,7 @@ namespace NE4S.Scores
 		/// <param name="p"></param>
 		public void GetPos(Point p)
 		{
-			Score selectedScore = SelectedScore(p);
+			Score selectedScore = SelectedScore(p.X, p.Y);
 			if (selectedScore != null)
 			{
 				Point regularP = new Point(p.X - (int)hitRect.X, p.Y - (int)hitRect.Y);
@@ -232,7 +241,7 @@ namespace NE4S.Scores
             //Score描画用のY座標の初期座標を画面最下に設定
             float currentDrawPosY = drawPosY + Height - Margin.Bottom;
             //リスト内のScoreについてY座標を変更しながら描画
-            foreach (Tuple<Score, Range> tScore in tScores)
+            foreach (Tuple<Score, Range, RectangleF> tScore in tScores)
             {
                 currentDrawPosY -= tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer;
                 tScore.Item1.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, tScore.Item2);
@@ -247,7 +256,7 @@ namespace NE4S.Scores
                     e.Graphics.DrawLine(
                         myPen,
                         drawPosX + Margin.Left, currentDrawPosY,
-                        drawPosX + Margin.Left + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth, currentDrawPosY
+                        drawPosX + Margin.Left + scoreWidth, currentDrawPosY
                         );
                 }
             }

@@ -166,9 +166,9 @@ namespace NE4S.Scores
 #if DEBUG
             //クリックされたレーンを特定
             ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
-            if (selectedLane != null && selectedLane.SelectedScore(e.Location) != null && e.Button == MouseButtons.Right)
+            if (selectedLane != null && selectedLane.SelectedScore(currentPositionX + e.X, e.Y) != null && e.Button == MouseButtons.Right)
             {
-                new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location)).Show(pBox, e.Location);
+                new EditCMenu(this, selectedLane, selectedLane.SelectedScore(currentPositionX + e.X, e.Y)).Show(pBox, e.Location);
             }
 #endif
         }
