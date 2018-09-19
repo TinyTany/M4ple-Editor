@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="MyUtil.cs" />
     <Compile Include="Notes\AirAction.cs" />
     <Compile Include="Notes\AirDownC.cs" />
     <Compile Include="Notes\AirDownL.cs" />
