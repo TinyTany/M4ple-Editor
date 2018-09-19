@@ -112,10 +112,12 @@ namespace NE4S.Scores
         {
             if (newScore != null && newRange != null)
             {
+                float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * currentBarSize;
 				//Scoreの当たり判定矩形を作成
 				RectangleF newScoreHitRect = new RectangleF(
 					HitRect.X,
-					ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * (ScoreInfo.LaneMaxBar - currentBarSize),
+                    //HACK: マジックナンバーを使っているのであとで改善する。
+                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom  - currentSumScoreHeight - newScore.Height + 1,
 					newScore.Width,
 					newScore.Height);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
@@ -201,7 +203,7 @@ namespace NE4S.Scores
         /// </summary>
         /// <param name="e">クリックされたマウス情報</param>
         /// <returns>クリックされたScore</returns>
-        public Score SelectedScore(float pX, float pY)
+        public Score SelectedScore(int pX, int pY)
         {
 			//FIX: エラーが出るから修正する。クリックに対して正しくScoreを検索できていない。
 			if(tScores.Find(x => x.Item3.Contains(pX, pY)) == null)
@@ -216,16 +218,24 @@ namespace NE4S.Scores
 		/// <summary>
 		/// 試作
 		/// </summary>
-		/// <param name="p"></param>
-		public void GetPos(Point p)
+		public void GetPos(int pX, int pY)
 		{
-			Score selectedScore = SelectedScore(p.X, p.Y);
-			if (selectedScore != null)
+            Tuple<Score, Range, RectangleF> selectedTScore =
+                tScores.Find(x => x.Item3.Contains(pX, pY));
+			if (selectedTScore != null)
 			{
-				Point regularP = new Point(p.X - (int)hitRect.X, p.Y - (int)hitRect.Y);
-				selectedScore.CalculatePos(p);
+				Point normalizedP = new Point(
+                    pX - (int)selectedTScore.Item3.X,
+                    (int)selectedTScore.Item1.Height - (pY - (int)selectedTScore.Item3.Y));
+				selectedTScore.Item1.CalculatePos(normalizedP);
 			}
+            if (selectedTScore == null) System.Diagnostics.Debug.WriteLine("GetPos(Point) : selectedTScore = null");
 		}
+
+        public void GetPos(Point p)
+        {
+            GetPos(p.X, p.Y);
+        }
 #endif
 
 		/// <summary>

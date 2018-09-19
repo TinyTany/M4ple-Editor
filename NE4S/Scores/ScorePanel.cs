@@ -179,8 +179,10 @@ namespace NE4S.Scores
 			ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 			if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
-				selectedLane.GetPos(e.Location);
+                Point gridPoint = PointToGrid(e.Location, selectedLane);
+				selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
 			}
+            if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 #endif
 		}
 
@@ -230,6 +232,7 @@ namespace NE4S.Scores
 
         /// <summary>
         /// 与えられた座標を現在のグリッド情報に合わせて変換します
+        /// 与えられる座標も返り値もXにcurrentPositionXを足していない生のもの
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
@@ -246,6 +249,7 @@ namespace NE4S.Scores
 			deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
             gridP.X = p.X + deltaP.X;
             gridP.Y = p.Y + deltaP.Y;
+            //帰ってくる座標はXにcurrentPositionX足されていない生のもの
             return gridP;
         }
 

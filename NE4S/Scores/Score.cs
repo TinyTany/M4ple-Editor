@@ -71,15 +71,19 @@ namespace NE4S.Scores
 		/// <summary>
 		/// 試作
 		/// </summary>
-		/// <param name="p"></param>
-		public void CalculatePos(Point p)
+		public void CalculatePos(int pX, int pY)
 		{
 			Pos pos = new Pos();
 			pos.Bar = index + 1;
 			pos.BaseBeat = ScoreInfo.MaxBeatDiv;
-			pos.BeatCount = (int)(p.Y / ScoreInfo.MaxBeatHeight);
+			pos.BeatCount = (int)(pY / ScoreInfo.MaxBeatHeight);
 			pos.PrintPos();
 		}
+
+        public void CalculatePos(Point p)
+        {
+            CalculatePos(p.X, p.Y);
+        }
 #endif
 
 		/// <summary>
