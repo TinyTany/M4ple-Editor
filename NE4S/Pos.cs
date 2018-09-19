@@ -22,7 +22,8 @@ namespace NE4S
 
 		public void PrintPos()
 		{
-			System.Diagnostics.Debug.WriteLine(Bar + "(" + beatCount + "/" + baseBeat + ")");
+			int GCD = (int)MyUtil.GCD((uint)beatCount, (uint)baseBeat);
+			System.Diagnostics.Debug.WriteLine(Bar + "(" + beatCount / GCD + "/" + baseBeat / GCD + ")");
 		}
 
 		public int BaseBeat
