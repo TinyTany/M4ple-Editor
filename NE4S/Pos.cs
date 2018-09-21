@@ -11,36 +11,51 @@ namespace NE4S
     /// </summary>
     public class Pos
     {
-		public int Bar { get; set; } = 1;
-		private int baseBeat, beatCount;
+		private int bar, baseBeat, beatCount;
+		/// <summary>
+		/// ノーツの左端のレーン番号（0-15）
+		/// </summary>
+		private int lane;
 
-        public Pos()
+		public Pos(int bar, int beatCount, int baseBeat, int lane)
         {
-			baseBeat = 1;
-			beatCount = 1;
+			this.bar = bar;
+			this.beatCount = beatCount;
+			this.baseBeat = baseBeat;
+			this.lane = lane;
+			RefreshPos();
         }
 
 		public void PrintPos()
 		{
-			int GCD = (int)MyUtil.GCD((uint)beatCount, (uint)baseBeat);
-			System.Diagnostics.Debug.WriteLine(Bar + "(" + beatCount / GCD + "/" + baseBeat / GCD + ")");
+			System.Diagnostics.Debug.WriteLine(bar + "(" + beatCount + "/" + baseBeat + "), " + lane);
+		}
+
+		public int Bar
+		{
+			get { return bar; }
 		}
 
 		public int BaseBeat
 		{
 			get { return baseBeat; }
-			set { baseBeat = value; RefreshPos(); }
 		}
 
 		public int BeatCount
 		{
 			get { return beatCount; }
-			set { beatCount = value; RefreshPos(); }
+		}
+
+		public int Lane
+		{
+			get { return lane; }
 		}
 
 		private void RefreshPos()
 		{
-			
+			int Gcd = MyUtil.Gcd(beatCount, baseBeat);
+			beatCount /= Gcd;
+			baseBeat /= Gcd;
 		}
     }
 }
