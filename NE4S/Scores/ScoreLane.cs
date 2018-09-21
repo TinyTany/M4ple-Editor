@@ -21,8 +21,8 @@ namespace NE4S.Scores
         private float currentBarSize;
         private int index;
         private RectangleF hitRect;
-        private List<Note> notes;
-        private List<Tuple<Score, Range, RectangleF>> tScores;
+        private List<Note> noteList;
+        private List<ScoreMaterial> materialList;
 
         /// <summary>
         /// ScoreLaneに入っているScoreたちの総サイズ
@@ -65,8 +65,8 @@ namespace NE4S.Scores
 
         public ScoreLane()
         {
-            notes = new List<Note>();
-            tScores = new List<Tuple<Score, Range, RectangleF>>();
+            noteList = new List<Note>();
+            materialList = new List<ScoreMaterial>();
             currentBarSize = 0;
             hitRect = new RectangleF();
             index = -1;
@@ -79,7 +79,7 @@ namespace NE4S.Scores
         /// <returns></returns>
         public bool Contains(Score score)
         {
-            if (tScores.Find(x => x.Item1.Equals(score)) != null) return true;
+            if (materialList.Find(x => x.Score.Equals(score)) != null) return true;
             else return false;
         }
 
@@ -90,7 +90,7 @@ namespace NE4S.Scores
         /// <returns></returns>
         public bool IsScoreClose(Score score)
         {
-            if (tScores.Find(x => x.Item1.Equals(score)).Item2.Size() == score.BeatNumer) return true;
+            if (materialList.Find(x => x.Score.Equals(score)).Range.Size() == score.BeatNumer) return true;
             else return false;
         }
 
@@ -100,7 +100,7 @@ namespace NE4S.Scores
         /// <returns></returns>
         public bool Any()
         {
-            return tScores.Any();
+            return materialList.Any();
         }
 
         /// <summary>
@@ -113,15 +113,17 @@ namespace NE4S.Scores
             if (newScore != null && newRange != null)
             {
                 float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * currentBarSize;
+				float physicalHeight = newScore.Height * newRange.Size() / newScore.BeatNumer;
+				//当たり判定が縦に1ピクセル分ずれているので調整用の変数を作成
+				int normalizeDeltaHeight = 1;
 				//Scoreの当たり判定矩形を作成
 				RectangleF newScoreHitRect = new RectangleF(
 					HitRect.X,
-                    //HACK: マジックナンバーを使っているのであとで改善する。
-                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom  - currentSumScoreHeight - newScore.Height + 1,
+                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom  - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
 					newScore.Width,
-					newScore.Height);
+					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
-                tScores.Add(new Tuple<Score, Range, RectangleF>(newScore, newRange, newScoreHitRect));
+                materialList.Add(new ScoreMaterial(newScore, newRange, newScoreHitRect));
                 currentBarSize += newRange.Size() / (float)newScore.BeatDenom;
                 //
                 newScore.LinkCount++;
@@ -151,17 +153,17 @@ namespace NE4S.Scores
         {
             if (score != null && Contains(score))
             {
-                currentBarSize -= tScores.Find(x => x.Item1.Equals(score)).Item2.Size() / (float)score.BeatDenom;
-                tScores.Remove(tScores.Find(x => x.Item1.Equals(score)));
+                currentBarSize -= materialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
+                materialList.Remove(materialList.Find(x => x.Score.Equals(score)));
 				//Scoreの当たり判定を更新する
 				float sumHeight = 0;
-				for(int i = 0; i < tScores.Count; ++i)
+				for(int i = 0; i < materialList.Count; ++i)
 				{
-					tScores[i] = new Tuple<Score, Range, RectangleF>(
-						tScores[i].Item1,
-						tScores[i].Item2,
-						new RectangleF(HitRect.X, maxScoreHeight - sumHeight - tScores[i].Item1.Height, tScores[i].Item1.Width, tScores[i].Item1.Height));
-					sumHeight += tScores[i].Item1.Height;
+					materialList[i] = new ScoreMaterial(
+						materialList[i].Score,
+						materialList[i].Range,
+						new RectangleF(HitRect.X, maxScoreHeight - sumHeight - materialList[i].Score.Height, materialList[i].Score.Width, materialList[i].Score.Height));
+					sumHeight += materialList[i].Score.Height;
 				}
 				//
                 score.LinkCount--;
@@ -176,7 +178,7 @@ namespace NE4S.Scores
 
         public Score BeginScore()
         {
-            if(tScores.Any()) return tScores.First().Item1;
+            if(materialList.Any()) return materialList.First().Score;
             else
             {
 #if DEBUG
@@ -188,7 +190,7 @@ namespace NE4S.Scores
 
         public Range BeginRange()
         {
-            if (tScores.Any()) return tScores.First().Item2;
+            if (materialList.Any()) return materialList.First().Range;
             else
             {
 #if DEBUG
@@ -206,12 +208,12 @@ namespace NE4S.Scores
         public Score SelectedScore(int pX, int pY)
         {
 			//FIX: エラーが出るから修正する。クリックに対して正しくScoreを検索できていない。
-			if(tScores.Find(x => x.Item3.Contains(pX, pY)) == null)
+			if(materialList.Find(x => x.HitRect.Contains(pX, pY)) == null)
 			{
 				System.Diagnostics.Debug.WriteLine("SelectedScore(Point) : null");
 				return null;
 			}
-			return tScores.Find(x => x.Item3.Contains(pX, pY)).Item1;
+			return materialList.Find(x => x.HitRect.Contains(pX, pY)).Score;
         }
 
 #if DEBUG
@@ -220,16 +222,13 @@ namespace NE4S.Scores
 		/// </summary>
 		public void GetPos(int pX, int pY)
 		{
-            Tuple<Score, Range, RectangleF> selectedTScore =
-                tScores.Find(x => x.Item3.Contains(pX, pY));
-			if (selectedTScore != null)
+            ScoreMaterial selectedScoreMaterial =
+                materialList.Find(x => x.HitRect.Contains(pX, pY));
+			if (selectedScoreMaterial != null)
 			{
-				Point normalizedP = new Point(
-                    pX - (int)selectedTScore.Item3.X,
-                    (int)selectedTScore.Item1.Height - (pY - (int)selectedTScore.Item3.Y));
-				selectedTScore.Item1.CalculatePos(normalizedP);
+				selectedScoreMaterial.CalculatePos(pX, pY);
 			}
-            if (selectedTScore == null) System.Diagnostics.Debug.WriteLine("GetPos(Point) : selectedTScore = null");
+            if (selectedScoreMaterial == null) System.Diagnostics.Debug.WriteLine("GetPos(Point) : selectedTScore = null");
 		}
 
         public void GetPos(Point p)
@@ -251,13 +250,13 @@ namespace NE4S.Scores
             //Score描画用のY座標の初期座標を画面最下に設定
             float currentDrawPosY = drawPosY + Height - Margin.Bottom;
             //リスト内のScoreについてY座標を変更しながら描画
-            foreach (Tuple<Score, Range, RectangleF> tScore in tScores)
+            foreach (ScoreMaterial material in materialList)
             {
-                currentDrawPosY -= tScore.Item1.Height * tScore.Item2.Size() / tScore.Item1.BeatNumer;
-                tScore.Item1.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, tScore.Item2);
+                currentDrawPosY -= material.Score.Height * material.Range.Size() / material.Score.BeatNumer;
+                material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
             }
             //tScoresの最後の要素のScoreが閉じているか判定
-            if (tScores.Any() && tScores.Last().Item2.Sup == tScores.Last().Item1.BeatNumer)
+            if (materialList.Any() && materialList.Last().Range.Sup == materialList.Last().Score.BeatNumer)
             {
                 //閉じていた場合
                 //最後の小節を黄色線で閉じる
