@@ -11,23 +11,19 @@ namespace NE4S.Notes
     /// </summary>
     public class Note
     {
-        private int size, lane;
+        private int size;
         private Pos pos;
 
         public Note()
         {
-            size = lane = 0;
-            pos = new Pos();
+            size = 0;
+			//HACK: その場しのぎなので実装時に適当に直す
+            pos = null;
         }
 
         public int Size
         {
             get { return this.size; }
-        }
-
-        public int Lane
-        {
-            get { return this.lane; }
         }
 
         public Pos Pos

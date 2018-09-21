@@ -8,12 +8,12 @@ namespace NE4S
 {
 	public class MyUtil
 	{
-		public static uint GCD(uint m, uint n)
+		public static int Gcd(int m, int n)
 		{
-			if (m < n) return GCD(n, m);
+			if (m < n) return Gcd(n, m);
 			if (m == 0 && n == 0) return 1;
 			if (n == 0) return m;
-			return GCD(n, m % n);
+			return Gcd(n, m % n);
 		}
 	}
 }
