@@ -67,25 +67,6 @@ namespace NE4S.Scores
             set { linkCount = value; }
         }
 
-#if DEBUG
-		/// <summary>
-		/// 試作
-		/// </summary>
-		public void CalculatePos(int pX, int pY)
-		{
-			Pos pos = new Pos();
-			pos.Bar = index + 1;
-			pos.BaseBeat = ScoreInfo.MaxBeatDiv;
-			pos.BeatCount = (int)(pY / ScoreInfo.MaxBeatHeight);
-			pos.PrintPos();
-		}
-
-        public void CalculatePos(Point p)
-        {
-            CalculatePos(p.X, p.Y);
-        }
-#endif
-
 		/// <summary>
 		/// 描画する
 		/// </summary>
