@@ -13,12 +13,12 @@ namespace NE4S
 {
     public partial class MainForm : Form
     {
-        private List<Tuple<ScorePanel, PictureBox, HScrollBar>> viewComponents;
+        private List<Tuple<ScorePanel, PictureBox, HScrollBar>> viewComponentList;
 
         public MainForm()
         {
             InitializeComponent();
-            viewComponents = new List<Tuple<ScorePanel, PictureBox, HScrollBar>>();
+            viewComponentList = new List<Tuple<ScorePanel, PictureBox, HScrollBar>>();
             for(int i = 0; i < tabScore.TabCount; ++i)
             {
                 //PictureBoxの追加と初期化
@@ -45,7 +45,7 @@ namespace NE4S
                 pBox.MouseUp += new MouseEventHandler(Score_MouseUp);
                 hScroll.Scroll += new ScrollEventHandler(Score_Scroll);
                 //初期化した部品たちをタプルにしてリストに追加
-                viewComponents.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
+                viewComponentList.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
         }
 
@@ -53,7 +53,7 @@ namespace NE4S
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
             selectedComponent.Item1.MouseUp(e);
             selectedComponent.Item2.Refresh();
         }
@@ -62,7 +62,7 @@ namespace NE4S
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
             selectedComponent.Item1.MouseMove(e);
             selectedComponent.Item2.Refresh();
         }
@@ -71,7 +71,7 @@ namespace NE4S
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
             selectedComponent.Item1.MouseDown(e);
             selectedComponent.Item2.Refresh();
         }
@@ -80,7 +80,7 @@ namespace NE4S
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
             selectedComponent.Item1.MouseEnter(e);
             selectedComponent.Item2.Refresh();
         }
@@ -89,7 +89,7 @@ namespace NE4S
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
             selectedComponent.Item1.MouseClick(e);
             selectedComponent.Item2.Refresh();
         }
@@ -98,21 +98,21 @@ namespace NE4S
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponents.Find(x => x.Item2.Equals((PictureBox)sender));
+                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
             selectedComponent.Item1.MouseScroll(e.Delta);
             selectedComponent.Item2.Refresh();
         }
 
         private void Score_Paint(object sender, PaintEventArgs e)
         {
-            viewComponents.Find(x => x.Item2.Equals((PictureBox)sender)).Item1.PaintPanel(e);
+            viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender)).Item1.PaintPanel(e);
         }
 
         private void Score_Scroll(object sender, ScrollEventArgs e)
         {
             //クリックされたHScrollBarに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponents.Find(x => x.Item3.Equals((HScrollBar)sender));
+                viewComponentList.Find(x => x.Item3.Equals((HScrollBar)sender));
             selectedComponent.Item1.HSBarScroll(e);
             selectedComponent.Item2.Refresh();
         }
