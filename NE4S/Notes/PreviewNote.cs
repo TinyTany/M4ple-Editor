@@ -13,12 +13,12 @@ namespace NE4S.Notes
     {
         private RectangleF note;
 		public PointF Location { get; set; }
-        public bool Visible { get; set; } = true;
+        public bool Visible { get; set; } = false;
         public bool Enable { get; set; } = true;
 
         public PreviewNote()
         {
-            note = new RectangleF();
+			note = new RectangleF();
         }
 
         public void Paint(PaintEventArgs e)
