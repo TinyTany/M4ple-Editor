@@ -47,9 +47,16 @@ namespace NE4S
                 //初期化した部品たちをタプルにしてリストに追加
                 viewComponentList.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
-        }
+			InitializeToolStrip();
+			tsbAdd.Click += new EventHandler(tbsAdd_Click);
+			tsbEdit.Click += new EventHandler(tbsEdit_Click);
+			tsbDelete.Click += new EventHandler(tbsDelete_Click);
+			tsbInvisibleSlideTap.Click += new EventHandler(tbsInvisibleSlideTap_Click);
+			tscbBeat.SelectedIndexChanged += new EventHandler(tscbBeat_SelectedIndexChanged);
+			tscbGrid.SelectedIndexChanged += new EventHandler(tscbGrid_SelectedIndexChanged);
+		}
 
-        private void Score_MouseUp(object sender, MouseEventArgs e)
+		private void Score_MouseUp(object sender, MouseEventArgs e)
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
@@ -116,5 +123,66 @@ namespace NE4S
             selectedComponent.Item1.HSBarScroll(e);
             selectedComponent.Item2.Refresh();
         }
-    }
+
+		private void InitializeToolStrip()
+		{
+			tscbBeat.SelectedIndex = tscbBeat.Items.IndexOf(Status.Beat.ToString());
+			tscbGrid.SelectedIndex = tscbGrid.Items.IndexOf(Status.Grid.ToString());
+			tsbInvisibleSlideTap.Checked = Status.InvisibleSlideTap;
+			switch (Status.Mode)
+			{
+				case Define.ADD:
+					tsbAdd.Checked = true;
+					break;
+				case Define.EDIT:
+					tsbEdit.Checked = true;
+					break;
+				case Define.DELETE:
+					tsbDelete.Checked = true;
+					break;
+				default:
+					break;
+			}
+		}
+
+		private void tbsAdd_Click(object sender, EventArgs e)
+		{
+			tsbAdd.Checked = true;
+			tsbEdit.Checked = false;
+			tsbDelete.Checked = false;
+			Status.Mode = Define.ADD;
+		}
+
+		private void tbsEdit_Click(object sender, EventArgs e)
+		{
+			tsbAdd.Checked = false;
+			tsbEdit.Checked = true;
+			tsbDelete.Checked = false;
+			Status.Mode = Define.EDIT;
+		}
+
+		private void tbsDelete_Click(object sender, EventArgs e)
+		{
+			tsbAdd.Checked = false;
+			tsbEdit.Checked = false;
+			tsbDelete.Checked = true;
+			Status.Mode = Define.DELETE;
+		}
+
+		private void tbsInvisibleSlideTap_Click(object sender, EventArgs e)
+		{
+			tsbInvisibleSlideTap.Checked = !tsbInvisibleSlideTap.Checked;
+			Status.InvisibleSlideTap = tsbInvisibleSlideTap.Checked;
+		}
+
+		private void tscbBeat_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Status.Beat = int.Parse(tscbBeat.Text);
+		}
+
+		private void tscbGrid_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Status.Grid = int.Parse(tscbGrid.Text);
+		}
+	}
 }
