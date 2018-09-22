@@ -22,7 +22,7 @@ namespace NE4S.Scores
 
 #if DEBUG
 		/// <summary>
-		/// 試作
+		/// マウス座標（グリッド）から譜面座標を計算
 		/// </summary>
 		public void CalculatePos(int pX, int pY)
 		{

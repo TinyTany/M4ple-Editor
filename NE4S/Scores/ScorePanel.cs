@@ -21,10 +21,7 @@ namespace NE4S.Scores
         private Model model;
         private HScrollBar hSBar;
         private PictureBox pBox;
-#if DEBUG
-        //private Rectangle rec;
         private PreviewNote pNote;
-#endif
 
         class Margin
         {
@@ -45,9 +42,10 @@ namespace NE4S.Scores
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
+			pNote = new PreviewNote();
 #if DEBUG
-            //*
-            SetScore(4, 4, 10);
+			//*
+			SetScore(4, 4, 10);
             SetScore(3, 4, 5);
             SetScore(6, 8, 8);
             //
@@ -61,12 +59,12 @@ namespace NE4S.Scores
             SetScore(4, 4, 1);
             SetScore(8, 8, 1);
             SetScore(16, 16, 1);
-            //*/
-            //SetScore(4, 4, 1000);
-            
-            pNote = new PreviewNote();
+			//*/
+			//SetScore(4, 4, 1000);
+#else
+			SetScore(4, 4, 200);
 #endif
-        }
+		}
 
         /// <summary>
         /// 末尾に指定した拍子数の譜面を指定した個数追加
@@ -163,14 +161,12 @@ namespace NE4S.Scores
 
         public void MouseClick(MouseEventArgs e)
         {
-#if DEBUG
             //クリックされたレーンを特定
             ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
             if (selectedLane != null && selectedLane.SelectedScore(currentPositionX + e.X, e.Y) != null && e.Button == MouseButtons.Right)
             {
                 new EditCMenu(this, selectedLane, selectedLane.SelectedScore(currentPositionX + e.X, e.Y)).Show(pBox, e.Location);
             }
-#endif
         }
 
         public void MouseDown(MouseEventArgs e)
@@ -268,10 +264,7 @@ namespace NE4S.Scores
                     lanes[i].PaintLane(e, drawPosX, drawPosY);
                 }
             }
-#if DEBUG
-            //e.Graphics.FillRectangle(Brushes.Red, rec);
             pNote.Paint(e);
-#endif
         }
     }
 }

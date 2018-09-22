@@ -207,7 +207,6 @@ namespace NE4S.Scores
         /// <returns>クリックされたScore</returns>
         public Score SelectedScore(int pX, int pY)
         {
-			//FIX: エラーが出るから修正する。クリックに対して正しくScoreを検索できていない。
 			if(materialList.Find(x => x.HitRect.Contains(pX, pY)) == null)
 			{
 				System.Diagnostics.Debug.WriteLine("SelectedScore(Point) : null");
