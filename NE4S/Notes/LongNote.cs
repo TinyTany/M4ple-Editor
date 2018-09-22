@@ -11,16 +11,16 @@ namespace NE4S.Notes
     /// </summary>
     public class LongNote
     {
-        private List<Note> notes;
+        private List<Note> noteList;
 
         public LongNote()
         {
-            notes = new List<Note>();
+            noteList = new List<Note>();
         }
 
         public List<Note> Notes
         {
-            get { return this.notes; }
+            get { return this.noteList; }
         }
     }
 }
