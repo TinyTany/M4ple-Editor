@@ -14,11 +14,16 @@ namespace NE4S.Notes
         private int size;
         private Pos pos;
 
-        public Note()
+		public Note()
+		{
+			size = 0;
+			pos = null;
+		}
+
+        public Note(int size, Pos pos)
         {
-            size = 0;
-			//HACK: その場しのぎなので実装時に適当に直す
-            pos = null;
+			this.size = size;
+			this.pos = pos;
         }
 
         public int Size
