@@ -20,8 +20,6 @@ namespace NE4S.Notes
 #if DEBUG
 		public override void Draw(PaintEventArgs e, RectangleF hitRect)
 		{
-			//描画時にレーンの線の間にノーツがうまくハマるようにする
-			++hitRect.X; --hitRect.Width; hitRect.Y -= 2;
 			using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(255, 255, 0, 0)))
 			{
 				e.Graphics.FillRectangle(myBrush, hitRect);

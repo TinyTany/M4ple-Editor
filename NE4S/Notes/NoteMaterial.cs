@@ -17,6 +17,8 @@ namespace NE4S.Notes
 		{
 			this.note = note;
 			this.hitRect = hitRect;
+			//描画時にレーンの線の間にノーツがうまくハマるようにする
+			++this.hitRect.X; --this.hitRect.Width; this.hitRect.Y -= 2;
 		}
 
 		public Note Note
