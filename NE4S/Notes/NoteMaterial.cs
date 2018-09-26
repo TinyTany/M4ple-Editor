@@ -31,9 +31,9 @@ namespace NE4S.Notes
 			get { return hitRect; }
 		}
 
-		public void PaintNote(PaintEventArgs e, int drawPosX)
+		public void PaintNote(PaintEventArgs e, float originPosX, float originPosY)
 		{
-			RectangleF drawRect = new RectangleF(hitRect.X - drawPosX, hitRect.Y, hitRect.Width, hitRect.Height);
+			RectangleF drawRect = new RectangleF(hitRect.X - originPosX, hitRect.Y - originPosY, hitRect.Width, hitRect.Height);
 			note.Draw(e, drawRect);
 		}
 	}

@@ -171,17 +171,37 @@ namespace NE4S.Scores
 
         public void MouseDown(MouseEventArgs e)
         {
+			Status.IsMousePressed = true;
 #if DEBUG
 			ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 			if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
-				selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y).PrintPos();
+				if(selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y) != null)
+				{
+					selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y).PrintPos();
+				}
+				else
+				{
+					System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane.GetPos = null");
+				}
 			}
-			if (selectedLane != null && e.Button == MouseButtons.Left && Status.Mode == Define.ADD)
+			if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
-				Point gridPoint = PointToGrid(e.Location, selectedLane);
-				selectedLane.AddNote(gridPoint.X + currentPositionX, gridPoint.Y);
+				switch (Status.Mode)
+				{
+					case Define.ADD:
+						Point gridPoint = PointToGrid(e.Location, selectedLane);
+						selectedLane.AddNote(gridPoint.X + currentPositionX, gridPoint.Y, model);
+						break;
+					case Define.EDIT:
+
+						break;
+					case Define.DELETE:
+						break;
+					default:
+						break;
+				}
 			}
             if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 #endif
@@ -201,12 +221,16 @@ namespace NE4S.Scores
                 {
                     pNote.Visible = false;
                 }
+				if (Status.IsMousePressed)
+				{
+
+				}
             }
         }
 
         public void MouseUp(MouseEventArgs e)
         {
-
+			Status.IsMousePressed = false;
         }
 
         public void MouseEnter(EventArgs e)
@@ -256,21 +280,30 @@ namespace NE4S.Scores
         }
 
         public void PaintPanel(PaintEventArgs e)
-        {
-            for(int i = 0; i < lanes.Count; ++i)
+		{
+#if DEBUG
+			int num = 0;
+#endif
+			for(int i = 0; i < lanes.Count; ++i)
             {
                 //ScoreLaneが表示範囲内にあるか
                 if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
                     (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + panelSize.Width)
                 {
-                    //ScoreLaneの相対位置（PictureBox上での絶対位置）のX座標を設定
-                    int drawPosX = ((int)ScoreLane.Width + Margin.Left + Margin.Right) * i - currentPositionX + Margin.Left;
-                    int drawPosY = Margin.Top;
+					//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
+					int originPosX = currentPositionX;
+					int originPosY = 0;
                     //ScoreLaneを描画
-                    lanes[i].PaintLane(e, drawPosX, drawPosY);
-                }
+                    lanes[i].PaintLane(e, originPosX, originPosY);
+#if DEBUG
+					++num;
+#endif
+				}
             }
             pNote.Paint(e);
-        }
+#if DEBUG
+			//System.Diagnostics.Debug.WriteLine(num);
+#endif
+		}
     }
 }

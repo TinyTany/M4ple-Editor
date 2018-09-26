@@ -20,6 +20,7 @@ namespace NE4S.Scores
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
         private float currentBarSize;
         private int index;
+		private RectangleF drawRegion;
         private RectangleF hitRect;
         private List<NoteMaterial> noteMaterialList;
         private List<ScoreMaterial> scoreMaterialList;
@@ -38,15 +39,27 @@ namespace NE4S.Scores
         /// </summary>
         public RectangleF HitRect
         {
-            get {
-                hitRect.Size = new SizeF(
-					scoreWidth, 
-					ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * currentBarSize);
-                hitRect.Location = new PointF(
-                    index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
-                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRect.Height);
-                return hitRect; }
+            get { setHitRect(); return hitRect; }
         }
+
+		/// <summary>
+		/// drawRectも同時に更新
+		/// </summary>
+		private void setHitRect()
+		{
+			hitRect.Size = new SizeF(
+				scoreWidth,
+				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * currentBarSize);
+			hitRect.Location = new PointF(
+				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
+				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRect.Height);
+			drawRegion.Size = new SizeF(
+				Margin.Left + scoreWidth + Margin.Right,
+				Margin.Top + maxScoreHeight + Margin.Bottom);
+			drawRegion.Location = new PointF(
+				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left,
+				ScoreInfo.PanelMargin.Top);
+		}
 
         public int Index
         {
@@ -69,6 +82,7 @@ namespace NE4S.Scores
             scoreMaterialList = new List<ScoreMaterial>();
             currentBarSize = 0;
             hitRect = new RectangleF();
+			drawRegion = new RectangleF();
             index = -1;
         }
 
@@ -110,7 +124,7 @@ namespace NE4S.Scores
         /// <param name="newRange">追加するRegion</param>
         public void AddScore(Score newScore, Range newRange)
         {
-            if (newScore != null && newRange != null)
+			if (newScore != null && newRange != null)
             {
                 float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * currentBarSize;
 				float physicalHeight = newScore.Height * newRange.Size() / newScore.BeatNumer;
@@ -151,7 +165,7 @@ namespace NE4S.Scores
         /// <param name="score">削除対象のScore</param>
         public void DeleteScore(Score score)
         {
-            if (score != null && Contains(score))
+			if (score != null && Contains(score))
             {
                 currentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
                 scoreMaterialList.Remove(scoreMaterialList.Find(x => x.Score.Equals(score)));
@@ -244,7 +258,7 @@ namespace NE4S.Scores
 		/// </summary>
 		/// <param name="pX">仮想譜面パネルX座標</param>
 		/// <param name="pY">仮想譜面パネルY座標</param>
-		public void AddNote(int pX, int pY)
+		public void AddNote(int pX, int pY, Model model)
 		{
 			Note newNote = null;
 			Pos pos = GetPos(pX, pY);
@@ -257,12 +271,60 @@ namespace NE4S.Scores
 					newNote = new ExTap(Status.NoteSize, pos);
 					break;
 				case Define.AWEXTAP:
+					newNote = new AwesomeExTap(Status.NoteSize, pos);
 					break;
 				case Define.HELL:
+					newNote = new HellTap(Status.NoteSize, pos);
 					break;
 				case Define.FLICK:
+					newNote = new Flick(Status.NoteSize, pos);
+					break;
+				case Define.HOLD:
+					if (Status.IsMousePressed)
+					{
+
+					}
+					else
+					{
+
+					}
+					break;
+				case Define.SLIDE:
+					if (Status.IsMousePressed)
+					{
+
+					}
+					else
+					{
+
+					}
+					break;
+				case Define.SLIDECURVE:
+					break;
+				case Define.AIRUPC:
+					break;
+				case Define.AIRUPL:
+					break;
+				case Define.AIRUPR:
+					break;
+				case Define.AIRDOWNC:
+					break;
+				case Define.AIRDOWNL:
+					break;
+				case Define.AIRDOWNR:
+					break;
+				case Define.AIRHOLD:
+					if (Status.IsMousePressed)
+					{
+
+					}
+					else
+					{
+
+					}
 					break;
 				default:
+					newNote = new Note(Status.NoteSize, pos);
 					break;
 			}
 			RectangleF hitRect = new RectangleF(
@@ -272,6 +334,8 @@ namespace NE4S.Scores
 				ScoreInfo.NoteHeight);
 			noteMaterialList.Add(new NoteMaterial(newNote, hitRect));
 			//TODO: modelにもnewNoteを追加する
+			//した
+			model.AddNote(newNote);
 		}
 
 		/// <summary>
@@ -280,8 +344,13 @@ namespace NE4S.Scores
 		/// <param name="e">描画対象</param>
 		/// <param name="drawPosX">描画位置の右上のX座標</param>
 		/// <param name="drawPosY">描画位置の右上のY座標</param>
-		public void PaintLane(PaintEventArgs e, int drawPosX, int drawPosY)
+		public void PaintLane(PaintEventArgs e, int originPosX, int originPosY)
         {
+			//HACK: 後々改善したほうが良い
+			//正しく描画するためにdrawRectを更新したい
+			setHitRect();
+			float drawPosX = drawRegion.X - originPosX;
+			float drawPosY = drawRegion.Y - originPosY;
             //レーン背景を黒塗り
             e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, Width, Height));
             //Score描画用のY座標の初期座標を画面最下に設定
@@ -317,7 +386,7 @@ namespace NE4S.Scores
 			//ノーツを描画
 			foreach (NoteMaterial note in noteMaterialList)
 			{
-				note.PaintNote(e, drawPosX);
+				note.PaintNote(e, originPosX, originPosY);
 			}
 #if DEBUG
             e.Graphics.DrawString(Index.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
