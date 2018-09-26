@@ -61,5 +61,15 @@ namespace NE4S
         {
             return scoreBook.Last();
         }
+
+		public void AddNote(Note newNote)
+		{
+			noteBook.Add(newNote);
+		}
+
+		public void AddNote(LongNote newLongNote)
+		{
+			noteBook.Add(newLongNote);
+		}
     }
 }

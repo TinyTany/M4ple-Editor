@@ -15,7 +15,7 @@ namespace NE4S.Notes
         private List<Hold> holdNotes;
         private List<Slide> slideNotes;
         private List<AirHold> airHoldNotes;
-        private List<Note> airNotes;
+        private List<Air> airNotes;
 
         public NoteBook()
         {
@@ -23,7 +23,20 @@ namespace NE4S.Notes
             holdNotes = new List<Hold>();
             slideNotes = new List<Slide>();
             airHoldNotes = new List<AirHold>();
-            airNotes = new List<Note>();
+            airNotes = new List<Air>();
         }
+
+		public void Add(Note newNote)
+		{
+			if (newNote is Air) airNotes.Add(newNote as Air);
+			else shortNotes.Add(newNote);
+		}
+
+		public void Add(LongNote newLongNote)
+		{
+			if (newLongNote is Hold) holdNotes.Add(newLongNote as Hold);
+			else if (newLongNote is Slide) slideNotes.Add(newLongNote as Slide);
+			else if (newLongNote is AirHold) airHoldNotes.Add(newLongNote as AirHold);
+		}
     }
 }
