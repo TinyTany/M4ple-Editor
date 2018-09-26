@@ -41,28 +41,28 @@
 			this.Score2 = new System.Windows.Forms.TabPage();
 			this.Score3 = new System.Windows.Forms.TabPage();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-			this.tsbNew = new System.Windows.Forms.ToolStripButton();
-			this.tsbOpen = new System.Windows.Forms.ToolStripButton();
-			this.tsbSave = new System.Windows.Forms.ToolStripButton();
-			this.tsbExport = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.tsbCut = new System.Windows.Forms.ToolStripButton();
-			this.tsbCopy = new System.Windows.Forms.ToolStripButton();
-			this.tsbPaste = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.tsbAdd = new System.Windows.Forms.ToolStripButton();
-			this.tsbEdit = new System.Windows.Forms.ToolStripButton();
-			this.tsbDelete = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.tslBeat = new System.Windows.Forms.ToolStripLabel();
 			this.tscbBeat = new System.Windows.Forms.ToolStripComboBox();
 			this.tslGrid = new System.Windows.Forms.ToolStripLabel();
 			this.tscbGrid = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.tsbInvisibleSlideTap = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
 			this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
+			this.tsbNew = new System.Windows.Forms.ToolStripButton();
+			this.tsbOpen = new System.Windows.Forms.ToolStripButton();
+			this.tsbSave = new System.Windows.Forms.ToolStripButton();
+			this.tsbExport = new System.Windows.Forms.ToolStripButton();
+			this.tsbCut = new System.Windows.Forms.ToolStripButton();
+			this.tsbCopy = new System.Windows.Forms.ToolStripButton();
+			this.tsbPaste = new System.Windows.Forms.ToolStripButton();
+			this.tsbAdd = new System.Windows.Forms.ToolStripButton();
+			this.tsbEdit = new System.Windows.Forms.ToolStripButton();
+			this.tsbDelete = new System.Windows.Forms.ToolStripButton();
+			this.tsbInvisibleSlideTap = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1.SuspendLayout();
 			this.tabNoteButton.SuspendLayout();
 			this.tabScore.SuspendLayout();
@@ -113,6 +113,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.AutoScroll = true;
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -204,105 +205,15 @@
 			this.toolStrip1.TabIndex = 3;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
-			// tsbNew
-			// 
-			this.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbNew.Image = global::NE4S.Properties.Resources.NewFile_16x;
-			this.tsbNew.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbNew.Name = "tsbNew";
-			this.tsbNew.Size = new System.Drawing.Size(23, 22);
-			this.tsbNew.Text = "新規作成";
-			// 
-			// tsbOpen
-			// 
-			this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbOpen.Image = global::NE4S.Properties.Resources.OpenFolder_16x;
-			this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbOpen.Name = "tsbOpen";
-			this.tsbOpen.Size = new System.Drawing.Size(23, 22);
-			this.tsbOpen.Text = "開く";
-			// 
-			// tsbSave
-			// 
-			this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbSave.Image = global::NE4S.Properties.Resources.Save_16x;
-			this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbSave.Name = "tsbSave";
-			this.tsbSave.Size = new System.Drawing.Size(23, 22);
-			this.tsbSave.Text = "上書き保存";
-			// 
-			// tsbExport
-			// 
-			this.tsbExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbExport.Image = global::NE4S.Properties.Resources.ExportFile_16x;
-			this.tsbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbExport.Name = "tsbExport";
-			this.tsbExport.Size = new System.Drawing.Size(23, 22);
-			this.tsbExport.Text = "上書きエクスポート";
-			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
 			// 
-			// tsbCut
-			// 
-			this.tsbCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbCut.Image = global::NE4S.Properties.Resources.Cut_16x;
-			this.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbCut.Name = "tsbCut";
-			this.tsbCut.Size = new System.Drawing.Size(23, 22);
-			this.tsbCut.Text = "切り取り";
-			// 
-			// tsbCopy
-			// 
-			this.tsbCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbCopy.Image = global::NE4S.Properties.Resources.Copy_16x;
-			this.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbCopy.Name = "tsbCopy";
-			this.tsbCopy.Size = new System.Drawing.Size(23, 22);
-			this.tsbCopy.Text = "コピー";
-			// 
-			// tsbPaste
-			// 
-			this.tsbPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbPaste.Image = global::NE4S.Properties.Resources.Paste_16x;
-			this.tsbPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbPaste.Name = "tsbPaste";
-			this.tsbPaste.Size = new System.Drawing.Size(23, 22);
-			this.tsbPaste.Text = "貼り付け";
-			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
 			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-			// 
-			// tsbAdd
-			// 
-			this.tsbAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbAdd.Image = ((System.Drawing.Image)(resources.GetObject("tsbAdd.Image")));
-			this.tsbAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbAdd.Name = "tsbAdd";
-			this.tsbAdd.Size = new System.Drawing.Size(33, 22);
-			this.tsbAdd.Text = "Add";
-			// 
-			// tsbEdit
-			// 
-			this.tsbEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsbEdit.Image")));
-			this.tsbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbEdit.Name = "tsbEdit";
-			this.tsbEdit.Size = new System.Drawing.Size(31, 22);
-			this.tsbEdit.Text = "Edit";
-			// 
-			// tsbDelete
-			// 
-			this.tsbDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsbDelete.Image")));
-			this.tsbDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbDelete.Name = "tsbDelete";
-			this.tsbDelete.Size = new System.Drawing.Size(44, 22);
-			this.tsbDelete.Text = "Delete";
 			// 
 			// toolStripSeparator3
 			// 
@@ -354,16 +265,6 @@
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
 			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
 			// 
-			// tsbInvisibleSlideTap
-			// 
-			this.tsbInvisibleSlideTap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbInvisibleSlideTap.Image = ((System.Drawing.Image)(resources.GetObject("tsbInvisibleSlideTap.Image")));
-			this.tsbInvisibleSlideTap.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbInvisibleSlideTap.Name = "tsbInvisibleSlideTap";
-			this.tsbInvisibleSlideTap.Size = new System.Drawing.Size(97, 22);
-			this.tsbInvisibleSlideTap.Text = "InvisibleSlideTap";
-			this.tsbInvisibleSlideTap.ToolTipText = "Slide中継点を不可視にする";
-			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
@@ -382,6 +283,106 @@
 			this.tslRealNotes.Size = new System.Drawing.Size(109, 22);
 			this.tslRealNotes.Text = "Total notes (real) : 0";
 			this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
+			// 
+			// tsbNew
+			// 
+			this.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbNew.Image = global::NE4S.Properties.Resources.NewFile_16x;
+			this.tsbNew.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbNew.Name = "tsbNew";
+			this.tsbNew.Size = new System.Drawing.Size(23, 22);
+			this.tsbNew.Text = "新規作成";
+			// 
+			// tsbOpen
+			// 
+			this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbOpen.Image = global::NE4S.Properties.Resources.OpenFolder_16x;
+			this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbOpen.Name = "tsbOpen";
+			this.tsbOpen.Size = new System.Drawing.Size(23, 22);
+			this.tsbOpen.Text = "開く";
+			// 
+			// tsbSave
+			// 
+			this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbSave.Image = global::NE4S.Properties.Resources.Save_16x;
+			this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbSave.Name = "tsbSave";
+			this.tsbSave.Size = new System.Drawing.Size(23, 22);
+			this.tsbSave.Text = "上書き保存";
+			// 
+			// tsbExport
+			// 
+			this.tsbExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbExport.Image = global::NE4S.Properties.Resources.ExportFile_16x;
+			this.tsbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbExport.Name = "tsbExport";
+			this.tsbExport.Size = new System.Drawing.Size(23, 22);
+			this.tsbExport.Text = "上書きエクスポート";
+			// 
+			// tsbCut
+			// 
+			this.tsbCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbCut.Image = global::NE4S.Properties.Resources.Cut_16x;
+			this.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbCut.Name = "tsbCut";
+			this.tsbCut.Size = new System.Drawing.Size(23, 22);
+			this.tsbCut.Text = "切り取り";
+			// 
+			// tsbCopy
+			// 
+			this.tsbCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbCopy.Image = global::NE4S.Properties.Resources.Copy_16x;
+			this.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbCopy.Name = "tsbCopy";
+			this.tsbCopy.Size = new System.Drawing.Size(23, 22);
+			this.tsbCopy.Text = "コピー";
+			// 
+			// tsbPaste
+			// 
+			this.tsbPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbPaste.Image = global::NE4S.Properties.Resources.Paste_16x;
+			this.tsbPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbPaste.Name = "tsbPaste";
+			this.tsbPaste.Size = new System.Drawing.Size(23, 22);
+			this.tsbPaste.Text = "貼り付け";
+			// 
+			// tsbAdd
+			// 
+			this.tsbAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsbAdd.Image = ((System.Drawing.Image)(resources.GetObject("tsbAdd.Image")));
+			this.tsbAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbAdd.Name = "tsbAdd";
+			this.tsbAdd.Size = new System.Drawing.Size(33, 22);
+			this.tsbAdd.Text = "Add";
+			// 
+			// tsbEdit
+			// 
+			this.tsbEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsbEdit.Image")));
+			this.tsbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbEdit.Name = "tsbEdit";
+			this.tsbEdit.Size = new System.Drawing.Size(31, 22);
+			this.tsbEdit.Text = "Edit";
+			// 
+			// tsbDelete
+			// 
+			this.tsbDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsbDelete.Image = ((System.Drawing.Image)(resources.GetObject("tsbDelete.Image")));
+			this.tsbDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbDelete.Name = "tsbDelete";
+			this.tsbDelete.Size = new System.Drawing.Size(44, 22);
+			this.tsbDelete.Text = "Delete";
+			// 
+			// tsbInvisibleSlideTap
+			// 
+			this.tsbInvisibleSlideTap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsbInvisibleSlideTap.Image = ((System.Drawing.Image)(resources.GetObject("tsbInvisibleSlideTap.Image")));
+			this.tsbInvisibleSlideTap.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbInvisibleSlideTap.Name = "tsbInvisibleSlideTap";
+			this.tsbInvisibleSlideTap.Size = new System.Drawing.Size(97, 22);
+			this.tsbInvisibleSlideTap.Text = "InvisibleSlideTap";
+			this.tsbInvisibleSlideTap.ToolTipText = "Slide中継点を不可視にする";
 			// 
 			// MainForm
 			// 
