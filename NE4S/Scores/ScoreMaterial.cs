@@ -24,19 +24,19 @@ namespace NE4S.Scores
 		/// <summary>
 		/// マウス座標（グリッド）から譜面座標を計算
 		/// </summary>
-		public void CalculatePos(int pX, int pY)
+		public Pos CalculatePos(int pX, int pY)
 		{
 			PointF normalizedPos = new PointF(
 				pX - hitRect.X,
 				hitRect.Height - (pY - hitRect.Y) + ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * (scoreRange.Inf - 1) / score.BeatDenom
 				);
 			Pos pos = new Pos(score.Index + 1, (int)(normalizedPos.Y / ScoreInfo.MaxBeatHeight), ScoreInfo.MaxBeatDiv, (int)(normalizedPos.X / ScoreInfo.MinLaneWidth));
-			pos.PrintPos();
+			return pos;
 		}
 
-		public void CalculatePos(Point p)
+		public Pos CalculatePos(Point p)
 		{
-			CalculatePos(p.X, p.Y);
+			return CalculatePos(p.X, p.Y);
 		}
 #endif
 

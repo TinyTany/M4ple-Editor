@@ -163,7 +163,7 @@ namespace NE4S.Scores
         {
             //クリックされたレーンを特定
             ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
-            if (selectedLane != null && selectedLane.SelectedScore(currentPositionX + e.X, e.Y) != null && e.Button == MouseButtons.Right)
+            if (selectedLane != null && selectedLane.SelectedScore(currentPositionX + e.X, e.Y) != null && e.Button == MouseButtons.Right && Status.Mode == Define.EDIT)
             {
                 new EditCMenu(this, selectedLane, selectedLane.SelectedScore(currentPositionX + e.X, e.Y)).Show(pBox, e.Location);
             }
@@ -176,7 +176,12 @@ namespace NE4S.Scores
 			if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
-				selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
+				selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y).PrintPos();
+			}
+			if (selectedLane != null && e.Button == MouseButtons.Left && Status.Mode == Define.ADD)
+			{
+				Point gridPoint = PointToGrid(e.Location, selectedLane);
+				selectedLane.AddNote(gridPoint.X + currentPositionX, gridPoint.Y);
 			}
             if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 #endif
@@ -191,7 +196,8 @@ namespace NE4S.Scores
                 {
                     pNote.Location = PointToGrid(e.Location, selectedLane);
                     pNote.Visible = true;
-                }else
+                }
+				else
                 {
                     pNote.Visible = false;
                 }
@@ -257,7 +263,7 @@ namespace NE4S.Scores
                 if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
                     (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + panelSize.Width)
                 {
-                    //ScoreLaneの相対位置のX座標を設定
+                    //ScoreLaneの相対位置（PictureBox上での絶対位置）のX座標を設定
                     int drawPosX = ((int)ScoreLane.Width + Margin.Left + Margin.Right) * i - currentPositionX + Margin.Left;
                     int drawPosY = Margin.Top;
                     //ScoreLaneを描画
