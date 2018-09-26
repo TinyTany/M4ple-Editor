@@ -207,7 +207,7 @@
 			// tsbNew
 			// 
 			this.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbNew.Image = ((System.Drawing.Image)(resources.GetObject("tsbNew.Image")));
+			this.tsbNew.Image = global::NE4S.Properties.Resources.NewFile_16x;
 			this.tsbNew.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbNew.Name = "tsbNew";
 			this.tsbNew.Size = new System.Drawing.Size(23, 22);
@@ -216,7 +216,7 @@
 			// tsbOpen
 			// 
 			this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbOpen.Image = ((System.Drawing.Image)(resources.GetObject("tsbOpen.Image")));
+			this.tsbOpen.Image = global::NE4S.Properties.Resources.OpenFolder_16x;
 			this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbOpen.Name = "tsbOpen";
 			this.tsbOpen.Size = new System.Drawing.Size(23, 22);
@@ -225,7 +225,7 @@
 			// tsbSave
 			// 
 			this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbSave.Image = ((System.Drawing.Image)(resources.GetObject("tsbSave.Image")));
+			this.tsbSave.Image = global::NE4S.Properties.Resources.Save_16x;
 			this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbSave.Name = "tsbSave";
 			this.tsbSave.Size = new System.Drawing.Size(23, 22);
@@ -234,7 +234,7 @@
 			// tsbExport
 			// 
 			this.tsbExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbExport.Image = ((System.Drawing.Image)(resources.GetObject("tsbExport.Image")));
+			this.tsbExport.Image = global::NE4S.Properties.Resources.ExportFile_16x;
 			this.tsbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbExport.Name = "tsbExport";
 			this.tsbExport.Size = new System.Drawing.Size(23, 22);
@@ -248,7 +248,7 @@
 			// tsbCut
 			// 
 			this.tsbCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbCut.Image = ((System.Drawing.Image)(resources.GetObject("tsbCut.Image")));
+			this.tsbCut.Image = global::NE4S.Properties.Resources.Cut_16x;
 			this.tsbCut.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbCut.Name = "tsbCut";
 			this.tsbCut.Size = new System.Drawing.Size(23, 22);
@@ -257,7 +257,7 @@
 			// tsbCopy
 			// 
 			this.tsbCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbCopy.Image = ((System.Drawing.Image)(resources.GetObject("tsbCopy.Image")));
+			this.tsbCopy.Image = global::NE4S.Properties.Resources.Copy_16x;
 			this.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbCopy.Name = "tsbCopy";
 			this.tsbCopy.Size = new System.Drawing.Size(23, 22);
@@ -266,7 +266,7 @@
 			// tsbPaste
 			// 
 			this.tsbPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbPaste.Image = ((System.Drawing.Image)(resources.GetObject("tsbPaste.Image")));
+			this.tsbPaste.Image = global::NE4S.Properties.Resources.Paste_16x;
 			this.tsbPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbPaste.Name = "tsbPaste";
 			this.tsbPaste.Size = new System.Drawing.Size(23, 22);
