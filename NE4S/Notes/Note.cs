@@ -40,6 +40,10 @@ namespace NE4S.Notes
 
 		public virtual void Draw(PaintEventArgs e, RectangleF hitRect)
 		{
+			using (SolidBrush myBrush = new SolidBrush(Color.White))
+			{
+				e.Graphics.FillRectangle(myBrush, hitRect);
+			}
 			return;
 		}
     }

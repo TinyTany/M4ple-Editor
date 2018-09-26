@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
@@ -22,5 +24,10 @@ namespace NE4S.Notes
         {
             get { return this.noteList; }
         }
+
+		public virtual void Draw(PaintEventArgs e)
+		{
+
+		}
     }
 }
