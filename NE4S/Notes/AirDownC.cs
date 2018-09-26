@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NE4S.Notes
 {
-    public class AirDownC : Note
+    public class AirDownC : Air
     {
         public AirDownC()
         {
