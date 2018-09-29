@@ -12,12 +12,15 @@ namespace NE4S.Scores
 		private Score score;
 		private Range scoreRange;
 		private RectangleF hitRect;
+		private float width, height;
 
 		public ScoreMaterial(Score score, Range scoreRange, RectangleF hitRect)
 		{
 			this.score = score;
 			this.scoreRange = scoreRange;
 			this.hitRect = hitRect;
+			width = score.Width;
+			height = score.Height * scoreRange.Size() / score.BeatDenom;
 		}
 
 #if DEBUG
@@ -53,6 +56,16 @@ namespace NE4S.Scores
 		public RectangleF HitRect
 		{
 			get { return hitRect; }
+		}
+
+		public float Width
+		{
+			get { return width; }
+		}
+
+		public float Height
+		{
+			get { return height; }
 		}
 	}
 }
