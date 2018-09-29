@@ -112,6 +112,7 @@
     <Compile Include="Scores\ScoreInfo.cs" />
     <Compile Include="Scores\ScoreLane.cs" />
     <Compile Include="Scores\ScoreMaterial.cs" />
+    <Compile Include="Scores\ScoreMaterialBook.cs" />
     <Compile Include="Scores\ScorePanel.cs" />
     <Compile Include="Status.cs" />
     <EmbeddedResource Include="Component\BarAddCustomForm.resx">
