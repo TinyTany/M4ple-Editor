@@ -10,13 +10,14 @@ namespace NE4S.Scores
     {
         public LaneBook()
         {
-            
+			
         }
 
         public void SetScore(Model model, int beatNumer, int beatDenom, int barCount)
         {
-            //新たに追加する譜面たちをリストでまとめる
-            List<Score> newScores = new List<Score>();
+			//新たに追加する譜面たちをリストでまとめる
+			//これはLaneBookではないのでRefreshIndex()が行われない
+			List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
             //まとめた譜面たちをmodelに入れる
             model.AppendScore(newScores);
@@ -76,6 +77,7 @@ namespace NE4S.Scores
             //scoreを初めて含むレーンを取得
             ScoreLane lane = Find(x => x.Contains(score));
             //新たに追加する譜面たちをリストでまとめる
+			//これはLaneBookではないのでRefreshIndex()が行われない
             List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
             //まとめた譜面たちをmodelに挿入

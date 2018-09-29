@@ -18,7 +18,7 @@ namespace NE4S.Scores
 
         public void Add(int beatNumer, int beatDenom)
         {
-            base.Add(new Score(beatNumer, beatDenom));
+			Add(new Score(beatNumer, beatDenom));
             SetScoreIndex();
         }
 
