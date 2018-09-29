@@ -20,8 +20,7 @@ namespace NE4S.Scores
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
         private float currentBarSize;
         private int index;
-		private RectangleF drawRegion;
-        private RectangleF hitRect;
+		private RectangleF drawRegion, hitRect;
         private List<NoteMaterial> noteMaterialList;
         private List<ScoreMaterial> scoreMaterialList;
 
@@ -31,25 +30,19 @@ namespace NE4S.Scores
         public float CurrentBarSize
         {
             get { return currentBarSize; }
-			private set { currentBarSize = value; setRects(); }
         }
 
-		/// <summary>
+		// <summary>
 		/// ScoreLane当たり判定領域
 		/// PictureBoxの左上を原点としたときの座標
 		/// index,currentBarSizeが変わると変わる
 		/// </summary>
-		//*
 		public RectangleF HitRect
-        {
-            get { return hitRect; }
-        }
-		//*/
+		{
+			get { return hitRect; }
+		}
 
-		/// <summary>
-		/// hitRect,drawRectを更新
-		/// </summary>
-		private void setRects()
+		private void refreshRects()
 		{
 			hitRect.Size = new SizeF(
 				scoreWidth,
@@ -65,10 +58,25 @@ namespace NE4S.Scores
 				ScoreInfo.PanelMargin.Top);
 		}
 
-        public int Index
+		private void refreshScoreMaterialList()
+		{
+			//Scoreの当たり判定を更新する
+			float sumHeight = 0;
+			foreach (ScoreMaterial sMaterial in scoreMaterialList)
+			{
+				sMaterial.HitRect = new RectangleF(
+					hitRect.X,
+					ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + 1,
+					sMaterial.Width,
+					sMaterial.Height);
+				sumHeight += sMaterial.Height;
+			}
+		}
+
+		public int Index
         {
             get { return index; }
-            set { index = value; setRects(); }
+            set { index = value; refreshRects(); refreshScoreMaterialList(); }
         }
 
         class Margin
@@ -136,13 +144,16 @@ namespace NE4S.Scores
 				int normalizeDeltaHeight = 1;
 				//Scoreの当たり判定矩形を作成
 				RectangleF newScoreHitRect = new RectangleF(
-					HitRect.X,
+					hitRect.X,
                     ScoreInfo.PanelMargin.Top + Height - Margin.Bottom  - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
 					newScore.Width,
 					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
                 scoreMaterialList.Add(new ScoreMaterial(newScore, newRange, newScoreHitRect));
                 currentBarSize += newRange.Size() / (float)newScore.BeatDenom;
+				//HACK :currentBarSizeの値が変わるときに呼ぶ
+				//あんまり良くないので改善したい
+				refreshRects();
                 //
                 newScore.LinkCount++;
             }
@@ -172,23 +183,11 @@ namespace NE4S.Scores
 			if (score != null && Contains(score))
             {
                 currentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
+				//HACK :currentBarSizeの値が変わるときに呼ぶ
+				//あんまり良くないので改善したい
+				refreshRects();
                 scoreMaterialList.Remove(scoreMaterialList.Find(x => x.Score.Equals(score)));
-				//*
-				//Scoreの当たり判定を更新する
-				float sumHeight = 0;
-				for(int i = 0; i < scoreMaterialList.Count; ++i)
-				{
-					scoreMaterialList[i] = new ScoreMaterial(
-						scoreMaterialList[i].Score,
-						scoreMaterialList[i].Range,
-						new RectangleF(
-							HitRect.X, 
-							maxScoreHeight - sumHeight - scoreMaterialList[i].Height, 
-							scoreMaterialList[i].Width, 
-							scoreMaterialList[i].Height));
-					sumHeight += scoreMaterialList[i].Height;
-				}
-				//*/
+				refreshScoreMaterialList();
                 score.LinkCount--;
             }
             else
@@ -348,11 +347,11 @@ namespace NE4S.Scores
 		}
 
 		/// <summary>
-		/// 描画する
+		/// originPosXとoriginPosYは、ScorePanelでのcurrentPositionXと0が入る
 		/// </summary>
-		/// <param name="e">描画対象</param>
-		/// <param name="drawPosX">描画位置の右上のX座標</param>
-		/// <param name="drawPosY">描画位置の右上のY座標</param>
+		/// <param name="e"></param>
+		/// <param name="originPosX"></param>
+		/// <param name="originPosY"></param>
 		public void PaintLane(PaintEventArgs e, int originPosX, int originPosY)
         {
 			float drawPosX = drawRegion.X - originPosX;
@@ -366,7 +365,11 @@ namespace NE4S.Scores
             {
                 currentDrawPosY -= material.Score.Height * material.Range.Size() / material.Score.BeatNumer;
                 material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
-            }
+#if DEBUG
+				e.Graphics.DrawString(
+					material.HitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX + 10, currentDrawPosY + 10));
+#endif
+			}
             //tScoresの最後の要素のScoreが閉じているか判定
             if (scoreMaterialList.Any() && scoreMaterialList.Last().Range.Sup == scoreMaterialList.Last().Score.BeatNumer)
             {
