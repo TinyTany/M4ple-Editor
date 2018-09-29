@@ -20,7 +20,7 @@ namespace NE4S.Scores
 			this.scoreRange = scoreRange;
 			this.hitRect = hitRect;
 			width = score.Width;
-			height = score.Height * scoreRange.Size() / score.BeatDenom;
+			height = score.Height * scoreRange.Size() / score.BeatNumer;
 		}
 
 #if DEBUG
@@ -56,6 +56,7 @@ namespace NE4S.Scores
 		public RectangleF HitRect
 		{
 			get { return hitRect; }
+			set { hitRect = value; }
 		}
 
 		public float Width
