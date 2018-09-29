@@ -28,24 +28,28 @@ namespace NE4S.Scores
         /// <summary>
         /// ScoreLaneに入っているScoreたちの総サイズ
         /// </summary>
-        public double CurrentBarSize
+        public float CurrentBarSize
         {
             get { return currentBarSize; }
-        }
-
-        /// <summary>
-        /// ScoreLane当たり判定領域
-        /// PictureBoxの左上を原点としたときの座標
-        /// </summary>
-        public RectangleF HitRect
-        {
-            get { setHitRect(); return hitRect; }
+			private set { currentBarSize = value; setRects(); }
         }
 
 		/// <summary>
-		/// drawRectも同時に更新
+		/// ScoreLane当たり判定領域
+		/// PictureBoxの左上を原点としたときの座標
+		/// index,currentBarSizeが変わると変わる
 		/// </summary>
-		private void setHitRect()
+		//*
+		public RectangleF HitRect
+        {
+            get { return hitRect; }
+        }
+		//*/
+
+		/// <summary>
+		/// hitRect,drawRectを更新
+		/// </summary>
+		private void setRects()
 		{
 			hitRect.Size = new SizeF(
 				scoreWidth,
@@ -64,7 +68,7 @@ namespace NE4S.Scores
         public int Index
         {
             get { return index; }
-            set { index = value; }
+            set { index = value; setRects(); }
         }
 
         class Margin
@@ -169,6 +173,7 @@ namespace NE4S.Scores
             {
                 currentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
                 scoreMaterialList.Remove(scoreMaterialList.Find(x => x.Score.Equals(score)));
+				//*
 				//Scoreの当たり判定を更新する
 				float sumHeight = 0;
 				for(int i = 0; i < scoreMaterialList.Count; ++i)
@@ -176,10 +181,14 @@ namespace NE4S.Scores
 					scoreMaterialList[i] = new ScoreMaterial(
 						scoreMaterialList[i].Score,
 						scoreMaterialList[i].Range,
-						new RectangleF(HitRect.X, maxScoreHeight - sumHeight - scoreMaterialList[i].Score.Height, scoreMaterialList[i].Score.Width, scoreMaterialList[i].Score.Height));
-					sumHeight += scoreMaterialList[i].Score.Height;
+						new RectangleF(
+							HitRect.X, 
+							maxScoreHeight - sumHeight - scoreMaterialList[i].Height, 
+							scoreMaterialList[i].Width, 
+							scoreMaterialList[i].Height));
+					sumHeight += scoreMaterialList[i].Height;
 				}
-				//
+				//*/
                 score.LinkCount--;
             }
             else
@@ -346,9 +355,6 @@ namespace NE4S.Scores
 		/// <param name="drawPosY">描画位置の右上のY座標</param>
 		public void PaintLane(PaintEventArgs e, int originPosX, int originPosY)
         {
-			//HACK: 後々改善したほうが良い
-			//正しく描画するためにdrawRectを更新したい
-			setHitRect();
 			float drawPosX = drawRegion.X - originPosX;
 			float drawPosY = drawRegion.Y - originPosY;
             //レーン背景を黒塗り
