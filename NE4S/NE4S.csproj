@@ -84,6 +84,7 @@
     <Compile Include="Notes\AirUpL.cs" />
     <Compile Include="Notes\AirUpR.cs" />
     <Compile Include="Notes\AwesomeExTap.cs" />
+    <Compile Include="Notes\LongNoteMaterial.cs" />
     <Compile Include="Notes\NoteBook.cs" />
     <Compile Include="Notes\ExTap.cs" />
     <Compile Include="Notes\Flick.cs" />
