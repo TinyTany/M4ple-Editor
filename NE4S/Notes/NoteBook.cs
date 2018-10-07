@@ -38,5 +38,11 @@ namespace NE4S.Notes
 			else if (newLongNote is Slide) slideNotes.Add(newLongNote as Slide);
 			else if (newLongNote is AirHold) airHoldNotes.Add(newLongNote as AirHold);
 		}
+
+		public void Delete(Note note)
+		{
+			if (note is Air) airNotes.Remove(note as Air);
+			else shortNotes.Remove(note);
+		}
     }
 }

@@ -71,5 +71,10 @@ namespace NE4S
 		{
 			noteBook.Add(newLongNote);
 		}
+
+		public void DeleteNote(Note note)
+		{
+			noteBook.Delete(note);
+		}
     }
 }
