@@ -17,7 +17,7 @@ namespace NE4S.Scores
     {
         private Size panelSize;
         private int currentPositionX, currentWidthMax;
-        private LaneBook lanes;
+        private LaneBook laneBook;
         private Model model;
         private HScrollBar hSBar;
         private PictureBox pBox;
@@ -38,7 +38,7 @@ namespace NE4S.Scores
             panelSize = pBox.Size;
             currentPositionX = 0;
             currentWidthMax = 0;
-            lanes = new LaneBook();
+            laneBook = new LaneBook();
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
@@ -74,7 +74,7 @@ namespace NE4S.Scores
         /// <param name="barCount">個数</param>
         private void SetScore(int beatNumer, int beatDenom, int barCount)
         {
-            lanes.SetScore(model, beatNumer, beatDenom, barCount);
+            laneBook.SetScore(model, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -87,7 +87,7 @@ namespace NE4S.Scores
         /// <param name="barCount"></param>
         public void InsertScoreForward(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            lanes.InsetScoreForward(model, score, beatNumer, beatDenom, barCount);
+            laneBook.InsetScoreForward(model, score, beatNumer, beatDenom, barCount);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace NE4S.Scores
         /// <param name="barCount"></param>
         public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            lanes.InsertScoreBackward(model, score, beatNumer, beatDenom, barCount);
+            laneBook.InsertScoreBackward(model, score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -109,7 +109,7 @@ namespace NE4S.Scores
         /// <param name="score"></param>
         public void DivideLane(Score score)
         {
-            lanes.DivideLane(score);
+            laneBook.DivideLane(score);
             Update();
         }
 
@@ -129,7 +129,7 @@ namespace NE4S.Scores
         /// <param name="count">削除する個数</param>
         public void DeleteScore(Score score, int count)
         {
-            lanes.DeleteScore(model, score, count);
+            laneBook.DeleteScore(model, score, count);
             Update();
         }
 
@@ -138,7 +138,7 @@ namespace NE4S.Scores
         /// </summary>
         public void FillLane()
         {
-            if(lanes.Any()) FillLane(lanes.First());
+            if(laneBook.Any()) FillLane(laneBook.First());
         }
 
         /// <summary>
@@ -147,13 +147,13 @@ namespace NE4S.Scores
         /// <param name="begin"></param>
         public void FillLane(ScoreLane begin)
         {
-            lanes.FillLane(begin);
+            laneBook.FillLane(begin);
             Update();
         }
 
         private void Update()
         {
-            currentWidthMax = (int)(ScoreLane.Width + Margin.Left + Margin.Right) * lanes.Count;
+            currentWidthMax = (int)(ScoreLane.Width + Margin.Left + Margin.Right) * laneBook.Count;
             hSBar.Maximum = currentWidthMax < panelSize.Width ? 0 : currentWidthMax - panelSize.Width;
             //pBoxを更新
             pBox.Refresh();
@@ -162,7 +162,7 @@ namespace NE4S.Scores
         public void MouseClick(MouseEventArgs e)
         {
             //クリックされたレーンを特定
-            ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
+            ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
             if (selectedLane != null && selectedLane.SelectedScore(currentPositionX + e.X, e.Y) != null && e.Button == MouseButtons.Right && Status.Mode == Define.EDIT)
             {
                 new EditCMenu(this, selectedLane, selectedLane.SelectedScore(currentPositionX + e.X, e.Y)).Show(pBox, e.Location);
@@ -172,8 +172,8 @@ namespace NE4S.Scores
         public void MouseDown(MouseEventArgs e)
         {
 			Status.IsMousePressed = true;
+			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 #if DEBUG
-			ScoreLane selectedLane = lanes.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 			if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
@@ -284,7 +284,7 @@ namespace NE4S.Scores
 #if DEBUG
 			int num = 0;
 #endif
-			for(int i = 0; i < lanes.Count; ++i)
+			for (int i = 0; i < laneBook.Count; ++i)
             {
                 //ScoreLaneが表示範囲内にあるか
                 if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
@@ -294,7 +294,7 @@ namespace NE4S.Scores
 					int originPosX = currentPositionX;
 					int originPosY = 0;
                     //ScoreLaneを描画
-                    lanes[i].PaintLane(e, originPosX, originPosY);
+                    laneBook[i].PaintLane(e, originPosX, originPosY);
 #if DEBUG
 					++num;
 #endif
