@@ -36,6 +36,7 @@ namespace NE4S.Notes
         public Pos Pos
         {
             get { return this.pos; }
+			set { pos = value; }
         }
 
 		public virtual void Draw(PaintEventArgs e, RectangleF hitRect)
