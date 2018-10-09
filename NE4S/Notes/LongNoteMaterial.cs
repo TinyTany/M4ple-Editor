@@ -8,7 +8,11 @@ namespace NE4S.Notes
 {
 	public class LongNoteMaterial
 	{
+		//このオブジェクトを持っているScoreLane内に含まれるNoteMaterialを格納
 		private List<NoteMaterial> noteList;
+		//このオブジェクトが操作するLongNote
+		private LongNote longNote;
+		//このオブジェクトを持っているScoreLaneがロングノーツ全体のどの範囲を持っているか
 		private Range longNoteRange;
 
 		public LongNoteMaterial(LongNote longNote, Range longNoteRange)
@@ -17,6 +21,7 @@ namespace NE4S.Notes
 			{
 				//noteList.Add(new NoteMaterial(note, ));
 			}
+			this.longNote = longNote;
 			this.longNoteRange = longNoteRange;
 		}
 	}
