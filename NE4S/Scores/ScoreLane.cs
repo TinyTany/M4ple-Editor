@@ -49,7 +49,8 @@ namespace NE4S.Scores
 				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * currentBarSize);
 			hitRect.Location = new PointF(
 				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
-				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRect.Height);
+				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（iピクセル下げる）
+				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRect.Height + 1);
 			drawRegion.Size = new SizeF(
 				Margin.Left + scoreWidth + Margin.Right,
 				Margin.Top + maxScoreHeight + Margin.Bottom);
@@ -62,11 +63,13 @@ namespace NE4S.Scores
 		{
 			//Scoreの当たり判定を更新する
 			float sumHeight = 0;
+			//当たり判定が縦に1ピクセル分ずれているので調整用の変数を作成
+			int normalizeDeltaHeight = 1;
 			foreach (ScoreMaterial sMaterial in scoreMaterialList)
 			{
 				sMaterial.HitRect = new RectangleF(
 					hitRect.X,
-					ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + 1,
+					ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + normalizeDeltaHeight,
 					sMaterial.Width,
 					sMaterial.Height);
 				sumHeight += sMaterial.Height;
@@ -151,7 +154,7 @@ namespace NE4S.Scores
 				//Scoreの当たり判定矩形を作成
 				RectangleF newScoreHitRect = new RectangleF(
 					hitRect.X,
-                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom  - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
+                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
 					newScore.Width,
 					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
@@ -192,6 +195,7 @@ namespace NE4S.Scores
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
 				refreshRects();
+				//
                 scoreMaterialList.Remove(scoreMaterialList.Find(x => x.Score.Equals(score)));
 				refreshScoreMaterialList();
                 score.LinkCount--;
@@ -309,14 +313,7 @@ namespace NE4S.Scores
 					}
 					break;
 				case Define.SLIDE:
-					if (Status.IsMousePressed)
-					{
-
-					}
-					else
-					{
-
-					}
+					
 					break;
 				case Define.SLIDECURVE:
 					break;
@@ -418,7 +415,10 @@ namespace NE4S.Scores
 			//ノーツを描画
 			foreach (NoteMaterial note in noteMaterialList.ToArray())
 			{
-				if (!hitRect.Contains(note.HitRect))
+				//192分で最上部にノーツを持っていくときなどにノーツの当たり判定矩形が一部レーンの当たり判定矩形からはみ出て描画されないため、
+				//ノーツの中心座標（大体）でもってノーツがレーンに含まれてるか判断
+				PointF noteCenter = new PointF(note.HitRect.X + note.HitRect.Width / 2, note.HitRect.Y + note.HitRect.Height / 2);
+				if (!hitRect.Contains(noteCenter))
 				{
 					noteMaterialList.Remove(note);
 					continue;

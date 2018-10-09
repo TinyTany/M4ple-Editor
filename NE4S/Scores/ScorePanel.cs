@@ -309,7 +309,8 @@ namespace NE4S.Scores
         private Point PointToGrid(Point p, ScoreLane lane)
         {
             Point gridP = new Point();
-            Point relativeP = new Point(p.X + currentPositionX - (int)lane.HitRect.X, p.Y - (int)lane.HitRect.Y);
+			//HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
+            Point relativeP = new Point(p.X + currentPositionX - (int)lane.HitRect.X, p.Y - (int)(lane.HitRect.Y - 1));
             Point deltaP = new Point();
 			float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
 			float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
