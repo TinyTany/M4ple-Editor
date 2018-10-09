@@ -10,9 +10,11 @@ namespace NE4S.Notes
 {
     public class Tap : Note
     {
+		private Air air;
+
         public Tap()
         {
-
+			air = new Air();
         }
 
 		public Tap(int size, Pos pos) : base(size, pos) { }
@@ -23,6 +25,10 @@ namespace NE4S.Notes
 			using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(255, 255, 0, 0)))
 			{
 				e.Graphics.FillRectangle(myBrush, hitRect);
+			}
+			using (Pen pen = new Pen(Color.White))
+			{
+				e.Graphics.DrawRectangles(pen, new RectangleF[]{ hitRect });
 			}
 		}
 #endif
