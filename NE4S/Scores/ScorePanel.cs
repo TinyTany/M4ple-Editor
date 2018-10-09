@@ -233,7 +233,7 @@ namespace NE4S.Scores
 					break;
 				case Define.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
-					if (Status.IsMousePressed && Status.selectedNoteMaterial != null && selectedLane != null)
+					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNoteMaterial != null && selectedLane != null)
 					{
 						if (!selectedLane.Contains(Status.selectedNoteMaterial))
 						{
