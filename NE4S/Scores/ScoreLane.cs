@@ -109,6 +109,12 @@ namespace NE4S.Scores
             else return false;
         }
 
+		public bool Contains(NoteMaterial noteMaterial)
+		{
+			if (noteMaterialList.Find(x => x.Equals(noteMaterial)) != null) return true;
+			else return false;
+		}
+
         /// <summary>
         /// 指定したScore全体がこのレーン内に完全に含まれているか判定
         /// </summary>
@@ -237,6 +243,11 @@ namespace NE4S.Scores
 			return scoreMaterialList.Find(x => x.HitRect.Contains(pX, pY)).Score;
         }
 
+		public NoteMaterial SelectedNoteMaterial(int pX, int pY)
+		{
+			return noteMaterialList.FindLast(x => x.HitRect.Contains(pX, pY));
+		}
+
 #if DEBUG
 		/// <summary>
 		/// 試作
@@ -346,6 +357,18 @@ namespace NE4S.Scores
 			model.AddNote(newNote);
 		}
 
+		public void AddNoteMaterial(NoteMaterial noteMaterial)
+		{
+			noteMaterialList.Add(noteMaterial);
+		}
+		
+		public void DeleteNote(NoteMaterial noteMaterial, Model model)
+		{
+			noteMaterialList.Remove(noteMaterial);
+			model.DeleteNote(noteMaterial.Note);
+			
+		}
+
 		/// <summary>
 		/// originPosXとoriginPosYは、ScorePanelでのcurrentPositionXと0が入る
 		/// </summary>
@@ -393,14 +416,20 @@ namespace NE4S.Scores
                 e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
             }
 			//ノーツを描画
-			foreach (NoteMaterial note in noteMaterialList)
+			foreach (NoteMaterial note in noteMaterialList.ToArray())
 			{
+				if (!hitRect.Contains(note.HitRect))
+				{
+					noteMaterialList.Remove(note);
+					continue;
+				}
 				note.PaintNote(e, originPosX, originPosY);
 			}
 #if DEBUG
             e.Graphics.DrawString(Index.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
             e.Graphics.DrawString(hitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 20));
+			e.Graphics.DrawString(noteMaterialList.Count.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 40));
 #endif
-        }
+		}
     }
 }
