@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NE4S.Notes;
 
 namespace NE4S
 {
@@ -16,5 +17,6 @@ namespace NE4S
         public static double BPM { get; set; } = 120.0;
         public static bool InvisibleSlideTap { get; set; } = true;
 		public static bool IsMousePressed { get; set; } = false;
+		public static NoteMaterial selectedNoteMaterial { get; set; } = null;
     }
 }
