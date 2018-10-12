@@ -112,6 +112,7 @@ namespace NE4S
 
         private void Score_Paint(object sender, PaintEventArgs e)
         {
+			((PictureBox)sender).BackColor = Color.White;
             viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender)).Item1.PaintPanel(e);
         }
 
