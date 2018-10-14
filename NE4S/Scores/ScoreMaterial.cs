@@ -37,9 +37,9 @@ namespace NE4S.Scores
 			return pos;
 		}
 
-		public Pos CalculatePos(Point p)
+		public Pos CalculatePos(Point location)
 		{
-			return CalculatePos(p.X, p.Y);
+			return CalculatePos(location.X, location.Y);
 		}
 #endif
 

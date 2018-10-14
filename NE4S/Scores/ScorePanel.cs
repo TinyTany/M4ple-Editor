@@ -332,8 +332,8 @@ namespace NE4S.Scores
 			for (int i = 0; i < laneBook.Count; ++i)
             {
                 //ScoreLaneが表示範囲内にあるか
-                if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) && 
-                    (ScoreLane.Width + Margin.Left + Margin.Right) * i < currentPositionX + panelSize.Width)
+                if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) &&
+					currentPositionX + panelSize.Width > (ScoreLane.Width + Margin.Left + Margin.Right) * i)
                 {
 					//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
 					int originPosX = currentPositionX;

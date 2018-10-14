@@ -180,8 +180,14 @@ namespace NE4S.Scores
         /// <param name="newScore"></param>
         public void AddScore(Score newScore)
         {
-            AddScore(newScore, new Range(1, newScore.BeatNumer));
-        }
+            if(newScore != null) AddScore(newScore, new Range(1, newScore.BeatNumer));
+#if DEBUG
+			else
+			{
+				System.Diagnostics.Debug.WriteLine("AddScore失敗");
+			}
+#endif
+		}
 
         /// <summary>
         /// 指定されたScoreを削除
@@ -271,9 +277,9 @@ namespace NE4S.Scores
 			}
 		}
 
-        public Pos GetPos(Point p)
+        public Pos GetPos(Point location)
         {
-            return GetPos(p.X, p.Y);
+            return GetPos(location.X, location.Y);
         }
 #endif
 		/// <summary>
