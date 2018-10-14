@@ -15,6 +15,7 @@ namespace NE4S.Notes
     {
         private int size;
         private Pos pos;
+		public event EventHandler<Note> refresh;
 
 		public Note()
 		{
@@ -31,21 +32,24 @@ namespace NE4S.Notes
         public int Size
         {
             get { return this.size; }
+			set { size = value; }
         }
 
         public Pos Pos
         {
             get { return this.pos; }
-			set { pos = value; }
+			set { pos = value; refresh(this, this); }
         }
 
 		public virtual void Draw(PaintEventArgs e, RectangleF hitRect)
 		{
 			using (SolidBrush myBrush = new SolidBrush(Color.White))
 			{
-				e.Graphics.FillRectangle(myBrush, hitRect);
+				if(e != null) e.Graphics.FillRectangle(myBrush, hitRect);
 			}
 			return;
 		}
-    }
+
+
+	}
 }

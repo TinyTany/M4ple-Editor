@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
-	public class NoteMaterial
+	public class NoteMaterial : IDisposable
 	{
 		private Note note;
 		private RectangleF hitRect;
@@ -16,6 +16,7 @@ namespace NE4S.Notes
 		public NoteMaterial(Note note, RectangleF hitRect)
 		{
 			this.note = note;
+			this.note.refresh += RefreshLocation;
 			this.hitRect = hitRect;
 			//描画時にレーンの線の間にノーツがうまくハマるようにする
 			++this.hitRect.X; --this.hitRect.Width; this.hitRect.Y -= 2;
@@ -28,7 +29,13 @@ namespace NE4S.Notes
 			//変化するのは位置のみなので位置のみ調整
 			++this.hitRect.X; this.hitRect.Y -= 2;
 			//TODO: Posの座標も更新すること
+			//した
 			note.Pos = newPos;
+		}
+
+		private void RefreshLocation(object sender, Note e)
+		{
+			throw new NotImplementedException();
 		}
 
 		public Note Note
@@ -45,6 +52,11 @@ namespace NE4S.Notes
 		{
 			RectangleF drawRect = new RectangleF(hitRect.X - originPosX, hitRect.Y - originPosY, hitRect.Width, hitRect.Height);
 			note.Draw(e, drawRect);
+		}
+
+		public void Dispose()
+		{
+			note.refresh -= RefreshLocation;
 		}
 	}
 }
