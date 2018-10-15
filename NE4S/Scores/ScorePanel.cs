@@ -194,15 +194,13 @@ namespace NE4S.Scores
 				switch (Status.Mode)
 				{
 					case Define.ADD:
-						Point gridPoint = PointToGrid(e.Location, selectedLane);
-						selectedLane.AddNote(gridPoint.X + currentPositionX, gridPoint.Y, model);
+						
 						break;
 					case Define.EDIT:
-						Status.selectedNoteMaterial = selectedLane.SelectedNoteMaterial(e.X + currentPositionX, e.Y);
+						
 						break;
 					case Define.DELETE:
-						NoteMaterial selectedNoteMaterial = selectedLane.SelectedNoteMaterial(e.X + currentPositionX, e.Y);
-						if (selectedNoteMaterial != null) selectedLane.DeleteNote(selectedNoteMaterial, model);
+						
 						break;
 					default:
 						break;
@@ -235,10 +233,6 @@ namespace NE4S.Scores
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNoteMaterial != null && selectedLane != null)
 					{
-						if (!selectedLane.Contains(Status.selectedNoteMaterial))
-						{
-							selectedLane.AddNoteMaterial(Status.selectedNoteMaterial);
-						}
 						Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
 						Point virtualGridPoint = new Point(
 							physicalGridPoint.X + currentPositionX,
@@ -324,7 +318,6 @@ namespace NE4S.Scores
             return gridP;
         }
 
-#if false
 		public void PaintPanel(PaintEventArgs e)
 		{
 			for (int i = 0; i < laneBook.Count; ++i)
@@ -342,6 +335,5 @@ namespace NE4S.Scores
             }
             pNote.Paint(e);
 		}
-#endif
     }
 }
