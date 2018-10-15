@@ -324,11 +324,9 @@ namespace NE4S.Scores
             return gridP;
         }
 
-        public void PaintPanel(PaintEventArgs e)
+#if false
+		public void PaintPanel(PaintEventArgs e)
 		{
-#if DEBUG
-			int num = 0;
-#endif
 			for (int i = 0; i < laneBook.Count; ++i)
             {
                 //ScoreLaneが表示範囲内にあるか
@@ -340,15 +338,10 @@ namespace NE4S.Scores
 					int originPosY = 0;
                     //ScoreLaneを描画
                     laneBook[i].PaintLane(e, originPosX, originPosY);
-#if DEBUG
-					++num;
-#endif
 				}
             }
             pNote.Paint(e);
-#if DEBUG
-			//System.Diagnostics.Debug.WriteLine(num);
-#endif
 		}
+#endif
     }
 }
