@@ -31,6 +31,7 @@ namespace NE4S.Notes
         public int Size
         {
             get { return this.size; }
+			set { size = value; }
         }
 
         public Pos Pos
