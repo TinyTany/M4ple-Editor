@@ -41,9 +41,18 @@ namespace NE4S.Scores
             SetScoreIndex();
         }
 
+		public void Resize(int index, int beatNumer, int beatDenom)
+		{
+			if(At(index) != null)
+			{
+				At(index).BeatNumer = beatNumer;
+				At(index).BeatDenom = beatDenom;
+			}
+		}
+
         public Score At(int index)
         {
-            if (Count <= index) return null;
+            if (index < 0 || index >= Count) return null;
             return this.ElementAt(index);
         }
 
