@@ -95,6 +95,7 @@
     <Compile Include="Notes\LongNote.cs" />
     <Compile Include="Notes\Note.cs" />
     <Compile Include="Notes\NoteMaterial.cs" />
+    <Compile Include="Notes\NoteMaterialBook.cs" />
     <Compile Include="Notes\PreviewNote.cs" />
     <Compile Include="Notes\Slide.cs" />
     <Compile Include="Notes\SlideBegin.cs" />
