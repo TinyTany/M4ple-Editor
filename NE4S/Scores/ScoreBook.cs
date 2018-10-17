@@ -56,6 +56,18 @@ namespace NE4S.Scores
             return this.ElementAt(index);
         }
 
+		public Score Prev(Score score)
+		{
+			if (score.Index <= 0) return null;
+			return this.ElementAt(score.Index - 1);
+		}
+
+		public Score Next(Score score)
+		{
+			if (score.Index >= Count - 1) return null;
+			return this.ElementAt(score.Index + 1);
+		}
+
         /// <summary>
         /// scores内のScoreのインデックスを更新
         /// リストscoresの内容が変更された際に必ず呼ぶ

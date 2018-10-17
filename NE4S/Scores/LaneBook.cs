@@ -13,14 +13,14 @@ namespace NE4S.Scores
 			
         }
 
-        public void SetScore(Model model, int beatNumer, int beatDenom, int barCount)
+        public void SetScore(ScoreBook scoreBook, int beatNumer, int beatDenom, int barCount)
         {
 			//新たに追加する譜面たちをリストでまとめる
 			//これはLaneBookではないのでRefreshIndex()が行われない
 			List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
-            //まとめた譜面たちをmodelに入れる
-            model.AppendScore(newScores);
+			//まとめた譜面たちをscoreBookに入れる
+			scoreBook.Append(newScores);
             //新譜面たちをレーンに割り当て
             foreach (Score newScore in newScores)
             {
@@ -60,19 +60,19 @@ namespace NE4S.Scores
             }
         }
 
-        public void InsetScoreForward(Model model, Score score, int beatNumer, int beatDenom, int barCount)
+        public void InsetScoreForward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
-            if (model.ScoreNext(score) == null)
+            if (scoreBook.Next(score) == null)
             {
-                SetScore(model, beatNumer, beatDenom, barCount);
+                SetScore(scoreBook, beatNumer, beatDenom, barCount);
             }
             else
             {
-                InsertScoreBackward(model, model.ScoreNext(score), beatNumer, beatDenom, barCount);
+                InsertScoreBackward(scoreBook, scoreBook.Next(score), beatNumer, beatDenom, barCount);
             }
         }
 
-        public void InsertScoreBackward(Model model, Score score, int beatNumer, int beatDenom, int barCount)
+        public void InsertScoreBackward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
             //scoreを初めて含むレーンを取得
             ScoreLane lane = Find(x => x.Contains(score));
@@ -81,7 +81,7 @@ namespace NE4S.Scores
             List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
             //まとめた譜面たちをmodelに挿入
-            model.InsertScore(score.Index, newScores);
+            scoreBook.InsertRange(score.Index, newScores);
             //挿入する譜面を格納するためのレーンリストを作成
             List<ScoreLane> newLanes = new List<ScoreLane>();
             //新譜面たちをnewLanesに割り当て
@@ -201,13 +201,13 @@ namespace NE4S.Scores
         /// <param name="model"></param>
         /// <param name="score"></param>
         /// <param name="count"></param>
-        public void DeleteScore(Model model, Score score, int count)
+        public void DeleteScore(ScoreBook scoreBook, Score score, int count)
         {
             //イテレータ
             Score itrScore;
             int itrCount;
             //scoreからcount個Scoreを削除
-            for (itrScore = score, itrCount = count; itrScore != null && itrCount > 0; itrScore = model.ScoreNext(itrScore), --itrCount)
+            for (itrScore = score, itrCount = count; itrScore != null && itrCount > 0; itrScore = scoreBook.Next(itrScore), --itrCount)
             {
                 //選択されたScoreが初めて含まれるレーンを特定
                 ScoreLane laneBegin = Find(x => x.Contains(itrScore));
@@ -230,8 +230,8 @@ namespace NE4S.Scores
                 System.Diagnostics.Debug.WriteLine("LinkCount : " + linkCount.ToString());
 #endif
             }
-            //modelから該当範囲のScoreを削除
-            model.DeleteScore(score.Index, count);
+            //scoreBookから該当範囲のScoreを削除
+            scoreBook.Delete(score.Index, count);
             //レーンを詰める
             FillLane();
         }
