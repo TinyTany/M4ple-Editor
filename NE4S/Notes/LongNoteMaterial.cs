@@ -12,17 +12,15 @@ namespace NE4S.Notes
 		private List<NoteMaterial> noteList;
 		//このオブジェクトが操作するLongNote
 		private LongNote longNote;
-		//このオブジェクトを持っているScoreLaneがロングノーツ全体のどの範囲を持っているか
-		private Range longNoteRange;
 
-		public LongNoteMaterial(LongNote longNote, Range longNoteRange)
+		public LongNoteMaterial(LongNote longNote)
 		{
+			noteList = new List<NoteMaterial>();
 			foreach(Note note in longNote)
 			{
 				//noteList.Add(new NoteMaterial(note, ));
 			}
 			this.longNote = longNote;
-			this.longNoteRange = longNoteRange;
 		}
 	}
 }
