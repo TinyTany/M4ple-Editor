@@ -20,7 +20,7 @@ namespace NE4S.Notes
 
 		}
 
-		public override void Draw(PaintEventArgs e, RectangleF hitRect)
+		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
 			
 		}
