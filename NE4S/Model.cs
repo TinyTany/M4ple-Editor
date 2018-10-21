@@ -56,6 +56,16 @@ namespace NE4S
 			laneBook.FillLane(begin);
 		}
 
+		public void AddNote(Note newNote)
+		{
+			noteBook.Add(newNote);
+		}
+
+		public void AddLongNote(LongNote newLongNote)
+		{
+			noteBook.Add(newLongNote);
+		}
+
 		public NoteBook NoteBook
 		{
 			get { return noteBook; }
