@@ -15,7 +15,7 @@ namespace NE4S.Notes
 
         }
 
-		public Flick(int size, Pos pos) : base(size, pos)
+		public Flick(int size, Position pos, PointF location) : base(size, pos, location)
 		{
 		}
 

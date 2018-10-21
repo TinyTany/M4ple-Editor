@@ -17,7 +17,8 @@ namespace NE4S.Notes
 			air = new Air();
         }
 
-		public Tap(int size, Pos pos) : base(size, pos) { }
+		//TODO: Air初期化して
+		public Tap(int size, Position pos, PointF location) : base(size, pos, location) { }
 
 #if DEBUG
 		public override void Draw(PaintEventArgs e, RectangleF hitRect)

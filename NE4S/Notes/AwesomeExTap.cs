@@ -15,7 +15,7 @@ namespace NE4S.Notes
 
         }
 
-		public AwesomeExTap(int size, Pos pos) : base(size, pos)
+		public AwesomeExTap(int size, Position pos, PointF location) : base(size, pos, location)
 		{
 
 		}

@@ -243,7 +243,7 @@ namespace NE4S.Scores
 		/// <summary>
 		/// 試作
 		/// </summary>
-		public Pos GetPos(int pX, int pY)
+		public Position GetPos(int pX, int pY)
 		{
             ScoreMaterial selectedScoreMaterial =
                 scoreMaterialList.Find(x => x.HitRect.Contains(pX, pY));
@@ -258,7 +258,7 @@ namespace NE4S.Scores
 			}
 		}
 
-        public Pos GetPos(Point p)
+        public Position GetPos(Point p)
         {
             return GetPos(p.X, p.Y);
         }

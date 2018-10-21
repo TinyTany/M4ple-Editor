@@ -52,7 +52,7 @@ namespace NE4S.Notes
 			else if (longNote is AirHold) airHoldNotes.Remove(longNote as AirHold);
 		}
 
-		public void Relocate(Note note, Pos pos)
+		public void Relocate(Note note, Position pos)
 		{
 			if(note != null) note.Pos = pos;
 		}

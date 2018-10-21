@@ -15,7 +15,7 @@ namespace NE4S.Notes
 
         }
 
-		public HellTap(int size, Pos pos) : base(size, pos)
+		public HellTap(int size, Position pos, PointF location) : base(size, pos, location)
 		{
 		}
 

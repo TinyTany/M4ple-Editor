@@ -244,8 +244,8 @@ namespace NE4S.Scores
 						Point virtualGridPoint = new Point(
 							physicalGridPoint.X + currentPositionX,
 							physicalGridPoint.Y);
-						Pos newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
 						Status.selectedNoteMaterial.RefreshLocation(virtualGridPoint, newPos);
+						Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
 					}
 					break;
 				case Define.DELETE:

@@ -14,7 +14,7 @@ namespace NE4S.Notes
     public class Note
     {
         private int size;
-        private Pos pos;
+        private Position pos;
 
 		public Note()
 		{
@@ -22,7 +22,7 @@ namespace NE4S.Notes
 			pos = null;
 		}
 
-        public Note(int size, Pos pos)
+        public Note(int size, Position pos, PointF location)
         {
 			this.size = size;
 			this.pos = pos;
@@ -34,7 +34,7 @@ namespace NE4S.Notes
 			set { size = value; }
         }
 
-        public Pos Pos
+        public Position Pos
         {
             get { return this.pos; }
 			set { pos = value; }

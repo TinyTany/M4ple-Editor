@@ -15,7 +15,7 @@ namespace NE4S.Notes
 
         }
 
-		public ExTap(int size, Pos pos) : base(size, pos) { }
+		public ExTap(int size, Position pos, PointF location) : base(size, pos, location) { }
 
 #if DEBUG
 		public override void Draw(PaintEventArgs e, RectangleF hitRect)

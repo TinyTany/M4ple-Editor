@@ -21,7 +21,7 @@ namespace NE4S.Notes
 			++this.hitRect.X; --this.hitRect.Width; this.hitRect.Y -= 2;
 		}
 
-		public void RefreshLocation(Point location, Pos newPos)
+		public void RefreshLocation(Point location, Position newPos)
 		{
 			hitRect.Location = location;
 			//描画時にレーンの線の間にノーツがうまくハマるようにする
