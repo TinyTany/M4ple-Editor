@@ -61,5 +61,12 @@ namespace NE4S.Notes
 		{
 			if (note != null) note.Size = size;
 		}
-    }
+
+#if DEBUG
+		public void Paint(PaintEventArgs e, int originPosX, int originPosY)
+		{
+			foreach (Note note in shortNotes) note.Draw(e, originPosX, originPosY);
+		}
+#endif
+	}
 }
