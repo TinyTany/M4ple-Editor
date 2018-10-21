@@ -28,7 +28,7 @@ namespace NE4S.Notes
 			//変化するのは位置のみなので位置のみ調整
 			++this.hitRect.X; this.hitRect.Y -= 2;
 			//TODO: Posの座標も更新すること
-			note.Pos = newPos;
+			note.Relocate(newPos);
 		}
 
 		public Note Note

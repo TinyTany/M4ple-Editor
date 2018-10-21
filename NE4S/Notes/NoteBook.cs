@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
@@ -54,12 +55,12 @@ namespace NE4S.Notes
 
 		public void Relocate(Note note, Position pos)
 		{
-			if(note != null) note.Pos = pos;
+			if(note != null) note.Relocate(pos);
 		}
 
 		public void Resize(Note note, int size)
 		{
-			if (note != null) note.Size = size;
+			if (note != null) note.ReSize(size);
 		}
 
 #if DEBUG
