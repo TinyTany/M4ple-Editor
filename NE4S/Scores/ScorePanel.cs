@@ -200,7 +200,8 @@ namespace NE4S.Scores
 				switch (Status.Mode)
 				{
 					case Define.ADD:
-						
+						Point gridPoint = PointToGrid(e.Location, selectedLane);
+						Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
 						AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position);
 						break;
 					case Define.EDIT:
@@ -239,14 +240,14 @@ namespace NE4S.Scores
 					break;
 				case Define.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
-					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNoteMaterial != null && selectedLane != null)
+					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
 					{
 						Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
 						Point virtualGridPoint = new Point(
 							physicalGridPoint.X + currentPositionX,
 							physicalGridPoint.Y);
-						Status.selectedNoteMaterial.RefreshLocation(virtualGridPoint, newPos);
 						Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
+						Status.selectedNote.Relocate(newPos, virtualGridPoint);
 					}
 					break;
 				case Define.DELETE:
@@ -267,8 +268,7 @@ namespace NE4S.Scores
 				switch (Status.Mode)
 				{
 					case Define.ADD:
-						//Point gridPoint = PointToGrid(e.Location, selectedLane);
-						//selectedLane.AddNote(gridPoint.X + currentPositionX, gridPoint.Y, model);
+						
 						break;
 					case Define.EDIT:
 						break;
@@ -360,13 +360,13 @@ namespace NE4S.Scores
         /// 与えられた座標を現在のグリッド情報に合わせて変換します
         /// 与えられる座標も返り値もXにcurrentPositionXを足していない生のもの
         /// </summary>
-        /// <param name="p"></param>
+        /// <param name="location"></param>
         /// <returns></returns>
-        private Point PointToGrid(Point p, ScoreLane lane)
+        private Point PointToGrid(Point location, ScoreLane lane)
         {
             Point gridP = new Point();
 			//HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
-            Point relativeP = new Point(p.X + currentPositionX - (int)lane.HitRect.X, p.Y - (int)(lane.HitRect.Y - 1));
+            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1));
             Point deltaP = new Point();
 			float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
 			float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
@@ -374,14 +374,17 @@ namespace NE4S.Scores
 			//現在の自由座標とそこから計算したグリッド座標の差分
 			deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
 			deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
-            gridP.X = p.X + deltaP.X;
-            gridP.Y = p.Y + deltaP.Y;
+            gridP.X = location.X + deltaP.X;
+            gridP.Y = location.Y + deltaP.Y;
             //帰ってくる座標はXにcurrentPositionX足されていない生のもの
             return gridP;
         }
 
 		public void PaintPanel(PaintEventArgs e)
 		{
+			//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
+			int originPosX = currentPositionX;
+			int originPosY = 0;
 			var laneBook = model.LaneBook;
 			for (int i = 0; i < laneBook.Count; ++i)
             {
@@ -389,14 +392,14 @@ namespace NE4S.Scores
                 if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) &&
 					currentPositionX + panelSize.Width > (ScoreLane.Width + Margin.Left + Margin.Right) * i)
                 {
-					//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
-					int originPosX = currentPositionX;
-					int originPosY = 0;
                     //ScoreLaneを描画
                     laneBook[i].PaintLane(e, originPosX, originPosY);
 				}
             }
-            pNote.Paint(e);
+#if DEBUG
+			model.NoteBook.Paint(e, originPosX, originPosY);
+#endif
+			pNote.Paint(e);
 		}
     }
 }
