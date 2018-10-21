@@ -44,7 +44,7 @@ namespace NE4S.Notes
 		public void PaintNote(PaintEventArgs e, float originPosX, float originPosY)
 		{
 			RectangleF drawRect = new RectangleF(hitRect.X - originPosX, hitRect.Y - originPosY, hitRect.Width, hitRect.Height);
-			note.Draw(e, drawRect);
+			note.Draw(e, (int)originPosX, (int)originPosY);
 		}
 	}
 }
