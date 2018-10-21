@@ -201,6 +201,7 @@ namespace NE4S.Scores
 				{
 					case Define.ADD:
 						
+						AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position);
 						break;
 					case Define.EDIT:
 						
@@ -300,6 +301,59 @@ namespace NE4S.Scores
         public void HSBarScroll(ScrollEventArgs e)
         {
             currentPositionX += (e.NewValue - e.OldValue);
+        }
+
+        private void AddNote(PointF locationVirtual, Position position)
+        {
+            Note newNote = null;
+            switch (Status.Note)
+            {
+                case Define.TAP:
+                    newNote = new Tap(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.EXTAP:
+                    newNote = new ExTap(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.AWEXTAP:
+                    newNote = new AwesomeExTap(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.HELL:
+                    newNote = new HellTap(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.FLICK:
+                    newNote = new Flick(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.HOLD:
+                    break;
+                case Define.SLIDE:
+                    break;
+                case Define.SLIDECURVE:
+                    break;
+                case Define.AIRHOLD:
+                    break;
+                case Define.AIRUPC:
+                    newNote = new AirUpC(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.AIRUPL:
+                    newNote = new AirUpL(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.AIRUPR:
+                    newNote = new AirUpR(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.AIRDOWNC:
+                    newNote = new AirDownC(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.AIRDOWNL:
+                    newNote = new AirDownL(Status.NoteSize, position, locationVirtual);
+                    break;
+                case Define.AIRDOWNR:
+                    newNote = new AirDownR(Status.NoteSize, position, locationVirtual);
+                    break;
+                default:
+                    break;
+            }
+            if (newNote != null) model.AddNote(newNote);
+            return;
         }
 
         /// <summary>
