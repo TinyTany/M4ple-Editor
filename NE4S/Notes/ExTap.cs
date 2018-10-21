@@ -15,14 +15,19 @@ namespace NE4S.Notes
 
         }
 
-		public ExTap(int size, Pos pos) : base(size, pos) { }
+		public ExTap(int size, Position pos, PointF location) : base(size, pos, location) { }
 
 #if DEBUG
-		public override void Draw(PaintEventArgs e, RectangleF hitRect)
+		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
+			RectangleF drawRect = new RectangleF(
+				hitRect.X - originPosX,
+				hitRect.Y - originPosY,
+				hitRect.Width,
+				hitRect.Height);
 			using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 0)))
 			{
-				e.Graphics.FillRectangle(myBrush, hitRect);
+				e.Graphics.FillRectangle(myBrush, drawRect);
 			}
 		}
 #endif

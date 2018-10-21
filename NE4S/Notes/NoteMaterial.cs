@@ -21,14 +21,14 @@ namespace NE4S.Notes
 			++this.hitRect.X; --this.hitRect.Width; this.hitRect.Y -= 2;
 		}
 
-		public void RefreshLocation(Point location, Pos newPos)
+		public void RefreshLocation(Point location, Position newPos)
 		{
 			hitRect.Location = location;
 			//描画時にレーンの線の間にノーツがうまくハマるようにする
 			//変化するのは位置のみなので位置のみ調整
 			++this.hitRect.X; this.hitRect.Y -= 2;
 			//TODO: Posの座標も更新すること
-			note.Pos = newPos;
+			note.Relocate(newPos);
 		}
 
 		public Note Note
@@ -44,7 +44,7 @@ namespace NE4S.Notes
 		public void PaintNote(PaintEventArgs e, float originPosX, float originPosY)
 		{
 			RectangleF drawRect = new RectangleF(hitRect.X - originPosX, hitRect.Y - originPosY, hitRect.Width, hitRect.Height);
-			note.Draw(e, drawRect);
+			note.Draw(e, (int)originPosX, (int)originPosY);
 		}
 	}
 }

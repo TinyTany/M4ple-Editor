@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
@@ -44,5 +45,29 @@ namespace NE4S.Notes
 			if (note is Air) airNotes.Remove(note as Air);
 			else shortNotes.Remove(note);
 		}
-    }
+
+		public void Delete(LongNote longNote)
+		{
+			if (longNote is Hold) holdNotes.Remove(longNote as Hold);
+			else if (longNote is Slide) slideNotes.Remove(longNote as Slide);
+			else if (longNote is AirHold) airHoldNotes.Remove(longNote as AirHold);
+		}
+
+		public void Relocate(Note note, Position pos)
+		{
+			if(note != null) note.Relocate(pos);
+		}
+
+		public void Resize(Note note, int size)
+		{
+			if (note != null) note.ReSize(size);
+		}
+
+#if DEBUG
+		public void Paint(PaintEventArgs e, int originPosX, int originPosY)
+		{
+			foreach (Note note in shortNotes) note.Draw(e, originPosX, originPosY);
+		}
+#endif
+	}
 }

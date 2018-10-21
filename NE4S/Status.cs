@@ -17,6 +17,6 @@ namespace NE4S
         public static double BPM { get; set; } = 120.0;
         public static bool InvisibleSlideTap { get; set; } = true;
 		public static bool IsMousePressed { get; set; } = false;
-		public static NoteMaterial selectedNoteMaterial { get; set; } = null;
+		public static Note selectedNote { get; set; } = null;
     }
 }

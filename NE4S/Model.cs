@@ -12,69 +12,73 @@ namespace NE4S
     {
         private NoteBook noteBook;
         private ScoreBook scoreBook;
+		private LaneBook laneBook;
 
         public Model()
         {
             noteBook = new NoteBook();
             scoreBook = new ScoreBook();
+			laneBook = new LaneBook();
         }
 
-        public void AddScore(int beatNumer, int beatDenom, int barCount)
-        {
-            for(int i = 0; i < barCount; ++i)
-            {
-                scoreBook.Add(beatNumer, beatDenom);
-            }
-        }
+		public void SetScore(int beatNumer, int beatDenom, int barCount)
+		{
+			laneBook.SetScore(scoreBook, beatNumer, beatDenom, barCount);
+		}
 
-        public void AppendScore(List<Score> newScores)
-        {
-            scoreBook.Append(newScores);
-        }
+		public void InsertScoreForward(Score score, int beatNumer, int beatDenom, int barCount)
+		{
+			laneBook.InsetScoreForward(scoreBook, score, beatNumer, beatDenom, barCount);
+		}
 
-        public void InsertScore(int index, List<Score> newScores)
-        {
-            scoreBook.InsertRange(index, newScores);
-        }
+		public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
+		{
+			laneBook.InsertScoreBackward(scoreBook, score, beatNumer, beatDenom, barCount);
+		}
 
-        public void DeleteScore(int begin, int count)
-        {
-            scoreBook.Delete(begin, count);
-        }
+		public void DivideLane(Score score)
+		{
+			laneBook.DivideLane(score);
+		}
 
-        public Score ScorePrev(Score score)
-        {
-            return ScoreAt(score.Index - 1);
-        }
+		public void DeleteScore(Score score, int count)
+		{
+			laneBook.DeleteScore(scoreBook, score, count);
+		}
 
-        public Score ScoreNext(Score score)
-        {
-            return ScoreAt(score.Index + 1);
-        }
+		public void FillLane()
+		{
+			if (laneBook.Any()) FillLane(laneBook.First());
+		}
 
-        public Score ScoreAt(int index)
-        {
-            return scoreBook.At(index);
-        }
-
-        public Score ScoreLast()
-        {
-            return scoreBook.Last();
-        }
+		public void FillLane(ScoreLane begin)
+		{
+			laneBook.FillLane(begin);
+		}
 
 		public void AddNote(Note newNote)
 		{
 			noteBook.Add(newNote);
 		}
 
-		public void AddNote(LongNote newLongNote)
+		public void AddLongNote(LongNote newLongNote)
 		{
 			noteBook.Add(newLongNote);
 		}
 
-		public void DeleteNote(Note note)
+		public NoteBook NoteBook
 		{
-			noteBook.Delete(note);
+			get { return noteBook; }
+		}
+
+		public ScoreBook ScoreBook
+		{
+			get { return scoreBook; }
+		}
+
+		public LaneBook LaneBook
+		{
+			get { return laneBook; }
 		}
     }
 }

@@ -9,7 +9,7 @@ namespace NE4S
     /// <summary>
     /// 置いたノーツの位置情報
     /// </summary>
-    public class Pos
+    public class Position
     {
 		private int bar, baseBeat, beatCount;
 		/// <summary>
@@ -17,7 +17,7 @@ namespace NE4S
 		/// </summary>
 		private int lane;
 
-		public Pos(int bar, int beatCount, int baseBeat, int lane)
+		public Position(int bar, int beatCount, int baseBeat, int lane)
         {
 			this.bar = bar;
 			this.beatCount = beatCount;

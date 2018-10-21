@@ -36,24 +36,24 @@ namespace NE4S
                 //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
                 ScorePanel sPanel = new ScorePanel(pBox, hScroll);
                 //PictureBoxとHScrollBarの各種デリゲートの設定
-                pBox.MouseWheel += new MouseEventHandler(Score_MouseWheel);
-                pBox.Paint += new PaintEventHandler(Score_Paint);
-                pBox.MouseClick += new MouseEventHandler(Score_MouseClick);
-                pBox.MouseEnter += new EventHandler(Score_MouseEnter);
-                pBox.MouseDown += new MouseEventHandler(Score_MouseDown);
-                pBox.MouseMove += new MouseEventHandler(Score_MouseMove);
-                pBox.MouseUp += new MouseEventHandler(Score_MouseUp);
-                hScroll.Scroll += new ScrollEventHandler(Score_Scroll);
+                pBox.MouseWheel += Score_MouseWheel;
+                pBox.Paint += Score_Paint;
+                pBox.MouseClick += Score_MouseClick;
+                pBox.MouseEnter += Score_MouseEnter;
+                pBox.MouseDown += Score_MouseDown;
+                pBox.MouseMove += Score_MouseMove;
+                pBox.MouseUp += Score_MouseUp;
+                hScroll.Scroll += Score_Scroll;
                 //初期化した部品たちをタプルにしてリストに追加
                 viewComponentList.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
 			InitializeToolStrip();
-			tsbAdd.Click += new EventHandler(tbsAdd_Click);
-			tsbEdit.Click += new EventHandler(tbsEdit_Click);
-			tsbDelete.Click += new EventHandler(tbsDelete_Click);
-			tsbInvisibleSlideTap.Click += new EventHandler(tbsInvisibleSlideTap_Click);
-			tscbBeat.SelectedIndexChanged += new EventHandler(tscbBeat_SelectedIndexChanged);
-			tscbGrid.SelectedIndexChanged += new EventHandler(tscbGrid_SelectedIndexChanged);
+			tsbAdd.Click += tbsAdd_Click;
+			tsbEdit.Click += tbsEdit_Click;
+			tsbDelete.Click += tbsDelete_Click;
+			tsbInvisibleSlideTap.Click += tbsInvisibleSlideTap_Click;
+			tscbBeat.SelectedIndexChanged += tscbBeat_SelectedIndexChanged;
+			tscbGrid.SelectedIndexChanged += tscbGrid_SelectedIndexChanged;
 		}
 
 		private void Score_MouseUp(object sender, MouseEventArgs e)

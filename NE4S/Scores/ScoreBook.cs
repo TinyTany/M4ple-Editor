@@ -41,11 +41,32 @@ namespace NE4S.Scores
             SetScoreIndex();
         }
 
+		public void Resize(int index, int beatNumer, int beatDenom)
+		{
+			if(At(index) != null)
+			{
+				At(index).BeatNumer = beatNumer;
+				At(index).BeatDenom = beatDenom;
+			}
+		}
+
         public Score At(int index)
         {
-            if (Count <= index) return null;
+            if (index < 0 || index >= Count) return null;
             return this.ElementAt(index);
         }
+
+		public Score Prev(Score score)
+		{
+			if (score.Index <= 0) return null;
+			return this.ElementAt(score.Index - 1);
+		}
+
+		public Score Next(Score score)
+		{
+			if (score.Index >= Count - 1) return null;
+			return this.ElementAt(score.Index + 1);
+		}
 
         /// <summary>
         /// scores内のScoreのインデックスを更新

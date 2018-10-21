@@ -21,7 +21,6 @@ namespace NE4S.Scores
         private float currentBarSize;
         private int index;
 		private RectangleF drawRegion, hitRect;
-        private List<NoteMaterial> noteMaterialList;
         private List<ScoreMaterial> scoreMaterialList;
 
         /// <summary>
@@ -93,7 +92,6 @@ namespace NE4S.Scores
 
         public ScoreLane()
         {
-            noteMaterialList = new List<NoteMaterial>();
             scoreMaterialList = new List<ScoreMaterial>();
             currentBarSize = 0;
             hitRect = new RectangleF();
@@ -111,12 +109,6 @@ namespace NE4S.Scores
             if (scoreMaterialList.Find(x => x.Score.Equals(score)) != null) return true;
             else return false;
         }
-
-		public bool Contains(NoteMaterial noteMaterial)
-		{
-			if (noteMaterialList.Find(x => x.Equals(noteMaterial)) != null) return true;
-			else return false;
-		}
 
         /// <summary>
         /// 指定したScore全体がこのレーン内に完全に含まれているか判定
@@ -247,16 +239,11 @@ namespace NE4S.Scores
 			return scoreMaterialList.Find(x => x.HitRect.Contains(pX, pY)).Score;
         }
 
-		public NoteMaterial SelectedNoteMaterial(int pX, int pY)
-		{
-			return noteMaterialList.FindLast(x => x.HitRect.Contains(pX, pY));
-		}
-
 #if DEBUG
 		/// <summary>
 		/// 試作
 		/// </summary>
-		public Pos GetPos(int pX, int pY)
+		public Position GetPos(int pX, int pY)
 		{
             ScoreMaterial selectedScoreMaterial =
                 scoreMaterialList.Find(x => x.HitRect.Contains(pX, pY));
@@ -271,100 +258,11 @@ namespace NE4S.Scores
 			}
 		}
 
-        public Pos GetPos(Point p)
+        public Position GetPos(Point p)
         {
             return GetPos(p.X, p.Y);
         }
 #endif
-		/// <summary>
-		/// ノーツを追加
-		/// </summary>
-		/// <param name="pX">仮想譜面パネルX座標</param>
-		/// <param name="pY">仮想譜面パネルY座標</param>
-		public void AddNote(int pX, int pY, Model model)
-		{
-			Note newNote = null;
-			Pos pos = GetPos(pX, pY);
-			switch (Status.Note)
-			{
-				case Define.TAP:
-					newNote = new Tap(Status.NoteSize, pos);
-					break;
-				case Define.EXTAP:
-					newNote = new ExTap(Status.NoteSize, pos);
-					break;
-				case Define.AWEXTAP:
-					newNote = new AwesomeExTap(Status.NoteSize, pos);
-					break;
-				case Define.HELL:
-					newNote = new HellTap(Status.NoteSize, pos);
-					break;
-				case Define.FLICK:
-					newNote = new Flick(Status.NoteSize, pos);
-					break;
-				case Define.HOLD:
-					if (Status.IsMousePressed)
-					{
-
-					}
-					else
-					{
-
-					}
-					break;
-				case Define.SLIDE:
-					
-					break;
-				case Define.SLIDECURVE:
-					break;
-				case Define.AIRUPC:
-					break;
-				case Define.AIRUPL:
-					break;
-				case Define.AIRUPR:
-					break;
-				case Define.AIRDOWNC:
-					break;
-				case Define.AIRDOWNL:
-					break;
-				case Define.AIRDOWNR:
-					break;
-				case Define.AIRHOLD:
-					if (Status.IsMousePressed)
-					{
-
-					}
-					else
-					{
-
-					}
-					break;
-				default:
-					newNote = new Note(Status.NoteSize, pos);
-					break;
-			}
-			RectangleF hitRect = new RectangleF(
-				pX,
-				pY,
-				Status.NoteSize * ScoreInfo.MinLaneWidth,
-				ScoreInfo.NoteHeight);
-			noteMaterialList.Add(new NoteMaterial(newNote, hitRect));
-			//TODO: modelにもnewNoteを追加する
-			//した
-			model.AddNote(newNote);
-		}
-
-		public void AddNoteMaterial(NoteMaterial noteMaterial)
-		{
-			noteMaterialList.Add(noteMaterial);
-		}
-		
-		public void DeleteNote(NoteMaterial noteMaterial, Model model)
-		{
-			noteMaterialList.Remove(noteMaterial);
-			model.DeleteNote(noteMaterial.Note);
-			
-		}
 
 		/// <summary>
 		/// originPosXとoriginPosYは、ScorePanelでのcurrentPositionXと0が入る
@@ -412,23 +310,9 @@ namespace NE4S.Scores
                 //余ってる部分は塗りつぶす
                 e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
             }
-			//ノーツを描画
-			foreach (NoteMaterial note in noteMaterialList.ToArray())
-			{
-				//192分で最上部にノーツを持っていくときなどにノーツの当たり判定矩形が一部レーンの当たり判定矩形からはみ出て描画されないため、
-				//ノーツの中心座標（大体）でもってノーツがレーンに含まれてるか判断
-				PointF noteCenter = new PointF(note.HitRect.X + note.HitRect.Width / 2, note.HitRect.Y + note.HitRect.Height / 2);
-				if (!hitRect.Contains(noteCenter))
-				{
-					noteMaterialList.Remove(note);
-					continue;
-				}
-				note.PaintNote(e, originPosX, originPosY);
-			}
 #if DEBUG
             e.Graphics.DrawString(Index.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
             e.Graphics.DrawString(hitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 20));
-			e.Graphics.DrawString(noteMaterialList.Count.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 40));
 #endif
 		}
     }

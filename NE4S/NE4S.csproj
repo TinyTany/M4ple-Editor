@@ -95,6 +95,7 @@
     <Compile Include="Notes\LongNote.cs" />
     <Compile Include="Notes\Note.cs" />
     <Compile Include="Notes\NoteMaterial.cs" />
+    <Compile Include="Notes\NoteMaterialBook.cs" />
     <Compile Include="Notes\PreviewNote.cs" />
     <Compile Include="Notes\Slide.cs" />
     <Compile Include="Notes\SlideBegin.cs" />
@@ -102,7 +103,7 @@
     <Compile Include="Notes\SlideEnd.cs" />
     <Compile Include="Notes\SlideRelay.cs" />
     <Compile Include="Notes\SlideTap.cs" />
-    <Compile Include="Pos.cs" />
+    <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Notes\Tap.cs" />
