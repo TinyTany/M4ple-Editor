@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
     public class Tap : Note
     {
-		private Air air;
+		private readonly Air air;
 
         public Tap()
         {
@@ -18,7 +19,11 @@ namespace NE4S.Notes
         }
 
 		//TODO: Air初期化して
-		public Tap(int size, Position pos, PointF location) : base(size, pos, location) { }
+        //した
+		public Tap(int size, Position pos, PointF location) : base(size, pos, location)
+        {
+            air = new Air();
+        }
 
 #if DEBUG
 		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
