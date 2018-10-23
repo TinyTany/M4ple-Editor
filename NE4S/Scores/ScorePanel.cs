@@ -163,6 +163,8 @@ namespace NE4S.Scores
             pBox.Refresh();
         }
 
+        #region マウス入力とかに反応して処理するメソッドたち  
+
         public void MouseClick(MouseEventArgs e)
         {
 			var laneBook = model.LaneBook;
@@ -197,6 +199,7 @@ namespace NE4S.Scores
 #endif
 			if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
+                Note selectedNote = model.NoteBook.SelectedNote(new PointF(currentPositionX + e.X, e.Y));
 				switch (Status.Mode)
 				{
 					case Define.ADD:
@@ -205,10 +208,10 @@ namespace NE4S.Scores
 						AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position);
 						break;
 					case Define.EDIT:
-						
+                        if (selectedNote != null) Status.selectedNote = selectedNote;
 						break;
 					case Define.DELETE:
-						
+                        if (selectedNote != null) model.NoteBook.Delete(selectedNote);
 						break;
 					default:
 						break;
@@ -261,6 +264,7 @@ namespace NE4S.Scores
         {
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = false;
+            Status.selectedNote = null;
 
 			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 			if (selectedLane != null && e.Button == MouseButtons.Left)
@@ -302,6 +306,7 @@ namespace NE4S.Scores
         {
             currentPositionX += (e.NewValue - e.OldValue);
         }
+        #endregion
 
         private void AddNote(PointF locationVirtual, Position position)
         {
