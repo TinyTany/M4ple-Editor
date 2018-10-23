@@ -51,6 +51,12 @@ namespace NE4S
 			get { return lane; }
 		}
 
+        //TODO: 後で実装する
+        public static Position operator ++(Position position)
+        {
+            return position;
+        }
+
 		private void RefreshPos()
 		{
 			int Gcd = MyUtil.Gcd(beatCount, baseBeat);
