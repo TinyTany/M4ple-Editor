@@ -11,7 +11,7 @@ namespace NE4S
     public class Model
     {
         private NoteBook noteBook;
-        private ScoreBook scoreBook;
+        private readonly ScoreBook scoreBook;
 		private LaneBook laneBook;
 
         public Model()
