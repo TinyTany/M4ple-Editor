@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace NE4S.Notes
 {
@@ -62,6 +63,12 @@ namespace NE4S.Notes
 		{
 			if (note != null) note.ReSize(size);
 		}
+
+        //今はshortNotesのみ
+        public Note SelectedNote(PointF location)
+        {
+            return shortNotes.FindLast(x => x.Contains(location));
+        }
 
 #if DEBUG
 		public void Paint(PaintEventArgs e, int originPosX, int originPosY)

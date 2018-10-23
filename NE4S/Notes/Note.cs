@@ -49,6 +49,11 @@ namespace NE4S.Notes
 			//set { pos = value; }
         }
 
+        public bool Contains(PointF location)
+        {
+            return hitRect.Contains(location);
+        }
+
 		public void ReSize(int size)
 		{
 			this.size = size;
