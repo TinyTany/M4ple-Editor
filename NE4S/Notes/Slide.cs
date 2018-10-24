@@ -19,12 +19,33 @@ namespace NE4S.Notes
         {
             Add(new SlideBegin(size, pos, location));
             //TODO: posとかlocationとかをいい感じに設定する
-            Add(new SlideEnd(size, pos, location));
+            location.Y -= 20;
+            SlideEnd slideEnd = new SlideEnd(size, ++pos, location);
+            Add(slideEnd);
+            Status.selectedNote = slideEnd;
         }
 
-        public override void Draw(PaintEventArgs e)
+        /// <summary>
+        /// ノーツ間を繋ぐ帯の描画
+        /// </summary>
+        /// <param name="past"></param>
+        /// <param name="future"></param>
+        private void DrawSlideLine(Note past, Note future)
+        {
+            
+        }
+
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
-			
+			foreach(Note note in this)
+            {
+                note.Draw(e, originPosX, originPosY);
+                if (!(note is SlideEnd))
+                {
+                    Note next = this.ElementAt(IndexOf(note));
+
+                }
+            }
 		}
 	}
 }
