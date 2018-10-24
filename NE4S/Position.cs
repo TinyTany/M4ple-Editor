@@ -70,8 +70,10 @@ namespace NE4S
 		}
 
         //TODO: 後で実装する
+        //HACK: したけどこれが自然な動作なのかは怪しいし再検討必須そう
         public static Position operator ++(Position position)
         {
+            //乗ってるScoreのBeatNumer超えたらどうする…どうする？
             position.beatCount++;
             return position;
         }

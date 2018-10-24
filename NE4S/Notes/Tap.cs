@@ -18,8 +18,6 @@ namespace NE4S.Notes
 			air = new Air();
         }
 
-		//TODO: Air初期化して
-        //した
 		public Tap(int size, Position pos, PointF location) : base(size, pos, location)
         {
             air = new Air();

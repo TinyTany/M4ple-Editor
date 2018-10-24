@@ -181,10 +181,11 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = true;
 			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
+            #region 座標などをコンソール出力
 #if DEBUG
-			//デバッグ用にクリックした座標などをコンソールに出力する
-			//本番では必要ない
-			if (selectedLane != null && e.Button == MouseButtons.Left)
+            //デバッグ用にクリックした座標などをコンソールに出力する
+            //本番では必要ない
+            if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
 				if(selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y) != null)
@@ -197,7 +198,8 @@ namespace NE4S.Scores
 				}
 			}
 #endif
-			if (selectedLane != null && e.Button == MouseButtons.Left)
+            #endregion
+            if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
                 Note selectedNote = model.NoteBook.SelectedNote(new PointF(currentPositionX + e.X, e.Y));
 				switch (Status.Mode)
