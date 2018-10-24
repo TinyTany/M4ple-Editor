@@ -71,8 +71,10 @@ namespace NE4S.Notes
         }
 
 #if DEBUG
+        //今はちょっとだけ実装
 		public void Paint(PaintEventArgs e, int originPosX, int originPosY)
 		{
+            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY);
 			foreach (Note note in shortNotes) note.Draw(e, originPosX, originPosY);
 		}
 #endif
