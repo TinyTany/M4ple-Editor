@@ -19,7 +19,7 @@ namespace NE4S.Notes
             
         }
 
-		public virtual void Draw(PaintEventArgs e)
+		public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
 
 		}
