@@ -17,6 +17,8 @@ namespace NE4S.Notes
         private int size;
         private Position pos;
 		protected RectangleF hitRect;
+        //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
+        public int LaneIndex { get; set; } = -1;
 
 		public Note()
 		{
@@ -47,6 +49,16 @@ namespace NE4S.Notes
             get { return pos; }
 			//同上
 			//set { pos = value; }
+        }
+
+        public PointF Location
+        {
+            get { return hitRect.Location; }
+        }
+
+        public float Width
+        {
+            get { return hitRect.Width; }
         }
 
         public bool Contains(PointF location)
