@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace NE4S
 {
@@ -15,5 +16,13 @@ namespace NE4S
 			if (n == 0) return m;
 			return Gcd(n, m % n);
 		}
+
+        public static void AdjustHitRect(ref RectangleF hitRect)
+        {
+            //描画中にいい感じにハマるように調節する
+            //--hitRect.Width; ++hitRect.X;//アンチエイリアスしたらちょっとずれて見えたからこの処理スキップしてみる
+            hitRect.Y -= 2;
+            return;
+        }
 	}
 }
