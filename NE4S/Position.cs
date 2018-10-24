@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace NE4S
 {
@@ -24,6 +25,23 @@ namespace NE4S
 			this.baseBeat = baseBeat;
 			this.lane = lane;
 			RefreshPos();
+        }
+
+        /// <summary>
+        /// お試し
+        /// ロングノーツ描画とかのときにこれらの情報が無いとキビしそうなので無理やり追加してみる
+        /// </summary>
+        /// <param name="laneIndex"></param>
+        /// <param name="location"></param>
+        public void SetExtraPosition(int laneIndex, PointF location)
+        {
+            //やっぱり使わないかな？
+            //locationはNoteクラスのhitRectからわかるしlaneIndexもNoteクラスのメンバにしたほうがまるそう
+            /*
+            this.laneIndex = laneIndex;
+            this.location = location;
+            //*/
+            return;
         }
 
 		public void PrintPos()
