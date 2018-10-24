@@ -205,7 +205,7 @@ namespace NE4S.Scores
 					case Define.ADD:
 						Point gridPoint = PointToGrid(e.Location, selectedLane);
 						Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
-						AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position);
+						AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position, selectedLane.Index);
 						break;
 					case Define.EDIT:
                         if (selectedNote != null) Status.selectedNote = selectedNote;
@@ -250,6 +250,8 @@ namespace NE4S.Scores
                             physicalGridPoint.Y);
                         Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
                         Status.selectedNote.Relocate(newPos, virtualGridPoint);
+                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
+                        Status.selectedNote.LaneIndex = selectedLane.Index;
                     }
                     break;
 				case Define.EDIT:
@@ -262,7 +264,9 @@ namespace NE4S.Scores
 							physicalGridPoint.Y);
 						Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
 						Status.selectedNote.Relocate(newPos, virtualGridPoint);
-					}
+                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
+                        Status.selectedNote.LaneIndex = selectedLane.Index;
+                    }
 					break;
 				case Define.DELETE:
 					break;
@@ -319,7 +323,7 @@ namespace NE4S.Scores
         }
         #endregion
 
-        private void AddNote(PointF locationVirtual, Position position)
+        private void AddNote(PointF locationVirtual, Position position, int laneIndex)
         {
             Note newNote = null;
             switch (Status.Note)
@@ -343,7 +347,7 @@ namespace NE4S.Scores
                     break;
                 case Define.SLIDE:
                     //testように直書き
-                    model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual));
+                    model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, laneIndex));
                     break;
                 case Define.SLIDECURVE:
                     break;
