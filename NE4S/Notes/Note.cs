@@ -31,8 +31,8 @@ namespace NE4S.Notes
 			this.pos = pos;
 			hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
 			hitRect.Location = location;
-			//描画中にいい感じにハマるように調節する
-			--hitRect.Width; ++hitRect.X; hitRect.Y -= 2;
+            //描画中にいい感じにハマるように調節する
+            MyUtil.AdjustHitRect(ref hitRect);
         }
 
         public int Size
@@ -76,8 +76,8 @@ namespace NE4S.Notes
 		public void Relocate(PointF location)
 		{
 			hitRect.Location = location;
-			//描画中にいい感じにハマるように調節する
-			++hitRect.X; hitRect.Y -= 2;
+            //描画中にいい感じにハマるように調節する
+            MyUtil.AdjustHitRect(ref hitRect);
 			return;
 		}
 
