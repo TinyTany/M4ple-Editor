@@ -27,7 +27,7 @@ namespace NE4S.Notes
 
 #if DEBUG
 		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
-		{
+        {
 			RectangleF drawRect = new RectangleF(
 				hitRect.X - originPosX,
 				hitRect.Y - originPosY,
@@ -40,7 +40,8 @@ namespace NE4S.Notes
 			}
 			using (Pen pen = new Pen(Color.White, 1))
 			{
-				e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
+				//e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
 			}
 		}
 #endif
