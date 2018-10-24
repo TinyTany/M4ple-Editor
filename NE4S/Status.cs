@@ -12,7 +12,7 @@ namespace NE4S
         public static int Mode { get; set; } = Define.ADD;
         public static int Beat { get; set; } = 16;
         public static int Grid { get; set; } = 16;
-        public static int Note { get; set; } = Define.TAP;
+        public static int Note { get; set; } = Define.SLIDE;
         public static int NoteSize { get; set; } = 4;
         public static double BPM { get; set; } = 120.0;
         public static bool InvisibleSlideTap { get; set; } = true;
