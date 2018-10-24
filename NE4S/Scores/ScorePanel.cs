@@ -240,7 +240,18 @@ namespace NE4S.Scores
 					{
 						
 					}
-					break;
+                    //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずそのままコピペ
+                    //動いた
+                    if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
+                    {
+                        Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
+                        Point virtualGridPoint = new Point(
+                            physicalGridPoint.X + currentPositionX,
+                            physicalGridPoint.Y);
+                        Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
+                        Status.selectedNote.Relocate(newPos, virtualGridPoint);
+                    }
+                    break;
 				case Define.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
@@ -331,6 +342,8 @@ namespace NE4S.Scores
                 case Define.HOLD:
                     break;
                 case Define.SLIDE:
+                    //testように直書き
+                    model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual));
                     break;
                 case Define.SLIDECURVE:
                     break;
