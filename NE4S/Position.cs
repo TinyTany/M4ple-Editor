@@ -54,6 +54,7 @@ namespace NE4S
         //TODO: 後で実装する
         public static Position operator ++(Position position)
         {
+            position.beatCount++;
             return position;
         }
 
