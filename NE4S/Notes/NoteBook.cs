@@ -77,10 +77,13 @@ namespace NE4S.Notes
 
 #if DEBUG
         //今はちょっとだけ実装
+        //TODO: 範囲外のノーツは描画しないようにして軽くする
 		public void Paint(PaintEventArgs e, int originPosX, int originPosY)
 		{
             foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY);
-			foreach (Note note in shortNotes) note.Draw(e, originPosX, originPosY);
+            //お試し
+            //範囲外のノーツは描画しないようにするというこころ
+			foreach (Note note in shortNotes.Where(x => x.Location.X > originPosX && x.Location.X < originPosX + 1031)) note.Draw(e, originPosX, originPosY);
 		}
 #endif
 	}
