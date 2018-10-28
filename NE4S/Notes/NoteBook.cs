@@ -65,9 +65,14 @@ namespace NE4S.Notes
 		}
 
         //今はshortNotesのみ
+        //TODO: それぞれのリストの全部に対して確認する
         public Note SelectedNote(PointF location)
         {
-            return shortNotes.FindLast(x => x.Contains(location));
+            //それぞれのリストで確認するやつやろうとした途中
+            Note selectedNote = shortNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null) return selectedNote;
+            
+            return null;
         }
 
 #if DEBUG
