@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NE4S.Scores;
+using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
@@ -34,18 +35,28 @@ namespace NE4S.Notes
         /// </summary>
         /// <param name="past"></param>
         /// <param name="future"></param>
-        private void DrawSlideLine(PaintEventArgs e, Note past, Note future)
+        private void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY)
         {
-            //TODO: まともに動かないので良さげに直す
-            PointF[] lineRegion = new PointF[4] {
-                future.Location,
-                past.Location,
-                new PointF(past.Location.X + past.Width, past.Location.Y),
-                new PointF(future.Location.X + future.Width, future.Location.Y)
-            };
-            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
+            //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
+            int MarginX = 2, dY = 2;
+            //TODO: レーンをまたぐときの描画処理実装する
+            int passingLanes = future.LaneIndex - past.LaneIndex;
+            if(passingLanes == 0)
             {
-                e.Graphics.FillClosedCurve(myBrush, lineRegion);
+                GraphicsPath graphicsPath = new GraphicsPath();
+                PointF TopLeft = new PointF(future.Location.X - originPosX + MarginX, future.Location.Y - originPosY + dY);
+                PointF TopRight = new PointF(future.Location.X + future.Width - originPosX - MarginX, future.Location.Y - originPosY + dY);
+                PointF BottomLeft = new PointF(past.Location.X - originPosX + MarginX, past.Location.Y - originPosY + dY);
+                PointF BottomRight = new PointF(past.Location.X + past.Width - originPosX - MarginX, past.Location.Y - originPosY + dY);
+                graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
+                using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
+                {
+                    e.Graphics.FillPath(myBrush, graphicsPath);
+                }
+            }
+            else if(passingLanes >= 1)
+            {
+
             }
         }
 
@@ -55,8 +66,8 @@ namespace NE4S.Notes
             {
                 if (!(note is SlideEnd))
                 {
-                    Note next = this.ElementAt(IndexOf(note));
-                    DrawSlideLine(e, note, next);
+                    Note next = this.ElementAt(IndexOf(note) + 1);
+                    DrawSlideLine(e, note, next, originPosX, originPosY);
                 }
                 note.Draw(e, originPosX, originPosY);
             }
