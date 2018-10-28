@@ -205,9 +205,16 @@ namespace NE4S.Scores
 				switch (Status.Mode)
 				{
 					case Define.ADD:
-						Point gridPoint = PointToGrid(e.Location, selectedLane);
-						Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
-						AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position, selectedLane.Index);
+                        /*
+                        //破壊テスト
+                        for(int i = 0; i < 1000; ++i)
+                        {
+                            //*/
+                            Point gridPoint = PointToGrid(e.Location, selectedLane);
+                            Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
+                            AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position, selectedLane.Index);
+                        //}
+						
 						break;
 					case Define.EDIT:
                         if (selectedNote != null) Status.selectedNote = selectedNote;
