@@ -27,23 +27,6 @@ namespace NE4S
 			RefreshPos();
         }
 
-        /// <summary>
-        /// お試し
-        /// ロングノーツ描画とかのときにこれらの情報が無いとキビしそうなので無理やり追加してみる
-        /// </summary>
-        /// <param name="laneIndex"></param>
-        /// <param name="location"></param>
-        public void SetExtraPosition(int laneIndex, PointF location)
-        {
-            //やっぱり使わないかな？
-            //locationはNoteクラスのhitRectからわかるしlaneIndexもNoteクラスのメンバにしたほうがまるそう
-            /*
-            this.laneIndex = laneIndex;
-            this.location = location;
-            //*/
-            return;
-        }
-
 		public void PrintPos()
 		{
 			System.Diagnostics.Debug.WriteLine(bar + "(" + beatCount + "/" + baseBeat + "), " + lane);
