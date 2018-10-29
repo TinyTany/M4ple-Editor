@@ -24,5 +24,12 @@ namespace NE4S
             hitRect.Y -= 2;
             return;
         }
+
+        public static float PositionDistance(Position past, Position future)
+        {
+            float distance = 0;
+
+            return distance;
+        }
 	}
 }
