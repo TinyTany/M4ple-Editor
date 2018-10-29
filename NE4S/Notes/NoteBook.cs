@@ -83,7 +83,8 @@ namespace NE4S.Notes
             foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY);
             //お試し
             //範囲外のノーツは描画しないようにするというこころ
-			foreach (Note note in shortNotes.Where(x => x.Location.X > originPosX && x.Location.X < originPosX + 1031)) note.Draw(e, originPosX, originPosY);
+			foreach (Note note in shortNotes.Where(
+                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031)) note.Draw(e, originPosX, originPosY);
 		}
 #endif
 	}
