@@ -69,7 +69,7 @@ namespace NE4S
 
         public void PaintNote(PaintEventArgs e, int originPosX, int originPosY)
         {
-            noteBook.Paint(e, originPosX, originPosY, scoreBook);
+            noteBook.Paint(e, originPosX, originPosY, scoreBook, laneBook);
         }
 
 		public NoteBook NoteBook

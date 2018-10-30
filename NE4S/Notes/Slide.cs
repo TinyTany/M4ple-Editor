@@ -86,14 +86,14 @@ namespace NE4S.Notes
             }
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
 		{
 			foreach(Note note in this)
             {
                 if (!(note is SlideEnd))
                 {
                     Note next = this.ElementAt(IndexOf(note) + 1);
-                    DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook);
+                    DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook);
                 }
                 note.Draw(e, originPosX, originPosY);
             }
