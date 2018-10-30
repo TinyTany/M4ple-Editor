@@ -109,13 +109,15 @@ namespace NE4S.Notes
         private float PositionDistance(Position pastPosition, Position futurePosition, ScoreBook scoreBook)
         {
             float distance = 0;
+            //4分の4拍子1小節分の高さ
+            float baseBarSize = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight;
             Score pastScore = scoreBook.At(pastPosition.Bar - 1), futureScore = scoreBook.At(futurePosition.Bar - 1);
-            distance += ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * (pastScore.BarSize - pastPosition.Size);
+            distance += baseBarSize * (pastScore.BarSize - pastPosition.Size);
             for(int i = pastScore.Index + 1; i <= futureScore.Index - 1; ++i)
             {
-                distance += scoreBook.At(i).BarSize * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight;
+                distance += scoreBook.At(i).BarSize * baseBarSize;
             }
-            distance += ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * futurePosition.Size;
+            distance += baseBarSize * futurePosition.Size;
             return distance;
         }
 	}
