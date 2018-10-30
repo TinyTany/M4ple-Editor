@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
+using NE4S.Scores;
 
 namespace NE4S.Notes
 {
@@ -19,7 +20,7 @@ namespace NE4S.Notes
             
         }
 
-		public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
+		public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scores)
 		{
 
 		}

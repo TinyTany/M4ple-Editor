@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NE4S.Notes;
 using NE4S.Scores;
+using System.Windows.Forms;
 
 namespace NE4S
 {
@@ -65,6 +66,11 @@ namespace NE4S
 		{
 			noteBook.Add(newLongNote);
 		}
+
+        public void PaintNote(PaintEventArgs e, int originPosX, int originPosY)
+        {
+            noteBook.Paint(e, originPosX, originPosY, scoreBook);
+        }
 
 		public NoteBook NoteBook
 		{

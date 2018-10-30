@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using NE4S.Scores;
 
 namespace NE4S.Notes
 {
@@ -78,9 +79,9 @@ namespace NE4S.Notes
 #if DEBUG
         //今はちょっとだけ実装
         //TODO: 範囲外のノーツは描画しないようにして軽くする
-		public void Paint(PaintEventArgs e, int originPosX, int originPosY)
+		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook)
 		{
-            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY);
+            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook);
             //お試し
             //範囲外のノーツは描画しないようにするというこころ
 			foreach (Note note in shortNotes.Where(
