@@ -55,6 +55,10 @@ namespace NE4S.Scores
             set { barSize = value; }
         }
 
+        /// <summary>
+        /// 小節番号
+        /// 0スタート
+        /// </summary>
         public int Index
         {
             get { return index; }

@@ -35,6 +35,10 @@ namespace NE4S
 			System.Diagnostics.Debug.WriteLine(bar + "(" + beatCount + "/" + baseBeat + "), " + lane);
 		}
 
+        /// <summary>
+        /// 小節番号
+        /// 1スタート
+        /// </summary>
 		public int Bar
 		{
 			get { return bar; }
