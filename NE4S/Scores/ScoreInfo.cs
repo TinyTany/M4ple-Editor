@@ -37,10 +37,6 @@ namespace NE4S.Scores
         /// </summary>
         public static float FontSize { get; } = 8;
         /// <summary>
-        /// 小節番号描画時の位置ずれ分の座標
-        /// </summary>
-        public static PointF ScoreIndexPos { get; } = new PointF(-26.5f, -7);
-        /// <summary>
         /// ノーツの縦幅
         /// </summary>
         public static float NoteHeight { get; } = 5;

@@ -129,15 +129,15 @@ namespace NE4S.Scores
                 //小節数を描画
                 using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
                 {
-                    int dX = 3, dY = -2;
+                    float dX = -23.5f, dY = -9;
                     e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                     e.Graphics.DrawString(
                     (index + 1).ToString().PadLeft(3, '0'),
                     myFont,
                     Brushes.White,
                     new PointF(
-                        drawPosX + ScoreInfo.ScoreIndexPos.X + dX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer + ScoreInfo.ScoreIndexPos.Y + dY));
+                        drawPosX + dX,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer + dY));
                 }
             }
             else
