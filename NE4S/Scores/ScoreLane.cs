@@ -111,6 +111,27 @@ namespace NE4S.Scores
         }
 
         /// <summary>
+        /// noteがレーンに含まれているか判定
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        public bool Contains(Note note)
+        {
+            if(scoreMaterialList.Find(
+                x => 
+                //ScoreのIndexは0から始まるがPosのBarは1から始まる
+                x.Score.Index + 1 == note.Pos.Bar &&
+                //RangeのInfは1から始まるがPosのCountは0から始まる
+                note.Pos.Size >= (x.Range.Inf - 1) / (float)x.Score.BeatDenom &&
+                note.Pos.Size <= (x.Range.Sup - 1) / (float)x.Score.BeatDenom) != null)
+            {
+                return true;
+            }
+            else return false;
+            //HACK: ↑IndexとかInfとか始まりがずれてて気持ち悪いので直したほうがいいのかな？
+        }
+
+        /// <summary>
         /// 指定したScore全体がこのレーン内に完全に含まれているか判定
         /// </summary>
         /// <param name="score"></param>
