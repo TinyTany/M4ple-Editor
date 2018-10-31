@@ -257,7 +257,7 @@ namespace NE4S.Scores
                         Point virtualGridPoint = new Point(
                             physicalGridPoint.X + currentPositionX,
                             physicalGridPoint.Y);
-                        Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
+                        Position newPos = selectedLane.GetPos(virtualGridPoint);
                         Status.selectedNote.Relocate(newPos, virtualGridPoint);
                         //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
                         Status.selectedNote.LaneIndex = selectedLane.Index;
@@ -271,7 +271,7 @@ namespace NE4S.Scores
 						Point virtualGridPoint = new Point(
 							physicalGridPoint.X + currentPositionX,
 							physicalGridPoint.Y);
-						Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
+						Position newPos = selectedLane.GetPos(virtualGridPoint);
 						Status.selectedNote.Relocate(newPos, virtualGridPoint);
                         //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
                         Status.selectedNote.LaneIndex = selectedLane.Index;
