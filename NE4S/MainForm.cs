@@ -112,6 +112,7 @@ namespace NE4S
 
         private void Score_Paint(object sender, PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender)).Item1.PaintPanel(e);
         }
 

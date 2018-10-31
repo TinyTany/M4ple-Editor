@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
+using NE4S.Scores;
 
 namespace NE4S.Notes
 {
@@ -63,10 +65,27 @@ namespace NE4S.Notes
 			if (note != null) note.ReSize(size);
 		}
 
+        //今はshortNotesのみ
+        //TODO: それぞれのリストの全部に対して確認する
+        public Note SelectedNote(PointF location)
+        {
+            //それぞれのリストで確認するやつやろうとした途中
+            Note selectedNote = shortNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null) return selectedNote;
+            
+            return null;
+        }
+
 #if DEBUG
-		public void Paint(PaintEventArgs e, int originPosX, int originPosY)
+        //今はちょっとだけ実装
+        //TODO: 範囲外のノーツは描画しないようにして軽くする
+		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
 		{
-			foreach (Note note in shortNotes) note.Draw(e, originPosX, originPosY);
+            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook, laneBook);
+            //お試し
+            //範囲外のノーツは描画しないようにするというこころ
+			foreach (Note note in shortNotes.Where(
+                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031)) note.Draw(e, originPosX, originPosY);
 		}
 #endif
 	}

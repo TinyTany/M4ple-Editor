@@ -26,8 +26,8 @@ namespace NE4S.Notes
             if (!Visible || !Enable) return;
             note.Size = new SizeF(ScoreInfo.MinLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
 			note.Location = Location;
-			//描画時にレーンの線の間にノーツがうまくハマるようにする
-			++note.X; --note.Width; note.Y -= 2;
+            //描画中にいい感じにハマるように調節する
+            MyUtil.AdjustHitRect(ref note);
             using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(150, 255, 0, 0)))
             {
                 e.Graphics.FillRectangle(myBrush, note);

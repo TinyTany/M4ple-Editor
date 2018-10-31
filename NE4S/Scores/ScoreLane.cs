@@ -41,7 +41,7 @@ namespace NE4S.Scores
 			get { return hitRect; }
 		}
 
-		private void refreshRects()
+		private void RefreshRects()
 		{
 			hitRect.Size = new SizeF(
 				scoreWidth,
@@ -58,7 +58,7 @@ namespace NE4S.Scores
 				ScoreInfo.PanelMargin.Top);
 		}
 
-		private void refreshScoreMaterialList()
+		private void RefreshScoreMaterialList()
 		{
 			//Scoreの当たり判定を更新する
 			float sumHeight = 0;
@@ -78,7 +78,7 @@ namespace NE4S.Scores
 		public int Index
         {
             get { return index; }
-            set { index = value; refreshRects(); refreshScoreMaterialList(); }
+            set { index = value; RefreshRects(); RefreshScoreMaterialList(); }
         }
 
         class Margin
@@ -108,6 +108,27 @@ namespace NE4S.Scores
         {
             if (scoreMaterialList.Find(x => x.Score.Equals(score)) != null) return true;
             else return false;
+        }
+
+        /// <summary>
+        /// noteがレーンに含まれているか判定
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        public bool Contains(Note note)
+        {
+            if(scoreMaterialList.Find(
+                x => 
+                //ScoreのIndexは0から始まるがPosのBarは1から始まる
+                x.Score.Index + 1 == note.Pos.Bar &&
+                //RangeのInfは1から始まるがPosのCountは0から始まる
+                note.Pos.Size >= (x.Range.Inf - 1) / (float)x.Score.BeatDenom &&
+                note.Pos.Size <= x.Range.Sup / (float)x.Score.BeatDenom) != null)
+            {
+                return true;
+            }
+            else return false;
+            //HACK: ↑IndexとかInfとか始まりがずれてて気持ち悪いので直したほうがいいのかな？
         }
 
         /// <summary>
@@ -154,7 +175,7 @@ namespace NE4S.Scores
                 currentBarSize += newRange.Size() / (float)newScore.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
-				refreshRects();
+				RefreshRects();
                 //
                 newScore.LinkCount++;
             }
@@ -186,10 +207,10 @@ namespace NE4S.Scores
                 currentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
-				refreshRects();
+				RefreshRects();
 				//
                 scoreMaterialList.Remove(scoreMaterialList.Find(x => x.Score.Equals(score)));
-				refreshScoreMaterialList();
+				RefreshScoreMaterialList();
                 score.LinkCount--;
             }
             else

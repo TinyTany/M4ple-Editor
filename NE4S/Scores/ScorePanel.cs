@@ -17,7 +17,7 @@ namespace NE4S.Scores
     {
         private Size panelSize;
         private int currentPositionX, currentWidthMax;
-		private NoteMaterialBook noteMaterialBook;
+		private readonly NoteMaterialBook noteMaterialBook;
         private Model model;
         private HScrollBar hSBar;
         private PictureBox pBox;
@@ -163,6 +163,8 @@ namespace NE4S.Scores
             pBox.Refresh();
         }
 
+        #region マウス入力とかに反応して処理するメソッドたち  
+
         public void MouseClick(MouseEventArgs e)
         {
 			var laneBook = model.LaneBook;
@@ -179,10 +181,11 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = true;
 			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
+            #region 座標などをコンソール出力
 #if DEBUG
-			//デバッグ用にクリックした座標などをコンソールに出力する
-			//本番では必要ない
-			if (selectedLane != null && e.Button == MouseButtons.Left)
+            //デバッグ用にクリックした座標などをコンソールに出力する
+            //本番では必要ない
+            if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
 				if(selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y) != null)
@@ -195,20 +198,29 @@ namespace NE4S.Scores
 				}
 			}
 #endif
-			if (selectedLane != null && e.Button == MouseButtons.Left)
+            #endregion
+            if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
+                Note selectedNote = model.NoteBook.SelectedNote(new PointF(currentPositionX + e.X, e.Y));
 				switch (Status.Mode)
 				{
 					case Define.ADD:
-						Point gridPoint = PointToGrid(e.Location, selectedLane);
-						Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
-						AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position);
+                        /*
+                        //破壊テスト
+                        for(int i = 0; i < 1000; ++i)
+                        {
+                            //*/
+                            Point gridPoint = PointToGrid(e.Location, selectedLane);
+                            Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
+                            AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position, selectedLane.Index);
+                        //}
+						
 						break;
 					case Define.EDIT:
-						
+                        if (selectedNote != null) Status.selectedNote = selectedNote;
 						break;
 					case Define.DELETE:
-						
+                        if (selectedNote != null) model.NoteBook.Delete(selectedNote);
 						break;
 					default:
 						break;
@@ -237,7 +249,20 @@ namespace NE4S.Scores
 					{
 						
 					}
-					break;
+                    //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずそのままコピペ
+                    //動いた
+                    if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
+                    {
+                        Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
+                        Point virtualGridPoint = new Point(
+                            physicalGridPoint.X + currentPositionX,
+                            physicalGridPoint.Y);
+                        Position newPos = selectedLane.GetPos(virtualGridPoint);
+                        Status.selectedNote.Relocate(newPos, virtualGridPoint);
+                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
+                        Status.selectedNote.LaneIndex = selectedLane.Index;
+                    }
+                    break;
 				case Define.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
@@ -246,9 +271,11 @@ namespace NE4S.Scores
 						Point virtualGridPoint = new Point(
 							physicalGridPoint.X + currentPositionX,
 							physicalGridPoint.Y);
-						Position newPos = selectedLane.GetPos(currentPositionX + e.X, e.Y);
+						Position newPos = selectedLane.GetPos(virtualGridPoint);
 						Status.selectedNote.Relocate(newPos, virtualGridPoint);
-					}
+                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
+                        Status.selectedNote.LaneIndex = selectedLane.Index;
+                    }
 					break;
 				case Define.DELETE:
 					break;
@@ -261,6 +288,7 @@ namespace NE4S.Scores
         {
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = false;
+            Status.selectedNote = null;
 
 			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(currentPositionX + e.X, e.Y));
 			if (selectedLane != null && e.Button == MouseButtons.Left)
@@ -302,8 +330,9 @@ namespace NE4S.Scores
         {
             currentPositionX += (e.NewValue - e.OldValue);
         }
+        #endregion
 
-        private void AddNote(PointF locationVirtual, Position position)
+        private void AddNote(PointF locationVirtual, Position position, int laneIndex)
         {
             Note newNote = null;
             switch (Status.Note)
@@ -326,6 +355,8 @@ namespace NE4S.Scores
                 case Define.HOLD:
                     break;
                 case Define.SLIDE:
+                    //testように直書き
+                    model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, laneIndex));
                     break;
                 case Define.SLIDECURVE:
                     break;
@@ -397,7 +428,7 @@ namespace NE4S.Scores
 				}
             }
 #if DEBUG
-			model.NoteBook.Paint(e, originPosX, originPosY);
+			model.PaintNote(e, originPosX, originPosY);
 #endif
 			pNote.Paint(e);
 		}
