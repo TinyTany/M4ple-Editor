@@ -129,6 +129,11 @@ namespace NE4S.Notes
             }
         }
 
+        private void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
+        {
+
+        }
+
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
 		{
 			foreach(Note note in this)
