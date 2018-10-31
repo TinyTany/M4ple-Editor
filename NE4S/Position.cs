@@ -18,6 +18,9 @@ namespace NE4S
 		/// </summary>
 		private int lane;
         //Slideで使う
+        /// <summary>
+        /// 0 ≦ size ＜ beatNumer/(float)beatDenom
+        /// </summary>
         private float size;
 
 		public Position(int bar, int beatCount, int baseBeat, int lane)
