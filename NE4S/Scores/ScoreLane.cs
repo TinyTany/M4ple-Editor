@@ -123,7 +123,7 @@ namespace NE4S.Scores
                 x.Score.Index + 1 == note.Pos.Bar &&
                 //RangeのInfは1から始まるがPosのCountは0から始まる
                 note.Pos.Size >= (x.Range.Inf - 1) / (float)x.Score.BeatDenom &&
-                note.Pos.Size <= (x.Range.Sup - 1) / (float)x.Score.BeatDenom) != null)
+                note.Pos.Size <= x.Range.Sup / (float)x.Score.BeatDenom) != null)
             {
                 return true;
             }
