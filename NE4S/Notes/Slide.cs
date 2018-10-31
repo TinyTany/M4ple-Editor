@@ -53,8 +53,6 @@ namespace NE4S.Notes
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
                     graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
-                    ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
-                    //TODO: ここでgraphicsPathとscoreLane.HitRectのIntersectを取りたいけどできないしどうしよう…
                     using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
                     {
                         e.Graphics.FillPath(myBrush, graphicsPath);
@@ -77,6 +75,8 @@ namespace NE4S.Notes
                     using (GraphicsPath graphicsPath = new GraphicsPath())
                     {
                         graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
+                        ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
+                        if (scoreLane != null) e.Graphics.Clip = new Region(scoreLane.HitRect);
                         using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
                         {
                             e.Graphics.FillPath(myBrush, graphicsPath);
@@ -117,6 +117,8 @@ namespace NE4S.Notes
                     using (GraphicsPath graphicsPath = new GraphicsPath())
                     {
                         graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
+                        ScoreLane scoreLane = laneBook.Find(x => x.Contains(future));
+                        if (scoreLane != null) e.Graphics.Clip = new Region(scoreLane.HitRect);
                         using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
                         {
                             e.Graphics.FillPath(myBrush, graphicsPath);
@@ -136,6 +138,7 @@ namespace NE4S.Notes
                     Note next = this.ElementAt(IndexOf(note) + 1);
                     DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook);
                 }
+                e.Graphics.ResetClip();
                 note.Draw(e, originPosX, originPosY);
             }
 		}
