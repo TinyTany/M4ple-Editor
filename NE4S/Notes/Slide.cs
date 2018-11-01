@@ -35,7 +35,7 @@ namespace NE4S.Notes
         /// </summary>
         /// <param name="past"></param>
         /// <param name="future"></param>
-        private void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
+        private void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
             //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
             int MarginX = 2, dY = 2;
@@ -134,14 +134,14 @@ namespace NE4S.Notes
 
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
 			foreach(Note note in this)
             {
                 if (!(note is SlideEnd))
                 {
                     Note next = this.ElementAt(IndexOf(note) + 1);
-                    DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook);
+                    DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
                 }
                 e.Graphics.ResetClip();
                 note.Draw(e, originPosX, originPosY);

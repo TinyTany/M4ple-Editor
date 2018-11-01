@@ -67,9 +67,9 @@ namespace NE4S
 			noteBook.Add(newLongNote);
 		}
 
-        public void PaintNote(PaintEventArgs e, int originPosX, int originPosY)
+        public void PaintNote(PaintEventArgs e, int originPosX, int originPosY, int currentPositionX)
         {
-            noteBook.Paint(e, originPosX, originPosY, scoreBook, laneBook);
+            noteBook.Paint(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
         }
 
 		public NoteBook NoteBook

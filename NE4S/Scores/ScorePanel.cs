@@ -428,7 +428,7 @@ namespace NE4S.Scores
 				}
             }
 #if DEBUG
-			model.PaintNote(e, originPosX, originPosY);
+			model.PaintNote(e, originPosX, originPosY, currentPositionX);
 #endif
 			pNote.Paint(e);
 		}
