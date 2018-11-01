@@ -62,10 +62,9 @@ namespace NE4S.Notes
             else if(passingLanes >= 1)
             {
                 float positionDistance = PositionDistance(past.Pos, future.Pos, scoreBook);
+                float diffX = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
                 #region 最初のレーンでの描画
                 {
-                    float diffX = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
-                    
                     //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
                     PointF TopLeft = new PointF(pastRerativeLocation.X + diffX + MarginX, pastRerativeLocation.Y - positionDistance + dY);
                     PointF TopRight = new PointF(pastRerativeLocation.X + diffX + future.Width - MarginX, pastRerativeLocation.Y - positionDistance + dY);
@@ -76,7 +75,11 @@ namespace NE4S.Notes
                     {
                         graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
                         ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
-                        if (scoreLane != null) e.Graphics.Clip = new Region(scoreLane.HitRect);
+                        if (scoreLane != null)
+                        {
+                            RectangleF clipRect = new RectangleF(scoreLane.HitRect.X - currentPositionX, scoreLane.HitRect.Y, scoreLane.HitRect.Width, scoreLane.HitRect.Height);
+                            e.Graphics.Clip = new Region(clipRect);
+                        }
                         using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
                         {
                             e.Graphics.FillPath(myBrush, graphicsPath);
@@ -105,20 +108,22 @@ namespace NE4S.Notes
                 }
                 #endregion
                 #region 最後のレーンでの描画
-                {
-                    float diffX = (past.Pos.Lane - future.Pos.Lane) * ScoreInfo.MinLaneWidth;
-                    
+                {                    
                     //以下の2つはレーンをまたがないときと同じ
                     PointF TopLeft = new PointF(futureRerativeLocation.X + MarginX, futureRerativeLocation.Y + dY);
                     PointF TopRight = new PointF(futureRerativeLocation.X + future.Width - MarginX, futureRerativeLocation.Y + dY);
                     //ノーツpastの位置はノーツfutureの位置に2ノーツの距離を足して表す。またBottomRightの水平位置はpastのWidthを使うことに注意
-                    PointF BottomLeft = new PointF(futureRerativeLocation.X + diffX + MarginX, futureRerativeLocation.Y + positionDistance + dY);
-                    PointF BottomRight = new PointF(futureRerativeLocation.X + diffX + past.Width - MarginX, futureRerativeLocation.Y + positionDistance + dY);
+                    PointF BottomLeft = new PointF(futureRerativeLocation.X - diffX + MarginX, futureRerativeLocation.Y + positionDistance + dY);
+                    PointF BottomRight = new PointF(futureRerativeLocation.X - diffX + past.Width - MarginX, futureRerativeLocation.Y + positionDistance + dY);
                     using (GraphicsPath graphicsPath = new GraphicsPath())
                     {
                         graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
                         ScoreLane scoreLane = laneBook.Find(x => x.Contains(future));
-                        if (scoreLane != null) e.Graphics.Clip = new Region(scoreLane.HitRect);
+                        if (scoreLane != null)
+                        {
+                            RectangleF clipRect = new RectangleF(scoreLane.HitRect.X - currentPositionX, scoreLane.HitRect.Y, scoreLane.HitRect.Width, scoreLane.HitRect.Height);
+                            e.Graphics.Clip = new Region(clipRect);
+                        }
                         using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
                         {
                             e.Graphics.FillPath(myBrush, graphicsPath);
