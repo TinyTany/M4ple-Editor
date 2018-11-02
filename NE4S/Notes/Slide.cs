@@ -166,9 +166,35 @@ namespace NE4S.Notes
             }
         }
 
+        /// <summary>
+        /// ノーツ間を繋ぐ帯の描画（ベジェ）
+        /// </summary>
         private void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
         {
+            //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
+            int MarginX = 2, dY = 2;
+            //相対位置
+            PointF pastRerativeLocation = new PointF(past.Location.X - originPosX, past.Location.Y - originPosY);
+            PointF curveRetativePosition = new PointF(curve.Location.X - originPosX, curve.Location.Y - originPosY);
+            PointF futureRerativeLocation = new PointF(future.Location.X - originPosX, future.Location.Y - originPosY);
 
+            int passingLanes = future.LaneIndex - past.LaneIndex;
+            //スライドのノーツとノーツがレーンをまたがないとき
+            if (passingLanes == 0)
+            {
+                PointF TopLeft = new PointF(futureRerativeLocation.X + MarginX, futureRerativeLocation.Y + dY);
+                PointF TopRight = new PointF(futureRerativeLocation.X + future.Width - MarginX, futureRerativeLocation.Y + dY);
+                PointF BottomLeft = new PointF(pastRerativeLocation.X + MarginX, pastRerativeLocation.Y + dY);
+                PointF BottomRight = new PointF(pastRerativeLocation.X + past.Width - MarginX, pastRerativeLocation.Y + dY);
+                using (GraphicsPath graphicsPath = new GraphicsPath())
+                {
+                    graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
+                    using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
+                    {
+                        e.Graphics.FillPath(myBrush, graphicsPath);
+                    }
+                }
+            }
         }
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
