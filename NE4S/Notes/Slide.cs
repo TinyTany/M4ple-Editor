@@ -12,6 +12,19 @@ namespace NE4S.Notes
 {
     public class Slide : LongNote
     {
+        /// <summary>
+        /// スライド全体の背景色（水色）
+        /// </summary>
+        private static readonly Color baseColor = Color.FromArgb(200, 0, 164, 146);
+        /// <summary>
+        /// スライド中継点付近での色（紫色）
+        /// </summary>
+        private static readonly Color stepColor = Color.FromArgb(200, 125, 23, 155);
+        /// <summary>
+        /// スライドの中心線みたいなやつ（薄い水色）
+        /// </summary>
+        private static readonly Color lineColor = Color.FromArgb(200, 3, 181, 161);
+
         public Slide()
         {
 
