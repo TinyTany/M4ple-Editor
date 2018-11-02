@@ -37,6 +37,9 @@ namespace NE4S.Notes
             MyUtil.AdjustHitRect(ref hitRect);
         }
 
+        /// <summary>
+        /// 1 ≦ Size ≦ 16
+        /// </summary>
         public int Size
         {
             get { return size; }
@@ -56,6 +59,10 @@ namespace NE4S.Notes
             get { return hitRect.Location; }
         }
 
+        /// <summary>
+        /// hitrectのWidth
+        /// つまりノーツの物理的幅サイズ
+        /// </summary>
         public float Width
         {
             get { return hitRect.Width; }
