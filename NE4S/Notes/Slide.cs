@@ -37,15 +37,31 @@ namespace NE4S.Notes
             Add(slideBegin);
             //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            SlideEnd slideEnd = new SlideEnd(size, ++pos, location);
+            SlideEnd slideEnd = new SlideEnd(size, pos, location);
             slideEnd.LaneIndex = laneIndex;
             Add(slideEnd);
             Status.selectedNote = slideEnd;
         }
 
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        {
+            foreach (Note note in this.OrderBy(x => x.Pos))
+            {
+                if (!(note is SlideEnd))
+                {
+                    Note next = this.ElementAt(IndexOf(note) + 1);
+                    DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+                }
+                e.Graphics.ResetClip();
+                note.Draw(e, originPosX, originPosY);
+            }
+        }
+
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（直線）
         /// </summary>
+        /// 全体的にコードが汚いのでなんとかしたい
+        /// あといまの状態だと不可視中継点でもグラデーションの境界となってしまうのでなにかいい方法を考える必要がある
         private void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
             //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
@@ -196,20 +212,6 @@ namespace NE4S.Notes
                 }
             }
         }
-
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
-		{
-			foreach(Note note in this)
-            {
-                if (!(note is SlideEnd))
-                {
-                    Note next = this.ElementAt(IndexOf(note) + 1);
-                    DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-                }
-                e.Graphics.ResetClip();
-                note.Draw(e, originPosX, originPosY);
-            }
-		}
 
         /// <summary>
         /// 2つのPosition変数からその仮想的な縦の距離を計算する
