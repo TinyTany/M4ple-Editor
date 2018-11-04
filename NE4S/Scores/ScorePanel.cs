@@ -199,15 +199,18 @@ namespace NE4S.Scores
 			}
 #endif
             #endregion
-            if (selectedLane != null && e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
 			{
                 Note selectedNote = model.NoteBook.SelectedNote(new PointF(currentPositionX + e.X, e.Y));
 				switch (Status.Mode)
 				{
 					case Define.ADD:
-                        Point gridPoint = PointToGrid(e.Location, selectedLane);
-                        Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
-                        AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position, selectedLane.Index);
+                        if(selectedLane != null)
+                        {
+                            Point gridPoint = PointToGrid(e.Location, selectedLane);
+                            Position position = selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y);
+                            AddNote(new PointF(gridPoint.X + currentPositionX, gridPoint.Y), position, selectedLane.Index);
+                        }
                         break;
 					case Define.EDIT:
                         if (selectedNote != null) Status.selectedNote = selectedNote;
