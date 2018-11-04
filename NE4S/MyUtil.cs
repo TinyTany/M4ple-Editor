@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace NE4S
 {
-	public class MyUtil
+	public static class MyUtil
 	{
 		public static int Gcd(int m, int n)
 		{
