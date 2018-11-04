@@ -10,7 +10,7 @@ namespace NE4S
     /// <summary>
     /// 置いたノーツの位置情報
     /// </summary>
-    public class Position
+    public class Position : IComparable<Position>
     {
 		private int bar, baseBeat, beatCount;
 		/// <summary>
@@ -83,5 +83,14 @@ namespace NE4S
 			baseBeat /= Gcd;
             size = beatCount / (float)baseBeat;
 		}
+
+        public int CompareTo(Position other)
+        {
+            if(bar < other.Bar) { return -1; }
+            else if(bar > other.Bar) { return 1; }
+            else if(beatCount / (float)baseBeat < other.BeatCount / (float)other.BaseBeat) { return -1; }
+            else if(beatCount / (float)baseBeat > other.BeatCount / (float)other.BaseBeat) { return 1; }
+            else { return 0; }
+        }
     }
 }
