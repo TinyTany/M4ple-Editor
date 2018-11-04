@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace NE4S.Notes
 {
-    public class ExTap : Note
+    public class ExTap : AirableNote
     {
         public ExTap()
         {

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
-    public class Flick : Note
+    public class Flick : AirableNote
     {
         public Flick()
         {

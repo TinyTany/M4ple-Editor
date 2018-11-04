@@ -9,18 +9,16 @@ using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
-    public class Tap : Note
+    public class Tap : AirableNote
     {
-		private readonly Air air;
-
         public Tap()
         {
-			air = new Air();
+			
         }
 
 		public Tap(int size, Position pos, PointF location) : base(size, pos, location)
         {
-            air = new Air();
+            
         }
 
 #if DEBUG

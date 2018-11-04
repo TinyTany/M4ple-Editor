@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
-    public class HellTap : Note
+    public class HellTap : AirableNote
     {
         public HellTap()
         {
