@@ -46,12 +46,14 @@ namespace NE4S.Notes
             Status.selectedNote = slideEnd;
         }
 
+        //TODO: レーンをまたぐSlideについても検出できるようにする
         public bool Contains(PointF locationVirtual)
         {
-            foreach(Note note in this.OrderBy(x => x.Pos))
+            var list = this.OrderBy(x => x.Pos).ToList();
+            foreach(Note note in list)
             {
-                if (IndexOf(note) < Count - 1 || note is SlideEnd) break;
-                Note next = this.ElementAt(IndexOf(note) + 1);
+                if (list.IndexOf(note) >= list.Count - 1) break;
+                Note next = list.ElementAt(list.IndexOf(note) + 1);
                 if (note is SlideCurve || next is SlideCurve) continue;
                 using (GraphicsPath hitPath = new GraphicsPath())
                 {
@@ -68,13 +70,14 @@ namespace NE4S.Notes
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
-            foreach (Note note in this.OrderBy(x => x.Pos))
+            var list = this.OrderBy(x => x.Pos).ToList();
+            foreach (Note note in list)
             {
                 //!(note is SlideEnd)よりもこっちのほうが確実で安全かも
                 //↑だと例外で怒られた…
-                if (IndexOf(note) < Count - 1 || !(note is SlideEnd))
+                if (list.IndexOf(note) < list.Count - 1)
                 {
-                    Note next = this.ElementAt(IndexOf(note) + 1);
+                    Note next = list.ElementAt(list.IndexOf(note) + 1);
                     DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
                 }
                 e.Graphics.ResetClip();
