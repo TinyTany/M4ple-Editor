@@ -250,9 +250,7 @@ namespace NE4S.Scores
                     if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
                     {
                         Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
-                        Point virtualGridPoint = new Point(
-                            physicalGridPoint.X + currentPositionX,
-                            physicalGridPoint.Y);
+                        Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
                         Position newPos = selectedLane.GetPos(virtualGridPoint);
                         Status.selectedNote.Relocate(newPos, virtualGridPoint);
                         //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
@@ -328,8 +326,13 @@ namespace NE4S.Scores
         }
         #endregion
 
-        private void AddNote(PointF locationVirtual, Position position, int laneIndex)
+        private void AddNote(Point location, ScoreLane lane)
         {
+            //与えられた自由物理座標からグリッド仮想座標とポジション座標を作成
+            Point gridPoint = PointToGrid(location, lane);
+            Position position = lane.GetPos(gridPoint.Add(currentPositionX));
+            PointF locationVirtual = gridPoint.Add(currentPositionX);
+
             Note newNote = null;
             switch (Status.Note)
             {
@@ -352,26 +355,27 @@ namespace NE4S.Scores
                     break;
                 case Define.SLIDE:
                     //testように直書き
-                    PointF locationPhysical = new PointF(locationVirtual.X - currentPositionX, locationVirtual.Y);
-                    Slide selectedSlide = model.NoteBook.SelectedSlide(locationVirtual);
+                    PointF locationPhysical = locationVirtual.Add(-currentPositionX);
+                    //Slideとの当たり判定は自由仮想座標を使う
+                    Slide selectedSlide = model.NoteBook.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
                     {
                         if (Status.InvisibleSlideTap)
                         {
-                            SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual);
+                            SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideRelay);
                             Status.selectedNote = slideRelay;
                         }
                         else
                         {
-                            SlideTap slideTap = new SlideTap(Status.NoteSize, position, locationVirtual);
+                            SlideTap slideTap = new SlideTap(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideTap);
                             Status.selectedNote = slideTap;
                         }
                     }
                     else
                     {
-                        model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, laneIndex));
+                        model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, lane.Index));
                     }
                     break;
                 case Define.SLIDECURVE:
