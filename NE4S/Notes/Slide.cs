@@ -26,7 +26,7 @@ namespace NE4S.Notes
         private static readonly Color lineColor = Color.FromArgb(200, 3, 181, 161);
 
         //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
-        private static readonly int drawOffsetX = 2, drawOffsetY = 2;
+        private static readonly Point drawOffset = new Point(2, 2);
 
         public Slide()
         {
@@ -57,10 +57,10 @@ namespace NE4S.Notes
                 if (note is SlideCurve || next is SlideCurve) continue;
                 using (GraphicsPath hitPath = new GraphicsPath())
                 {
-                    PointF TopLeft = new PointF(next.Location.X + drawOffsetX, next.Location.Y + drawOffsetY);
-                    PointF TopRight = new PointF(next.Location.X + next.Width - drawOffsetX, next.Location.Y + drawOffsetY);
-                    PointF BottomLeft = new PointF(note.Location.X + drawOffsetX, note.Location.Y + drawOffsetY);
-                    PointF BottomRight = new PointF(note.Location.X + note.Width - drawOffsetX, note.Location.Y + drawOffsetY);
+                    PointF TopLeft = next.Location.Add(drawOffset);
+                    PointF TopRight = next.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
+                    PointF BottomLeft = note.Location.Add(drawOffset);
+                    PointF BottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
                     hitPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
                     if (hitPath.IsVisible(locationVirtual)) return true;
                 }
@@ -100,10 +100,10 @@ namespace NE4S.Notes
             //スライドのノーツとノーツがレーンをまたがないとき
             if(passingLanes == 0)
             {
-                PointF TopLeft = new PointF(futureRerativeLocation.X + drawOffsetX, futureRerativeLocation.Y + drawOffsetY);
-                PointF TopRight = new PointF(futureRerativeLocation.X + future.Width - drawOffsetX, futureRerativeLocation.Y + drawOffsetY);
-                PointF BottomLeft = new PointF(pastRerativeLocation.X + drawOffsetX, pastRerativeLocation.Y + drawOffsetY);
-                PointF BottomRight = new PointF(pastRerativeLocation.X + past.Width - drawOffsetX, pastRerativeLocation.Y + drawOffsetY);
+                PointF TopLeft = futureRerativeLocation.Add(drawOffset);
+                PointF TopRight = futureRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
+                PointF BottomLeft = pastRerativeLocation.Add(drawOffset);
+                PointF BottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
                     graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
@@ -132,11 +132,11 @@ namespace NE4S.Notes
                 float diffX = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
                 #region 最初のレーンでの描画
                 //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
-                PointF TopLeft = new PointF(pastRerativeLocation.X + diffX + drawOffsetX, pastRerativeLocation.Y - positionDistance + drawOffsetY);
-                PointF TopRight = new PointF(pastRerativeLocation.X + diffX + future.Width - drawOffsetX, pastRerativeLocation.Y - positionDistance + drawOffsetY);
+                PointF TopLeft = pastRerativeLocation.Add(diffX, -positionDistance).Add(drawOffset);
+                PointF TopRight = pastRerativeLocation.Add(diffX, -positionDistance).Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
                 //以下の2つはレーンをまたがないときと同じ
-                PointF BottomLeft = new PointF(pastRerativeLocation.X + drawOffsetX, pastRerativeLocation.Y + drawOffsetY);
-                PointF BottomRight = new PointF(pastRerativeLocation.X + past.Width - drawOffsetX, pastRerativeLocation.Y + drawOffsetY);
+                PointF BottomLeft = pastRerativeLocation.Add(drawOffset);
+                PointF BottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
                     graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
@@ -171,18 +171,18 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= future.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        TopLeft.X = curLane.HitRect.X + future.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffsetX;
+                        TopLeft.X = curLane.HitRect.X + future.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         TopLeft.Y += prevLane.HitRect.Height;
-                        TopRight.X = TopLeft.X + future.Width - 2 * drawOffsetX;
+                        TopRight.X = TopLeft.X + future.Width - 2 * drawOffset.X;
                         TopRight.Y += prevLane.HitRect.Height;
-                        BottomLeft.X = curLane.HitRect.X + past.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffsetX;
+                        BottomLeft.X = curLane.HitRect.X + past.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         BottomLeft.Y += prevLane.HitRect.Height;
-                        BottomRight.X = BottomLeft.X + past.Width - 2 * drawOffsetX;
+                        BottomRight.X = BottomLeft.X + past.Width - 2 * drawOffset.X;
                         BottomRight.Y += prevLane.HitRect.Height;
                         using (GraphicsPath graphicsPath = new GraphicsPath())
                         {
                             graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
-                            RectangleF clipRect = new RectangleF(curLane.HitRect.X - currentPositionX, curLane.HitRect.Y, curLane.HitRect.Width, curLane.HitRect.Height);
+                            RectangleF clipRect = new RectangleF(curLane.HitRect.Location.AddX(-currentPositionX), curLane.HitRect.Size);
                             e.Graphics.Clip = new Region(clipRect);
                             RectangleF gradientRect = graphicsPath.GetBounds();
                             if (gradientRect.Height == 0) gradientRect.Height = 1;

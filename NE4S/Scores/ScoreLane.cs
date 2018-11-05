@@ -260,6 +260,11 @@ namespace NE4S.Scores
 			return scoreMaterialList.Find(x => x.HitRect.Contains(pX, pY)).Score;
         }
 
+        public Score SelectedScore(Point location)
+        {
+            return SelectedScore(location.X, location.Y);
+        }
+
 #if DEBUG
 		/// <summary>
 		/// 試作
