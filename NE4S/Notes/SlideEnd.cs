@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
-    public class SlideEnd : Note
+    public class SlideEnd : AirableNote
     {
         public SlideEnd()
         {
-
+            
         }
 
         public SlideEnd(int size, Position pos, PointF location) : base(size, pos, location) { }
@@ -28,7 +28,6 @@ namespace NE4S.Notes
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Blue, Color.DarkBlue))
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);
-                //e.Graphics.FillRectangle(gradientBrush, new RectangleF(100, 100, 100, 500));
             }
             using (Pen pen = new Pen(Color.White, 1))
             {

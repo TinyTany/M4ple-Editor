@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NE4S.Notes
 {
-    public class HoldEnd : Note
+    public class HoldEnd : AirableNote
     {
         public HoldEnd()
         {

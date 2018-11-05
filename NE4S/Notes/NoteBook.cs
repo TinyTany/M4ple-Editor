@@ -65,23 +65,48 @@ namespace NE4S.Notes
 			if (note != null) note.ReSize(size);
 		}
 
-        //今はshortNotesのみ
-        //TODO: それぞれのリストの全部に対して確認する
+        /// <summary>
+        /// クリックされてるノーツがあったら投げる
+        /// なかったらnullを投げる
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
         public Note SelectedNote(PointF location)
         {
-            //それぞれのリストで確認するやつやろうとした途中
-            Note selectedNote = shortNotes.FindLast(x => x.Contains(location));
+            Note selectedNote;
+            foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
+            {
+                selectedNote = airHold.Find(x => x.Contains(location));
+                if (selectedNote != null) return selectedNote;
+            }
+            selectedNote = airNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null) return selectedNote;
-            
+            selectedNote = shortNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null) return selectedNote;
+            foreach (Slide slide in slideNotes.Reverse<Slide>())
+            {
+                selectedNote = slide.Find(x => x.Contains(location));
+                if (selectedNote != null) return selectedNote;
+            }
+            foreach (Hold hold in holdNotes.Reverse<Hold>())
+            {
+                selectedNote = hold.Find(x => x.Contains(location));
+                if (selectedNote != null) return selectedNote;
+            }
             return null;
+        }
+
+        public Slide SelectedSlide(PointF locationVirtual)
+        {
+            return slideNotes.FindLast(x => x.Contains(locationVirtual));
         }
 
 #if DEBUG
         //今はちょっとだけ実装
         //TODO: 範囲外のノーツは描画しないようにして軽くする
-		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
+		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
-            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook, laneBook);
+            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
             //お試し
             //範囲外のノーツは描画しないようにするというこころ
 			foreach (Note note in shortNotes.Where(
