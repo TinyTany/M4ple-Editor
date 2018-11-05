@@ -43,6 +43,26 @@ namespace NE4S.Notes
             Status.selectedNote = slideEnd;
         }
 
+        public bool Contains(PointF locationVirtual)
+        {
+            foreach(Note note in this.OrderBy(x => x.Pos))
+            {
+                if (IndexOf(note) < Count - 1 || note is SlideEnd) break;
+                Note next = this.ElementAt(IndexOf(note) + 1);
+                if (note is SlideCurve || next is SlideCurve) continue;
+                using (GraphicsPath hitPath = new GraphicsPath())
+                {
+                    PointF TopLeft = new PointF(next.Location.X + drawOffsetX, next.Location.Y + drawOffsetY);
+                    PointF TopRight = new PointF(next.Location.X + next.Width - drawOffsetX, next.Location.Y + drawOffsetY);
+                    PointF BottomLeft = new PointF(note.Location.X + drawOffsetX, note.Location.Y + drawOffsetY);
+                    PointF BottomRight = new PointF(note.Location.X + note.Width - drawOffsetX, note.Location.Y + drawOffsetY);
+                    hitPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
+                    if (hitPath.IsVisible(locationVirtual)) return true;
+                }
+            }
+            return false;
+        }
+
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
             foreach (Note note in this.OrderBy(x => x.Pos))
