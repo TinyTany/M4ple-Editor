@@ -201,7 +201,7 @@ namespace NE4S.Scores
             #endregion
             if (e.Button == MouseButtons.Left)
 			{
-                Note selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX));
+                var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX));
 				switch (Status.Mode)
 				{
 					case Define.ADD:
@@ -247,26 +247,26 @@ namespace NE4S.Scores
 					}
                     //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずそのままコピペ
                     //動いた
-                    if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
+                    if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
                     {
                         Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
                         Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
                         Position newPos = selectedLane.GetPos(virtualGridPoint);
-                        Status.selectedNote.Relocate(newPos, virtualGridPoint);
+                        Status.SelectedNote.Relocate(newPos, virtualGridPoint);
                         //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                        Status.selectedNote.LaneIndex = selectedLane.Index;
+                        Status.SelectedNote.LaneIndex = selectedLane.Index;
                     }
                     break;
 				case Define.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
+					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
 						Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
                         Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
 						Position newPos = selectedLane.GetPos(virtualGridPoint);
-						Status.selectedNote.Relocate(newPos, virtualGridPoint);
+						Status.SelectedNote.Relocate(newPos, virtualGridPoint);
                         //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                        Status.selectedNote.LaneIndex = selectedLane.Index;
+                        Status.SelectedNote.LaneIndex = selectedLane.Index;
                     }
 					break;
 				case Define.DELETE:
@@ -280,7 +280,7 @@ namespace NE4S.Scores
         {
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = false;
-            Status.selectedNote = null;
+            Status.SelectedNote = null;
 
 			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
 			if (selectedLane != null && e.Button == MouseButtons.Left)
@@ -353,7 +353,7 @@ namespace NE4S.Scores
                     break;
                 case Define.SLIDE:
                     //testように直書き
-                    PointF locationPhysical = locationVirtual.Add(-currentPositionX);
+                    PointF locationPhysical = locationVirtual.AddX(-currentPositionX);
                     //Slideとの当たり判定は自由仮想座標を使う
                     Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
@@ -362,13 +362,13 @@ namespace NE4S.Scores
                         {
                             SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideRelay);
-                            Status.selectedNote = slideRelay;
+                            Status.SelectedNote = slideRelay;
                         }
                         else
                         {
                             SlideTap slideTap = new SlideTap(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideTap);
-                            Status.selectedNote = slideTap;
+                            Status.SelectedNote = slideTap;
                         }
                     }
                     else

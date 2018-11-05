@@ -26,7 +26,7 @@ namespace NE4S.Notes
         private static readonly Color lineColor = Color.FromArgb(200, 3, 181, 161);
 
         //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
-        private static readonly Point drawOffset = new Point(2, 2);
+        private static readonly Point drawOffset = new Point(2, 1);
 
         public Slide()
         {
@@ -43,7 +43,7 @@ namespace NE4S.Notes
             SlideEnd slideEnd = new SlideEnd(size, pos, location);
             slideEnd.LaneIndex = laneIndex;
             Add(slideEnd);
-            Status.selectedNote = slideEnd;
+            Status.SelectedNote = slideEnd;
         }
 
         //TODO: レーンをまたぐSlideについても検出できるようにする
