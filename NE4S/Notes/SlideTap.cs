@@ -16,7 +16,10 @@ namespace NE4S.Notes
 
         }
 
-        public SlideTap(int size, Position pos, PointF location) : base(size, pos, location) { }
+        public SlideTap(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location)
+        {
+            LaneIndex = laneIndex;
+        }
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
