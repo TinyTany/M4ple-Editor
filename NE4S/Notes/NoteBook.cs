@@ -96,6 +96,11 @@ namespace NE4S.Notes
             return null;
         }
 
+        public Slide SelectedSlide(PointF locationVirtual)
+        {
+            return slideNotes.FindLast(x => x.Contains(locationVirtual));
+        }
+
 #if DEBUG
         //今はちょっとだけ実装
         //TODO: 範囲外のノーツは描画しないようにして軽くする
