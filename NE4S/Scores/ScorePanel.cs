@@ -352,7 +352,27 @@ namespace NE4S.Scores
                     break;
                 case Define.SLIDE:
                     //testように直書き
-                    model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, laneIndex));
+                    PointF locationPhysical = new PointF(locationVirtual.X - currentPositionX, locationVirtual.Y);
+                    Slide selectedSlide = model.NoteBook.SelectedSlide(locationVirtual);
+                    if(selectedSlide != null)
+                    {
+                        if (Status.InvisibleSlideTap)
+                        {
+                            SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual);
+                            selectedSlide.Add(slideRelay);
+                            Status.selectedNote = slideRelay;
+                        }
+                        else
+                        {
+                            SlideTap slideTap = new SlideTap(Status.NoteSize, position, locationVirtual);
+                            selectedSlide.Add(slideTap);
+                            Status.selectedNote = slideTap;
+                        }
+                    }
+                    else
+                    {
+                        model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, laneIndex));
+                    }
                     break;
                 case Define.SLIDECURVE:
                     break;
