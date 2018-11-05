@@ -63,6 +63,11 @@ namespace NE4S.Notes
                     PointF BottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
                     hitPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
                     if (hitPath.IsVisible(locationVirtual)) return true;
+                    //TODO: レーンまたいでるときの処理
+                    for(int i = note.LaneIndex; i <= next.LaneIndex; ++i)
+                    {
+                        
+                    }
                 }
             }
             return false;
