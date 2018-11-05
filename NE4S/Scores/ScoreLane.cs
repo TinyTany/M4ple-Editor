@@ -310,8 +310,11 @@ namespace NE4S.Scores
                 currentDrawPosY -= material.Score.Height * material.Range.Size() / material.Score.BeatNumer;
                 material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
 #if DEBUG
+                //Scoreの描画位置を表示
+                /*
 				e.Graphics.DrawString(
 					material.HitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX + 10, currentDrawPosY + 10));
+                //*/
 #endif
 			}
             //tScoresの最後の要素のScoreが閉じているか判定
@@ -337,8 +340,11 @@ namespace NE4S.Scores
                 e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
             }
 #if DEBUG
+            //Laneのインデックスと描画位置を表示
+            /*
             e.Graphics.DrawString(Index.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
             e.Graphics.DrawString(hitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 20));
+            //*/
 #endif
 		}
     }
