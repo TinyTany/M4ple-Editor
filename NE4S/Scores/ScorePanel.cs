@@ -353,7 +353,7 @@ namespace NE4S.Scores
                     //testように直書き
                     PointF locationPhysical = locationVirtual.Add(-currentPositionX);
                     //Slideとの当たり判定は自由仮想座標を使う
-                    Slide selectedSlide = model.NoteBook.SelectedSlide(location.Add(currentPositionX));
+                    Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
                     {
                         if (Status.InvisibleSlideTap)

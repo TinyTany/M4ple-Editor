@@ -47,7 +47,7 @@ namespace NE4S.Notes
         }
 
         //TODO: レーンをまたぐSlideについても検出できるようにする
-        public bool Contains(PointF locationVirtual)
+        public bool Contains(PointF locationVirtual, LaneBook laneBook)
         {
             var list = this.OrderBy(x => x.Pos).ToList();
             foreach(Note note in list)

@@ -96,9 +96,9 @@ namespace NE4S.Notes
             return null;
         }
 
-        public Slide SelectedSlide(PointF locationVirtual)
+        public Slide SelectedSlide(PointF locationVirtual, LaneBook laneBook)
         {
-            return slideNotes.FindLast(x => x.Contains(locationVirtual));
+            return slideNotes.FindLast(x => x.Contains(locationVirtual, laneBook));
         }
 
 #if DEBUG
