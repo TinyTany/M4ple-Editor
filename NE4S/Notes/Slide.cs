@@ -81,6 +81,8 @@ namespace NE4S.Notes
                     DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
                 }
                 e.Graphics.ResetClip();
+                if (note is SlideRelay && !Status.IsSlideRelayVisible) continue;
+                if (note is SlideCurve && !Status.IsSlideCurveVisible) continue;
                 note.Draw(e, originPosX, originPosY);
             }
         }

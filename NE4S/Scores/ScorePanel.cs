@@ -211,8 +211,10 @@ namespace NE4S.Scores
                         }
                         break;
 					case Define.EDIT:
-                        if (selectedNote != null) Status.selectedNote = selectedNote;
-						break;
+                        if (selectedNote != null) Status.SelectedNote = selectedNote;
+                        if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible) Status.SelectedNote = null;
+                        if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible) Status.SelectedNote = null;
+                        break;
 					case Define.DELETE:
                         if (selectedNote != null) model.NoteBook.Delete(selectedNote);
 						break;
