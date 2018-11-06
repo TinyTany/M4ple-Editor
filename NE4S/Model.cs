@@ -75,7 +75,7 @@ namespace NE4S
 
         public Slide SelectedSlide(PointF location)
         {
-            return noteBook.SelectedSlide(location, laneBook);
+            return noteBook.SelectedSlide(location, scoreBook, laneBook);
         }
 
 		public NoteBook NoteBook
