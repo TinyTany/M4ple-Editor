@@ -216,31 +216,124 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（ベジェ）
         /// </summary>
-        private void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook)
+        private void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
-            //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
-            int MarginX = 2, dY = 2;
             //相対位置
             PointF pastRerativeLocation = new PointF(past.Location.X - originPosX, past.Location.Y - originPosY);
             PointF curveRetativePosition = new PointF(curve.Location.X - originPosX, curve.Location.Y - originPosY);
             PointF futureRerativeLocation = new PointF(future.Location.X - originPosX, future.Location.Y - originPosY);
+            PointF curveCenter = curveRetativePosition.AddX(curve.Width / 2f);
 
+            //TODO: 以下コピペしただけなので良しなに変更する
             int passingLanes = future.LaneIndex - past.LaneIndex;
             //スライドのノーツとノーツがレーンをまたがないとき
             if (passingLanes == 0)
-            {
-                PointF TopLeft = new PointF(futureRerativeLocation.X + MarginX, futureRerativeLocation.Y + dY);
-                PointF TopRight = new PointF(futureRerativeLocation.X + future.Width - MarginX, futureRerativeLocation.Y + dY);
-                PointF BottomLeft = new PointF(pastRerativeLocation.X + MarginX, pastRerativeLocation.Y + dY);
-                PointF BottomRight = new PointF(pastRerativeLocation.X + past.Width - MarginX, pastRerativeLocation.Y + dY);
+            {   
+                PointF topLeft = futureRerativeLocation.Add(drawOffset);
+                PointF topRight = futureRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
+                PointF bottomLeft = pastRerativeLocation.Add(drawOffset);
+                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
-                    graphicsPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
-                    using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 0, 170, 255)))
+                    graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
+                    RectangleF gradientRect = graphicsPath.GetBounds();
+                    if (gradientRect.Height == 0) gradientRect.Height = 1;
+                    using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                     {
+                        ColorBlend blend = new ColorBlend(4)
+                        {
+                            Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
+                            Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
+                        };
+                        myBrush.InterpolationColors = blend;
                         e.Graphics.FillPath(myBrush, graphicsPath);
                     }
+                    using (Pen myPen = new Pen(lineColor, 2))
+                    {
+                        e.Graphics.DrawLine(myPen, (bottomLeft.X + bottomRight.X) / 2, bottomLeft.Y, (topLeft.X + topRight.X) / 2, topLeft.Y);
+                    }
                 }
+            }
+            //スライドのノーツとノーツがレーンをまたぐとき
+            else if (passingLanes >= 1)
+            {
+                float positionDistance = PositionDistance(past.Pos, future.Pos, scoreBook);
+                float diffX = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                #region 最初のレーンでの描画
+                //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
+                PointF topLeft = pastRerativeLocation.Add(diffX, -positionDistance).Add(drawOffset);
+                PointF topRight = pastRerativeLocation.Add(diffX, -positionDistance).Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
+                //以下の2つはレーンをまたがないときと同じ
+                PointF bottomLeft = pastRerativeLocation.Add(drawOffset);
+                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
+                using (GraphicsPath graphicsPath = new GraphicsPath())
+                {
+                    graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
+                    ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
+                    if (scoreLane != null)
+                    {
+                        RectangleF clipRect = new RectangleF(scoreLane.HitRect.X - currentPositionX, scoreLane.HitRect.Y, scoreLane.HitRect.Width, scoreLane.HitRect.Height);
+                        e.Graphics.Clip = new Region(clipRect);
+                    }
+                    RectangleF gradientRect = graphicsPath.GetBounds();
+                    if (gradientRect.Height == 0) gradientRect.Height = 1;
+                    using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
+                    {
+                        ColorBlend blend = new ColorBlend(4)
+                        {
+                            Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
+                            Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
+                        };
+                        myBrush.InterpolationColors = blend;
+                        e.Graphics.FillPath(myBrush, graphicsPath);
+                    }
+                    using (Pen myPen = new Pen(lineColor, 2))
+                    {
+                        e.Graphics.DrawLine(myPen, (bottomLeft.X + bottomRight.X) / 2, bottomLeft.Y, (topLeft.X + topRight.X) / 2, topLeft.Y);
+                    }
+                }
+                #endregion
+                #region 以降最後までのレーンでの描画
+                {
+                    ScoreLane prevLane, curLane;
+                    for (prevLane = laneBook.Find(x => x.Contains(past)), curLane = laneBook.Next(prevLane);
+                    curLane != null && laneBook.IndexOf(curLane) <= future.LaneIndex;
+                    prevLane = curLane, curLane = laneBook.Next(curLane))
+                    {
+                        topLeft.X = curLane.HitRect.X + future.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        topLeft.Y += prevLane.HitRect.Height;
+                        topRight.X = topLeft.X + future.Width - 2 * drawOffset.X;
+                        topRight.Y += prevLane.HitRect.Height;
+                        bottomLeft.X = curLane.HitRect.X + past.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        bottomLeft.Y += prevLane.HitRect.Height;
+                        bottomRight.X = bottomLeft.X + past.Width - 2 * drawOffset.X;
+                        bottomRight.Y += prevLane.HitRect.Height;
+                        using (GraphicsPath graphicsPath = new GraphicsPath())
+                        {
+                            graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
+                            RectangleF clipRect = new RectangleF(curLane.HitRect.Location.AddX(-currentPositionX), curLane.HitRect.Size);
+                            e.Graphics.Clip = new Region(clipRect);
+                            RectangleF gradientRect = graphicsPath.GetBounds();
+                            if (gradientRect.Height == 0) gradientRect.Height = 1;
+                            using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
+                            {
+                                ColorBlend blend = new ColorBlend(4)
+                                {
+                                    Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
+                                    Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
+                                };
+                                myBrush.InterpolationColors = blend;
+                                e.Graphics.FillPath(myBrush, graphicsPath);
+                            }
+                            using (Pen myPen = new Pen(lineColor, 2))
+                            {
+                                e.Graphics.DrawLine(myPen, (bottomLeft.X + bottomRight.X) / 2, bottomLeft.Y, (topLeft.X + topRight.X) / 2, topLeft.Y);
+                            }
+                        }
+                    }
+                }
+
+                #endregion
             }
         }
 
