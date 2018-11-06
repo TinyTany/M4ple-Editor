@@ -44,8 +44,15 @@ namespace NE4S.Notes
             Status.SelectedNote = slideEnd;
         }
 
-        //TODO: レーンをまたぐSlideについても検出できるようにする
-        public bool Contains(PointF locationVirtual, LaneBook laneBook)
+        /// <summary>
+        /// 与えられた座標がスライド帯の上に乗っているか判定します
+        /// ただしベジェスライド上では判定されません
+        /// </summary>
+        /// <param name="locationVirtual"></param>
+        /// <param name="scoreBook"></param>
+        /// <param name="laneBook"></param>
+        /// <returns></returns>
+        public bool Contains(PointF locationVirtual, ScoreBook scoreBook ,LaneBook laneBook)
         {
             var list = this.OrderBy(x => x.Pos).ToList();
             foreach(Note note in list)
@@ -53,19 +60,56 @@ namespace NE4S.Notes
                 if (list.IndexOf(note) >= list.Count - 1) break;
                 Note next = list.ElementAt(list.IndexOf(note) + 1);
                 if (note is SlideCurve || next is SlideCurve) continue;
-                using (GraphicsPath hitPath = new GraphicsPath())
+                //
+                int passingLanes = next.LaneIndex - note.LaneIndex;
+                if(passingLanes == 0)
                 {
-                    PointF TopLeft = next.Location.Add(drawOffset);
-                    PointF TopRight = next.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
-                    PointF BottomLeft = note.Location.Add(drawOffset);
-                    PointF BottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
-                    hitPath.AddLines(new PointF[] { TopLeft, BottomLeft, BottomRight, TopRight });
-                    if (hitPath.IsVisible(locationVirtual)) return true;
-                    //TODO: レーンまたいでるときの処理
-                    for(int i = note.LaneIndex; i <= next.LaneIndex; ++i)
-                    {
-                        
+                    PointF topLeft = next.Location.Add(drawOffset);
+                    PointF topRight = next.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
+                    PointF bottomLeft = note.Location.Add(drawOffset);
+                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
+                    using (GraphicsPath hitPath = new GraphicsPath())
+                    { 
+                        hitPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
+                        if (hitPath.IsVisible(locationVirtual)) return true;
                     }
+                }
+                else if(passingLanes >= 1)
+                {
+                    float positionDistance = PositionDistance(note.Pos, next.Pos, scoreBook);
+                    float diffX = (next.Pos.Lane - note.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                    #region 最初のレーンでの判定処理
+                    PointF topLeft = note.Location.Add(drawOffset).Add(diffX, -positionDistance);
+                    PointF topRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width).Add(diffX, -positionDistance);
+                    PointF bottomLeft = note.Location.Add(drawOffset);
+                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
+                    using (GraphicsPath hitPath = new GraphicsPath())
+                    {
+                        hitPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
+                        if (hitPath.IsVisible(locationVirtual)) return true;
+                    }
+                    #endregion
+                    #region 以降最後までの判定処理
+                    ScoreLane prevLane, curLane;
+                    for (prevLane = laneBook.Find(x => x.Contains(note)), curLane = laneBook.Next(prevLane);
+                    curLane != null && laneBook.IndexOf(curLane) <= next.LaneIndex;
+                    prevLane = curLane, curLane = laneBook.Next(curLane))
+                    {
+                        topLeft.X = curLane.HitRect.X + next.Pos.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
+                        topLeft.Y += prevLane.HitRect.Height;
+                        topRight.X = topLeft.X + next.Width - 2 * drawOffset.X;
+                        topRight.Y += prevLane.HitRect.Height;
+                        bottomLeft.X = curLane.HitRect.X + note.Pos.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
+                        bottomLeft.Y += prevLane.HitRect.Height;
+                        bottomRight.X = bottomLeft.X + note.Width - 2 * drawOffset.X;
+                        bottomRight.Y += prevLane.HitRect.Height;
+                        using (GraphicsPath hitPath = new GraphicsPath())
+                        {
+                            hitPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
+                            if (hitPath.IsVisible(locationVirtual)) return true;
+                        }
+                    }
+                    #endregion
                 }
             }
             return false;
