@@ -120,12 +120,24 @@ namespace NE4S.Notes
             var list = this.OrderBy(x => x.Pos).ToList();
             foreach (Note note in list)
             {
+                if (note is SlideRelay) continue;
                 //!(note is SlideEnd)よりもこっちのほうが確実で安全かも
                 //↑だと例外で怒られた…
                 if (list.IndexOf(note) < list.Count - 1)
                 {
                     Note next = list.ElementAt(list.IndexOf(note) + 1);
-                    DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+                    if(!(next is SlideRelay))
+                    {
+                        DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+                    }
+                    else
+                    {
+                        Note curve = next;
+                        //HACK: 場合によっては例外（インデックスが配列の外）が吐かれると思うのでもっと安全な実装をするべき
+                        //SlideRelayは末尾に来ることはないし，SlideRelayが2つ以上連続に並ぶことはないという確信の元実装
+                        next = list.ElementAt(list.IndexOf(curve) + 1);
+                        DrawSlideCurve(e, note, curve, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+                    }
                 }
                 e.Graphics.ResetClip();
                 if (note is SlideRelay && !Status.IsSlideRelayVisible) continue;
