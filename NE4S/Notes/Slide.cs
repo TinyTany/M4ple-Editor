@@ -24,6 +24,10 @@ namespace NE4S.Notes
         /// スライドの中心線みたいなやつ（薄い水色）
         /// </summary>
         private static readonly Color lineColor = Color.FromArgb(200, 3, 181, 161);
+        /// <summary>
+        /// ベジェスライドの曲がり具合を決める（Seaurchin準拠）
+        /// </summary>
+        private static readonly float slideCurveRatio = 11 / 16f;
 
         //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
         private static readonly Point drawOffset = new Point(2, 1);
