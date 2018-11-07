@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace NE4S
 {
@@ -60,6 +61,11 @@ namespace NE4S
             return new PointF(pointF.X - other.X, pointF.Y - other.Y);
         }
 
+        public static PointF Mult(this PointF pointF, float k)
+        {
+            return new PointF(pointF.X * k, pointF.Y * k);
+        }
+
         public static Point Add(this Point point, int x)
         {
             return new Point(point.X + x, point.Y);
@@ -73,6 +79,37 @@ namespace NE4S
         public static Point Sub(this Point pointF, Point other)
         {
             return new Point(pointF.X - other.X, pointF.Y - other.Y);
+        }
+
+        /// <summary>
+        /// 現在の図形に２次ベジエ曲線を追加します
+        /// </summary>
+        /// <param name="graphicsPath"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="anchor"></param>
+        public static void AddBezier(this GraphicsPath graphicsPath, PointF begin, PointF anchor, PointF end)
+        {
+            float ratio = 2 / 3f;
+            PointF beginAnchor = begin.Add(anchor.Sub(begin).Mult(ratio));
+            PointF endAnchor = end.Add(anchor.Sub(end).Mult(ratio));
+            graphicsPath.AddBezier(begin, beginAnchor, endAnchor, end);
+        }
+
+        /// <summary>
+        /// ２次ベジエ曲線を描画します
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="pen"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="anchor"></param>
+        public static void DrawBezier(this Graphics graphics, Pen pen, PointF begin, PointF anchor, PointF end)
+        {
+            float ratio = 2 / 3f;
+            PointF beginAnchor = begin.Add(anchor.Sub(begin).Mult(ratio));
+            PointF endAnchor = end.Add(anchor.Sub(end).Mult(ratio));
+            graphics.DrawBezier(pen, begin, beginAnchor, endAnchor, end);
         }
     }
 }
