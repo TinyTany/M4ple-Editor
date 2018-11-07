@@ -444,6 +444,11 @@ namespace NE4S.Notes
             //4分の4拍子1小節分の高さ
             float baseBarSize = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight;
             Score pastScore = scoreBook.At(pastPosition.Bar - 1), futureScore = scoreBook.At(futurePosition.Bar - 1);
+            //2ノーツが同一のScore上にある場合も使える
+            if(pastScore.Index == futureScore.Index)
+            {
+                return (futurePosition.Size - pastPosition.Size) * baseBarSize;
+            }
             distance += baseBarSize * (pastScore.BarSize - pastPosition.Size);
             for(int i = pastScore.Index + 1; i <= futureScore.Index - 1; ++i)
             {
