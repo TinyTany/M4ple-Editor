@@ -358,6 +358,7 @@ namespace NE4S.Scores
                     Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
                     {
+                        /*
                         if (Status.InvisibleSlideTap)
                         {
                             SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
@@ -370,6 +371,11 @@ namespace NE4S.Scores
                             selectedSlide.Add(slideTap);
                             Status.SelectedNote = slideTap;
                         }
+                        //*/
+                        //CurveTest
+                        SlideCurve slideCurve = new SlideCurve(Status.NoteSize, position, locationVirtual, lane.Index);
+                        selectedSlide.Add(slideCurve);
+                        Status.SelectedNote = slideCurve;
                     }
                     else
                     {
