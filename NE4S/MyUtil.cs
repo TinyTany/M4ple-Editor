@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using NE4S.Notes;
 
 namespace NE4S
 {
@@ -24,6 +25,19 @@ namespace NE4S
             //--hitRect.Width; ++hitRect.X;//アンチエイリアスしたらちょっとずれて見えたからこの処理スキップしてみる
             hitRect.Y -= 2;
             return;
+        }
+
+        /// <summary>
+        /// list内のnoteの1つ次の要素を返します。noteがlistに含まれていないか、末尾の場合はnullを返します。
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        public static Note Next(this List<Note> list, Note note)
+        {
+            if (!list.Contains(note)) return null;
+            if (list.IndexOf(note) >= list.Count) return null;
+            return list.ElementAt(list.IndexOf(note) + 1);
         }
 
         public static PointF AddX(this PointF pointF, float x)
