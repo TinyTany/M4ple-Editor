@@ -131,13 +131,13 @@ namespace NE4S.Notes
                     {
                         pastStepNote = note;
                         //ここをよしなに実装する
-                        for(futureStepNote = list.ElementAt(list.IndexOf(pastStepNote) + 1); list.IndexOf(futureStepNote) < list.Count - 1;)
+                        for(futureStepNote = list.Next(pastStepNote); list.IndexOf(futureStepNote) < list.Count - 1;)
                         {
 
                         }
                     }
                     //スライド帯を描画する
-                    Note next = list.ElementAt(list.IndexOf(note) + 1);
+                    Note next = list.Next(note);
                     if(!(next is SlideCurve))
                     {
                         DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, gradientRect);
@@ -145,7 +145,6 @@ namespace NE4S.Notes
                     else
                     {
                         Note curve = next;
-                        //HACK: 場合によっては例外（インデックスが配列の外）が吐かれると思うのでもっと安全な実装をするべき
                         //SlideRelayは末尾に来ることはないし，SlideRelayが2つ以上連続に並ぶことはないという確信の元実装
                         if (list.IndexOf(curve) < list.Count - 1)
                         {
