@@ -107,7 +107,7 @@ namespace NE4S
             float ratio = 2 / 3f;
             PointF beginAnchor = begin.Add(anchor.Sub(begin).Mult(ratio));
             PointF endAnchor = end.Add(anchor.Sub(end).Mult(ratio));
-            graphicsPath.AddBezier(begin, beginAnchor, endAnchor, end);
+            graphicsPath?.AddBezier(begin, beginAnchor, endAnchor, end);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace NE4S
             float ratio = 2 / 3f;
             PointF beginAnchor = begin.Add(anchor.Sub(begin).Mult(ratio));
             PointF endAnchor = end.Add(anchor.Sub(end).Mult(ratio));
-            graphics.DrawBezier(pen, begin, beginAnchor, endAnchor, end);
+            graphics?.DrawBezier(pen, begin, beginAnchor, endAnchor, end);
         }
     }
 }

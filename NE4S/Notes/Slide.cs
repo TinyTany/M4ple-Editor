@@ -24,9 +24,14 @@ namespace NE4S.Notes
         /// スライドの中心線みたいなやつ（薄い水色）
         /// </summary>
         private static readonly Color lineColor = Color.FromArgb(200, 3, 181, 161);
-
-        //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
-        private static readonly Point drawOffset = new Point(2, 1);
+        /// <summary>
+        /// グラデーション
+        /// </summary>
+        private static readonly ColorBlend colorBlend = new ColorBlend(4)
+        {
+            Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
+            Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
+        };
 
         public Slide()
         {
@@ -127,6 +132,7 @@ namespace NE4S.Notes
         /// <param name="currentPositionX"></param>
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
+            if (e == null) return;
             RectangleF gradientRect = new RectangleF();
             var list = this.OrderBy(x => x.Pos).ToList();
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
@@ -143,8 +149,8 @@ namespace NE4S.Notes
                         if(gradientNext != null)
                         {
                             float distance = PositionDistance(gradientNote.Pos, gradientNext.Pos, scoreBook);
-                            //x座標と幅は適当な値を入れたけどちゃんとうごいてるっぽい？
-                            gradientRect = new RectangleF(0, gradientNote.Location.Y - distance, 10, distance);
+                            //x座標と幅は適当な値を入れたけどちゃんとうごいてるっぽい？重要なのはy座標と高さ
+                            gradientRect = new RectangleF(0, gradientNote.Location.Y - distance + drawOffset.Y, 10, distance);
                         }
                     }
                     //スライド帯を描画する
@@ -164,6 +170,7 @@ namespace NE4S.Notes
                         }
                     }
                 }
+                //クリッピングの解除を忘れないこと
                 e.Graphics.ResetClip();
                 //非表示設定のノーツは描画しないようにする
                 if (note is SlideRelay && !Status.IsSlideRelayVisible) continue;
@@ -177,7 +184,7 @@ namespace NE4S.Notes
         /// </summary>
         /// 全体的にコードが汚いのでなんとかしたい
         /// あといまの状態だと不可視中継点でもグラデーションの境界となってしまうのでなにかいい方法を考える必要がある
-        private void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
+        private static void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;
@@ -198,12 +205,7 @@ namespace NE4S.Notes
                     graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
                     using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                     {
-                        ColorBlend blend = new ColorBlend(4)
-                        {
-                            Colors = new Color[] { stepColor, baseColor, baseColor, stepColor},
-                            Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f}
-                        };
-                        myBrush.InterpolationColors = blend;
+                        myBrush.InterpolationColors = colorBlend;
                         e.Graphics.FillPath(myBrush, graphicsPath);
                     }
                     using (Pen myPen = new Pen(lineColor, 2))
@@ -235,12 +237,7 @@ namespace NE4S.Notes
                     }
                     using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                     {
-                        ColorBlend blend = new ColorBlend(4)
-                        {
-                            Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
-                            Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
-                        };
-                        myBrush.InterpolationColors = blend;
+                        myBrush.InterpolationColors = colorBlend;
                         e.Graphics.FillPath(myBrush, graphicsPath);
                     }
                     using (Pen myPen = new Pen(lineColor, 2))
@@ -273,12 +270,7 @@ namespace NE4S.Notes
                             e.Graphics.Clip = new Region(clipRect);
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {
-                                ColorBlend blend = new ColorBlend(4)
-                                {
-                                    Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
-                                    Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
-                                };
-                                myBrush.InterpolationColors = blend;
+                                myBrush.InterpolationColors = colorBlend;
                                 e.Graphics.FillPath(myBrush, graphicsPath);
                             }
                             using (Pen myPen = new Pen(lineColor, 2))
@@ -288,7 +280,6 @@ namespace NE4S.Notes
                         }
                     }
                 }
-                
                 #endregion
             }
         }
@@ -296,7 +287,7 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（ベジェ）
         /// </summary>
-        private void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
+        private static void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;
@@ -330,12 +321,7 @@ namespace NE4S.Notes
                     graphicsPath.AddLine(bottomLeft, bottomRight);
                     using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                     {
-                        ColorBlend blend = new ColorBlend(4)
-                        {
-                            Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
-                            Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
-                        };
-                        myBrush.InterpolationColors = blend;
+                        myBrush.InterpolationColors = colorBlend;
                         e.Graphics.FillPath(myBrush, graphicsPath);
                     }
                     using (Pen myPen = new Pen(lineColor, 2))
@@ -379,12 +365,7 @@ namespace NE4S.Notes
                     }
                     using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                     {
-                        ColorBlend blend = new ColorBlend(4)
-                        {
-                            Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
-                            Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
-                        };
-                        myBrush.InterpolationColors = blend;
+                        myBrush.InterpolationColors = colorBlend;
                         e.Graphics.FillPath(myBrush, graphicsPath);
                     }
                     using (Pen myPen = new Pen(lineColor, 2))
@@ -424,17 +405,11 @@ namespace NE4S.Notes
                             graphicsPath.AddLine(topLeft, topRight);
                             graphicsPath.AddBezier(topRight, RightAnchor, bottomRight);
                             graphicsPath.AddLine(bottomLeft, bottomRight);
-                            ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
                             RectangleF clipRect = new RectangleF(curLane.HitRect.Location.AddX(-currentPositionX), curLane.HitRect.Size);
                             e.Graphics.Clip = new Region(clipRect);
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {
-                                ColorBlend blend = new ColorBlend(4)
-                                {
-                                    Colors = new Color[] { stepColor, baseColor, baseColor, stepColor },
-                                    Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
-                                };
-                                myBrush.InterpolationColors = blend;
+                                myBrush.InterpolationColors = colorBlend;
                                 e.Graphics.FillPath(myBrush, graphicsPath);
                             }
                             using (Pen myPen = new Pen(lineColor, 2))
@@ -447,33 +422,6 @@ namespace NE4S.Notes
 
                 #endregion
             }
-        }
-
-        /// <summary>
-        /// 2つのPosition変数からその仮想的な縦の距離を計算する
-        /// </summary>
-        /// <param name="pastPosition"></param>
-        /// <param name="futurePosition"></param>
-        /// <param name="scoreBook"></param>
-        /// <returns></returns>
-        private float PositionDistance(Position pastPosition, Position futurePosition, ScoreBook scoreBook)
-        {
-            float distance = 0;
-            //4分の4拍子1小節分の高さ
-            float baseBarSize = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight;
-            Score pastScore = scoreBook.At(pastPosition.Bar - 1), futureScore = scoreBook.At(futurePosition.Bar - 1);
-            //2ノーツが同一のScore上にある場合も使える
-            if(pastScore.Index == futureScore.Index)
-            {
-                return (futurePosition.Size - pastPosition.Size) * baseBarSize;
-            }
-            distance += baseBarSize * (pastScore.BarSize - pastPosition.Size);
-            for(int i = pastScore.Index + 1; i <= futureScore.Index - 1; ++i)
-            {
-                distance += scoreBook.At(i).BarSize * baseBarSize;
-            }
-            distance += baseBarSize * futurePosition.Size;
-            return distance;
         }
 	}
 }

@@ -30,7 +30,7 @@ namespace NE4S.Notes
             MyUtil.AdjustHitRect(ref note);
             using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(150, 255, 0, 0)))
             {
-                e.Graphics.FillRectangle(myBrush, note);
+                e?.Graphics.FillRectangle(myBrush, note);
             }
         }
     }
