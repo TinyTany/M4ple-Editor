@@ -36,7 +36,7 @@ namespace NE4S
         public static Note Next(this List<Note> list, Note note)
         {
             if (!list.Contains(note)) return null;
-            if (list.IndexOf(note) >= list.Count) return null;
+            if (list.IndexOf(note) >= list.Count - 1) return null;
             return list.ElementAt(list.IndexOf(note) + 1);
         }
 
