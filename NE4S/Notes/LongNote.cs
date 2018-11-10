@@ -15,7 +15,9 @@ namespace NE4S.Notes
     public class LongNote : List<Note>
     {
         //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
-        protected static readonly Point drawOffset = new Point(2, 2);
+        protected static readonly PointF drawOffset = new PointF(2, 2);
+        //帯の大きさが縦に少し短いので調整
+        protected static readonly float deltaHeight = .2f;
 
         public LongNote()
         {

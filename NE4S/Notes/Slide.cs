@@ -198,8 +198,8 @@ namespace NE4S.Notes
             {
                 PointF topLeft = futureRerativeLocation.Add(drawOffset);
                 PointF topRight = futureRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
-                PointF bottomLeft = pastRerativeLocation.Add(drawOffset);
-                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
+                PointF bottomLeft = pastRerativeLocation.Add(drawOffset).AddY(deltaHeight);
+                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width).AddY(deltaHeight);
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
                     graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
@@ -224,8 +224,8 @@ namespace NE4S.Notes
                 PointF topLeft = pastRerativeLocation.Add(diffX, -positionDistance).Add(drawOffset);
                 PointF topRight = pastRerativeLocation.Add(diffX, -positionDistance).Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
                 //以下の2つはレーンをまたがないときと同じ
-                PointF bottomLeft = pastRerativeLocation.Add(drawOffset);
-                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
+                PointF bottomLeft = pastRerativeLocation.Add(drawOffset).AddY(deltaHeight);
+                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width).AddY(deltaHeight);
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
                     graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
@@ -304,8 +304,8 @@ namespace NE4S.Notes
                 //始点、終点の2つのノーツの四つ角の座標
                 PointF topLeft = futureRerativeLocation.Add(drawOffset);
                 PointF topRight = futureRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
-                PointF bottomLeft = pastRerativeLocation.Add(drawOffset);
-                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
+                PointF bottomLeft = pastRerativeLocation.Add(drawOffset).AddY(deltaHeight);
+                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width).AddY(deltaHeight);
                 //3つのそれぞれのノーツの中心の座標
                 PointF topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
                 PointF bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
@@ -342,8 +342,8 @@ namespace NE4S.Notes
                 PointF topLeft = pastRerativeLocation.Add(diffXFuture, -positionDistanceFuture).Add(drawOffset);
                 PointF topRight = pastRerativeLocation.Add(diffXFuture, -positionDistanceFuture).Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
                 //以下の2つはレーンをまたがないときと同じ
-                PointF bottomLeft = pastRerativeLocation.Add(drawOffset);
-                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
+                PointF bottomLeft = pastRerativeLocation.Add(drawOffset).AddY(deltaHeight);
+                PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width).AddY(deltaHeight);
                 //3つのそれぞれのノーツの中心の座標
                 PointF topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
                 PointF bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
