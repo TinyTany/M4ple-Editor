@@ -106,6 +106,7 @@ namespace NE4S.Notes
         //TODO: 範囲外のノーツは描画しないようにして軽くする
 		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
+            foreach (Hold hold in holdNotes) hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
             foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
             //お試し
             //範囲外のノーツは描画しないようにするというこころ
