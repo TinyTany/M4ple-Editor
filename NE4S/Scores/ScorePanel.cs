@@ -181,7 +181,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = true;
 			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-            #region 座標などをコンソール出力
+            #region 座標などをコンソール出力（デバッグ時のみ）
 #if DEBUG
             //デバッグ用にクリックした座標などをコンソールに出力する
             //本番では必要ない
@@ -359,13 +359,18 @@ namespace NE4S.Scores
                     if(selectedSlide != null)
                     {
                         //*
-                        if (Status.InvisibleSlideTap)
+                        if(Control.ModifierKeys == Keys.Shift)
                         {
-                            //CurveTest
+                            //* CurveTest
                             SlideCurve slideCurve = new SlideCurve(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideCurve);
                             Status.SelectedNote = slideCurve;
-                            /*
+                            //*/
+                        }
+                        else if (Status.InvisibleSlideTap)
+                        {
+                            
+                            //*
                             SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideRelay);
                             Status.SelectedNote = slideRelay;
