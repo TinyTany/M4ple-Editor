@@ -1,4 +1,5 @@
-﻿using NE4S.Scores;
+﻿using NE4S.Define;
+using NE4S.Scores;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -132,13 +133,13 @@ namespace NE4S
 			tsbInvisibleSlideTap.Checked = Status.InvisibleSlideTap;
 			switch (Status.Mode)
 			{
-				case Define.ADD:
+				case Mode.ADD:
 					tsbAdd.Checked = true;
 					break;
-				case Define.EDIT:
+				case Mode.EDIT:
 					tsbEdit.Checked = true;
 					break;
-				case Define.DELETE:
+				case Mode.DELETE:
 					tsbDelete.Checked = true;
 					break;
 				default:
@@ -151,7 +152,7 @@ namespace NE4S
 			tsbAdd.Checked = true;
 			tsbEdit.Checked = false;
 			tsbDelete.Checked = false;
-			Status.Mode = Define.ADD;
+			Status.Mode = Mode.ADD;
 		}
 
 		private void tbsEdit_Click(object sender, EventArgs e)
@@ -159,7 +160,7 @@ namespace NE4S
 			tsbAdd.Checked = false;
 			tsbEdit.Checked = true;
 			tsbDelete.Checked = false;
-			Status.Mode = Define.EDIT;
+			Status.Mode = Mode.EDIT;
 		}
 
 		private void tbsDelete_Click(object sender, EventArgs e)
@@ -167,7 +168,7 @@ namespace NE4S
 			tsbAdd.Checked = false;
 			tsbEdit.Checked = false;
 			tsbDelete.Checked = true;
-			Status.Mode = Define.DELETE;
+			Status.Mode = Mode.DELETE;
 		}
 
 		private void tbsInvisibleSlideTap_Click(object sender, EventArgs e)

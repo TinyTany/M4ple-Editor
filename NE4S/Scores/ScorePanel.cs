@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Component;
 using NE4S.Notes;
+using NE4S.Define;
 
 namespace NE4S.Scores
 {
@@ -170,7 +171,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
             //クリックされたレーンを特定
             ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Define.EDIT)
+            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.ADD)
             {
                 new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(currentPositionX))).Show(pBox, e.Location);
             }
@@ -204,20 +205,29 @@ namespace NE4S.Scores
                 var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX));
 				switch (Status.Mode)
 				{
-					case Define.ADD:
+					case Mode.ADD:
                         if(selectedLane != null)
                         {
                             AddNote(e.Location, selectedLane);
                         }
                         break;
-					case Define.EDIT:
+					case Mode.EDIT:
                         if (selectedNote != null) Status.SelectedNote = selectedNote;
-                        if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible) Status.SelectedNote = null;
-                        if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible) Status.SelectedNote = null;
+                        if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                        {
+                            Status.SelectedNote = null;
+                        }
+                        if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
+                        {
+                            Status.SelectedNote = null;
+                        }
                         break;
-					case Define.DELETE:
-                        if (selectedNote != null) model.NoteBook.Delete(selectedNote);
-						break;
+					case Mode.DELETE:
+                        if (selectedNote != null)
+                        {
+                            model.NoteBook.Delete(selectedNote);
+                        }
+                        break;
 					default:
 						break;
 				}
@@ -230,7 +240,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
 			switch (Status.Mode)
 			{
-				case Define.ADD:
+				case Mode.ADD:
 					ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
 					if (selectedLane != null)
 					{
@@ -257,7 +267,7 @@ namespace NE4S.Scores
                         Status.SelectedNote.LaneIndex = selectedLane.Index;
                     }
                     break;
-				case Define.EDIT:
+				case Mode.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
@@ -269,7 +279,7 @@ namespace NE4S.Scores
                         Status.SelectedNote.LaneIndex = selectedLane.Index;
                     }
 					break;
-				case Define.DELETE:
+				case Mode.DELETE:
 					break;
 				default:
 					break;
@@ -277,27 +287,9 @@ namespace NE4S.Scores
         }
 
         public void MouseUp(MouseEventArgs e)
-        {
-			var laneBook = model.LaneBook;
+        { 
 			Status.IsMousePressed = false;
             Status.SelectedNote = null;
-
-			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-			if (selectedLane != null && e.Button == MouseButtons.Left)
-			{
-				switch (Status.Mode)
-				{
-					case Define.ADD:
-						
-						break;
-					case Define.EDIT:
-						break;
-					case Define.DELETE:
-						break;
-					default:
-						break;
-				}
-			}
 		}
 
         public void MouseEnter(EventArgs e)
@@ -334,24 +326,25 @@ namespace NE4S.Scores
             Note newNote = null;
             switch (Status.Note)
             {
-                case Define.TAP:
+                case NoteType.TAP:
                     newNote = new Tap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.EXTAP:
+                case NoteType.EXTAP:
                     newNote = new ExTap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AWEXTAP:
+                case NoteType.AWEXTAP:
                     newNote = new AwesomeExTap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.HELL:
+                case NoteType.HELL:
                     newNote = new HellTap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.FLICK:
+                case NoteType.FLICK:
                     newNote = new Flick(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.HOLD:
+                case NoteType.HOLD:
+                    model.AddLongNote(new Hold(Status.NoteSize, position, locationVirtual, lane.Index));
                     break;
-                case Define.SLIDE:
+                case NoteType.SLIDE:
                     //testように直書き
                     PointF locationPhysical = locationVirtual.AddX(-currentPositionX);
                     //Slideとの当たり判定は自由仮想座標を使う
@@ -389,26 +382,26 @@ namespace NE4S.Scores
                         model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, lane.Index));
                     }
                     break;
-                case Define.SLIDECURVE:
+                case NoteType.SLIDECURVE:
                     break;
-                case Define.AIRHOLD:
+                case NoteType.AIRHOLD:
                     break;
-                case Define.AIRUPC:
+                case NoteType.AIRUPC:
                     newNote = new AirUpC(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRUPL:
+                case NoteType.AIRUPL:
                     newNote = new AirUpL(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRUPR:
+                case NoteType.AIRUPR:
                     newNote = new AirUpR(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRDOWNC:
+                case NoteType.AIRDOWNC:
                     newNote = new AirDownC(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRDOWNL:
+                case NoteType.AIRDOWNL:
                     newNote = new AirDownL(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRDOWNR:
+                case NoteType.AIRDOWNR:
                     newNote = new AirDownR(Status.NoteSize, position, locationVirtual);
                     break;
                 default:
