@@ -115,11 +115,21 @@ namespace NE4S.Notes
             return false;
         }
 
+        /// <summary>
+        /// このスライドを描画します。
+        /// </summary>
+        /// ノーツのリストに対して前から回して、そのノーツとそれと次のノーツまでの帯を描画し、そのノーツを描画
+        /// <param name="e"></param>
+        /// <param name="originPosX"></param>
+        /// <param name="originPosY"></param>
+        /// <param name="scoreBook"></param>
+        /// <param name="laneBook"></param>
+        /// <param name="currentPositionX"></param>
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
-            Note pastStepNote, futureStepNote;
             RectangleF gradientRect = new RectangleF();
             var list = this.OrderBy(x => x.Pos).ToList();
+            var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
             foreach (Note note in list)
             {
                 //!(note is SlideEnd)よりもこっちのほうが確実で安全かも
@@ -127,20 +137,21 @@ namespace NE4S.Notes
                 if (list.IndexOf(note) < list.Count - 1 && !(note is SlideCurve))
                 {
                     //スライド帯のグラデーション用矩形を設定する
-                    if (note is SlideBegin || note is SlideTap || note is SlideEnd)
+                    if(note is SlideBegin || note is SlideTap || note is SlideEnd)
                     {
-                        pastStepNote = note;
-                        //ここをよしなに実装する
-                        for(futureStepNote = list.Next(pastStepNote); list.IndexOf(futureStepNote) < list.Count - 1;)
+                        Note gradientNote = note, gradientNext = stepList.Next(note);
+                        if(gradientNext != null)
                         {
-
+                            float distance = PositionDistance(gradientNote.Pos, gradientNext.Pos, scoreBook);
+                            //x座標と幅は適当な値を入れたけどちゃんとうごいてるっぽい？
+                            gradientRect = new RectangleF(0, gradientNote.Location.Y - distance, 10, distance);
                         }
                     }
                     //スライド帯を描画する
                     Note next = list.Next(note);
                     if(!(next is SlideCurve))
                     {
-                        DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, gradientRect);
+                        DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, ref gradientRect);
                     }
                     else
                     {
@@ -148,8 +159,8 @@ namespace NE4S.Notes
                         //SlideRelayは末尾に来ることはないし，SlideRelayが2つ以上連続に並ぶことはないという確信の元実装
                         if (list.IndexOf(curve) < list.Count - 1)
                         {
-                            next = list.ElementAt(list.IndexOf(curve) + 1);
-                            DrawSlideCurve(e, note, curve, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, gradientRect);
+                            next = list.Next(curve);
+                            DrawSlideCurve(e, note, curve, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, ref gradientRect);
                         }
                     }
                 }
@@ -166,9 +177,10 @@ namespace NE4S.Notes
         /// </summary>
         /// 全体的にコードが汚いのでなんとかしたい
         /// あといまの状態だと不可視中継点でもグラデーションの境界となってしまうのでなにかいい方法を考える必要がある
-        private void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, RectangleF gradientRect)
+        private void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
-            if (gradientRect.Height == 0) gradientRect.Height = 1;
+            if (gradientRect.Width <= 0) gradientRect.Width = 1;
+            if (gradientRect.Height <= 0) gradientRect.Height = 1;
             //相対位置
             PointF pastRerativeLocation = new PointF(past.Location.X - originPosX, past.Location.Y - originPosY);
             PointF futureRerativeLocation = new PointF(future.Location.X - originPosX, future.Location.Y - originPosY);
@@ -284,9 +296,10 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（ベジェ）
         /// </summary>
-        private void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, RectangleF gradientRect)
+        private void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
-            if (gradientRect.Height == 0) gradientRect.Height = 1;
+            if (gradientRect.Width <= 0) gradientRect.Width = 1;
+            if (gradientRect.Height <= 0) gradientRect.Height = 1;
             //相対位置
             PointF pastRerativeLocation = new PointF(past.Location.X - originPosX, past.Location.Y - originPosY);
             PointF curveRerativeLocation = new PointF(curve.Location.X - originPosX, curve.Location.Y - originPosY);
