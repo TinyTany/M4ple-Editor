@@ -76,7 +76,8 @@ namespace NE4S.Notes
 		public void ReSize(int size)
 		{
 			this.size = size;
-			return;
+            hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+            return;
 		}
 
 		public void Relocate(Position pos, PointF location)
