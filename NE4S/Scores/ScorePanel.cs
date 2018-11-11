@@ -171,7 +171,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
             //クリックされたレーンを特定
             ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.ADD)
+            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
             {
                 new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(currentPositionX))).Show(pBox, e.Location);
             }
@@ -202,7 +202,8 @@ namespace NE4S.Scores
             #endregion
             if (e.Button == MouseButtons.Left)
 			{
-                var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX));
+                int noteArea = NoteArea.NONE;
+                var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX), ref noteArea);
 				switch (Status.Mode)
 				{
 					case Mode.ADD:
@@ -212,7 +213,11 @@ namespace NE4S.Scores
                         }
                         break;
 					case Mode.EDIT:
-                        if (selectedNote != null) Status.SelectedNote = selectedNote;
+                        if (selectedNote != null)
+                        {
+                            Status.SelectedNote = selectedNote;
+                            Status.SelectedNoteArea = noteArea;
+                        }
                         if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
                         {
                             Status.SelectedNote = null;
@@ -255,7 +260,8 @@ namespace NE4S.Scores
 					{
 						
 					}
-                    //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずそのままコピペ
+                    //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずほぼそのままコピペ
+                    //PointToGridのオーバーライドが違うだけ
                     //動いた
                     if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
                     {
@@ -271,12 +277,45 @@ namespace NE4S.Scores
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
-						Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
-                        Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
-						Position newPos = selectedLane.GetPos(virtualGridPoint);
-						Status.SelectedNote.Relocate(newPos, virtualGridPoint);
-                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                        Status.SelectedNote.LaneIndex = selectedLane.Index;
+                        //TODO: まだいろいろと気持ち悪いので再検討する（特にサイズ変更処理）
+                        switch (Status.SelectedNoteArea)
+                        {
+                            case NoteArea.LEFT:
+                                {
+                                    if (Status.SelectedNote.Size == 1) break;//これだめ
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
+                                    int newSize = (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
+                                    if (newSize <= 0) newSize = 1;
+                                    else if (newSize > 16) newSize = 16;
+                                    Status.SelectedNote.ReSize(newSize);
+                                    Position newPos = selectedLane.GetPos(virtualGridPoint);
+                                    Status.SelectedNote.RelocateX(newPos, virtualGridPoint);
+                                }
+                                break;
+                            case NoteArea.CENTER:
+                                {
+                                    //ノーツのサイズを考慮したほうのメソッドを使う
+                                    Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote);
+                                    Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
+                                    Position newPos = selectedLane.GetPos(virtualGridPoint);
+                                    Status.SelectedNote.Relocate(newPos, virtualGridPoint);
+                                    //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
+                                    Status.SelectedNote.LaneIndex = selectedLane.Index;
+                                }
+                                break;
+                            case NoteArea.RIGHT:
+                                {
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
+                                    int newSize = (int)((virtualGridPoint.X - Status.SelectedNote.Location.X) / ScoreInfo.MinLaneWidth);
+                                    ++newSize;
+                                    if (newSize <= 0) newSize = 1;
+                                    else if (newSize > 16) newSize = 16;
+                                    Status.SelectedNote.ReSize(newSize);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
 					break;
 				case Mode.DELETE:
@@ -290,6 +329,7 @@ namespace NE4S.Scores
         { 
 			Status.IsMousePressed = false;
             Status.SelectedNote = null;
+            Status.SelectedNoteArea = NoteArea.NONE;
 		}
 
         public void MouseEnter(EventArgs e)
@@ -435,7 +475,34 @@ namespace NE4S.Scores
             return gridP;
         }
 
-		public void PaintPanel(PaintEventArgs e)
+        /// <summary>
+        /// 与えられた座標を現在のグリッド情報に合わせて変換します
+        /// 選択したnoteのサイズが考慮されます
+        /// 与えられる座標も返り値もXにcurrentPositionXを足していない生のもの
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="lane"></param>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        private Point PointToGrid(Point location, ScoreLane lane, Note note)
+        {
+            Point gridP = new Point();
+            //HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
+            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1));
+            Point deltaP = new Point();
+            float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
+            float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
+            float maxGridX = (ScoreInfo.Lanes - note.Size) * ScoreInfo.MinLaneWidth;
+            //現在の自由座標とそこから計算したグリッド座標の差分
+            deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
+            deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
+            gridP.X = location.X + deltaP.X;
+            gridP.Y = location.Y + deltaP.Y;
+            //帰ってくる座標はXにcurrentPositionX足されていない生のもの
+            return gridP;
+        }
+
+        public void PaintPanel(PaintEventArgs e)
 		{
 			//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
 			int originPosX = currentPositionX;
