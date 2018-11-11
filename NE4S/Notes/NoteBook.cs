@@ -68,30 +68,51 @@ namespace NE4S.Notes
         /// <summary>
         /// クリックされてるノーツがあったら投げる
         /// なかったらnullを投げる
+        /// ノーツのどのへんがクリックされたかも特定する
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public Note SelectedNote(PointF location)
+        public Note SelectedNote(PointF location, ref int noteArea)
         {
             Note selectedNote;
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 selectedNote = airHold.Find(x => x.Contains(location));
-                if (selectedNote != null) return selectedNote;
+                if (selectedNote != null)
+                {
+                    MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                    return selectedNote;
+                }
             }
             selectedNote = airNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null) return selectedNote;
+            if (selectedNote != null)
+            {
+                MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                return selectedNote;
+            }
             selectedNote = shortNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null) return selectedNote;
+            if (selectedNote != null)
+            {
+                MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                return selectedNote;
+            }
             foreach (Slide slide in slideNotes.Reverse<Slide>())
             {
                 selectedNote = slide.Find(x => x.Contains(location));
-                if (selectedNote != null) return selectedNote;
+                if (selectedNote != null)
+                {
+                    MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                    return selectedNote;
+                }
             }
             foreach (Hold hold in holdNotes.Reverse<Hold>())
             {
                 selectedNote = hold.Find(x => x.Contains(location));
-                if (selectedNote != null) return selectedNote;
+                if (selectedNote != null)
+                {
+                    MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                    return selectedNote;
+                }
             }
             return null;
         }
