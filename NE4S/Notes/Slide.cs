@@ -72,7 +72,7 @@ namespace NE4S.Notes
                     PointF topLeft = next.Location.Add(drawOffset);
                     PointF topRight = next.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
                     PointF bottomLeft = note.Location.Add(drawOffset);
-                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
+                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(note.Width);
                     using (GraphicsPath hitPath = new GraphicsPath())
                     { 
                         hitPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
@@ -87,7 +87,7 @@ namespace NE4S.Notes
                     PointF topLeft = note.Location.Add(drawOffset).Add(diffX, -positionDistance);
                     PointF topRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width).Add(diffX, -positionDistance);
                     PointF bottomLeft = note.Location.Add(drawOffset);
-                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
+                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(note.Width);
                     using (GraphicsPath hitPath = new GraphicsPath())
                     {
                         hitPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
@@ -183,7 +183,6 @@ namespace NE4S.Notes
         /// ノーツ間を繋ぐ帯の描画（直線）
         /// </summary>
         /// 全体的にコードが汚いのでなんとかしたい
-        /// あといまの状態だと不可視中継点でもグラデーションの境界となってしまうのでなにかいい方法を考える必要がある
         private static void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
@@ -296,7 +295,6 @@ namespace NE4S.Notes
             PointF curveRerativeLocation = new PointF(curve.Location.X - originPosX, curve.Location.Y - originPosY);
             PointF futureRerativeLocation = new PointF(future.Location.X - originPosX, future.Location.Y - originPosY);
 
-            //TODO: 以下コピペしただけなので良しなに変更する
             int passingLanes = future.LaneIndex - past.LaneIndex;
             //スライドのノーツとノーツがレーンをまたがないとき
             if (passingLanes == 0)
@@ -310,15 +308,18 @@ namespace NE4S.Notes
                 PointF topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
                 PointF bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
                 PointF curveCenter = curveRerativeLocation.AddX(curve.Width / 2f);
-                //ベジェ曲線を描画する際のアンカー座標
-                PointF LeftAnchor = bottomLeft.Add(curveCenter.Sub(bottomCenter));
-                PointF RightAnchor = bottomRight.Add(curveCenter.Sub(bottomCenter));
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
-                    graphicsPath.AddBezier(bottomLeft, LeftAnchor, topLeft);
+                    graphicsPath.AddBezier(bottomLeft, curveCenter, topLeft);
                     graphicsPath.AddLine(topLeft, topRight);
-                    graphicsPath.AddBezier(topRight, RightAnchor, bottomRight);
+                    graphicsPath.AddBezier(topRight, curveCenter, bottomRight);
                     graphicsPath.AddLine(bottomLeft, bottomRight);
+                    ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
+                    if (scoreLane != null)
+                    {
+                        RectangleF clipRect = new RectangleF(scoreLane.HitRect.X - currentPositionX, scoreLane.HitRect.Y, scoreLane.HitRect.Width, scoreLane.HitRect.Height);
+                        e.Graphics.Clip = new Region(clipRect);
+                    }
                     using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                     {
                         myBrush.InterpolationColors = colorBlend;
@@ -348,14 +349,11 @@ namespace NE4S.Notes
                 PointF topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
                 PointF bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
                 PointF curveCenter = pastRerativeLocation.Add(diffXCurve, -positionDistanceCurve).AddX(curve.Width / 2f);
-                //ベジェ曲線を描画する際のアンカー座標
-                PointF LeftAnchor = bottomLeft.Add(curveCenter.Sub(bottomCenter));
-                PointF RightAnchor = bottomRight.Add(curveCenter.Sub(bottomCenter));
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
-                    graphicsPath.AddBezier(bottomLeft, LeftAnchor, topLeft);
+                    graphicsPath.AddBezier(bottomLeft, curveCenter, topLeft);
                     graphicsPath.AddLine(topLeft, topRight);
-                    graphicsPath.AddBezier(topRight, RightAnchor, bottomRight);
+                    graphicsPath.AddBezier(topRight, curveCenter, bottomRight);
                     graphicsPath.AddLine(bottomLeft, bottomRight);
                     ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
                     if (scoreLane != null)
@@ -394,16 +392,13 @@ namespace NE4S.Notes
                         bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
                         curveCenter.X = curLane.HitRect.X + curve.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + curve.Width / 2f;
                         curveCenter.Y += prevLane.HitRect.Height;
-                        //ベジェ曲線を描画する際のアンカー座標
-                        LeftAnchor = bottomLeft.Add(curveCenter.Sub(bottomCenter));
-                        RightAnchor = bottomRight.Add(curveCenter.Sub(bottomCenter));
                         //
                         gradientRect.Y += prevLane.HitRect.Height;
                         using (GraphicsPath graphicsPath = new GraphicsPath())
                         {
-                            graphicsPath.AddBezier(bottomLeft, LeftAnchor, topLeft);
+                            graphicsPath.AddBezier(bottomLeft, curveCenter, topLeft);
                             graphicsPath.AddLine(topLeft, topRight);
-                            graphicsPath.AddBezier(topRight, RightAnchor, bottomRight);
+                            graphicsPath.AddBezier(topRight, curveCenter, bottomRight);
                             graphicsPath.AddLine(bottomLeft, bottomRight);
                             RectangleF clipRect = new RectangleF(curLane.HitRect.Location.AddX(-currentPositionX), curLane.HitRect.Size);
                             e.Graphics.Clip = new Region(clipRect);
