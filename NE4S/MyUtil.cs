@@ -28,6 +28,23 @@ namespace NE4S
         }
 
         /// <summary>
+        /// ノーツが選択されたとき、どのへんの領域をクリックしたのか判定します
+        /// Editモードでノーツをクリックした位置に応じてサイズ変更か位置変更かを決めるために使う
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="location"></param>
+        /// <param name="noteArea"></param>
+        public static void SetNoteArea(Note note, PointF location, ref int noteArea)
+        {
+            //それぞれの領域の割合を設定
+            float leftCenter = .25f, centerRight = .75f;
+            float locationRatio = (location.X - note.Location.X) / note.Width;
+            if (locationRatio <= leftCenter) noteArea = Define.NoteArea.LEFT;
+            else if (locationRatio <= centerRight) noteArea = Define.NoteArea.CENTER;
+            else noteArea = Define.NoteArea.RIGHT;
+        }
+
+        /// <summary>
         /// list内のnoteの1つ次の要素を返します。noteがlistに含まれていないか、末尾の場合はnullを返します。
         /// </summary>
         /// <param name="list"></param>
