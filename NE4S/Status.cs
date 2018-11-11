@@ -18,6 +18,7 @@ namespace NE4S
         public static bool InvisibleSlideTap { get; set; } = true;
 		public static bool IsMousePressed { get; set; } = true;
 		public static Note SelectedNote { get; set; } = null;
+        public static int SelectedNoteArea { get; set; } = Define.NoteArea.NONE;
 
         public static bool IsSlideRelayVisible { get; set; } = true;
         public static bool IsSlideCurveVisible { get; set; } = true;
