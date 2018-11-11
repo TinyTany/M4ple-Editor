@@ -33,6 +33,6 @@ namespace NE4S.Define
 
     public struct NoteArea
     {
-        public const int LEFT = 0, CENTER = 1, RIGHT = 2;
+        public const int NONE = -1, LEFT = 0, CENTER = 1, RIGHT = 2;
     }
 }
