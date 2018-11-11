@@ -28,13 +28,13 @@ namespace NE4S.Notes
                 hitRect.Y - originPosY,
                 hitRect.Width,
                 hitRect.Height);
-            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Blue, Color.DarkBlue))
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.White, Color.Gray))
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);
             }
-            using (Pen pen = new Pen(Color.White, 1))
+            using (Pen pen = new Pen(Color.Blue, 1))
             {
-                //e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
             }
         }
     }
