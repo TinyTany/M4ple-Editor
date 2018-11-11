@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Component;
 using NE4S.Notes;
+using NE4S.Define;
 
 namespace NE4S.Scores
 {
@@ -170,7 +171,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
             //クリックされたレーンを特定
             ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Define.EDIT)
+            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
             {
                 new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(currentPositionX))).Show(pBox, e.Location);
             }
@@ -181,7 +182,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = true;
 			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-            #region 座標などをコンソール出力
+            #region 座標などをコンソール出力（デバッグ時のみ）
 #if DEBUG
             //デバッグ用にクリックした座標などをコンソールに出力する
             //本番では必要ない
@@ -201,21 +202,37 @@ namespace NE4S.Scores
             #endregion
             if (e.Button == MouseButtons.Left)
 			{
-                Note selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX));
+                int noteArea = NoteArea.NONE;
+                var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX), ref noteArea);
 				switch (Status.Mode)
 				{
-					case Define.ADD:
+					case Mode.ADD:
                         if(selectedLane != null)
                         {
                             AddNote(e.Location, selectedLane);
                         }
                         break;
-					case Define.EDIT:
-                        if (selectedNote != null) Status.selectedNote = selectedNote;
-						break;
-					case Define.DELETE:
-                        if (selectedNote != null) model.NoteBook.Delete(selectedNote);
-						break;
+					case Mode.EDIT:
+                        if (selectedNote != null)
+                        {
+                            Status.SelectedNote = selectedNote;
+                            Status.SelectedNoteArea = noteArea;
+                        }
+                        if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                        {
+                            Status.SelectedNote = null;
+                        }
+                        if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
+                        {
+                            Status.SelectedNote = null;
+                        }
+                        break;
+					case Mode.DELETE:
+                        if (selectedNote != null)
+                        {
+                            model.NoteBook.Delete(selectedNote);
+                        }
+                        break;
 					default:
 						break;
 				}
@@ -228,7 +245,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
 			switch (Status.Mode)
 			{
-				case Define.ADD:
+				case Mode.ADD:
 					ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
 					if (selectedLane != null)
 					{
@@ -243,31 +260,65 @@ namespace NE4S.Scores
 					{
 						
 					}
-                    //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずそのままコピペ
+                    //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずほぼそのままコピペ
+                    //PointToGridのオーバーライドが違うだけ
                     //動いた
-                    if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
+                    if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
                     {
                         Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
                         Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
                         Position newPos = selectedLane.GetPos(virtualGridPoint);
-                        Status.selectedNote.Relocate(newPos, virtualGridPoint);
+                        Status.SelectedNote.Relocate(newPos, virtualGridPoint);
                         //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                        Status.selectedNote.LaneIndex = selectedLane.Index;
+                        Status.SelectedNote.LaneIndex = selectedLane.Index;
                     }
                     break;
-				case Define.EDIT:
+				case Mode.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.selectedNote != null && selectedLane != null)
+					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
-						Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
-                        Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
-						Position newPos = selectedLane.GetPos(virtualGridPoint);
-						Status.selectedNote.Relocate(newPos, virtualGridPoint);
-                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                        Status.selectedNote.LaneIndex = selectedLane.Index;
+                        //TODO: まだいろいろと気持ち悪いので再検討する（特にサイズ変更処理）
+                        switch (Status.SelectedNoteArea)
+                        {
+                            case NoteArea.LEFT:
+                                {
+                                    if (Status.SelectedNote.Size == 1) break;//これだめ
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
+                                    int newSize = (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
+                                    if (newSize <= 0) newSize = 1;
+                                    else if (newSize > 16) newSize = 16;
+                                    Status.SelectedNote.ReSize(newSize);
+                                    Position newPos = selectedLane.GetPos(virtualGridPoint);
+                                    Status.SelectedNote.RelocateX(newPos, virtualGridPoint);
+                                }
+                                break;
+                            case NoteArea.CENTER:
+                                {
+                                    //ノーツのサイズを考慮したほうのメソッドを使う
+                                    Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote);
+                                    Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
+                                    Position newPos = selectedLane.GetPos(virtualGridPoint);
+                                    Status.SelectedNote.Relocate(newPos, virtualGridPoint);
+                                    //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
+                                    Status.SelectedNote.LaneIndex = selectedLane.Index;
+                                }
+                                break;
+                            case NoteArea.RIGHT:
+                                {
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
+                                    int newSize = (int)((virtualGridPoint.X - Status.SelectedNote.Location.X) / ScoreInfo.MinLaneWidth);
+                                    ++newSize;
+                                    if (newSize <= 0) newSize = 1;
+                                    else if (newSize > 16) newSize = 16;
+                                    Status.SelectedNote.ReSize(newSize);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
 					break;
-				case Define.DELETE:
+				case Mode.DELETE:
 					break;
 				default:
 					break;
@@ -275,27 +326,10 @@ namespace NE4S.Scores
         }
 
         public void MouseUp(MouseEventArgs e)
-        {
-			var laneBook = model.LaneBook;
+        { 
 			Status.IsMousePressed = false;
-            Status.selectedNote = null;
-
-			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-			if (selectedLane != null && e.Button == MouseButtons.Left)
-			{
-				switch (Status.Mode)
-				{
-					case Define.ADD:
-						
-						break;
-					case Define.EDIT:
-						break;
-					case Define.DELETE:
-						break;
-					default:
-						break;
-				}
-			}
+            Status.SelectedNote = null;
+            Status.SelectedNoteArea = NoteArea.NONE;
 		}
 
         public void MouseEnter(EventArgs e)
@@ -332,68 +366,82 @@ namespace NE4S.Scores
             Note newNote = null;
             switch (Status.Note)
             {
-                case Define.TAP:
+                case NoteType.TAP:
                     newNote = new Tap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.EXTAP:
+                case NoteType.EXTAP:
                     newNote = new ExTap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AWEXTAP:
+                case NoteType.AWEXTAP:
                     newNote = new AwesomeExTap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.HELL:
+                case NoteType.HELL:
                     newNote = new HellTap(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.FLICK:
+                case NoteType.FLICK:
                     newNote = new Flick(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.HOLD:
+                case NoteType.HOLD:
+                    model.AddLongNote(new Hold(Status.NoteSize, position, locationVirtual, lane.Index));
                     break;
-                case Define.SLIDE:
+                case NoteType.SLIDE:
                     //testように直書き
-                    PointF locationPhysical = locationVirtual.Add(-currentPositionX);
+                    PointF locationPhysical = locationVirtual.AddX(-currentPositionX);
                     //Slideとの当たり判定は自由仮想座標を使う
-                    Slide selectedSlide = model.NoteBook.SelectedSlide(location.Add(currentPositionX));
+                    Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
                     {
-                        if (Status.InvisibleSlideTap)
+                        //*
+                        if(Control.ModifierKeys == Keys.Shift)
                         {
+                            //* CurveTest
+                            SlideCurve slideCurve = new SlideCurve(Status.NoteSize, position, locationVirtual, lane.Index);
+                            selectedSlide.Add(slideCurve);
+                            Status.SelectedNote = slideCurve;
+                            //*/
+                        }
+                        else if (Status.InvisibleSlideTap)
+                        {
+                            
+                            //*
                             SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideRelay);
-                            Status.selectedNote = slideRelay;
+                            Status.SelectedNote = slideRelay;
+                            //*/
                         }
                         else
                         {
                             SlideTap slideTap = new SlideTap(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideTap);
-                            Status.selectedNote = slideTap;
+                            Status.SelectedNote = slideTap;
                         }
+                        //*/
                     }
                     else
                     {
                         model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, lane.Index));
                     }
                     break;
-                case Define.SLIDECURVE:
+                case NoteType.SLIDECURVE:
                     break;
-                case Define.AIRHOLD:
+                case NoteType.AIRHOLD:
                     break;
-                case Define.AIRUPC:
+                case NoteType.AIRUPC:
                     newNote = new AirUpC(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRUPL:
+                case NoteType.AIRUPL:
                     newNote = new AirUpL(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRUPR:
+                case NoteType.AIRUPR:
                     newNote = new AirUpR(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRDOWNC:
+                case NoteType.AIRDOWNC:
                     newNote = new AirDownC(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRDOWNL:
+                case NoteType.AIRDOWNL:
                     newNote = new AirDownL(Status.NoteSize, position, locationVirtual);
                     break;
-                case Define.AIRDOWNR:
+                case NoteType.AIRDOWNR:
                     newNote = new AirDownR(Status.NoteSize, position, locationVirtual);
                     break;
                 default:
@@ -427,7 +475,34 @@ namespace NE4S.Scores
             return gridP;
         }
 
-		public void PaintPanel(PaintEventArgs e)
+        /// <summary>
+        /// 与えられた座標を現在のグリッド情報に合わせて変換します
+        /// 選択したnoteのサイズが考慮されます
+        /// 与えられる座標も返り値もXにcurrentPositionXを足していない生のもの
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="lane"></param>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        private Point PointToGrid(Point location, ScoreLane lane, Note note)
+        {
+            Point gridP = new Point();
+            //HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
+            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1));
+            Point deltaP = new Point();
+            float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
+            float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
+            float maxGridX = (ScoreInfo.Lanes - note.Size) * ScoreInfo.MinLaneWidth;
+            //現在の自由座標とそこから計算したグリッド座標の差分
+            deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
+            deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
+            gridP.X = location.X + deltaP.X;
+            gridP.Y = location.Y + deltaP.Y;
+            //帰ってくる座標はXにcurrentPositionX足されていない生のもの
+            return gridP;
+        }
+
+        public void PaintPanel(PaintEventArgs e)
 		{
 			//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
 			int originPosX = currentPositionX;

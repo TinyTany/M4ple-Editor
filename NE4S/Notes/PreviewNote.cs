@@ -28,9 +28,9 @@ namespace NE4S.Notes
 			note.Location = Location;
             //描画中にいい感じにハマるように調節する
             MyUtil.AdjustHitRect(ref note);
-            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(150, 255, 0, 0)))
+            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 255, 255, 255)))
             {
-                e.Graphics.FillRectangle(myBrush, note);
+                e?.Graphics.FillRectangle(myBrush, note);
             }
         }
     }

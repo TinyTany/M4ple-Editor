@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using NE4S.Notes;
 
 namespace NE4S
 {
@@ -23,6 +25,36 @@ namespace NE4S
             //--hitRect.Width; ++hitRect.X;//アンチエイリアスしたらちょっとずれて見えたからこの処理スキップしてみる
             hitRect.Y -= 2;
             return;
+        }
+
+        /// <summary>
+        /// ノーツが選択されたとき、どのへんの領域をクリックしたのか判定します
+        /// Editモードでノーツをクリックした位置に応じてサイズ変更か位置変更かを決めるために使う
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="location"></param>
+        /// <param name="noteArea"></param>
+        public static void SetNoteArea(Note note, PointF location, ref int noteArea)
+        {
+            //それぞれの領域の割合を設定
+            float leftCenter = .25f, centerRight = .75f;
+            float locationRatio = (location.X - note.Location.X) / note.Width;
+            if (locationRatio <= leftCenter) noteArea = Define.NoteArea.LEFT;
+            else if (locationRatio <= centerRight) noteArea = Define.NoteArea.CENTER;
+            else noteArea = Define.NoteArea.RIGHT;
+        }
+
+        /// <summary>
+        /// list内のnoteの1つ次の要素を返します。noteがlistに含まれていないか、末尾の場合はnullを返します。
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        public static Note Next(this List<Note> list, Note note)
+        {
+            if (!list.Contains(note)) return null;
+            if (list.IndexOf(note) >= list.Count - 1) return null;
+            return list.ElementAt(list.IndexOf(note) + 1);
         }
 
         public static PointF AddX(this PointF pointF, float x)
@@ -60,6 +92,11 @@ namespace NE4S
             return new PointF(pointF.X - other.X, pointF.Y - other.Y);
         }
 
+        public static PointF Mult(this PointF pointF, float k)
+        {
+            return new PointF(pointF.X * k, pointF.Y * k);
+        }
+
         public static Point Add(this Point point, int x)
         {
             return new Point(point.X + x, point.Y);
@@ -73,6 +110,37 @@ namespace NE4S
         public static Point Sub(this Point pointF, Point other)
         {
             return new Point(pointF.X - other.X, pointF.Y - other.Y);
+        }
+
+        /// <summary>
+        /// 現在の図形に２次ベジエ曲線を追加します
+        /// </summary>
+        /// <param name="graphicsPath"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="anchor"></param>
+        public static void AddBezier(this GraphicsPath graphicsPath, PointF begin, PointF anchor, PointF end)
+        {
+            float ratio = 2 / 3f;
+            PointF beginAnchor = begin.Add(anchor.Sub(begin).Mult(ratio));
+            PointF endAnchor = end.Add(anchor.Sub(end).Mult(ratio));
+            graphicsPath?.AddBezier(begin, beginAnchor, endAnchor, end);
+        }
+
+        /// <summary>
+        /// ２次ベジエ曲線を描画します
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="pen"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="anchor"></param>
+        public static void DrawBezier(this Graphics graphics, Pen pen, PointF begin, PointF anchor, PointF end)
+        {
+            float ratio = 2 / 3f;
+            PointF beginAnchor = begin.Add(anchor.Sub(begin).Mult(ratio));
+            PointF endAnchor = end.Add(anchor.Sub(end).Mult(ratio));
+            graphics?.DrawBezier(pen, begin, beginAnchor, endAnchor, end);
         }
     }
 }

@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NE4S
+namespace NE4S.Define
 {
-    public class Define
+    public struct Mode
     {
         public const int ADD = 0, EDIT = 1, DELETE = 2;
+    }
+
+    public struct NoteType
+    {
         public const int
             TAP = 0,
             EXTAP = 1,
@@ -25,5 +29,10 @@ namespace NE4S
             AIRDOWNL = 14,
             AIRDOWNR = 15,
             AIRHOLD = 16;
+    }
+
+    public struct NoteArea
+    {
+        public const int NONE = -1, LEFT = 0, CENTER = 1, RIGHT = 2;
     }
 }

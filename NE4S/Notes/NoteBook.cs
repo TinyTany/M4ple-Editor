@@ -68,37 +68,58 @@ namespace NE4S.Notes
         /// <summary>
         /// クリックされてるノーツがあったら投げる
         /// なかったらnullを投げる
+        /// ノーツのどのへんがクリックされたかも特定する
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public Note SelectedNote(PointF location)
+        public Note SelectedNote(PointF location, ref int noteArea)
         {
             Note selectedNote;
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 selectedNote = airHold.Find(x => x.Contains(location));
-                if (selectedNote != null) return selectedNote;
+                if (selectedNote != null)
+                {
+                    MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                    return selectedNote;
+                }
             }
             selectedNote = airNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null) return selectedNote;
+            if (selectedNote != null)
+            {
+                MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                return selectedNote;
+            }
             selectedNote = shortNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null) return selectedNote;
+            if (selectedNote != null)
+            {
+                MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                return selectedNote;
+            }
             foreach (Slide slide in slideNotes.Reverse<Slide>())
             {
                 selectedNote = slide.Find(x => x.Contains(location));
-                if (selectedNote != null) return selectedNote;
+                if (selectedNote != null)
+                {
+                    MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                    return selectedNote;
+                }
             }
             foreach (Hold hold in holdNotes.Reverse<Hold>())
             {
                 selectedNote = hold.Find(x => x.Contains(location));
-                if (selectedNote != null) return selectedNote;
+                if (selectedNote != null)
+                {
+                    MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
+                    return selectedNote;
+                }
             }
             return null;
         }
 
-        public Slide SelectedSlide(PointF locationVirtual)
+        public Slide SelectedSlide(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
         {
-            return slideNotes.FindLast(x => x.Contains(locationVirtual));
+            return slideNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
 #if DEBUG
@@ -106,6 +127,7 @@ namespace NE4S.Notes
         //TODO: 範囲外のノーツは描画しないようにして軽くする
 		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
+            foreach (Hold hold in holdNotes) hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
             foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
             //お試し
             //範囲外のノーツは描画しないようにするというこころ

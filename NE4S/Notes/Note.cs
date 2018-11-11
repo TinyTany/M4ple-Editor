@@ -76,7 +76,8 @@ namespace NE4S.Notes
 		public void ReSize(int size)
 		{
 			this.size = size;
-			return;
+            hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+            return;
 		}
 
 		public void Relocate(Position pos, PointF location)
@@ -100,7 +101,15 @@ namespace NE4S.Notes
 			return;
 		}
 
-		public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        //ノーツ左端からサイズ変更するときに使うために作成したけどなんかやだ
+        public void RelocateX(Position newPos, PointF newLocation)
+        {
+            pos = new Position(pos.Bar, pos.BeatCount, pos.BaseBeat, newPos.Lane);
+            hitRect.X = newLocation.X;
+            return;
+        }
+
+        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
 			RectangleF drawRect = new RectangleF(
 				hitRect.X - originPosX,
