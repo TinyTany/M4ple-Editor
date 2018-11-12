@@ -37,7 +37,7 @@ namespace NE4S
         public static void SetNoteArea(Note note, PointF location, ref int noteArea)
         {
             //それぞれの領域の割合を設定
-            float leftCenter = .25f, centerRight = .75f;
+            float leftCenter = .33f, centerRight = .66f;
             float locationRatio = (location.X - note.Location.X) / note.Width;
             if (locationRatio <= leftCenter) noteArea = Define.NoteArea.LEFT;
             else if (locationRatio <= centerRight) noteArea = Define.NoteArea.CENTER;

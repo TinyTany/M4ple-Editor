@@ -282,10 +282,13 @@ namespace NE4S.Scores
                         {
                             case NoteArea.LEFT:
                                 {
-                                    if (Status.SelectedNote.Size == 1) break;//これだめ
                                     Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
                                     int newSize = (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
-                                    if (newSize <= 0) newSize = 1;
+                                    if (newSize <= 0)
+                                    {
+                                        newSize = 1;
+                                        break;
+                                    }
                                     else if (newSize > 16) newSize = 16;
                                     Status.SelectedNote.ReSize(newSize);
                                     Position newPos = selectedLane.GetPos(virtualGridPoint);
