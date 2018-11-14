@@ -78,41 +78,55 @@ namespace NE4S.Notes
             return hitRect.Contains(location);
         }
 
-		public void ReSize(int size)
+        #region ノーツの位置やサイズを変えるメソッドたち
+        public virtual void ReSize(int size)
 		{
 			this.size = size;
             hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
             return;
 		}
 
-		public void Relocate(Position pos, PointF location)
+        /// <summary>
+        /// ノーツの種類にかかわらずノーツのサイズを変更することのみ行います
+        /// </summary>
+        /// <param name="size"></param>
+        public void ReSizeOnly(int size)
+        {
+            this.size = size;
+            hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+            return;
+        }
+
+        public virtual void Relocate(Position pos, PointF location)
 		{
 			Relocate(pos);
 			Relocate(location);
 			return;
 		}
 
-		public void Relocate(Position pos)
+		public virtual void Relocate(Position pos)
 		{
 			this.pos = pos;
 			return;
 		}
 
-		public void Relocate(PointF location)
+		public virtual void Relocate(PointF location)
 		{
 			hitRect.Location = location;
+            //CHECK: もしかしたらバグのもとになるのでは？
             //描画中にいい感じにハマるように調節する
             MyUtil.AdjustHitRect(ref hitRect);
 			return;
 		}
 
         //ノーツ左端からサイズ変更するときに使うために作成したけどなんかやだ
-        public void RelocateX(Position newPos, PointF newLocation)
+        public virtual void RelocateX(Position newPos, PointF newLocation)
         {
             pos = new Position(pos.Bar, pos.BeatCount, pos.BaseBeat, newPos.Lane);
             hitRect.X = newLocation.X;
             return;
         }
+        #endregion
 
         public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
