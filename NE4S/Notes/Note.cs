@@ -19,6 +19,11 @@ namespace NE4S.Notes
 		protected RectangleF hitRect;
         //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
         public int LaneIndex { get; set; } = -1;
+        /// <summary>
+        /// ノーツを渡すイベントハンドラです（知らんけど）
+        /// </summary>
+        /// <param name="note"></param>
+        public delegate void NoteEventHandler(Note note);
 
 		public Note()
 		{
