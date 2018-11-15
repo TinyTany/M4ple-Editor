@@ -53,14 +53,18 @@ namespace NE4S.Notes
         {
             if(note is HoldBegin)
             {
-                foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x is HoldEnd))
+                foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
                 {
                     
                 }
             }
             else if(note is HoldEnd)
             {
-
+                Note holdBegin = this.OrderBy(x => x.Pos).First();
+                int diffLane = holdBegin.Pos.Lane - note.Pos.Lane;
+                note.RelocateOnly(
+                        new Position(note.Pos.Bar, note.Pos.BeatCount, note.Pos.BaseBeat, holdBegin.Pos.Lane),
+                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y));
             }
             else
             {
@@ -74,19 +78,8 @@ namespace NE4S.Notes
         {
             foreach(Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
             {
-                if(Status.SelectedNoteArea == Define.NoteArea.LEFT)
-                {
-
-                }
-                else if(Status.SelectedNoteArea == Define.NoteArea.RIGHT)
-                {
-                    //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
-                    itrNote.ReSizeOnly(note.Size);
-                }
-                else
-                {
-                    System.Diagnostics.Debug.Assert(false, "なんか変");
-                }
+                //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
+                itrNote.ReSizeOnly(note.Size);
             }
             return;
         }
