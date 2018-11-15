@@ -80,9 +80,8 @@ namespace NE4S.Notes
 
         #region ノーツの位置やサイズを変えるメソッドたち
         public virtual void ReSize(int size)
-		{
-			this.size = size;
-            hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+        {
+            ReSizeOnly(size);
             return;
 		}
 
@@ -92,38 +91,51 @@ namespace NE4S.Notes
         /// <param name="size"></param>
         public void ReSizeOnly(int size)
         {
+            int diffSize = size - this.size;
             this.size = size;
-            hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+            noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+            if (Status.SelectedNoteArea == NoteArea.LEFT)
+            {
+                noteRect.X -= diffSize * ScoreInfo.MinLaneWidth;
+                pos = new Position(pos.Bar, pos.BeatCount, pos.BaseBeat, pos.Lane - diffSize);
+            }
             return;
         }
 
         public virtual void Relocate(Position pos, PointF location)
 		{
-			Relocate(pos);
-			Relocate(location);
+            RelocateOnly(pos, location);
 			return;
 		}
 
-		public virtual void Relocate(Position pos)
-		{
-			this.pos = pos;
-			return;
-		}
-
-		public virtual void Relocate(PointF location)
-		{
-			hitRect.Location = location;
-            //CHECK: もしかしたらバグのもとになるのでは？
-            //描画中にいい感じにハマるように調節する
-            MyUtil.AdjustHitRect(ref hitRect);
-			return;
-		}
-
-        //ノーツ左端からサイズ変更するときに使うために作成したけどなんかやだ
-        public virtual void RelocateX(Position newPos, PointF newLocation)
+        public void RelocateOnly(Position pos, PointF location)
         {
-            pos = new Position(pos.Bar, pos.BeatCount, pos.BaseBeat, newPos.Lane);
-            hitRect.X = newLocation.X;
+            RelocateOnly(pos);
+            RelocateOnly(location);
+            return;
+        }
+
+        public virtual void Relocate(Position pos)
+		{
+            RelocateOnly(pos);
+			return;
+		}
+
+        public void RelocateOnly(Position pos)
+        {
+            this.pos = pos;
+            return;
+        }
+
+        public virtual void Relocate(PointF location)
+		{
+            RelocateOnly(location);
+			return;
+		}
+
+        public void RelocateOnly(PointF location)
+        {
+            noteRect.Location = location;
             return;
         }
         #endregion
