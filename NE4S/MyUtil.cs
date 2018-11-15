@@ -19,14 +19,6 @@ namespace NE4S
 			return Gcd(n, m % n);
 		}
 
-        public static void AdjustHitRect(ref RectangleF hitRect)
-        {
-            //描画中にいい感じにハマるように調節する
-            //--hitRect.Width; ++hitRect.X;//アンチエイリアスしたらちょっとずれて見えたからこの処理スキップしてみる
-            hitRect.Y -= 2;
-            return;
-        }
-
         /// <summary>
         /// ノーツが選択されたとき、どのへんの領域をクリックしたのか判定します
         /// Editモードでノーツをクリックした位置に応じてサイズ変更か位置変更かを決めるために使う

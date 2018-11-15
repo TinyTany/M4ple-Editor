@@ -26,8 +26,8 @@ namespace NE4S.Notes
             if (!Visible || !Enable) return;
             note.Size = new SizeF(ScoreInfo.MinLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
 			note.Location = Location;
-            //描画中にいい感じにハマるように調節する
-            MyUtil.AdjustHitRect(ref note);
+            //HACK: 今の設定だとノーツ矩形位置調節用の値が(0, -2)なのでこのようにしてるけど嫌だよねこういうの
+            note.Y += -2;
             using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 255, 255, 255)))
             {
                 e?.Graphics.FillRectangle(myBrush, note);
