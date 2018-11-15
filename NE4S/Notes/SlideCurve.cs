@@ -24,10 +24,10 @@ namespace NE4S.Notes
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
             RectangleF drawRect = new RectangleF(
-                hitRect.X - originPosX,
-                hitRect.Y - originPosY,
-                hitRect.Width,
-                hitRect.Height);
+                noteRect.X - originPosX + adjustNoteRect.X,
+                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.Width,
+                noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.White, Color.Gray))
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);

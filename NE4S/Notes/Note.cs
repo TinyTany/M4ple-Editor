@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Scores;
+using NE4S.Define;
 
 namespace NE4S.Notes
 {
@@ -16,7 +17,8 @@ namespace NE4S.Notes
     {
         private int size;
         private Position pos;
-		protected RectangleF hitRect;
+		protected RectangleF noteRect;
+        protected PointF adjustNoteRect = new PointF(0, -2);
         //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
         public int LaneIndex { get; set; } = -1;
         /// <summary>
@@ -29,17 +31,15 @@ namespace NE4S.Notes
 		{
 			size = 0;
 			pos = null;
-			hitRect = new RectangleF();
+			noteRect = new RectangleF();
 		}
 
         public Note(int size, Position pos, PointF location)
         {
 			this.size = size;
 			this.pos = pos;
-			hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
-			hitRect.Location = location;
-            //描画中にいい感じにハマるように調節する
-            MyUtil.AdjustHitRect(ref hitRect);
+			noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+			noteRect.Location = location;
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace NE4S.Notes
 
         public PointF Location
         {
-            get { return hitRect.Location; }
+            get { return noteRect.Location; }
         }
 
         /// <summary>
@@ -70,11 +70,12 @@ namespace NE4S.Notes
         /// </summary>
         public float Width
         {
-            get { return hitRect.Width; }
+            get { return noteRect.Width; }
         }
 
         public bool Contains(PointF location)
         {
+            RectangleF hitRect = new RectangleF(noteRect.X + adjustNoteRect.X, noteRect.Y + adjustNoteRect.Y, noteRect.Width, noteRect.Height);
             return hitRect.Contains(location);
         }
 
@@ -143,10 +144,10 @@ namespace NE4S.Notes
         public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
 			RectangleF drawRect = new RectangleF(
-				hitRect.X - originPosX,
-				hitRect.Y - originPosY,
-				hitRect.Width,
-				hitRect.Height);
+				noteRect.X - originPosX + adjustNoteRect.X,
+				noteRect.Y - originPosY + adjustNoteRect.Y,
+				noteRect.Width,
+				noteRect.Height);
 			using (SolidBrush myBrush = new SolidBrush(Color.White))
 			{
 				e.Graphics.FillRectangle(myBrush, drawRect);

@@ -33,7 +33,7 @@ namespace NE4S.Notes
         public override void Relocate(Position pos, PointF location)
         {
             //基底のものを使うかこのクラスのものを使うか検討する
-            Relocate(pos);
+            base.Relocate(pos);
             Relocate(location);
             CheckNotePosition?.Invoke(this);
             return;
@@ -49,14 +49,6 @@ namespace NE4S.Notes
         public override void Relocate(PointF location)
         {
             base.Relocate(location);
-            CheckNotePosition?.Invoke(this);
-            return;
-        }
-
-        //ノーツ左端からサイズ変更するときに使うために作成したけどなんかやだ
-        public override void RelocateX(Position newPos, PointF newLocation)
-        {
-            base.RelocateX(newPos, newLocation);
             CheckNotePosition?.Invoke(this);
             return;
         }
