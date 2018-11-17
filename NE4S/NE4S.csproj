@@ -80,7 +80,6 @@
     <Compile Include="Notes\AirDownR.cs" />
     <Compile Include="Notes\AirHold.cs" />
     <Compile Include="Notes\AirHoldBegin.cs" />
-    <Compile Include="Notes\AirHoldEnd.cs" />
     <Compile Include="Notes\AirUpC.cs" />
     <Compile Include="Notes\AirUpL.cs" />
     <Compile Include="Notes\AirUpR.cs" />
