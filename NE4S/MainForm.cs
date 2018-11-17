@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NE4S.Component;
 
 namespace NE4S
 {
@@ -55,7 +56,13 @@ namespace NE4S
 			tsbInvisibleSlideTap.Click += tbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += tscbBeat_SelectedIndexChanged;
 			tscbGrid.SelectedIndexChanged += tscbGrid_SelectedIndexChanged;
-		}
+            //
+            NoteButtonManager noteButtonManager = new NoteButtonManager();
+            foreach (NoteButton noteButton in noteButtonManager)
+            {
+                flpNotePanel.Controls.Add(noteButton);
+            }
+        }
 
 		private void Score_MouseUp(object sender, MouseEventArgs e)
         {
