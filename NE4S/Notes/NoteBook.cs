@@ -130,14 +130,23 @@ namespace NE4S.Notes
 #if DEBUG
         //今はちょっとだけ実装
         //TODO: 範囲外のノーツは描画しないようにして軽くする
-		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
-            foreach (Hold hold in holdNotes) hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            foreach (Hold hold in holdNotes)
+            {
+                hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            }
+            foreach (Slide slide in slideNotes)
+            {
+                slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            }
             //お試し
             //範囲外のノーツは描画しないようにするというこころ
-			foreach (Note note in shortNotes.Where(
-                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031)) note.Draw(e, originPosX, originPosY);
+            foreach (Note note in shortNotes.Where(
+                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031))
+            {
+                note.Draw(e, originPosX, originPosY);
+            }
             foreach (AirHold airHold in airHoldNotes)
             {
                 airHold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);

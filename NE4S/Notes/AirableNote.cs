@@ -9,8 +9,8 @@ namespace NE4S.Notes
 {
     public class AirableNote : Note
     {
-        private Air air = null;
-        private AirHold airHold = null;
+        protected Air air = null;
+        protected AirHold airHold = null;
 
         public AirableNote() { }
 

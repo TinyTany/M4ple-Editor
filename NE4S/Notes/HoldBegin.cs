@@ -34,7 +34,7 @@ namespace NE4S.Notes
         {
             //基底のものを使うかこのクラスのものを使うか検討する
             base.Relocate(pos);
-            Relocate(location);
+            base.Relocate(location);
             CheckNotePosition?.Invoke(this);
             return;
         }

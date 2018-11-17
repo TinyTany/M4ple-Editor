@@ -383,7 +383,6 @@ namespace NE4S.Scores
                     break;
                 case NoteType.SLIDE:
                     //testように直書き
-                    PointF locationPhysical = locationVirtual.AddX(-currentPositionX);
                     //Slideとの当たり判定は自由仮想座標を使う
                     Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
