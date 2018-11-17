@@ -122,6 +122,11 @@ namespace NE4S.Notes
             return slideNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
+        public AirHold SelectedAirHold(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
+        {
+            return airHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
+        }
+
 #if DEBUG
         //今はちょっとだけ実装
         //TODO: 範囲外のノーツは描画しないようにして軽くする
@@ -133,6 +138,10 @@ namespace NE4S.Notes
             //範囲外のノーツは描画しないようにするというこころ
 			foreach (Note note in shortNotes.Where(
                 x => x.Location.X > originPosX && x.Location.X < originPosX + 1031)) note.Draw(e, originPosX, originPosY);
+            foreach (AirHold airHold in airHoldNotes)
+            {
+                airHold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            }
 		}
 #endif
 	}

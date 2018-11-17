@@ -78,7 +78,12 @@ namespace NE4S
             return noteBook.SelectedSlide(location, scoreBook, laneBook);
         }
 
-		public NoteBook NoteBook
+        public AirHold SelectedAirHold(PointF location)
+        {
+            return noteBook.SelectedAirHold(location, scoreBook, laneBook);
+        }
+
+        public NoteBook NoteBook
 		{
 			get { return noteBook; }
 		}

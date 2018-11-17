@@ -422,6 +422,17 @@ namespace NE4S.Scores
                 case NoteType.SLIDECURVE:
                     break;
                 case NoteType.AIRHOLD:
+                    AirHold selectedAirHold = model.SelectedAirHold(location.Add(currentPositionX));
+                    if(selectedAirHold != null)
+                    {
+                        AirAction airAction = new AirAction(selectedAirHold.Size, position, locationVirtual, lane.Index);
+                        selectedAirHold.Add(airAction);
+                        Status.SelectedNote = airAction;
+                    }
+                    else
+                    {
+                        model.AddLongNote(new AirHold(Status.NoteSize, position, locationVirtual, lane.Index));
+                    }
                     break;
                 case NoteType.AIRUPC:
                     newNote = new AirUpC(Status.NoteSize, position, locationVirtual);
