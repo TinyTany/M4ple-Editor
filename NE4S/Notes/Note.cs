@@ -20,7 +20,7 @@ namespace NE4S.Notes
 		protected RectangleF noteRect;
         protected PointF adjustNoteRect = new PointF(0, -2);
         //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
-        public int LaneIndex { get; set; } = -1;
+        public virtual int LaneIndex { get; set; } = -1;
         /// <summary>
         /// ノーツを渡すイベントハンドラです（知らんけど）
         /// </summary>
@@ -73,7 +73,7 @@ namespace NE4S.Notes
             get { return noteRect.Width; }
         }
 
-        public bool Contains(PointF location)
+        public virtual bool Contains(PointF location)
         {
             RectangleF hitRect = new RectangleF(noteRect.X + adjustNoteRect.X, noteRect.Y + adjustNoteRect.Y, noteRect.Width, noteRect.Height);
             return hitRect.Contains(location);
