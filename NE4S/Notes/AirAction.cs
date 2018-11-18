@@ -11,7 +11,7 @@ namespace NE4S.Notes
 {
     public class AirAction : Note
     {
-        public event NoteEventHandler CheckNotePosition, CheckNoteSize;
+        public event NoteEventHandler CheckNotePosition;
 
         public AirAction()
         {
@@ -25,8 +25,7 @@ namespace NE4S.Notes
 
         public override void ReSize(int size)
         {
-            base.ReSize(size);
-            CheckNoteSize?.Invoke(this);
+            //AirActionではサイズ変更はしない
             return;
         }
 
