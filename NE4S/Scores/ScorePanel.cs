@@ -213,6 +213,11 @@ namespace NE4S.Scores
                         }
                         break;
 					case Mode.EDIT:
+                        //Airは単体で動かせないようにする
+                        if (selectedNote is Air)
+                        {
+                            selectedNote = null;
+                        }
                         if (selectedNote != null)
                         {
                             Status.SelectedNote = selectedNote;
@@ -422,18 +427,25 @@ namespace NE4S.Scores
                     break;
                 case NoteType.AIRHOLD:
                     AirHold selectedAirHold = model.SelectedAirHold(location.Add(currentPositionX));
+                    var selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
                     if(selectedAirHold != null)
                     {
                         AirAction airAction = new AirAction(selectedAirHold.Size, position, locationVirtual, lane.Index);
                         selectedAirHold.Add(airAction);
                         Status.SelectedNote = airAction;
                     }
-                    else
+                    else if(selectedNote != null)
                     {
-                        model.AddLongNote(new AirHold(Status.NoteSize, position, locationVirtual, lane.Index));
+                        AirHold airHold = new AirHold(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        model.AddLongNote(airHold);
+                        selectedNote.AttachAirHold(airHold);
+                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
                     }
                     break;
                 case NoteType.AIRUPC:
+                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
                     newNote = new AirUpC(Status.NoteSize, position, locationVirtual);
                     break;
                 case NoteType.AIRUPL:
