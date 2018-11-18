@@ -23,6 +23,11 @@ namespace NE4S.Notes
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
+            if (air != null || airHold != null)
+            {
+                base.Draw(e, originPosX, originPosY);
+                return;
+            }
             RectangleF drawRect = new RectangleF(
                 noteRect.X - originPosX + adjustNoteRect.X,
                 noteRect.Y - originPosY + adjustNoteRect.Y,
