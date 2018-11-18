@@ -17,6 +17,7 @@ namespace NE4S.Component
         private int noteType;
         private static readonly Color selected = Color.FromArgb(255, 56, 135, 245);
         private static readonly Color unSelected = SystemColors.Control;
+        public static readonly int margin = 5;
 
         public NoteButton(int noteType, NoteButtonEventHandler handler)
         {
@@ -25,6 +26,10 @@ namespace NE4S.Component
             previewBox.Paint += PreviewBox_Paint;
             UpdateSelectedNoteButton += handler;
             this.noteType = noteType;
+            //
+            Size = new Size(150, 100);
+            previewBox.Size = new Size(Width - margin * 2, Height - margin * 2);
+            previewBox.Location = new Point(margin - 1, margin - 1);
         }
 
         private void PreviewBox_Click(object sender, EventArgs e)
@@ -48,7 +53,10 @@ namespace NE4S.Component
 
         private void PreviewBox_Paint(object sender, PaintEventArgs e)
         {
-            
+            using(SolidBrush brush = new SolidBrush(Color.Black))
+            {
+                e.Graphics.FillRectangle(brush, previewBox.ClientRectangle);
+            }
             return;
         }
     }

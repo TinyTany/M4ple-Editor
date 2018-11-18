@@ -36,7 +36,7 @@
             // 
             this.previewBox.Location = new System.Drawing.Point(3, 3);
             this.previewBox.Name = "previewBox";
-            this.previewBox.Size = new System.Drawing.Size(142, 92);
+            this.previewBox.Size = new System.Drawing.Size(102, 62);
             this.previewBox.TabIndex = 0;
             this.previewBox.TabStop = false;
             // 
@@ -48,7 +48,7 @@
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.previewBox);
             this.Name = "NoteButton";
-            this.Size = new System.Drawing.Size(148, 98);
+            this.Size = new System.Drawing.Size(150, 100);
             ((System.ComponentModel.ISupportInitialize)(this.previewBox)).EndInit();
             this.ResumeLayout(false);
 
