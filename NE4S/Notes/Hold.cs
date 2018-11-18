@@ -78,8 +78,16 @@ namespace NE4S.Notes
         {
             foreach(Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
             {
-                //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
-                itrNote.ReSizeOnly(note.Size);
+                AirableNote airableNote = itrNote as AirableNote;
+                if(airableNote != null)
+                {
+                    airableNote.ReSize(note.Size);
+                }
+                else
+                {
+                    //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
+                    itrNote.ReSizeOnly(note.Size);
+                }
             }
             return;
         }
