@@ -147,6 +147,10 @@ namespace NE4S.Notes
             {
                 note.Draw(e, originPosX, originPosY);
             }
+            foreach (Air air in airNotes)
+            {
+                air.Draw(e, originPosX, originPosY);
+            }
             foreach (AirHold airHold in airHoldNotes)
             {
                 airHold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
