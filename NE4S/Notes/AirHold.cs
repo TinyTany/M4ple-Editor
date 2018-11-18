@@ -30,16 +30,22 @@ namespace NE4S.Notes
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             AirAction airAction = new AirAction(size, pos, location, laneIndex);
             airAction.CheckNotePosition += CheckNotePosition;
-            airAction.CheckNoteSize += CheckNoteSize;
             Add(airAction);
             Status.SelectedNote = airAction;
+        }
+
+        public AirHoldBegin AirHoldBegin
+        {
+            get
+            {
+                return this.First() as AirHoldBegin;
+            }
         }
 
         public void Add(AirAction airAction)
         {
             base.Add(airAction);
             airAction.CheckNotePosition += CheckNotePosition;
-            airAction.CheckNoteSize += CheckNoteSize;
             CheckNotePosition(airAction);
             CheckNoteSize(airAction);
             return;
