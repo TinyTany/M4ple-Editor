@@ -117,6 +117,52 @@ namespace NE4S.Notes
             return null;
         }
 
+        /// <summary>
+        /// クリックされてるノーツがあったら投げる
+        /// なかったらnullを投げる
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public Note SelectedNote(PointF location)
+        {
+            Note selectedNote;
+            foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
+            {
+                selectedNote = airHold.Find(x => x.Contains(location));
+                if (selectedNote != null)
+                {
+                    return selectedNote;
+                }
+            }
+            selectedNote = airNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null)
+            {
+                return selectedNote;
+            }
+            selectedNote = shortNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null)
+            {
+                return selectedNote;
+            }
+            foreach (Slide slide in slideNotes.Reverse<Slide>())
+            {
+                selectedNote = slide.Find(x => x.Contains(location));
+                if (selectedNote != null)
+                {
+                    return selectedNote;
+                }
+            }
+            foreach (Hold hold in holdNotes.Reverse<Hold>())
+            {
+                selectedNote = hold.Find(x => x.Contains(location));
+                if (selectedNote != null)
+                {
+                    return selectedNote;
+                }
+            }
+            return null;
+        }
+
         public Slide SelectedSlide(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
         {
             return slideNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
