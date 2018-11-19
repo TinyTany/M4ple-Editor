@@ -13,6 +13,7 @@ namespace NE4S.Define
 
     public struct NoteType
     {
+        //NOTE: これの値の順番を利用してAir系ノーツを判別してるコードがNoteButtonクラスにあるのでうかつに数字を変えないほうがいい
         public const int
             NONE = -1,
             TAP = 0,
