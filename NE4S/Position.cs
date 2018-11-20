@@ -76,7 +76,17 @@ namespace NE4S
             return position;
         }
 
-		private void RefreshPos()
+        public override bool Equals(object obj)
+        {
+            return CompareTo((Position)obj) == 0;
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        private void RefreshPos()
 		{
 			int Gcd = MyUtil.Gcd(beatCount, baseBeat);
 			beatCount /= Gcd;
@@ -84,6 +94,11 @@ namespace NE4S
             size = beatCount / (float)baseBeat;
 		}
 
+        /// <summary>
+        /// otherと比べて自分が小さければ-1、同じなら0、大きければ1を返す
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public int CompareTo(Position other)
         {
             if(bar < other.Bar) { return -1; }
@@ -92,5 +107,7 @@ namespace NE4S
             else if(beatCount / (float)baseBeat > other.BeatCount / (float)other.BaseBeat) { return 1; }
             else { return 0; }
         }
+
+        
     }
 }
