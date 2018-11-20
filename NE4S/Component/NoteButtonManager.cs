@@ -12,17 +12,17 @@ namespace NE4S.Component
         public NoteButtonManager()
         {
             //サイズ変更可能，向きはない
-            Add(new NoteButton(NoteType.TAP, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.EXTAP, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.AWEXTAP, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.FLICK, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.HELL, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.HOLD, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.SLIDE, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.SLIDECURVE, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.TAP, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.EXTAP, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.AWEXTAP, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.FLICK, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.HELL, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.HOLD, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.SLIDE, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.SLIDECURVE, UpdateSelectedButton));
             //向き変更可能，サイズは親ノーツに依存なので必要ない
-            Add(new NoteButton(NoteType.AIRUPC, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.AIRDOWNC, UpdateSelectedButton));
+            Add(new AirNoteButton(NoteType.AIRUPC, UpdateSelectedButton));
+            Add(new AirNoteButton(NoteType.AIRDOWNC, UpdateSelectedButton));
             //サイズも向きもない
             Add(new NoteButton(NoteType.AIRHOLD, UpdateSelectedButton));
             //数値の変更だけ
