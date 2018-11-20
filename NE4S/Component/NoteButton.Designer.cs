@@ -56,6 +56,6 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox previewBox;
+        protected System.Windows.Forms.PictureBox previewBox;
     }
 }

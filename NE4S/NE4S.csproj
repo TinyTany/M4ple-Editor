@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\AirNoteButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Component\BarAddCustomForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +72,9 @@
       <DependentUpon>NoteButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Component\NoteButtonManager.cs" />
+    <Compile Include="Component\SizableNoteButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Define.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
