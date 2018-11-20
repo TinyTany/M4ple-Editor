@@ -12,6 +12,7 @@ namespace NE4S.Notes
     public class AirAction : Note
     {
         public event NoteEventHandler CheckNotePosition;
+        public event PositionCheckHandler IsPositionAvailable;
 
         public AirAction()
         {
@@ -31,6 +32,7 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos, PointF location)
         {
+            if (!IsPositionAvailable(pos)) return;
             base.Relocate(pos);
             base.Relocate(location);
             CheckNotePosition?.Invoke(this);
@@ -39,6 +41,7 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos)
         {
+            if (!IsPositionAvailable(pos)) return;
             base.Relocate(pos);
             CheckNotePosition?.Invoke(this);
             return;

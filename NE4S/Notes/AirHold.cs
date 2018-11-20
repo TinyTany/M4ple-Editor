@@ -30,6 +30,7 @@ namespace NE4S.Notes
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             AirAction airAction = new AirAction(size, pos, location, laneIndex);
             airAction.CheckNotePosition += CheckNotePosition;
+            airAction.IsPositionAvailable += IsPositionAvailable;
             Add(airAction);
             Status.SelectedNote = airAction;
         }
@@ -46,6 +47,7 @@ namespace NE4S.Notes
         {
             base.Add(airAction);
             airAction.CheckNotePosition += CheckNotePosition;
+            airAction.IsPositionAvailable += IsPositionAvailable;
             CheckNotePosition(airAction);
             CheckNoteSize(airAction);
             return;
@@ -65,6 +67,16 @@ namespace NE4S.Notes
                     return 0;
                 }
             }
+        }
+
+        private bool IsPositionAvailable(Position position)
+        {
+            if (position.CompareTo(this.OrderBy(x => x.Pos).First().Pos) < 0) return false;
+            foreach (Note note in this)
+            {
+                if (position.Equals(note.Pos)) return false;
+            }
+            return true;
         }
 
         /// <summary>
