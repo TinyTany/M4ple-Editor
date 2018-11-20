@@ -11,6 +11,9 @@ using NE4S.Define;
 
 namespace NE4S.Component
 {
+    /// <summary>
+    /// TODO: 汚くなってきたしクラス分けたりしたほうがいいんじゃない？
+    /// </summary>
     public partial class NoteButton : UserControl
     {
         public delegate void NoteButtonEventHandler(NoteButton noteButton);
@@ -21,11 +24,20 @@ namespace NE4S.Component
         public static readonly int margin = 5;
         private bool isMouseEnter = false;
         private bool isSelected = false;
-        public static readonly int virtualButtonWidth = 20;
+        public static readonly int virtualButtonWeight = 20;
         private enum ButtonArea : int
         {
             None = 0, Top = 1, Bottom = 2, Left = 3, Right = 4, Center = 5
         }
+        private static class VirtualButtonRect
+        {
+            public static RectangleF Top { get; set; }
+            public static RectangleF Bottom { get; set; }
+            public static RectangleF Center { get; set; }
+            public static RectangleF Left { get; set; }
+            public static RectangleF Right { get; set; }
+        }
+        private ButtonArea buttonArea;
         
 
         public NoteButton(int noteType, NoteButtonEventHandler handler)
@@ -36,12 +48,19 @@ namespace NE4S.Component
             UpdateSelectedNoteButton += handler;
             previewBox.MouseEnter += PreviewBox_MouseEnter;
             previewBox.MouseLeave += PreviewBox_MouseLeave;
+            previewBox.MouseMove += PreviewBox_MouseMove;
             this.noteType = noteType;
             noteSize = Status.NoteSize;
+            buttonArea = ButtonArea.None;
             //
             Size = new Size(150, 100);
             previewBox.Size = new Size(Width - margin * 2, Height - margin * 2);
             previewBox.Location = new Point(margin - 1, margin - 1);
+            VirtualButtonRect.Top = new RectangleF(0, 0, previewBox.Width, virtualButtonWeight);
+            VirtualButtonRect.Bottom = new RectangleF(0, previewBox.Height - virtualButtonWeight, previewBox.Width, virtualButtonWeight);
+            VirtualButtonRect.Center = new RectangleF(virtualButtonWeight, virtualButtonWeight, previewBox.Width - virtualButtonWeight * 2, previewBox.Height - virtualButtonWeight * 2);
+            VirtualButtonRect.Left = new RectangleF(0, virtualButtonWeight, virtualButtonWeight, previewBox.Height - virtualButtonWeight * 2);
+            VirtualButtonRect.Right = new RectangleF(previewBox.Width - virtualButtonWeight, virtualButtonWeight, virtualButtonWeight, previewBox.Height - virtualButtonWeight * 2);
         }
 
         private void PreviewBox_MouseEnter(object sender, EventArgs e)
@@ -67,7 +86,7 @@ namespace NE4S.Component
             }
             else
             {
-                ButtonArea buttonArea = GetClickedArea(e.Location);
+                RefreshButtonArea(e.Location);
                 #region クリックされたエリアに応じてノーツのサイズや向きを変更する処理
                 switch (buttonArea)
                 {
@@ -115,30 +134,40 @@ namespace NE4S.Component
             return;
         }
 
-        private ButtonArea GetClickedArea(Point location)
+        private void PreviewBox_MouseMove(object sender, MouseEventArgs e)
         {
-            ButtonArea buttonArea = ButtonArea.None;
-            if (location.Y <= virtualButtonWidth)
+            RefreshButtonArea(e.Location);
+            previewBox.Refresh();
+            return;
+        }
+
+        private void RefreshButtonArea(Point location)
+        {
+            if (VirtualButtonRect.Top.Contains(location))
             {
                 buttonArea = ButtonArea.Top;
             }
-            else if(location.Y >= previewBox.Height - virtualButtonWidth)
+            else if(VirtualButtonRect.Bottom.Contains(location))
             {
                 buttonArea = ButtonArea.Bottom;
             }
-            else if(location.X <= virtualButtonWidth)
+            else if(VirtualButtonRect.Center.Contains(location))
+            {
+                buttonArea = ButtonArea.Center;
+            }
+            else if(VirtualButtonRect.Left.Contains(location))
             {
                 buttonArea = ButtonArea.Left;
             }
-            else if(location.X >= previewBox.Width - virtualButtonWidth)
+            else if(VirtualButtonRect.Right.Contains(location))
             {
                 buttonArea = ButtonArea.Right;
             }
             else
             {
-                buttonArea = ButtonArea.Center;
+                buttonArea = ButtonArea.None;
             }
-            return buttonArea;
+            return;
         }
 
         public void SetSelected()
@@ -168,19 +197,52 @@ namespace NE4S.Component
             //
             if (isMouseEnter && isSelected)
             {
-                using (Pen pen = new Pen(Color.FromArgb(150, 255, 255, 255)))
+                Color guideColor = Color.FromArgb(150, 255, 255, 255);
+                using (Pen pen = new Pen(guideColor))
                 {
-                    e.Graphics.DrawLine(pen, new Point(0, virtualButtonWidth), new Point(previewBox.Width, virtualButtonWidth));
-                    e.Graphics.DrawLine(pen, new Point(0, previewBox.Height - virtualButtonWidth), new Point(previewBox.Width, previewBox.Height - virtualButtonWidth));
+                    if(noteType != NoteType.AIRHOLD)
+                    {
+                        e.Graphics.DrawLine(pen, new Point(0, virtualButtonWeight), new Point(previewBox.Width, virtualButtonWeight));
+                        e.Graphics.DrawLine(pen, new Point(0, previewBox.Height - virtualButtonWeight), new Point(previewBox.Width, previewBox.Height - virtualButtonWeight));
+                    }
                     //HACK: Defineの順番を信じてこのコードは動いているのでそこのところ注意
                     if(noteType >= NoteType.AIRUPC && noteType <= NoteType.AIRDOWNR)
                     {
-                        e.Graphics.DrawLine(pen, new Point(virtualButtonWidth, virtualButtonWidth), new Point(virtualButtonWidth, previewBox.Height - virtualButtonWidth));
+                        e.Graphics.DrawLine(pen, new Point(virtualButtonWeight, virtualButtonWeight), new Point(virtualButtonWeight, previewBox.Height - virtualButtonWeight));
                         e.Graphics.DrawLine(
                             pen,
-                            new Point(previewBox.Width - virtualButtonWidth, virtualButtonWidth), 
-                            new Point(previewBox.Width - virtualButtonWidth, previewBox.Height - virtualButtonWidth)
+                            new Point(previewBox.Width - virtualButtonWeight, virtualButtonWeight), 
+                            new Point(previewBox.Width - virtualButtonWeight, previewBox.Height - virtualButtonWeight)
                             );
+                    }
+                }
+                using (SolidBrush brush = new SolidBrush(guideColor))
+                {
+                    if (noteType >= NoteType.AIRUPC && noteType <= NoteType.AIRDOWNR)
+                    {
+                        if(buttonArea == ButtonArea.Center)
+                        {
+                            e.Graphics.FillRectangle(brush, VirtualButtonRect.Center);
+                        }
+                        else if(buttonArea == ButtonArea.Left)
+                        {
+                            e.Graphics.FillRectangle(brush, VirtualButtonRect.Left);
+                        }
+                        else if(buttonArea == ButtonArea.Right)
+                        {
+                            e.Graphics.FillRectangle(brush, VirtualButtonRect.Right);
+                        }
+                    }
+                    else if(noteType != NoteType.AIRHOLD)
+                    {
+                        if(buttonArea == ButtonArea.Top)
+                        {
+                            e.Graphics.FillRectangle(brush, VirtualButtonRect.Top);
+                        }
+                        else if(buttonArea == ButtonArea.Bottom)
+                        {
+                            e.Graphics.FillRectangle(brush, VirtualButtonRect.Bottom);
+                        }
                     }
                 }
             }
