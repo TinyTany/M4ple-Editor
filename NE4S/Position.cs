@@ -12,68 +12,40 @@ namespace NE4S
     /// </summary>
     public class Position : IComparable<Position>
     {
-		private int bar, baseBeat, beatCount;
-		/// <summary>
-		/// ノーツの左端のレーン番号（0-15）
-		/// </summary>
-		private int lane;
-        //Slideで使う
         /// <summary>
-        /// 0 ≦ size ＜ beatNumer/(float)beatDenom
+        /// 小節番号
+        /// 1スタート
         /// </summary>
-        private float size;
+		public int Bar { get; }
+        public int BaseBeat { get; private set; }
+        public int BeatCount { get; private set; }
+        /// <summary>
+        /// ノーツの左端のレーン番号（0-15）
+        /// </summary>
+        public int Lane { get; private set; }
+        public float Size { get; private set; }
 
-		public Position(int bar, int beatCount, int baseBeat, int lane)
+        public Position(int bar, int beatCount, int baseBeat, int lane)
         {
             //barは1始まり(ScoreMaterialのCalculatePosメソッド参照)
-			this.bar = bar;
-			this.beatCount = beatCount;
-			this.baseBeat = baseBeat;
-			this.lane = lane;
+			Bar = bar;
+			BeatCount = beatCount;
+			BaseBeat = baseBeat;
+			Lane = lane;
 			RefreshPos();
         }
 
 		public void PrintPos()
 		{
-			System.Diagnostics.Debug.WriteLine(bar + "(" + beatCount + "/" + baseBeat + "), " + lane);
+			System.Diagnostics.Debug.WriteLine(Bar + "(" + BeatCount + "/" + BaseBeat + "), " + Lane);
 		}
 
-        /// <summary>
-        /// 小節番号
-        /// 1スタート
-        /// </summary>
-		public int Bar
-		{
-			get { return bar; }
-		}
-
-		public int BaseBeat
-		{
-			get { return baseBeat; }
-		}
-
-		public int BeatCount
-		{
-			get { return beatCount; }
-		}
-
-		public int Lane
-		{
-			get { return lane; }
-		}
-
-        public float Size
+        public Position Next()
         {
-            get { return size; }
-        }
-
-        //TODO: 後で実装する
-        //HACK: したけどこれが自然な動作なのかは怪しいし再検討必須そう
-        public static Position operator ++(Position position)
-        {
-            //乗ってるScoreのBeatNumer超えたらどうする…どうする？
-            position.beatCount++;
-            return position;
+            Position nextPosition = new Position(Bar, BeatCount, BaseBeat, Lane);
+            nextPosition.BeatCount++;
+            nextPosition.RefreshPos();
+            return nextPosition;
         }
 
         public override bool Equals(object obj)
@@ -88,10 +60,10 @@ namespace NE4S
 
         private void RefreshPos()
 		{
-			int Gcd = MyUtil.Gcd(beatCount, baseBeat);
-			beatCount /= Gcd;
-			baseBeat /= Gcd;
-            size = beatCount / (float)baseBeat;
+			int Gcd = MyUtil.Gcd(BeatCount, BaseBeat);
+			BeatCount /= Gcd;
+			BaseBeat /= Gcd;
+            Size = BeatCount / (float)BaseBeat;
 		}
 
         /// <summary>
@@ -101,10 +73,10 @@ namespace NE4S
         /// <returns></returns>
         public int CompareTo(Position other)
         {
-            if(bar < other.Bar) { return -1; }
-            else if(bar > other.Bar) { return 1; }
-            else if(beatCount / (float)baseBeat < other.BeatCount / (float)other.BaseBeat) { return -1; }
-            else if(beatCount / (float)baseBeat > other.BeatCount / (float)other.BaseBeat) { return 1; }
+            if(Bar < other.Bar) { return -1; }
+            else if(Bar > other.Bar) { return 1; }
+            else if(BeatCount / (float)BaseBeat < other.BeatCount / (float)other.BaseBeat) { return -1; }
+            else if(BeatCount / (float)BaseBeat > other.BeatCount / (float)other.BaseBeat) { return 1; }
             else { return 0; }
         }
 
