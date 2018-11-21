@@ -56,6 +56,19 @@ namespace NE4S
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
+            //
+            tsmiIsSlideRelay.Click += (s, e) => 
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsSlideRelayVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsSlideCurve.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsSlideCurveVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
             //ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
             foreach (NoteButton noteButton in noteButtonManager)
@@ -64,7 +77,7 @@ namespace NE4S
             }
         }
 
-		private void Score_MouseUp(object sender, MouseEventArgs e)
+        private void Score_MouseUp(object sender, MouseEventArgs e)
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
