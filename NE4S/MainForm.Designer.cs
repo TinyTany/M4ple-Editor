@@ -30,9 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.ファイルToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.編集ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ヘルプToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tabNoteButton = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.flpNotePanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -64,6 +64,9 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
+            this.tsmiView = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIsSlideRelay = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIsSlideCurve = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -75,32 +78,33 @@
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ファイルToolStripMenuItem,
-            this.編集ToolStripMenuItem,
-            this.ヘルプToolStripMenuItem});
+            this.tsmiFile,
+            this.tsmiEdit,
+            this.tsmiView,
+            this.tsmiHelp});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1264, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // ファイルToolStripMenuItem
+            // tsmiFile
             // 
-            this.ファイルToolStripMenuItem.Name = "ファイルToolStripMenuItem";
-            this.ファイルToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.ファイルToolStripMenuItem.Text = "ファイル";
+            this.tsmiFile.Name = "tsmiFile";
+            this.tsmiFile.Size = new System.Drawing.Size(53, 20);
+            this.tsmiFile.Text = "ファイル";
             // 
-            // 編集ToolStripMenuItem
+            // tsmiEdit
             // 
-            this.編集ToolStripMenuItem.Name = "編集ToolStripMenuItem";
-            this.編集ToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
-            this.編集ToolStripMenuItem.Text = "編集";
+            this.tsmiEdit.Name = "tsmiEdit";
+            this.tsmiEdit.Size = new System.Drawing.Size(43, 20);
+            this.tsmiEdit.Text = "編集";
             // 
-            // ヘルプToolStripMenuItem
+            // tsmiHelp
             // 
-            this.ヘルプToolStripMenuItem.Name = "ヘルプToolStripMenuItem";
-            this.ヘルプToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.ヘルプToolStripMenuItem.Text = "ヘルプ";
+            this.tsmiHelp.Name = "tsmiHelp";
+            this.tsmiHelp.Size = new System.Drawing.Size(48, 20);
+            this.tsmiHelp.Text = "ヘルプ";
             // 
             // tabNoteButton
             // 
@@ -397,6 +401,31 @@
             this.tslRealNotes.Text = "Total notes (real) : 0";
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
             // 
+            // tsmiView
+            // 
+            this.tsmiView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiIsSlideRelay,
+            this.tsmiIsSlideCurve});
+            this.tsmiView.Name = "tsmiView";
+            this.tsmiView.Size = new System.Drawing.Size(43, 20);
+            this.tsmiView.Text = "表示";
+            // 
+            // tsmiIsSlideRelay
+            // 
+            this.tsmiIsSlideRelay.Checked = true;
+            this.tsmiIsSlideRelay.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsSlideRelay.Name = "tsmiIsSlideRelay";
+            this.tsmiIsSlideRelay.Size = new System.Drawing.Size(180, 22);
+            this.tsmiIsSlideRelay.Text = "不可視中継点";
+            // 
+            // tsmiIsSlideCurve
+            // 
+            this.tsmiIsSlideCurve.Checked = true;
+            this.tsmiIsSlideCurve.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsSlideCurve.Name = "tsmiIsSlideCurve";
+            this.tsmiIsSlideCurve.Size = new System.Drawing.Size(180, 22);
+            this.tsmiIsSlideCurve.Text = "曲線ノーツ";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -424,9 +453,9 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem ファイルToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 編集ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ヘルプToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiFile;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEdit;
+        private System.Windows.Forms.ToolStripMenuItem tsmiHelp;
         private System.Windows.Forms.TabControl tabNoteButton;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -458,6 +487,9 @@
 		private System.Windows.Forms.ToolStripLabel tslEstimatedNotes;
 		private System.Windows.Forms.ToolStripLabel tslRealNotes;
         private System.Windows.Forms.FlowLayoutPanel flpNotePanel;
+        private System.Windows.Forms.ToolStripMenuItem tsmiView;
+        private System.Windows.Forms.ToolStripMenuItem tsmiIsSlideRelay;
+        private System.Windows.Forms.ToolStripMenuItem tsmiIsSlideCurve;
     }
 }
 
