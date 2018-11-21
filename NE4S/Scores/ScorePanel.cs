@@ -282,7 +282,6 @@ namespace NE4S.Scores
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
-                        //TODO: まだいろいろと気持ち悪いので再検討する（特にサイズ変更処理）
                         switch (Status.SelectedNoteArea)
                         {
                             case NoteArea.LEFT:

@@ -79,8 +79,7 @@ namespace NE4S.Notes
         {
             foreach(Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
             {
-                AirableNote airableNote = itrNote as AirableNote;
-                if(airableNote != null)
+                if (itrNote is AirableNote airableNote)
                 {
                     airableNote.ReSize(note.Size);
                 }
