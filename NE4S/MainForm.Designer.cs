@@ -35,35 +35,35 @@
             this.ヘルプToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabNoteButton = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.flpNotePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabScore = new System.Windows.Forms.TabControl();
             this.Score1 = new System.Windows.Forms.TabPage();
             this.Score2 = new System.Windows.Forms.TabPage();
             this.Score3 = new System.Windows.Forms.TabPage();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tsbNew = new System.Windows.Forms.ToolStripButton();
+            this.tsbOpen = new System.Windows.Forms.ToolStripButton();
+            this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.tsbExport = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbCut = new System.Windows.Forms.ToolStripButton();
+            this.tsbCopy = new System.Windows.Forms.ToolStripButton();
+            this.tsbPaste = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbAdd = new System.Windows.Forms.ToolStripButton();
+            this.tsbEdit = new System.Windows.Forms.ToolStripButton();
+            this.tsbDelete = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tslBeat = new System.Windows.Forms.ToolStripLabel();
             this.tscbBeat = new System.Windows.Forms.ToolStripComboBox();
             this.tslGrid = new System.Windows.Forms.ToolStripLabel();
             this.tscbGrid = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbInvisibleSlideTap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
-            this.tsbNew = new System.Windows.Forms.ToolStripButton();
-            this.tsbOpen = new System.Windows.Forms.ToolStripButton();
-            this.tsbSave = new System.Windows.Forms.ToolStripButton();
-            this.tsbExport = new System.Windows.Forms.ToolStripButton();
-            this.tsbCut = new System.Windows.Forms.ToolStripButton();
-            this.tsbCopy = new System.Windows.Forms.ToolStripButton();
-            this.tsbPaste = new System.Windows.Forms.ToolStripButton();
-            this.tsbAdd = new System.Windows.Forms.ToolStripButton();
-            this.tsbEdit = new System.Windows.Forms.ToolStripButton();
-            this.tsbDelete = new System.Windows.Forms.ToolStripButton();
-            this.tsbInvisibleSlideTap = new System.Windows.Forms.ToolStripButton();
-            this.flpNotePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -124,6 +124,14 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Normal";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // flpNotePanel
+            // 
+            this.flpNotePanel.AutoScroll = true;
+            this.flpNotePanel.Location = new System.Drawing.Point(3, 3);
+            this.flpNotePanel.Name = "flpNotePanel";
+            this.flpNotePanel.Size = new System.Drawing.Size(173, 805);
+            this.flpNotePanel.TabIndex = 0;
             // 
             // tabPage2
             // 
@@ -208,85 +216,6 @@
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // tslBeat
-            // 
-            this.tslBeat.Name = "tslBeat";
-            this.tslBeat.Size = new System.Drawing.Size(30, 22);
-            this.tslBeat.Text = "Beat";
-            // 
-            // tscbBeat
-            // 
-            this.tscbBeat.DropDownWidth = 121;
-            this.tscbBeat.Items.AddRange(new object[] {
-            "4",
-            "8",
-            "12",
-            "16",
-            "24",
-            "32",
-            "48",
-            "64",
-            "96",
-            "128",
-            "192"});
-            this.tscbBeat.Name = "tscbBeat";
-            this.tscbBeat.Size = new System.Drawing.Size(75, 25);
-            // 
-            // tslGrid
-            // 
-            this.tslGrid.Name = "tslGrid";
-            this.tslGrid.Size = new System.Drawing.Size(29, 22);
-            this.tslGrid.Text = "Grid";
-            this.tslGrid.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            // 
-            // tscbGrid
-            // 
-            this.tscbGrid.Items.AddRange(new object[] {
-            "4",
-            "8",
-            "16"});
-            this.tscbGrid.Name = "tscbGrid";
-            this.tscbGrid.Size = new System.Drawing.Size(75, 25);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
-            // 
-            // tslEstimatedNotes
-            // 
-            this.tslEstimatedNotes.Name = "tslEstimatedNotes";
-            this.tslEstimatedNotes.Size = new System.Drawing.Size(141, 22);
-            this.tslEstimatedNotes.Text = "Total notes (estimated) : 0";
-            this.tslEstimatedNotes.ToolTipText = "シミュレーター上で表示される総ノーツ数（推定）";
-            // 
-            // tslRealNotes
-            // 
-            this.tslRealNotes.Name = "tslRealNotes";
-            this.tslRealNotes.Size = new System.Drawing.Size(109, 22);
-            this.tslRealNotes.Text = "Total notes (real) : 0";
-            this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
-            // 
             // tsbNew
             // 
             this.tsbNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -323,6 +252,11 @@
             this.tsbExport.Size = new System.Drawing.Size(23, 22);
             this.tsbExport.Text = "上書きエクスポート";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // tsbCut
             // 
             this.tsbCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -349,6 +283,11 @@
             this.tsbPaste.Name = "tsbPaste";
             this.tsbPaste.Size = new System.Drawing.Size(23, 22);
             this.tsbPaste.Text = "貼り付け";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // tsbAdd
             // 
@@ -377,6 +316,58 @@
             this.tsbDelete.Size = new System.Drawing.Size(44, 22);
             this.tsbDelete.Text = "Delete";
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tslBeat
+            // 
+            this.tslBeat.Name = "tslBeat";
+            this.tslBeat.Size = new System.Drawing.Size(30, 22);
+            this.tslBeat.Text = "Beat";
+            // 
+            // tscbBeat
+            // 
+            this.tscbBeat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tscbBeat.DropDownWidth = 121;
+            this.tscbBeat.Items.AddRange(new object[] {
+            "4",
+            "8",
+            "12",
+            "16",
+            "24",
+            "32",
+            "48",
+            "64",
+            "96",
+            "128",
+            "192"});
+            this.tscbBeat.Name = "tscbBeat";
+            this.tscbBeat.Size = new System.Drawing.Size(75, 25);
+            // 
+            // tslGrid
+            // 
+            this.tslGrid.Name = "tslGrid";
+            this.tslGrid.Size = new System.Drawing.Size(29, 22);
+            this.tslGrid.Text = "Grid";
+            this.tslGrid.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            // 
+            // tscbGrid
+            // 
+            this.tscbGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tscbGrid.Items.AddRange(new object[] {
+            "4",
+            "8",
+            "16"});
+            this.tscbGrid.Name = "tscbGrid";
+            this.tscbGrid.Size = new System.Drawing.Size(75, 25);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
             // tsbInvisibleSlideTap
             // 
             this.tsbInvisibleSlideTap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -387,13 +378,24 @@
             this.tsbInvisibleSlideTap.Text = "InvisibleSlideTap";
             this.tsbInvisibleSlideTap.ToolTipText = "Slide中継点を不可視にする";
             // 
-            // flpNotePanel
+            // toolStripSeparator6
             // 
-            this.flpNotePanel.AutoScroll = true;
-            this.flpNotePanel.Location = new System.Drawing.Point(3, 3);
-            this.flpNotePanel.Name = "flpNotePanel";
-            this.flpNotePanel.Size = new System.Drawing.Size(173, 805);
-            this.flpNotePanel.TabIndex = 0;
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
+            // tslEstimatedNotes
+            // 
+            this.tslEstimatedNotes.Name = "tslEstimatedNotes";
+            this.tslEstimatedNotes.Size = new System.Drawing.Size(141, 22);
+            this.tslEstimatedNotes.Text = "Total notes (estimated) : 0";
+            this.tslEstimatedNotes.ToolTipText = "シミュレーター上で表示される総ノーツ数（推定）";
+            // 
+            // tslRealNotes
+            // 
+            this.tslRealNotes.Name = "tslRealNotes";
+            this.tslRealNotes.Size = new System.Drawing.Size(109, 22);
+            this.tslRealNotes.Text = "Total notes (real) : 0";
+            this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
             // 
             // MainForm
             // 
