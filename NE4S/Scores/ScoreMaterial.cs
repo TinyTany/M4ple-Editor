@@ -9,18 +9,19 @@ namespace NE4S.Scores
 {
 	public class ScoreMaterial
 	{
-		private Score score;
-		private Range scoreRange;
-		private RectangleF hitRect;
-		private float width, height;
+        public Score Score { get; }
+        public Range Range { get; }
+        public RectangleF HitRect { get; set; }
+        public float Width { get; }
+        public float Height { get; }
 
-		public ScoreMaterial(Score score, Range scoreRange, RectangleF hitRect)
+        public ScoreMaterial(Score score, Range scoreRange, RectangleF hitRect)
 		{
-			this.score = score;
-			this.scoreRange = scoreRange;
-			this.hitRect = hitRect;
-			width = score.Width;
-			height = score.Height * scoreRange.Size() / score.BeatNumer;
+			Score = score;
+			Range = scoreRange;
+			HitRect = hitRect;
+			Width = score.Width;
+			Height = score.Height * scoreRange.Size() / score.BeatNumer;
 		}
 
 #if DEBUG
@@ -30,10 +31,10 @@ namespace NE4S.Scores
 		public Position CalculatePos(int pX, int pY)
 		{
 			PointF normalizedPos = new PointF(
-				pX - hitRect.X,
-				hitRect.Height - (pY - hitRect.Y) + ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * (scoreRange.Inf - 1) / score.BeatDenom
+				pX - HitRect.X,
+				HitRect.Height - (pY - HitRect.Y) + ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * (Range.Inf - 1) / Score.BeatDenom
 				);
-			Position pos = new Position(score.Index + 1, (int)(normalizedPos.Y / ScoreInfo.MaxBeatHeight), ScoreInfo.MaxBeatDiv, (int)(normalizedPos.X / ScoreInfo.MinLaneWidth));
+			Position pos = new Position(Score.Index + 1, (int)(normalizedPos.Y / ScoreInfo.MaxBeatHeight), ScoreInfo.MaxBeatDiv, (int)(normalizedPos.X / ScoreInfo.MinLaneWidth));
 			return pos;
 		}
 
@@ -42,31 +43,5 @@ namespace NE4S.Scores
 			return CalculatePos(location.X, location.Y);
 		}
 #endif
-
-		public Score Score
-		{
-			get { return score; }
-		}
-
-		public Range Range
-		{
-			get { return scoreRange; }
-		}
-
-		public RectangleF HitRect
-		{
-			get { return hitRect; }
-			set { hitRect = value; }
-		}
-
-		public float Width
-		{
-			get { return width; }
-		}
-
-		public float Height
-		{
-			get { return height; }
-		}
-	}
+    }
 }

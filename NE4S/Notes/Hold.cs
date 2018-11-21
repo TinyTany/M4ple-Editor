@@ -37,12 +37,59 @@ namespace NE4S.Notes
         public Hold(int size, Position pos, PointF location, int laneIndex)
         {
             HoldBegin holdBegin = new HoldBegin(size, pos, location, laneIndex);
+            holdBegin.CheckNotePosition += CheckNotePosition;
+            holdBegin.CheckNoteSize += CheckNoteSize;
             Add(holdBegin);
             //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            HoldEnd holdEnd = new HoldEnd(size, pos, location, laneIndex);
+            HoldEnd holdEnd = new HoldEnd(size, pos.Next(), location, laneIndex);
+            holdEnd.CheckNotePosition += CheckNotePosition;
+            holdEnd.CheckNoteSize += CheckNoteSize;
+            holdEnd.IsPositionAvailable += IsPositionAvailable;
             Add(holdEnd);
             Status.SelectedNote = holdEnd;
+        }
+
+        private void CheckNotePosition(Note note)
+        {
+            if(note is HoldBegin)
+            {
+                foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
+                {
+                    
+                }
+            }
+            else if(note is HoldEnd)
+            {
+                Note holdBegin = this.OrderBy(x => x.Pos).First();
+                int diffLane = holdBegin.Pos.Lane - note.Pos.Lane;
+                note.RelocateOnly(
+                        new Position(note.Pos.Bar, note.Pos.BeatCount, note.Pos.BaseBeat, holdBegin.Pos.Lane),
+                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y));
+            }
+            else
+            {
+                //ここに入ることは無いはずだし入ったとしても何もしない一応警告でも出しとけ
+                System.Diagnostics.Debug.Assert(false, "不正なノーツの種類です。");
+            }
+            return;
+        }
+
+        private void CheckNoteSize(Note note)
+        {
+            foreach(Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
+            {
+                if (itrNote is AirableNote airableNote)
+                {
+                    airableNote.ReSize(note.Size);
+                }
+                else
+                {
+                    //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
+                    itrNote.ReSizeOnly(note.Size);
+                }
+            }
+            return;
         }
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)

@@ -41,12 +41,75 @@ namespace NE4S.Notes
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
             SlideBegin slideBegin = new SlideBegin(size, pos, location, laneIndex);
+            slideBegin.IsPositionAvailable += IsPositionAvailable;
             Add(slideBegin);
             //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            SlideEnd slideEnd = new SlideEnd(size, pos, location, laneIndex);
+            SlideEnd slideEnd = new SlideEnd(size, pos.Next(), location, laneIndex);
+            slideEnd.IsPositionAvailable += IsPositionAvailable;
             Add(slideEnd);
             Status.SelectedNote = slideEnd;
+        }
+
+        protected new bool IsPositionAvailable(Note note, Position position)
+        {
+            if (note is SlideBegin && position.CompareTo(this.Where(x => x != note).OrderBy(x => x.Pos).First().Pos) > 0) return false;
+            if (note is SlideEnd && position.CompareTo(this.Where(x => x != note).OrderByDescending(x => x.Pos).First().Pos) < 0) return false;
+            foreach (Note itrNote in this.Where(x => x != note))
+            {
+                if (itrNote is SlideBegin && position.CompareTo(itrNote.Pos) < 0) return false;
+                else if (itrNote is SlideEnd && position.CompareTo(itrNote.Pos) > 0) return false;
+                else if (position.Equals(itrNote.Pos)) return false;
+            }
+            return true;
+        }
+
+        public void Add(SlideTap slideTap)
+        {
+            if (!IsPositionAvailable(slideTap, slideTap.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideTap);
+            slideTap.IsPositionAvailable += IsPositionAvailable;
+            return;
+        }
+
+        public void Add(SlideRelay slideRelay)
+        {
+            if (!IsPositionAvailable(slideRelay, slideRelay.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideRelay);
+            slideRelay.IsPositionAvailable += IsPositionAvailable;
+            return;
+        }
+
+        public void Add(SlideCurve slideCurve)
+        {
+            if (!IsPositionAvailable(slideCurve, slideCurve.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideCurve);
+            slideCurve.IsPositionAvailable += IsPositionAvailable;
+            return;
+        }
+
+        public void Add(SlideEnd slideEnd)
+        {
+            if (!IsPositionAvailable(slideEnd, slideEnd.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideEnd);
+            slideEnd.IsPositionAvailable += IsPositionAvailable;
+            return;
         }
 
         /// <summary>
@@ -308,11 +371,16 @@ namespace NE4S.Notes
                 PointF topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
                 PointF bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
                 PointF curveCenter = curveRerativeLocation.AddX(curve.Width / 2f);
+                //
+                //下からアンカーまでの比率
+                float ratio = (curveCenter.Y - bottomCenter.Y) / (topCenter.Y - bottomCenter.Y);
+                //カーブノーツのY座標で水平にスライドを切ったときのスライド幅
+                float widthAnchor = (topRight.X - topLeft.X) * ratio + (bottomRight.X - bottomLeft.X) * (1 - ratio);
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
-                    graphicsPath.AddBezier(bottomLeft, curveCenter, topLeft);
+                    graphicsPath.AddBezier(bottomLeft, curveCenter.AddX(-widthAnchor / 2f), topLeft);
                     graphicsPath.AddLine(topLeft, topRight);
-                    graphicsPath.AddBezier(topRight, curveCenter, bottomRight);
+                    graphicsPath.AddBezier(topRight, curveCenter.AddX(widthAnchor / 2f), bottomRight);
                     graphicsPath.AddLine(bottomLeft, bottomRight);
                     ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
                     if (scoreLane != null)
@@ -349,11 +417,16 @@ namespace NE4S.Notes
                 PointF topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
                 PointF bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
                 PointF curveCenter = pastRerativeLocation.Add(diffXCurve, -positionDistanceCurve).AddX(curve.Width / 2f);
+                //
+                //下からアンカーまでの比率
+                float ratio = (curveCenter.Y - bottomCenter.Y) / (topCenter.Y - bottomCenter.Y);
+                //カーブノーツのY座標で水平にスライドを切ったときのスライド幅
+                float widthAnchor = (topRight.X - topLeft.X) * ratio + (bottomRight.X - bottomLeft.X) * (1 - ratio);
                 using (GraphicsPath graphicsPath = new GraphicsPath())
                 {
-                    graphicsPath.AddBezier(bottomLeft, curveCenter, topLeft);
+                    graphicsPath.AddBezier(bottomLeft, curveCenter.AddX(-widthAnchor / 2f), topLeft);
                     graphicsPath.AddLine(topLeft, topRight);
-                    graphicsPath.AddBezier(topRight, curveCenter, bottomRight);
+                    graphicsPath.AddBezier(topRight, curveCenter.AddX(widthAnchor / 2f), bottomRight);
                     graphicsPath.AddLine(bottomLeft, bottomRight);
                     ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
                     if (scoreLane != null)
@@ -393,12 +466,17 @@ namespace NE4S.Notes
                         curveCenter.X = curLane.HitRect.X + curve.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + curve.Width / 2f;
                         curveCenter.Y += prevLane.HitRect.Height;
                         //
+                        //下からアンカーまでの比率
+                        ratio = (curveCenter.Y - bottomCenter.Y) / (topCenter.Y - bottomCenter.Y);
+                        //カーブノーツのY座標で水平にスライドを切ったときのスライド幅
+                        widthAnchor = (topRight.X - topLeft.X) * ratio + (bottomRight.X - bottomLeft.X) * (1 - ratio);
+                        //
                         gradientRect.Y += prevLane.HitRect.Height;
                         using (GraphicsPath graphicsPath = new GraphicsPath())
                         {
-                            graphicsPath.AddBezier(bottomLeft, curveCenter, topLeft);
+                            graphicsPath.AddBezier(bottomLeft, curveCenter.AddX(-widthAnchor / 2f), topLeft);
                             graphicsPath.AddLine(topLeft, topRight);
-                            graphicsPath.AddBezier(topRight, curveCenter, bottomRight);
+                            graphicsPath.AddBezier(topRight, curveCenter.AddX(widthAnchor / 2f), bottomRight);
                             graphicsPath.AddLine(bottomLeft, bottomRight);
                             RectangleF clipRect = new RectangleF(curLane.HitRect.Location.AddX(-currentPositionX), curLane.HitRect.Size);
                             e.Graphics.Clip = new Region(clipRect);

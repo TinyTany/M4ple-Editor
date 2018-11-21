@@ -12,85 +12,75 @@ namespace NE4S
 {
     public class Model
     {
-        private NoteBook noteBook;
-        private readonly ScoreBook scoreBook;
-		private LaneBook laneBook;
+        public NoteBook NoteBook { get; }
+        public ScoreBook ScoreBook { get; }
+        public LaneBook LaneBook { get; }
 
         public Model()
         {
-            noteBook = new NoteBook();
-            scoreBook = new ScoreBook();
-			laneBook = new LaneBook();
+            NoteBook = new NoteBook();
+            ScoreBook = new ScoreBook();
+			LaneBook = new LaneBook();
         }
 
 		public void SetScore(int beatNumer, int beatDenom, int barCount)
 		{
-			laneBook.SetScore(scoreBook, beatNumer, beatDenom, barCount);
+			LaneBook.SetScore(ScoreBook, beatNumer, beatDenom, barCount);
 		}
 
 		public void InsertScoreForward(Score score, int beatNumer, int beatDenom, int barCount)
 		{
-			laneBook.InsetScoreForward(scoreBook, score, beatNumer, beatDenom, barCount);
+			LaneBook.InsetScoreForward(ScoreBook, score, beatNumer, beatDenom, barCount);
 		}
 
 		public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
 		{
-			laneBook.InsertScoreBackward(scoreBook, score, beatNumer, beatDenom, barCount);
+			LaneBook.InsertScoreBackward(ScoreBook, score, beatNumer, beatDenom, barCount);
 		}
 
 		public void DivideLane(Score score)
 		{
-			laneBook.DivideLane(score);
+			LaneBook.DivideLane(score);
 		}
 
 		public void DeleteScore(Score score, int count)
 		{
-			laneBook.DeleteScore(scoreBook, score, count);
+			LaneBook.DeleteScore(ScoreBook, score, count);
 		}
 
 		public void FillLane()
 		{
-			if (laneBook.Any()) FillLane(laneBook.First());
+			if (LaneBook.Any()) FillLane(LaneBook.First());
 		}
 
 		public void FillLane(ScoreLane begin)
 		{
-			laneBook.FillLane(begin);
+			LaneBook.FillLane(begin);
 		}
 
 		public void AddNote(Note newNote)
 		{
-			noteBook.Add(newNote);
+			NoteBook.Add(newNote);
 		}
 
 		public void AddLongNote(LongNote newLongNote)
 		{
-			noteBook.Add(newLongNote);
+			NoteBook.Add(newLongNote);
 		}
 
         public void PaintNote(PaintEventArgs e, int originPosX, int originPosY, int currentPositionX)
         {
-            noteBook.Paint(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            NoteBook.Paint(e, originPosX, originPosY, ScoreBook, LaneBook, currentPositionX);
         }
 
         public Slide SelectedSlide(PointF location)
         {
-            return noteBook.SelectedSlide(location, scoreBook, laneBook);
+            return NoteBook.SelectedSlide(location, ScoreBook, LaneBook);
         }
 
-		public NoteBook NoteBook
-		{
-			get { return noteBook; }
-		}
-
-		public ScoreBook ScoreBook
-		{
-			get { return scoreBook; }
-		}
-
-		public LaneBook LaneBook
-		{
-			get { return laneBook; }
-		}
+        public AirHold SelectedAirHold(PointF location)
+        {
+            return NoteBook.SelectedAirHold(location, ScoreBook, LaneBook);
+        }
     }
 }

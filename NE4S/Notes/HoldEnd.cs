@@ -11,6 +11,9 @@ namespace NE4S.Notes
 {
     public class HoldEnd : AirableNote
     {
+        public event NoteEventHandler CheckNotePosition, CheckNoteSize;
+        public event PositionCheckHandler IsPositionAvailable;
+
         public HoldEnd()
         {
 
@@ -21,13 +24,49 @@ namespace NE4S.Notes
             LaneIndex = laneIndex;
         }
 
+        public override void ReSize(int size)
+        {
+            base.ReSize(size);
+            CheckNoteSize?.Invoke(this);
+            return;
+        }
+
+        public override void Relocate(Position pos, PointF location)
+        {
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            base.Relocate(pos);
+            base.Relocate(location);
+            CheckNotePosition?.Invoke(this);
+            return;
+        }
+
+        public override void Relocate(Position pos)
+        {
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            base.Relocate(pos);
+            CheckNotePosition?.Invoke(this);
+            return;
+        }
+
+        public override void Relocate(PointF location)
+        {
+            base.Relocate(location);
+            CheckNotePosition?.Invoke(this);
+            return;
+        }
+
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
+            if (air != null || airHold != null)
+            {
+                base.Draw(e, originPosX, originPosY);
+                return;
+            }
             RectangleF drawRect = new RectangleF(
-                hitRect.X - originPosX,
-                hitRect.Y - originPosY,
-                hitRect.Width,
-                hitRect.Height);
+                noteRect.X - originPosX + adjustNoteRect.X,
+                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.Width,
+                noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Orange, Color.DarkOrange))
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);
@@ -36,6 +75,7 @@ namespace NE4S.Notes
             {
                 //e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
             }
+            return;
         }
     }
 }

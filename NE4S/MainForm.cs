@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NE4S.Component;
 
 namespace NE4S
 {
@@ -49,15 +50,34 @@ namespace NE4S
                 viewComponentList.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
 			InitializeToolStrip();
-			tsbAdd.Click += tbsAdd_Click;
-			tsbEdit.Click += tbsEdit_Click;
-			tsbDelete.Click += tbsDelete_Click;
-			tsbInvisibleSlideTap.Click += tbsInvisibleSlideTap_Click;
-			tscbBeat.SelectedIndexChanged += tscbBeat_SelectedIndexChanged;
-			tscbGrid.SelectedIndexChanged += tscbGrid_SelectedIndexChanged;
-		}
+			tsbAdd.Click += TbsAdd_Click;
+			tsbEdit.Click += TbsEdit_Click;
+			tsbDelete.Click += TbsDelete_Click;
+			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
+			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
+            tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
+            //
+            tsmiIsSlideRelay.Click += (s, e) => 
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsSlideRelayVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsSlideCurve.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsSlideCurveVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            //ノーツボタンを追加
+            NoteButtonManager noteButtonManager = new NoteButtonManager();
+            foreach (NoteButton noteButton in noteButtonManager)
+            {
+                flpNotePanel.Controls.Add(noteButton);
+            }
+        }
 
-		private void Score_MouseUp(object sender, MouseEventArgs e)
+        private void Score_MouseUp(object sender, MouseEventArgs e)
         {
             //クリックされたPictureBoxに対応するScorePanelで処理
             Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
@@ -147,7 +167,7 @@ namespace NE4S
 			}
 		}
 
-		private void tbsAdd_Click(object sender, EventArgs e)
+		private void TbsAdd_Click(object sender, EventArgs e)
 		{
 			tsbAdd.Checked = true;
 			tsbEdit.Checked = false;
@@ -155,7 +175,7 @@ namespace NE4S
 			Status.Mode = Mode.ADD;
 		}
 
-		private void tbsEdit_Click(object sender, EventArgs e)
+		private void TbsEdit_Click(object sender, EventArgs e)
 		{
 			tsbAdd.Checked = false;
 			tsbEdit.Checked = true;
@@ -163,7 +183,7 @@ namespace NE4S
 			Status.Mode = Mode.EDIT;
 		}
 
-		private void tbsDelete_Click(object sender, EventArgs e)
+		private void TbsDelete_Click(object sender, EventArgs e)
 		{
 			tsbAdd.Checked = false;
 			tsbEdit.Checked = false;
@@ -171,20 +191,10 @@ namespace NE4S
 			Status.Mode = Mode.DELETE;
 		}
 
-		private void tbsInvisibleSlideTap_Click(object sender, EventArgs e)
+		private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
 		{
 			tsbInvisibleSlideTap.Checked = !tsbInvisibleSlideTap.Checked;
 			Status.InvisibleSlideTap = tsbInvisibleSlideTap.Checked;
-		}
-
-		private void tscbBeat_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			Status.Beat = int.Parse(tscbBeat.Text);
-		}
-
-		private void tscbGrid_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			Status.Grid = int.Parse(tscbGrid.Text);
 		}
 	}
 }

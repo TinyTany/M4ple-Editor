@@ -24,12 +24,12 @@ namespace NE4S.Notes
 #if DEBUG
 		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
-			RectangleF drawRect = new RectangleF(
-				hitRect.X - originPosX,
-				hitRect.Y - originPosY,
-				hitRect.Width,
-				hitRect.Height);
-			using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
+            RectangleF drawRect = new RectangleF(
+                noteRect.X - originPosX + adjustNoteRect.X,
+                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.Width,
+                noteRect.Height);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
 			{
 				e.Graphics.FillRectangle(gradientBrush, drawRect);
                 //e.Graphics.FillRectangle(gradientBrush, new RectangleF(100, 100, 100, 500));

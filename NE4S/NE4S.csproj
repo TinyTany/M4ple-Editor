@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\AirNoteButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Component\BarAddCustomForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,6 +64,16 @@
     </Compile>
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component\NoteButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Component\NoteButton.Designer.cs">
+      <DependentUpon>NoteButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Component\NoteButtonManager.cs" />
+    <Compile Include="Component\SizableNoteButton.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Define.cs" />
     <Compile Include="MainForm.cs">
@@ -80,7 +93,6 @@
     <Compile Include="Notes\AirDownR.cs" />
     <Compile Include="Notes\AirHold.cs" />
     <Compile Include="Notes\AirHoldBegin.cs" />
-    <Compile Include="Notes\AirHoldEnd.cs" />
     <Compile Include="Notes\AirUpC.cs" />
     <Compile Include="Notes\AirUpL.cs" />
     <Compile Include="Notes\AirUpR.cs" />
@@ -123,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Component\BarDeleteCustomForm.resx">
       <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\NoteButton.resx">
+      <DependentUpon>NoteButton.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

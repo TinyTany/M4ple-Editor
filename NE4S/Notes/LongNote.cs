@@ -15,7 +15,7 @@ namespace NE4S.Notes
     public class LongNote : List<Note>
     {
         //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
-        protected static readonly PointF drawOffset = new PointF(2, 2);
+        protected static readonly PointF drawOffset = new PointF(2, 0);
         //帯の大きさが縦に少し短いので調整
         protected static readonly float deltaHeight = .2f;
 
@@ -24,7 +24,17 @@ namespace NE4S.Notes
             
         }
 
-		public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        protected bool IsPositionAvailable(Note note, Position position)
+        {
+            if (position.CompareTo(this.OrderBy(x => x.Pos).First().Pos) < 0) return false;
+            foreach (Note itrNote in this.Where(x => x != note))
+            {
+                if (position.Equals(itrNote.Pos)) return false;
+            }
+            return true;
+        }
+
+        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
 
 		}

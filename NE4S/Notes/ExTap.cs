@@ -20,12 +20,12 @@ namespace NE4S.Notes
 #if DEBUG
 		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
-			RectangleF drawRect = new RectangleF(
-				hitRect.X - originPosX,
-				hitRect.Y - originPosY,
-				hitRect.Width,
-				hitRect.Height);
-			using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 0)))
+            RectangleF drawRect = new RectangleF(
+                noteRect.X - originPosX + adjustNoteRect.X,
+                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.Width,
+                noteRect.Height);
+            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 0)))
 			{
 				e.Graphics.FillRectangle(myBrush, drawRect);
 			}

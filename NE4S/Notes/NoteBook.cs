@@ -78,7 +78,7 @@ namespace NE4S.Notes
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 selectedNote = airHold.Find(x => x.Contains(location));
-                if (selectedNote != null)
+                if (selectedNote != null && !(selectedNote is AirHoldBegin))
                 {
                     MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                     return selectedNote;
@@ -117,22 +117,90 @@ namespace NE4S.Notes
             return null;
         }
 
+        /// <summary>
+        /// クリックされてるノーツがあったら投げる
+        /// なかったらnullを投げる
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public Note SelectedNote(PointF location)
+        {
+            Note selectedNote;
+            foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
+            {
+                selectedNote = airHold.Find(x => x.Contains(location));
+                if (selectedNote != null)
+                {
+                    return selectedNote;
+                }
+            }
+            selectedNote = airNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null)
+            {
+                return selectedNote;
+            }
+            selectedNote = shortNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null)
+            {
+                return selectedNote;
+            }
+            foreach (Slide slide in slideNotes.Reverse<Slide>())
+            {
+                selectedNote = slide.Find(x => x.Contains(location));
+                if (selectedNote != null)
+                {
+                    return selectedNote;
+                }
+            }
+            foreach (Hold hold in holdNotes.Reverse<Hold>())
+            {
+                selectedNote = hold.Find(x => x.Contains(location));
+                if (selectedNote != null)
+                {
+                    return selectedNote;
+                }
+            }
+            return null;
+        }
+
         public Slide SelectedSlide(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
         {
             return slideNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
+        public AirHold SelectedAirHold(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
+        {
+            return airHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
+        }
+
 #if DEBUG
         //今はちょっとだけ実装
         //TODO: 範囲外のノーツは描画しないようにして軽くする
-		public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
-            foreach (Hold hold in holdNotes) hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            foreach (Slide slide in slideNotes) slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            foreach (Hold hold in holdNotes)
+            {
+                hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            }
+            foreach (Slide slide in slideNotes)
+            {
+                slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            }
             //お試し
             //範囲外のノーツは描画しないようにするというこころ
-			foreach (Note note in shortNotes.Where(
-                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031)) note.Draw(e, originPosX, originPosY);
+            foreach (Note note in shortNotes.Where(
+                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031))
+            {
+                note.Draw(e, originPosX, originPosY);
+            }
+            foreach (Air air in airNotes)
+            {
+                air.Draw(e, originPosX, originPosY);
+            }
+            foreach (AirHold airHold in airHoldNotes)
+            {
+                airHold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+            }
 		}
 #endif
 	}

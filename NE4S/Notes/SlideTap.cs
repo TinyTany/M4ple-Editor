@@ -11,6 +11,8 @@ namespace NE4S.Notes
 {
     public class SlideTap : Note
     {
+        public event PositionCheckHandler IsPositionAvailable;
+
         public SlideTap()
         {
 
@@ -21,13 +23,28 @@ namespace NE4S.Notes
             LaneIndex = laneIndex;
         }
 
+        public override void Relocate(Position pos, PointF location)
+        {
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            base.Relocate(pos);
+            base.Relocate(location);
+            return;
+        }
+
+        public override void Relocate(Position pos)
+        {
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            base.Relocate(pos);
+            return;
+        }
+
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
             RectangleF drawRect = new RectangleF(
-                hitRect.X - originPosX,
-                hitRect.Y - originPosY,
-                hitRect.Width,
-                hitRect.Height);
+                noteRect.X - originPosX + adjustNoteRect.X,
+                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.Width,
+                noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Blue, Color.DarkBlue))
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);

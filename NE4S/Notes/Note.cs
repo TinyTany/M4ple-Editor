@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Scores;
+using NE4S.Define;
 
 namespace NE4S.Notes
 {
@@ -16,25 +17,30 @@ namespace NE4S.Notes
     {
         private int size;
         private Position pos;
-		protected RectangleF hitRect;
+		protected RectangleF noteRect;
+        protected PointF adjustNoteRect = new PointF(0, -2);
         //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
-        public int LaneIndex { get; set; } = -1;
+        public virtual int LaneIndex { get; set; } = -1;
+        /// <summary>
+        /// ノーツを渡すイベントハンドラです（知らんけど）
+        /// </summary>
+        /// <param name="note"></param>
+        public delegate void NoteEventHandler(Note note);
+        public delegate bool PositionCheckHandler(Note note, Position position);
 
 		public Note()
 		{
 			size = 0;
 			pos = null;
-			hitRect = new RectangleF();
+			noteRect = new RectangleF();
 		}
 
         public Note(int size, Position pos, PointF location)
         {
 			this.size = size;
 			this.pos = pos;
-			hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
-			hitRect.Location = location;
-            //描画中にいい感じにハマるように調節する
-            MyUtil.AdjustHitRect(ref hitRect);
+			noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+			noteRect.Location = location;
         }
 
         /// <summary>
@@ -56,7 +62,7 @@ namespace NE4S.Notes
 
         public PointF Location
         {
-            get { return hitRect.Location; }
+            get { return noteRect.Location; }
         }
 
         /// <summary>
@@ -65,57 +71,84 @@ namespace NE4S.Notes
         /// </summary>
         public float Width
         {
-            get { return hitRect.Width; }
+            get { return noteRect.Width; }
         }
 
-        public bool Contains(PointF location)
+        public virtual bool Contains(PointF location)
         {
+            RectangleF hitRect = new RectangleF(noteRect.X + adjustNoteRect.X, noteRect.Y + adjustNoteRect.Y, noteRect.Width, noteRect.Height);
             return hitRect.Contains(location);
         }
 
-		public void ReSize(int size)
-		{
-			this.size = size;
-            hitRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+        #region ノーツの位置やサイズを変えるメソッドたち
+        public virtual void ReSize(int size)
+        {
+            ReSizeOnly(size);
             return;
 		}
 
-		public void Relocate(Position pos, PointF location)
-		{
-			Relocate(pos);
-			Relocate(location);
-			return;
-		}
-
-		public void Relocate(Position pos)
-		{
-			this.pos = pos;
-			return;
-		}
-
-		public void Relocate(PointF location)
-		{
-			hitRect.Location = location;
-            //描画中にいい感じにハマるように調節する
-            MyUtil.AdjustHitRect(ref hitRect);
-			return;
-		}
-
-        //ノーツ左端からサイズ変更するときに使うために作成したけどなんかやだ
-        public void RelocateX(Position newPos, PointF newLocation)
+        /// <summary>
+        /// ノーツの種類にかかわらずノーツのサイズを変更することのみ行います
+        /// </summary>
+        /// <param name="size"></param>
+        public void ReSizeOnly(int size)
         {
-            pos = new Position(pos.Bar, pos.BeatCount, pos.BaseBeat, newPos.Lane);
-            hitRect.X = newLocation.X;
+            int diffSize = size - this.size;
+            this.size = size;
+            noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+            if (Status.SelectedNoteArea == NoteArea.LEFT)
+            {
+                noteRect.X -= diffSize * ScoreInfo.MinLaneWidth;
+                pos = new Position(pos.Bar, pos.BeatCount, pos.BaseBeat, pos.Lane - diffSize);
+            }
             return;
         }
+
+        public virtual void Relocate(Position pos, PointF location)
+		{
+            RelocateOnly(pos, location);
+			return;
+		}
+
+        public void RelocateOnly(Position pos, PointF location)
+        {
+            RelocateOnly(pos);
+            RelocateOnly(location);
+            return;
+        }
+
+        public virtual void Relocate(Position pos)
+		{
+            RelocateOnly(pos);
+			return;
+		}
+
+        public void RelocateOnly(Position pos)
+        {
+            this.pos = pos;
+            return;
+        }
+
+        public virtual void Relocate(PointF location)
+		{
+            RelocateOnly(location);
+			return;
+		}
+
+        public void RelocateOnly(PointF location)
+        {
+            noteRect.Location = location;
+            return;
+        }
+        #endregion
 
         public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
 			RectangleF drawRect = new RectangleF(
-				hitRect.X - originPosX,
-				hitRect.Y - originPosY,
-				hitRect.Width,
-				hitRect.Height);
+				noteRect.X - originPosX + adjustNoteRect.X,
+				noteRect.Y - originPosY + adjustNoteRect.Y,
+				noteRect.Width,
+				noteRect.Height);
 			using (SolidBrush myBrush = new SolidBrush(Color.White))
 			{
 				e.Graphics.FillRectangle(myBrush, drawRect);

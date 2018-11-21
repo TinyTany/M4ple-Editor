@@ -14,11 +14,10 @@ namespace NE4S.Scores
     /// </summary>
     public class ScoreLane
     {
-		private static float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
-		private static float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
+		private static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
+		private static readonly float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
         public static float Width { get; set; } = scoreWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
-        private float currentBarSize;
         private int index;
 		private RectangleF drawRegion, hitRect;
         private List<ScoreMaterial> scoreMaterialList;
@@ -26,29 +25,29 @@ namespace NE4S.Scores
         /// <summary>
         /// ScoreLaneに入っているScoreたちの総サイズ
         /// </summary>
-        public float CurrentBarSize
-        {
-            get { return currentBarSize; }
-        }
+        public float CurrentBarSize { get; private set; }
 
-		// <summary>
-		/// ScoreLane当たり判定領域
-		/// PictureBoxの左上を原点としたときの座標
-		/// index,currentBarSizeが変わると変わる
-		/// </summary>
-		public RectangleF HitRect
+        // <summary>
+        /// ScoreLane当たり判定領域
+        /// PictureBoxの左上を原点としたときの座標
+        /// index,currentBarSizeが変わると変わる
+        /// </summary>
+        public RectangleF HitRect
 		{
 			get { return hitRect; }
 		}
 
+        /// <summary>
+        /// レーンの当たり判定矩形と描画領域矩形を更新
+        /// </summary>
 		private void RefreshRects()
 		{
 			hitRect.Size = new SizeF(
 				scoreWidth,
-				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * currentBarSize);
+				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * CurrentBarSize);
 			hitRect.Location = new PointF(
 				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
-				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（iピクセル下げる）
+				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（1ピクセル下げる）
 				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRect.Height + 1);
 			drawRegion.Size = new SizeF(
 				Margin.Left + scoreWidth + Margin.Right,
@@ -58,6 +57,9 @@ namespace NE4S.Scores
 				ScoreInfo.PanelMargin.Top);
 		}
 
+        /// <summary>
+        /// ScoreMaterialの当たり判定矩形を更新
+        /// </summary>
 		private void RefreshScoreMaterialList()
 		{
 			//Scoreの当たり判定を更新する
@@ -93,7 +95,7 @@ namespace NE4S.Scores
         public ScoreLane()
         {
             scoreMaterialList = new List<ScoreMaterial>();
-            currentBarSize = 0;
+            CurrentBarSize = 0;
             hitRect = new RectangleF();
 			drawRegion = new RectangleF();
             index = -1;
@@ -160,7 +162,7 @@ namespace NE4S.Scores
         {
 			if (newScore != null && newRange != null)
             {
-                float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * currentBarSize;
+                float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * CurrentBarSize;
 				float physicalHeight = newScore.Height * newRange.Size() / newScore.BeatNumer;
 				//当たり判定が縦に1ピクセル分ずれているので調整用の変数を作成
 				int normalizeDeltaHeight = 1;
@@ -172,7 +174,7 @@ namespace NE4S.Scores
 					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
                 scoreMaterialList.Add(new ScoreMaterial(newScore, newRange, newScoreHitRect));
-                currentBarSize += newRange.Size() / (float)newScore.BeatDenom;
+                CurrentBarSize += newRange.Size() / (float)newScore.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
 				RefreshRects();
@@ -181,9 +183,7 @@ namespace NE4S.Scores
             }
             else
             {
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("AddScore失敗");
-#endif
+                System.Diagnostics.Debug.Assert(false, "AddScore失敗");
             }
         }
 
@@ -204,7 +204,7 @@ namespace NE4S.Scores
         {
 			if (score != null && Contains(score))
             {
-                currentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
+                CurrentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
 				RefreshRects();
@@ -215,9 +215,7 @@ namespace NE4S.Scores
             }
             else
             {
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("DeleteScore失敗");
-#endif
+                System.Diagnostics.Debug.Assert(false, "DeleteScore失敗");
             }
         }
 
@@ -226,9 +224,7 @@ namespace NE4S.Scores
             if(scoreMaterialList.Any()) return scoreMaterialList.First().Score;
             else
             {
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("BeginScore() : tScoresは空です");
-#endif
+                System.Diagnostics.Debug.Assert(false, "BeginScore() : tScoresは空です");
                 return null;
             }
         }
@@ -238,9 +234,7 @@ namespace NE4S.Scores
             if (scoreMaterialList.Any()) return scoreMaterialList.First().Range;
             else
             {
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine("BeginRange() : tScoresは空です");
-#endif
+                System.Diagnostics.Debug.Assert(false, "BeginRange() : tScoresは空です");
                 return null;
             }
         }
@@ -265,7 +259,6 @@ namespace NE4S.Scores
             return SelectedScore(location.X, location.Y);
         }
 
-#if DEBUG
 		/// <summary>
 		/// 試作
 		/// </summary>
@@ -288,7 +281,6 @@ namespace NE4S.Scores
         {
             return GetPos(p.X, p.Y);
         }
-#endif
 
 		/// <summary>
 		/// originPosXとoriginPosYは、ScorePanelでのcurrentPositionXと0が入る

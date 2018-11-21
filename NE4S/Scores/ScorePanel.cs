@@ -213,6 +213,11 @@ namespace NE4S.Scores
                         }
                         break;
 					case Mode.EDIT:
+                        //Airは単体で動かせないようにする
+                        if (selectedNote is Air)
+                        {
+                            selectedNote = null;
+                        }
                         if (selectedNote != null)
                         {
                             Status.SelectedNote = selectedNote;
@@ -277,19 +282,15 @@ namespace NE4S.Scores
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
-                        //TODO: まだいろいろと気持ち悪いので再検討する（特にサイズ変更処理）
                         switch (Status.SelectedNoteArea)
                         {
                             case NoteArea.LEFT:
                                 {
-                                    if (Status.SelectedNote.Size == 1) break;//これだめ
                                     Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
                                     int newSize = (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
                                     if (newSize <= 0) newSize = 1;
                                     else if (newSize > 16) newSize = 16;
                                     Status.SelectedNote.ReSize(newSize);
-                                    Position newPos = selectedLane.GetPos(virtualGridPoint);
-                                    Status.SelectedNote.RelocateX(newPos, virtualGridPoint);
                                 }
                                 break;
                             case NoteArea.CENTER:
@@ -386,21 +387,11 @@ namespace NE4S.Scores
                     break;
                 case NoteType.SLIDE:
                     //testように直書き
-                    PointF locationPhysical = locationVirtual.AddX(-currentPositionX);
                     //Slideとの当たり判定は自由仮想座標を使う
                     Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
                     {
-                        //*
-                        if(Control.ModifierKeys == Keys.Shift)
-                        {
-                            //* CurveTest
-                            SlideCurve slideCurve = new SlideCurve(Status.NoteSize, position, locationVirtual, lane.Index);
-                            selectedSlide.Add(slideCurve);
-                            Status.SelectedNote = slideCurve;
-                            //*/
-                        }
-                        else if (Status.InvisibleSlideTap)
+                        if (Status.InvisibleSlideTap)
                         {
                             
                             //*
@@ -415,7 +406,6 @@ namespace NE4S.Scores
                             selectedSlide.Add(slideTap);
                             Status.SelectedNote = slideTap;
                         }
-                        //*/
                     }
                     else
                     {
@@ -423,26 +413,86 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.SLIDECURVE:
+                    selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
+                    if (selectedSlide != null)
+                    {
+                        SlideCurve slideCurve = new SlideCurve(Status.NoteSize, position, locationVirtual, lane.Index);
+                        selectedSlide.Add(slideCurve);
+                        Status.SelectedNote = slideCurve;
+                    }
                     break;
                 case NoteType.AIRHOLD:
+                    AirHold selectedAirHold = model.SelectedAirHold(location.Add(currentPositionX));
+                    var selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (selectedAirHold != null)
+                    {
+                        AirAction airAction = new AirAction(selectedAirHold.Size, position, locationVirtual, lane.Index);
+                        selectedAirHold.Add(airAction);
+                        Status.SelectedNote = airAction;
+                    }
+                    else if (selectedNote != null && !selectedNote.IsAttached)
+                    {
+                        AirHold airHold = new AirHold(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        model.AddLongNote(airHold);
+                        selectedNote.AttachAirHold(airHold);
+                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
+                    }
                     break;
                 case NoteType.AIRUPC:
-                    newNote = new AirUpC(Status.NoteSize, position, locationVirtual);
+                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (selectedNote != null && !selectedNote.IsAttached)
+                    {
+                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
+                    }
                     break;
                 case NoteType.AIRUPL:
-                    newNote = new AirUpL(Status.NoteSize, position, locationVirtual);
+                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (selectedNote != null && !selectedNote.IsAttached)
+                    {
+                        AirUpL air = new AirUpL(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
+                    }
                     break;
                 case NoteType.AIRUPR:
-                    newNote = new AirUpR(Status.NoteSize, position, locationVirtual);
+                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (selectedNote != null && !selectedNote.IsAttached)
+                    {
+                        AirUpR air = new AirUpR(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
+                    }
                     break;
                 case NoteType.AIRDOWNC:
-                    newNote = new AirDownC(Status.NoteSize, position, locationVirtual);
+                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (selectedNote != null && !selectedNote.IsAttached)
+                    {
+                        AirDownC air = new AirDownC(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
+                    }
                     break;
                 case NoteType.AIRDOWNL:
-                    newNote = new AirDownL(Status.NoteSize, position, locationVirtual);
+                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (selectedNote != null && !selectedNote.IsAttached)
+                    {
+                        AirDownL air = new AirDownL(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
+                    }
                     break;
                 case NoteType.AIRDOWNR:
-                    newNote = new AirDownR(Status.NoteSize, position, locationVirtual);
+                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (selectedNote != null && !selectedNote.IsAttached)
+                    {
+                        AirDownR air = new AirDownR(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
+                        model.AddNote(air);
+                        selectedNote.AttachAir(air);
+                    }
                     break;
                 default:
                     break;
