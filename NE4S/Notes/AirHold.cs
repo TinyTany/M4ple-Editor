@@ -28,7 +28,7 @@ namespace NE4S.Notes
             Add(airholdBegin);
             //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            AirAction airAction = new AirAction(size, pos, location, laneIndex);
+            AirAction airAction = new AirAction(size, pos.Next(), location, laneIndex);
             airAction.CheckNotePosition += CheckNotePosition;
             airAction.IsPositionAvailable += IsPositionAvailable;
             Add(airAction);
@@ -45,6 +45,11 @@ namespace NE4S.Notes
 
         public void Add(AirAction airAction)
         {
+            if (!IsPositionAvailable(airAction, airAction.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
             base.Add(airAction);
             airAction.CheckNotePosition += CheckNotePosition;
             airAction.IsPositionAvailable += IsPositionAvailable;
@@ -67,16 +72,6 @@ namespace NE4S.Notes
                     return 0;
                 }
             }
-        }
-
-        private bool IsPositionAvailable(Position position)
-        {
-            if (position.CompareTo(this.OrderBy(x => x.Pos).First().Pos) < 0) return false;
-            foreach (Note note in this)
-            {
-                if (position.Equals(note.Pos)) return false;
-            }
-            return true;
         }
 
         /// <summary>

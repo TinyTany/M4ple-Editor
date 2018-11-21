@@ -24,7 +24,17 @@ namespace NE4S.Notes
             
         }
 
-		public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        protected bool IsPositionAvailable(Note note, Position position)
+        {
+            if (position.CompareTo(this.OrderBy(x => x.Pos).First().Pos) < 0) return false;
+            foreach (Note itrNote in this.Where(x => x != note))
+            {
+                if (position.Equals(itrNote.Pos)) return false;
+            }
+            return true;
+        }
+
+        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
 
 		}

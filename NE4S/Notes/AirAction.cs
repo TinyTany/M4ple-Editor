@@ -32,7 +32,7 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos, PointF location)
         {
-            if (!IsPositionAvailable(pos)) return;
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
             base.Relocate(pos);
             base.Relocate(location);
             CheckNotePosition?.Invoke(this);
@@ -41,7 +41,7 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos)
         {
-            if (!IsPositionAvailable(pos)) return;
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
             base.Relocate(pos);
             CheckNotePosition?.Invoke(this);
             return;

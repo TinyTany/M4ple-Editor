@@ -12,6 +12,7 @@ namespace NE4S.Notes
     public class HoldEnd : AirableNote
     {
         public event NoteEventHandler CheckNotePosition, CheckNoteSize;
+        public event PositionCheckHandler IsPositionAvailable;
 
         public HoldEnd()
         {
@@ -32,7 +33,7 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos, PointF location)
         {
-            //基底のものを使うかこのクラスのものを使うか検討する
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
             base.Relocate(pos);
             base.Relocate(location);
             CheckNotePosition?.Invoke(this);
@@ -41,6 +42,7 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos)
         {
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
             base.Relocate(pos);
             CheckNotePosition?.Invoke(this);
             return;

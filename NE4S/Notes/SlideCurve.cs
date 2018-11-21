@@ -11,6 +11,8 @@ namespace NE4S.Notes
 {
     public class SlideCurve : Note
     {
+        public event PositionCheckHandler IsPositionAvailable;
+
         public SlideCurve()
         {
 
@@ -19,6 +21,21 @@ namespace NE4S.Notes
         public SlideCurve(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location)
         {
             LaneIndex = laneIndex;
+        }
+
+        public override void Relocate(Position pos, PointF location)
+        {
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            base.Relocate(pos);
+            base.Relocate(location);
+            return;
+        }
+
+        public override void Relocate(Position pos)
+        {
+            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            base.Relocate(pos);
+            return;
         }
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)

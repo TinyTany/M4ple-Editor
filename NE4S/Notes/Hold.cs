@@ -42,9 +42,10 @@ namespace NE4S.Notes
             Add(holdBegin);
             //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            HoldEnd holdEnd = new HoldEnd(size, pos, location, laneIndex);
+            HoldEnd holdEnd = new HoldEnd(size, pos.Next(), location, laneIndex);
             holdEnd.CheckNotePosition += CheckNotePosition;
             holdEnd.CheckNoteSize += CheckNoteSize;
+            holdEnd.IsPositionAvailable += IsPositionAvailable;
             Add(holdEnd);
             Status.SelectedNote = holdEnd;
         }

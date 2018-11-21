@@ -41,12 +41,75 @@ namespace NE4S.Notes
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
             SlideBegin slideBegin = new SlideBegin(size, pos, location, laneIndex);
+            slideBegin.IsPositionAvailable += IsPositionAvailable;
             Add(slideBegin);
             //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            SlideEnd slideEnd = new SlideEnd(size, pos, location, laneIndex);
+            SlideEnd slideEnd = new SlideEnd(size, pos.Next(), location, laneIndex);
+            slideEnd.IsPositionAvailable += IsPositionAvailable;
             Add(slideEnd);
             Status.SelectedNote = slideEnd;
+        }
+
+        protected new bool IsPositionAvailable(Note note, Position position)
+        {
+            if (note is SlideBegin && position.CompareTo(this.Where(x => x != note).OrderBy(x => x.Pos).First().Pos) > 0) return false;
+            if (note is SlideEnd && position.CompareTo(this.Where(x => x != note).OrderByDescending(x => x.Pos).First().Pos) < 0) return false;
+            foreach (Note itrNote in this.Where(x => x != note))
+            {
+                if (itrNote is SlideBegin && position.CompareTo(itrNote.Pos) < 0) return false;
+                else if (itrNote is SlideEnd && position.CompareTo(itrNote.Pos) > 0) return false;
+                else if (position.Equals(itrNote.Pos)) return false;
+            }
+            return true;
+        }
+
+        public void Add(SlideTap slideTap)
+        {
+            if (!IsPositionAvailable(slideTap, slideTap.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideTap);
+            slideTap.IsPositionAvailable += IsPositionAvailable;
+            return;
+        }
+
+        public void Add(SlideRelay slideRelay)
+        {
+            if (!IsPositionAvailable(slideRelay, slideRelay.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideRelay);
+            slideRelay.IsPositionAvailable += IsPositionAvailable;
+            return;
+        }
+
+        public void Add(SlideCurve slideCurve)
+        {
+            if (!IsPositionAvailable(slideCurve, slideCurve.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideCurve);
+            slideCurve.IsPositionAvailable += IsPositionAvailable;
+            return;
+        }
+
+        public void Add(SlideEnd slideEnd)
+        {
+            if (!IsPositionAvailable(slideEnd, slideEnd.Pos))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideEnd);
+            slideEnd.IsPositionAvailable += IsPositionAvailable;
+            return;
         }
 
         /// <summary>
