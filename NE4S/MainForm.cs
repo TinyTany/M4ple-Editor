@@ -24,13 +24,17 @@ namespace NE4S
             for(int i = 0; i < tabScore.TabCount; ++i)
             {
                 //PictureBoxの追加と初期化
-                PictureBox pBox = new PictureBox();
-                pBox.Size = tabScore.TabPages[i].Size;
+                PictureBox pBox = new PictureBox
+                {
+                    Size = tabScore.TabPages[i].Size
+                };
                 //TabPageに初期化したPictureBoxを入れる
                 tabScore.TabPages[i].Controls.Add(pBox);
                 //HScrollBarの追加と初期化
-                HScrollBar hScroll = new HScrollBar();
-                hScroll.Size = new Size(pBox.Width, 17);
+                HScrollBar hScroll = new HScrollBar
+                {
+                    Size = new Size(pBox.Width, 17)
+                };
                 //HScrollBarをPictureBoxに入れる
                 pBox.Controls.Add(hScroll);
                 //HScrollBarの親コントロール内での位置を設定
