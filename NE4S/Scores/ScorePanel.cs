@@ -65,6 +65,10 @@ namespace NE4S.Scores
 #endif
 		}
 
+        public Model GetModelForSerialize() => model;
+
+        public void SetModelToDeserializedData(Model model) => this.model = model;
+
 		#region laneBookを触る用メソッド群
 		/// <summary>
 		/// 末尾に指定した拍子数の譜面を指定した個数追加
