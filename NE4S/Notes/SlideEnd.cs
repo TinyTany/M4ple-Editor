@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class SlideEnd : AirableNote
     {
         public event PositionCheckHandler IsPositionAvailable;

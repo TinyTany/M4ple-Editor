@@ -9,6 +9,7 @@ namespace NE4S.Scores
     /// <summary>
     /// 譜面そのものをすべてここで管理する
     /// </summary>
+    [Serializable()]
     public class ScoreBook : List<Score>
     {
         public ScoreBook()

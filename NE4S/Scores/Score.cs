@@ -11,6 +11,7 @@ namespace NE4S.Scores
     /// <summary>
     /// 譜面そのもの
     /// </summary>
+    [Serializable()]
     public class Score
     {
         private int beatNumer, beatDenom, index, linkCount;

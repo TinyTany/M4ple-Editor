@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class AirHold : LongNote
     {
         private static readonly float lineWidth = 5f;

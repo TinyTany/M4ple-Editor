@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class HoldEnd : AirableNote
     {
         public event NoteEventHandler CheckNotePosition, CheckNoteSize;

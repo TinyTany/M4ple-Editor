@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class Slide : LongNote
     {
         /// <summary>

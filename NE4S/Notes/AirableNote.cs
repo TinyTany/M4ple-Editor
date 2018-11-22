@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class AirableNote : Note
     {
         protected Air air = null;

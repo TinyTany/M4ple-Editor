@@ -13,6 +13,7 @@ namespace NE4S.Notes
     /// <summary>
     /// 短いノーツ1つ分を表す
     /// </summary>
+    [Serializable()]
     public class Note
     {
         private int size;

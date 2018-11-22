@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
 	public class Air : Note
 	{
         //描画とあたり判定位置調整

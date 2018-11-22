@@ -12,6 +12,7 @@ namespace NE4S.Scores
     /// <summary>
     /// 画面上で譜面を表示するための1本分の譜面レーン
     /// </summary>
+    [Serializable()]
     public class ScoreLane
     {
 		private static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;

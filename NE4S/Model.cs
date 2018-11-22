@@ -10,6 +10,7 @@ using System.Drawing;
 
 namespace NE4S
 {
+    [Serializable()]
     public class Model
     {
         public NoteBook NoteBook { get; }

@@ -8,6 +8,7 @@ using System.Drawing;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class ExTap : AirableNote
     {
         public ExTap()

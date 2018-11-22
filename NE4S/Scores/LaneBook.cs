@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace NE4S.Scores
 {
+    [Serializable()]
     public class LaneBook : List<ScoreLane>
     {
         public LaneBook()

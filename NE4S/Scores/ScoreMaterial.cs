@@ -7,6 +7,7 @@ using System.Drawing;
 
 namespace NE4S.Scores
 {
+    [Serializable()]
 	public class ScoreMaterial
 	{
         public Score Score { get; }

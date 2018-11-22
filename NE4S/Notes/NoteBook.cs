@@ -12,6 +12,7 @@ namespace NE4S.Notes
     /// <summary>
     /// 置かれている全ノーツをまとめる
     /// </summary>
+    [Serializable()]
     public class NoteBook
     {
         private List<Note> shortNotes;

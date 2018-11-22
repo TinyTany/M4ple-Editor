@@ -9,6 +9,7 @@ namespace NE4S
     /// <summary>
     /// ScoreLaneが持つ各Scoreの範囲
     /// </summary>
+    [Serializable()]
     public class Range
     {
         public int Inf { get; set; }

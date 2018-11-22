@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class SlideRelay : Note
     {
         public event PositionCheckHandler IsPositionAvailable;
