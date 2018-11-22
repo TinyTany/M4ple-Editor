@@ -65,6 +65,7 @@
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Component\DataSaver.cs" />
     <Compile Include="Component\NoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
