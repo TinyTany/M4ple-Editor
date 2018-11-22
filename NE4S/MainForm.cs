@@ -56,6 +56,7 @@ namespace NE4S
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
+            tsbSave.Click += TsbSave_Click;
             //
             tsmiIsSlideRelay.Click += (s, e) => 
             {
@@ -75,6 +76,14 @@ namespace NE4S
             {
                 flpNotePanel.Controls.Add(noteButton);
             }
+        }
+
+        private void TsbSave_Click(object sender, EventArgs e)
+        {
+            Model model = viewComponentList.ElementAt(0).Item1.GetModelForSerialize();
+            DataSaver dataSaver = new DataSaver();
+            dataSaver.ShowDialog(model);
+            return;
         }
 
         private void Score_MouseUp(object sender, MouseEventArgs e)
