@@ -435,9 +435,10 @@
             this.Controls.Add(this.tabScore);
             this.Controls.Add(this.tabNoteButton);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Text = "M4ple";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabNoteButton.ResumeLayout(false);
