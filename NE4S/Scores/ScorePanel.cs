@@ -18,7 +18,6 @@ namespace NE4S.Scores
     {
         private Size panelSize;
         private int currentPositionX, currentWidthMax;
-		private readonly NoteMaterialBook noteMaterialBook;
         private Model model;
         private HScrollBar hSBar;
         private PictureBox pBox;
@@ -39,7 +38,6 @@ namespace NE4S.Scores
             panelSize = pBox.Size;
             currentPositionX = 0;
             currentWidthMax = 0;
-			noteMaterialBook = new NoteMaterialBook();
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
