@@ -100,7 +100,8 @@ namespace NE4S
 
         private void TsbSave_Click(object sender, EventArgs e)
         {
-            Model model = viewComponentList.ElementAt(0).Item1.GetModelForSerialize();
+            //TODO: 現在開かれているタブを判別してそれを対象にセーブするようにする
+            Model model = viewComponentList.ElementAt(0).Item1.GetModelForIO();
             DataSaver dataSaver = new DataSaver();
             dataSaver.ShowDialog(model);
             return;
@@ -196,7 +197,8 @@ namespace NE4S
 			}
 		}
 
-		private void TbsAdd_Click(object sender, EventArgs e)
+        #region 汚い...汚くない？
+        private void TbsAdd_Click(object sender, EventArgs e)
 		{
 			tsbAdd.Checked = true;
 			tsbEdit.Checked = false;
@@ -219,8 +221,9 @@ namespace NE4S
 			tsbDelete.Checked = true;
 			Status.Mode = Mode.DELETE;
 		}
+        #endregion
 
-		private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
+        private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
 		{
 			tsbInvisibleSlideTap.Checked = !tsbInvisibleSlideTap.Checked;
 			Status.InvisibleSlideTap = tsbInvisibleSlideTap.Checked;
