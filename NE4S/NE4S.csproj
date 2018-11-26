@@ -62,6 +62,7 @@
     <Compile Include="Component\BarDeleteCustomForm.Designer.cs">
       <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Component\DataLoader.cs" />
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
     </Compile>

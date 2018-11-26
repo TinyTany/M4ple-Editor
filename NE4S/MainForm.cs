@@ -60,6 +60,7 @@ namespace NE4S
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
+            tsbOpen.Click += TsbOpen_Click;
             tsbSave.Click += TsbSave_Click;
             //
             tsmiIsSlideRelay.Click += (s, e) => 
@@ -80,6 +81,21 @@ namespace NE4S
             {
                 flpNotePanel.Controls.Add(noteButton);
             }
+        }
+
+        private void TsbOpen_Click(object sender, EventArgs e)
+        {
+            DataLoader dataLoader = new DataLoader();
+            Model model = dataLoader.ShowDialog();
+            if (model == null)
+            {
+                MessageBox.Show("ファイルを開けませんでした。\nファイルが破損しているか、対応していない可能性があります。");
+                return;
+            }
+            //TODO: 現在開かれているタブを判別してそれにたいしてロードするようにする
+            viewComponentList.ElementAt(0).Item1.SetModelForIO(model);
+            viewComponentList.ElementAt(0).Item2.Refresh();
+            return;
         }
 
         private void TsbSave_Click(object sender, EventArgs e)
