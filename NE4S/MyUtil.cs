@@ -134,5 +134,22 @@ namespace NE4S
             PointF endAnchor = end.Add(anchor.Sub(end).Mult(ratio));
             graphics?.DrawBezier(pen, begin, beginAnchor, endAnchor, end);
         }
+
+        public static GraphicsPath RoundedPath(this RectangleF rectangle)
+        {
+            float roundRatio = .2f;
+            SizeF rectSize = new SizeF(rectangle.Width * roundRatio, rectangle.Height * roundRatio);
+            RectangleF rectTopLeft = new RectangleF(rectangle.X, rectangle.Y, rectSize.Width, rectSize.Height);
+            RectangleF rectTopRight = new RectangleF(rectangle.X + rectangle.Width * (1 - roundRatio), rectangle.Y, rectSize.Width, rectSize.Height);
+            RectangleF rectBottomLeft = new RectangleF(rectangle.X, rectangle.Y + rectangle.Height * (1 - roundRatio), rectSize.Width, rectSize.Height);
+            RectangleF rectBottomRight = new RectangleF(rectangle.X + rectangle.Width * (1 - roundRatio), rectangle.Y + rectangle.Height * (1 - roundRatio), rectSize.Width, rectSize.Height);
+            GraphicsPath graphicsPath = new GraphicsPath();
+            graphicsPath.AddArc(rectTopLeft, 180, 90);
+            graphicsPath.AddArc(rectTopRight, 270, 90);
+            graphicsPath.AddArc(rectBottomRight, 0, 90);
+            graphicsPath.AddArc(rectBottomLeft, 90, 90);
+            graphicsPath.CloseFigure();
+            return graphicsPath;
+        }
     }
 }
