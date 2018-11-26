@@ -34,6 +34,8 @@ namespace NE4S.Component
             Size = new Size(150, 100);
             previewBox.Size = new Size(Width - margin * 2, Height - margin * 2);
             previewBox.Location = new Point(margin - 1, margin - 1);
+            //
+            AutoScaleMode = AutoScaleMode.None;
         }
 
         protected virtual void PreviewBox_MouseDown(object sender, MouseEventArgs e)

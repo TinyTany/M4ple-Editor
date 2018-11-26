@@ -15,15 +15,17 @@ namespace NE4S
 {
     public partial class MainForm : Form
     {
-        private readonly int tabPageCount = 5;
+        private readonly int tabPageCount = 3;
 
         public MainForm()
         {
             InitializeComponent();
             tabScore.TabPages.Clear();
+            tabScore.Font = new Font("Arial", 9);
+            tabNoteButton.Font = tabScore.Font;
             for(int i = 0; i < tabPageCount; ++i)
             {
-                TabPageEx tabPageEx = new TabPageEx("Score" + (i+1));
+                TabPageEx tabPageEx = new TabPageEx("NewScore" + (i+1));
                 tabScore.TabPages.Add(tabPageEx);
                 //PictureBoxの追加と初期化
                 PictureBox pBox = new PictureBox
@@ -212,5 +214,5 @@ namespace NE4S
 			tsbInvisibleSlideTap.Checked = !tsbInvisibleSlideTap.Checked;
 			Status.InvisibleSlideTap = tsbInvisibleSlideTap.Checked;
 		}
-	}
+    }
 }

@@ -32,6 +32,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiView = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIsSlideRelay = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIsSlideCurve = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tabNoteButton = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -64,9 +67,6 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
-            this.tsmiView = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiIsSlideRelay = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiIsSlideCurve = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -100,6 +100,31 @@
             this.tsmiEdit.Size = new System.Drawing.Size(43, 20);
             this.tsmiEdit.Text = "編集";
             // 
+            // tsmiView
+            // 
+            this.tsmiView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiIsSlideRelay,
+            this.tsmiIsSlideCurve});
+            this.tsmiView.Name = "tsmiView";
+            this.tsmiView.Size = new System.Drawing.Size(43, 20);
+            this.tsmiView.Text = "表示";
+            // 
+            // tsmiIsSlideRelay
+            // 
+            this.tsmiIsSlideRelay.Checked = true;
+            this.tsmiIsSlideRelay.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsSlideRelay.Name = "tsmiIsSlideRelay";
+            this.tsmiIsSlideRelay.Size = new System.Drawing.Size(146, 22);
+            this.tsmiIsSlideRelay.Text = "不可視中継点";
+            // 
+            // tsmiIsSlideCurve
+            // 
+            this.tsmiIsSlideCurve.Checked = true;
+            this.tsmiIsSlideCurve.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsSlideCurve.Name = "tsmiIsSlideCurve";
+            this.tsmiIsSlideCurve.Size = new System.Drawing.Size(146, 22);
+            this.tsmiIsSlideCurve.Text = "曲線ノーツ";
+            // 
             // tsmiHelp
             // 
             this.tsmiHelp.Name = "tsmiHelp";
@@ -110,6 +135,7 @@
             // 
             this.tabNoteButton.Controls.Add(this.tabPage1);
             this.tabNoteButton.Controls.Add(this.tabPage2);
+            this.tabNoteButton.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tabNoteButton.Location = new System.Drawing.Point(11, 52);
             this.tabNoteButton.Multiline = true;
             this.tabNoteButton.Name = "tabNoteButton";
@@ -139,10 +165,10 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(179, 811);
+            this.tabPage2.Size = new System.Drawing.Size(179, 809);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Custom";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -400,31 +426,6 @@
             this.tslRealNotes.Size = new System.Drawing.Size(109, 22);
             this.tslRealNotes.Text = "Total notes (real) : 0";
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
-            // 
-            // tsmiView
-            // 
-            this.tsmiView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiIsSlideRelay,
-            this.tsmiIsSlideCurve});
-            this.tsmiView.Name = "tsmiView";
-            this.tsmiView.Size = new System.Drawing.Size(43, 20);
-            this.tsmiView.Text = "表示";
-            // 
-            // tsmiIsSlideRelay
-            // 
-            this.tsmiIsSlideRelay.Checked = true;
-            this.tsmiIsSlideRelay.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsSlideRelay.Name = "tsmiIsSlideRelay";
-            this.tsmiIsSlideRelay.Size = new System.Drawing.Size(180, 22);
-            this.tsmiIsSlideRelay.Text = "不可視中継点";
-            // 
-            // tsmiIsSlideCurve
-            // 
-            this.tsmiIsSlideCurve.Checked = true;
-            this.tsmiIsSlideCurve.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsSlideCurve.Name = "tsmiIsSlideCurve";
-            this.tsmiIsSlideCurve.Size = new System.Drawing.Size(180, 22);
-            this.tsmiIsSlideCurve.Text = "曲線ノーツ";
             // 
             // MainForm
             // 
