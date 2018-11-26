@@ -74,6 +74,9 @@
       <DependentUpon>NoteButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Component\NoteButtonManager.cs" />
+    <Compile Include="Component\TabPageEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Component\SizableNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
