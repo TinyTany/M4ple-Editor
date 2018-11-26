@@ -22,7 +22,6 @@ namespace NE4S.Notes
             
         }
 
-#if DEBUG
 		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
             RectangleF drawRect = new RectangleF(
@@ -33,14 +32,15 @@ namespace NE4S.Notes
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
 			{
 				e.Graphics.FillRectangle(gradientBrush, drawRect);
-                //e.Graphics.FillRectangle(gradientBrush, new RectangleF(100, 100, 100, 500));
 			}
 			using (Pen pen = new Pen(Color.White, 1))
 			{
                 e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
-				//e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
 			}
-		}
-#endif
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
 	}
 }

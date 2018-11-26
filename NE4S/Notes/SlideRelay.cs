@@ -51,9 +51,9 @@ namespace NE4S.Notes
                 //e.Graphics.FillRectangle(gradientBrush, drawRect);
                 //e.Graphics.FillRectangle(gradientBrush, new RectangleF(100, 100, 100, 500));
             }
-            using (Pen pen = new Pen(Color.White, 1))
+            using (Pen pen = new Pen(Color.LightGray, 1))
             {
-                e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
         }
     }

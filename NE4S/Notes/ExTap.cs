@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
@@ -16,9 +17,11 @@ namespace NE4S.Notes
 
         }
 
-		public ExTap(int size, Position pos, PointF location) : base(size, pos, location) { }
+		public ExTap(int size, Position pos, PointF location) : base(size, pos, location)
+        {
 
-#if DEBUG
+        }
+
 		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
             RectangleF drawRect = new RectangleF(
@@ -26,11 +29,18 @@ namespace NE4S.Notes
                 noteRect.Y - originPosY + adjustNoteRect.Y,
                 noteRect.Width,
                 noteRect.Height);
-            using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 0)))
-			{
-				e.Graphics.FillRectangle(myBrush, drawRect);
-			}
-		}
-#endif
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Yellow, Color.FromArgb(195, 185, 65)))
+            {
+                e.Graphics.FillRectangle(gradientBrush, drawRect);
+            }
+            using (Pen pen = new Pen(Color.White, 1))
+            {
+                e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
 	}
 }

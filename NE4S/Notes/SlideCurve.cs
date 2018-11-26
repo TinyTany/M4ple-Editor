@@ -52,7 +52,7 @@ namespace NE4S.Notes
             }
             using (Pen pen = new Pen(Color.Blue, 1))
             {
-                e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
         }
     }
