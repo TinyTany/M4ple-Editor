@@ -65,18 +65,18 @@ namespace NE4S.Scores
 #endif
 		}
 
-        public Model GetModelForSerialize() => model;
+        public Model GetModelForIO() => model;
 
-        public void SetModelToDeserializedData(Model model) => this.model = model;
+        public void SetModelForIO(Model model) => this.model = model;
 
-		#region laneBookを触る用メソッド群
-		/// <summary>
-		/// 末尾に指定した拍子数の譜面を指定した個数追加
-		/// </summary>
-		/// <param name="beatNumer">拍子分子</param>
-		/// <param name="beatDenom">拍子分母</param>
-		/// <param name="barCount">個数</param>
-		private void SetScore(int beatNumer, int beatDenom, int barCount)
+        #region laneBookを触る用メソッド群
+        /// <summary>
+        /// 末尾に指定した拍子数の譜面を指定した個数追加
+        /// </summary>
+        /// <param name="beatNumer">拍子分子</param>
+        /// <param name="beatDenom">拍子分母</param>
+        /// <param name="barCount">個数</param>
+        private void SetScore(int beatNumer, int beatDenom, int barCount)
         {
             model.SetScore(beatNumer, beatDenom, barCount);
             Update();
