@@ -46,6 +46,27 @@ namespace NE4S.Notes
 		public void Delete(Note note)
 		{
 			if (note is Air) airNotes.Remove(note as Air);
+            else if (note is HoldBegin || note is HoldEnd)
+            {
+                Hold hold = holdNotes.Find(x => x.Contains(note));
+                if (hold != null) holdNotes.Remove(hold);
+            }
+            else if (note is SlideBegin || note is SlideEnd)
+            {
+                Slide slide = slideNotes.Find(x => x.Contains(note));
+                if (slide != null) slideNotes.Remove(slide);
+            }
+            else if (note is SlideTap || note is SlideRelay || note is SlideCurve)
+            {
+                Slide slide = slideNotes.Find(x => x.Contains(note));
+                slide?.Remove(note);
+            }
+            else if (note is AirAction)
+            {
+                AirHold airHold = airHoldNotes.Find(x => x.Contains(note));
+                airHold?.Remove(note);
+                if (airHold != null && !airHold.Where(x => x is AirAction).Any()) airHoldNotes.Remove(airHold);
+            }
 			else shortNotes.Remove(note);
 		}
 
