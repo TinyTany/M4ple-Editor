@@ -48,6 +48,11 @@ namespace NE4S.Notes
             
         }
 
+        public override bool Contains(PointF location)
+        {
+            return GetAirPath(0, 0).IsVisible(location);
+        }
+
         /// <summary>
         /// 真上向きAirのGraphicsPathを返します
         /// </summary>
