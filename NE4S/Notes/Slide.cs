@@ -114,6 +114,21 @@ namespace NE4S.Notes
         }
 
         /// <summary>
+        /// 削除後にノーツのチェックも行う
+        /// </summary>
+        /// <param name="note"></param>
+        public new void Remove(Note note)
+        {
+            base.Remove(note);
+            Note past = this.OrderBy(x => x.Pos).Where(x => x.Pos.CompareTo(note.Pos) < 0).Last();
+            Note future = this.OrderBy(x => x.Pos).Where(x => x.Pos.CompareTo(note.Pos) > 0).First();
+            if(past is SlideCurve && future is SlideCurve)
+            {
+                base.Remove(future);
+            }
+        }
+
+        /// <summary>
         /// 与えられた座標がスライド帯の上に乗っているか判定します
         /// ただしベジェスライド上では判定されません
         /// </summary>
