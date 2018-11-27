@@ -97,6 +97,7 @@ namespace NE4S.Notes
         public Note SelectedNote(PointF location, ref int noteArea)
         {
             Note selectedNote;
+            //AirHold
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 selectedNote = airHold.Find(x => x.Contains(location));
@@ -106,18 +107,21 @@ namespace NE4S.Notes
                     return selectedNote;
                 }
             }
+            //Air
             selectedNote = airNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
+            //ShortNote
             selectedNote = shortNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
+            //Slide
             foreach (Slide slide in slideNotes.Reverse<Slide>())
             {
                 selectedNote = slide.Find(x => x.Contains(location));
@@ -127,6 +131,7 @@ namespace NE4S.Notes
                     return selectedNote;
                 }
             }
+            //Hold
             foreach (Hold hold in holdNotes.Reverse<Hold>())
             {
                 selectedNote = hold.Find(x => x.Contains(location));
@@ -195,8 +200,6 @@ namespace NE4S.Notes
             return airHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
-#if DEBUG
-        //今はちょっとだけ実装
         //TODO: 範囲外のノーツは描画しないようにして軽くする
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
@@ -224,6 +227,5 @@ namespace NE4S.Notes
                 airHold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
             }
 		}
-#endif
 	}
 }

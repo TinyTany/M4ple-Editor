@@ -388,19 +388,15 @@ namespace NE4S.Scores
                     model.AddLongNote(new Hold(Status.NoteSize, position, locationVirtual, lane.Index));
                     break;
                 case NoteType.SLIDE:
-                    //testように直書き
                     //Slideとの当たり判定は自由仮想座標を使う
                     Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
                     if(selectedSlide != null)
                     {
                         if (Status.InvisibleSlideTap)
                         {
-                            
-                            //*
                             SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
                             selectedSlide.Add(slideRelay);
                             Status.SelectedNote = slideRelay;
-                            //*/
                         }
                         else
                         {
