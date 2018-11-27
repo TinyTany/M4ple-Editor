@@ -63,9 +63,9 @@ namespace NE4S.Notes
                 noteRect.Width,
                 noteRect.Height);
 
-            using (Pen pen = new Pen(Color.White, 1))
+            using (Pen pen = new Pen(Color.LightGray, 1))
             {
-                e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
 #endif
             return;

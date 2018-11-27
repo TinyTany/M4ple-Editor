@@ -557,20 +557,18 @@ namespace NE4S.Scores
 			//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
 			int originPosX = currentPositionX;
 			int originPosY = 0;
-			var laneBook = model.LaneBook;
-			for (int i = 0; i < laneBook.Count; ++i)
-            {
-                //ScoreLaneが表示範囲内にあるか
-                if (currentPositionX < (ScoreLane.Width + Margin.Left + Margin.Right) * (i + 1) &&
-					currentPositionX + panelSize.Width > (ScoreLane.Width + Margin.Left + Margin.Right) * i)
-                {
-                    //ScoreLaneを描画
-                    laneBook[i].PaintLane(e, originPosX, originPosY);
-				}
-            }
-#if DEBUG
-			model.PaintNote(e, originPosX, originPosY, currentPositionX);
-#endif
+            var drawLaneBook = model.LaneBook.Where(
+                x =>
+                x.HitRect.Right >= currentPositionX - ScoreInfo.LaneMargin.Right &&
+                x.HitRect.Left <= currentPositionX + pBox.Width + ScoreInfo.LaneMargin.Left)
+                .ToList();
+            drawLaneBook.ForEach(x => x.PaintLane(e, originPosX, originPosY));
+            //現在の描画範囲にあるレーンの小節数の範囲を設定
+            Status.DrawScoreBarFirst = drawLaneBook.First().FirstScore.Index + 1;
+            Status.DrawScoreBarLast = drawLaneBook.Last().LastScore.Index + 1;
+            //ノーツ描画
+            model.PaintNote(e, originPosX, originPosY, currentPositionX);
+            //プレビューノーツ描画
 			pNote.Paint(e);
 		}
     }
