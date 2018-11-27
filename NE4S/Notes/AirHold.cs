@@ -16,6 +16,9 @@ namespace NE4S.Notes
         private static readonly float lineWidth = 5f;
         private static readonly Color lineColor = Color.FromArgb(225, 115, 255, 20);
 
+        public delegate void VoidHandler();
+        public event VoidHandler DetachAirHold;
+
         public AirHold()
         {
 
@@ -43,6 +46,8 @@ namespace NE4S.Notes
                 return this.First() as AirHoldBegin;
             }
         }
+
+        public void DetachNote() => DetachAirHold?.Invoke();
 
         public void Add(AirAction airAction)
         {

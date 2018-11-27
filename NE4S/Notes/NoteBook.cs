@@ -45,16 +45,29 @@ namespace NE4S.Notes
 
 		public void Delete(Note note)
 		{
-			if (note is Air) airNotes.Remove(note as Air);
+            if (note is Air)
+            {
+                Air air = note as Air;
+                airNotes.Remove(air);
+                air.DetachNote();
+            }
             else if (note is HoldBegin || note is HoldEnd)
             {
                 Hold hold = holdNotes.Find(x => x.Contains(note));
                 if (hold != null) holdNotes.Remove(hold);
+                //終点にAirやAirHoldがくっついていたときの処理
+                HoldEnd holdEnd = hold.Find(x => x is HoldEnd) as HoldEnd;
+                airNotes.Remove(holdEnd.GetAirForDelete());
+                airHoldNotes.Remove(holdEnd.GetAirHoldForDelete());
             }
             else if (note is SlideBegin || note is SlideEnd)
             {
                 Slide slide = slideNotes.Find(x => x.Contains(note));
                 if (slide != null) slideNotes.Remove(slide);
+                //終点にAirやAirHoldがくっついていたときの処理
+                SlideEnd slideEnd = slide.Find(x => x is SlideEnd) as SlideEnd;
+                airNotes.Remove(slideEnd.GetAirForDelete());
+                airHoldNotes.Remove(slideEnd.GetAirHoldForDelete());
             }
             else if (note is SlideTap || note is SlideRelay || note is SlideCurve)
             {
@@ -65,9 +78,20 @@ namespace NE4S.Notes
             {
                 AirHold airHold = airHoldNotes.Find(x => x.Contains(note));
                 airHold?.Remove(note);
-                if (airHold != null && !airHold.Where(x => x is AirAction).Any()) airHoldNotes.Remove(airHold);
+                if (airHold != null && !airHold.Where(x => x is AirAction).Any())
+                {
+                    airHoldNotes.Remove(airHold);
+                    airHold.DetachNote();
+                }
             }
-			else shortNotes.Remove(note);
+            else if (note is AirableNote)
+            {
+                AirableNote airable = note as AirableNote;
+                airNotes.Remove(airable.GetAirForDelete());
+                airHoldNotes.Remove(airable.GetAirHoldForDelete());
+                shortNotes.Remove(note);
+            }
+            else shortNotes.Remove(note);
 		}
 
 		public void Delete(LongNote longNote)

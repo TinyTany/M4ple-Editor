@@ -38,6 +38,9 @@ namespace NE4S.Notes
         /// </summary>
         private static readonly float widthRatio = 0.8f;
 
+        public delegate void VoidHandler();
+        public event VoidHandler DetachAir;
+
         public Air()
 		{
 
@@ -47,6 +50,8 @@ namespace NE4S.Notes
         {
             
         }
+
+        public void DetachNote() => DetachAir?.Invoke();
 
         public override bool Contains(PointF location)
         {

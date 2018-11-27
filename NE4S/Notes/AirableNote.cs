@@ -20,6 +20,10 @@ namespace NE4S.Notes
 
         public AirableNote(int size, Position pos, PointF location) : base(size, pos, location) { }
 
+        public Air GetAirForDelete() => air;
+
+        public AirHold GetAirHoldForDelete() => airHold;
+
         //airHoldBeginのインデックスも変更しないと描画がおかしくなるぞ！
         public override int LaneIndex
         {
@@ -33,33 +37,40 @@ namespace NE4S.Notes
         }
 
         /// <summary>
-        /// Air,AirHoldが取り付けられているか判定します
-        /// どちらもついていない時falseを返します
+        /// Airが取り付けられているか判定します
+        /// 取り付けられている場合trueを返します
         /// </summary>
-        public bool IsAttached
+        public bool IsAirAttached
         {
             get
             {
-                if(air == null && airHold == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return air != null;
+            }
+        }
+
+        /// <summary>
+        /// AirHoldが取り付けられているか判定します
+        /// 取り付けられている場合trueを返します
+        /// </summary>
+        public bool IsAirHoldAttached
+        {
+            get
+            {
+                return airHold != null;
             }
         }
 
         public void AttachAir(Air air)
         {
             this.air = air;
+            air.DetachAir += DetachAir;
             return;
         }
 
         public void AttachAirHold(AirHold airHold)
         {
             this.airHold = airHold;
+            airHold.DetachAirHold += DetachAirHold;
             airHoldBegin = airHold.AirHoldBegin;
             System.Diagnostics.Debug.Assert(airHoldBegin != null, "だめです");
             return;

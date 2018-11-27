@@ -428,11 +428,13 @@ namespace NE4S.Scores
                         selectedAirHold.Add(airAction);
                         Status.SelectedNote = airAction;
                     }
-                    else if (selectedNote != null && !selectedNote.IsAttached)
+                    if (selectedNote != null && !selectedNote.IsAirHoldAttached)
                     {
                         AirHold airHold = new AirHold(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
                         model.AddLongNote(airHold);
                         selectedNote.AttachAirHold(airHold);
+                    }
+                    if (selectedNote != null && !selectedNote.IsAirAttached) { 
                         AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
@@ -440,7 +442,7 @@ namespace NE4S.Scores
                     break;
                 case NoteType.AIRUPC:
                     selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
-                    if (selectedNote != null && !selectedNote.IsAttached)
+                    if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
                         model.AddNote(air);
@@ -449,7 +451,7 @@ namespace NE4S.Scores
                     break;
                 case NoteType.AIRUPL:
                     selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
-                    if (selectedNote != null && !selectedNote.IsAttached)
+                    if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpL air = new AirUpL(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
                         model.AddNote(air);
@@ -458,7 +460,7 @@ namespace NE4S.Scores
                     break;
                 case NoteType.AIRUPR:
                     selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
-                    if (selectedNote != null && !selectedNote.IsAttached)
+                    if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpR air = new AirUpR(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
                         model.AddNote(air);
@@ -467,7 +469,7 @@ namespace NE4S.Scores
                     break;
                 case NoteType.AIRDOWNC:
                     selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
-                    if (selectedNote != null && !selectedNote.IsAttached)
+                    if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownC air = new AirDownC(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
                         model.AddNote(air);
@@ -476,7 +478,7 @@ namespace NE4S.Scores
                     break;
                 case NoteType.AIRDOWNL:
                     selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
-                    if (selectedNote != null && !selectedNote.IsAttached)
+                    if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownL air = new AirDownL(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
                         model.AddNote(air);
@@ -485,7 +487,7 @@ namespace NE4S.Scores
                     break;
                 case NoteType.AIRDOWNR:
                     selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
-                    if (selectedNote != null && !selectedNote.IsAttached)
+                    if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownR air = new AirDownR(selectedNote.Size, selectedNote.Pos, selectedNote.Location);
                         model.AddNote(air);
