@@ -227,29 +227,16 @@ namespace NE4S.Notes
         //TODO: 範囲外のノーツは描画しないようにして軽くする
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
-            foreach (Hold hold in holdNotes)
-            {
-                hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            }
-            foreach (Slide slide in slideNotes)
-            {
-                slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            }
-            //お試し
-            //範囲外のノーツは描画しないようにするというこころ
-            foreach (Note note in shortNotes.Where(
-                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031))
-            {
-                note.Draw(e, originPosX, originPosY);
-            }
-            foreach (Air air in airNotes)
-            {
-                air.Draw(e, originPosX, originPosY);
-            }
-            foreach (AirHold airHold in airHoldNotes)
-            {
-                airHold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            }
+            //Hold
+            holdNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            //Slide
+            slideNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            //ShortNote
+            shortNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            //Air
+            airNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            //AirHold
+            airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
 		}
 	}
 }

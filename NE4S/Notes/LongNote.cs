@@ -35,6 +35,9 @@ namespace NE4S.Notes
             return true;
         }
 
+        public bool IsDrawable() => 
+            this.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).Any();
+
         public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
 

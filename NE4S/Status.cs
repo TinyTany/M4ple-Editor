@@ -26,5 +26,8 @@ namespace NE4S
         public static bool IsHoldVisible { get; set; } = true;
         public static bool IsSlideVisible { get; set; } = true;
         public static bool IsAirHoldVisible { get; set; } = true;
+
+        public static int DrawScoreBarFirst { get; set; }
+        public static int DrawScoreBarLast { get; set; }
     }
 }
