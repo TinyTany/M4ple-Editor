@@ -136,11 +136,11 @@
             this.tabNoteButton.Controls.Add(this.tabPage1);
             this.tabNoteButton.Controls.Add(this.tabPage2);
             this.tabNoteButton.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tabNoteButton.Location = new System.Drawing.Point(11, 52);
+            this.tabNoteButton.Location = new System.Drawing.Point(7, 52);
             this.tabNoteButton.Multiline = true;
             this.tabNoteButton.Name = "tabNoteButton";
             this.tabNoteButton.SelectedIndex = 0;
-            this.tabNoteButton.Size = new System.Drawing.Size(187, 837);
+            this.tabNoteButton.Size = new System.Drawing.Size(187, 846);
             this.tabNoteButton.TabIndex = 1;
             // 
             // tabPage1
@@ -150,7 +150,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(179, 811);
+            this.tabPage1.Size = new System.Drawing.Size(179, 820);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Normal";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -160,15 +160,15 @@
             this.flpNotePanel.AutoScroll = true;
             this.flpNotePanel.Location = new System.Drawing.Point(3, 3);
             this.flpNotePanel.Name = "flpNotePanel";
-            this.flpNotePanel.Size = new System.Drawing.Size(173, 805);
+            this.flpNotePanel.Size = new System.Drawing.Size(173, 814);
             this.flpNotePanel.TabIndex = 0;
             // 
             // tabPage2
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 24);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(179, 809);
+            this.tabPage2.Size = new System.Drawing.Size(179, 811);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Custom";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -181,7 +181,7 @@
             this.tabScore.Location = new System.Drawing.Point(200, 52);
             this.tabScore.Name = "tabScore";
             this.tabScore.SelectedIndex = 0;
-            this.tabScore.Size = new System.Drawing.Size(1052, 837);
+            this.tabScore.Size = new System.Drawing.Size(1064, 846);
             this.tabScore.TabIndex = 2;
             // 
             // Score1
@@ -189,7 +189,7 @@
             this.Score1.Location = new System.Drawing.Point(4, 22);
             this.Score1.Name = "Score1";
             this.Score1.Padding = new System.Windows.Forms.Padding(3);
-            this.Score1.Size = new System.Drawing.Size(1044, 811);
+            this.Score1.Size = new System.Drawing.Size(1056, 820);
             this.Score1.TabIndex = 1;
             this.Score1.Text = "Score1";
             this.Score1.UseVisualStyleBackColor = true;

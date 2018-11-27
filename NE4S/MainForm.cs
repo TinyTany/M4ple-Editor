@@ -21,7 +21,7 @@ namespace NE4S
         {
             InitializeComponent();
             tabScore.TabPages.Clear();
-            tabScore.Font = new Font("Arial", 9);
+            tabScore.Font = new Font("Yu Gothic UI", 9);
             tabNoteButton.Font = tabScore.Font;
             for(int i = 0; i < tabPageCount; ++i)
             {
