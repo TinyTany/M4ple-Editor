@@ -563,9 +563,12 @@ namespace NE4S.Scores
                 x.HitRect.Left <= currentPositionX + pBox.Width + ScoreInfo.LaneMargin.Left)
                 .ToList();
             drawLaneBook.ForEach(x => x.PaintLane(e, originPosX, originPosY));
-            //現在の描画範囲にあるレーンの小節数の範囲を設定
-            Status.DrawScoreBarFirst = drawLaneBook.First().FirstScore.Index + 1;
-            Status.DrawScoreBarLast = drawLaneBook.Last().LastScore.Index + 1;
+            if (drawLaneBook.Any())
+            {
+                //現在の描画範囲にあるレーンの小節数の範囲を設定
+                Status.DrawScoreBarFirst = drawLaneBook.First().FirstScore.Index + 1;
+                Status.DrawScoreBarLast = drawLaneBook.Last().LastScore.Index + 1;
+            }
             //ノーツ描画
             model.PaintNote(e, originPosX, originPosY, currentPositionX);
             //プレビューノーツ描画
