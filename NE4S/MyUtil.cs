@@ -137,7 +137,7 @@ namespace NE4S
 
         public static GraphicsPath RoundedPath(this RectangleF rectangle)
         {
-            float roundRatio = .2f;
+            float roundRatio = .25f;
             SizeF rectSize = new SizeF(rectangle.Width * roundRatio, rectangle.Height * roundRatio);
             RectangleF rectTopLeft = new RectangleF(rectangle.X, rectangle.Y, rectSize.Width, rectSize.Height);
             RectangleF rectTopRight = new RectangleF(rectangle.X + rectangle.Width * (1 - roundRatio), rectangle.Y, rectSize.Width, rectSize.Height);
