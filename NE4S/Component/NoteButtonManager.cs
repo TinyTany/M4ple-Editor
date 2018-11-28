@@ -14,6 +14,7 @@ namespace NE4S.Component
             //サイズ変更可能，向きはない
             Add(new SizableNoteButton(NoteType.TAP, UpdateSelectedButton));
             Add(new SizableNoteButton(NoteType.EXTAP, UpdateSelectedButton));
+            Add(new SizableNoteButton(NoteType.EXTAPDOWN, UpdateSelectedButton));
             Add(new SizableNoteButton(NoteType.AWEXTAP, UpdateSelectedButton));
             Add(new SizableNoteButton(NoteType.FLICK, UpdateSelectedButton));
             Add(new SizableNoteButton(NoteType.HELL, UpdateSelectedButton));
@@ -27,7 +28,9 @@ namespace NE4S.Component
             Add(new NoteButton(NoteType.AIRHOLD, UpdateSelectedButton));
             //数値の変更だけ
             Add(new NoteButton(NoteType.BPM, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.SPEED, UpdateSelectedButton));
+            Add(new NoteButton(NoteType.HIGHSPEED, UpdateSelectedButton));
+            Add(new NoteButton(NoteType.NOTEHS, UpdateSelectedButton));
+            Add(new NoteButton(NoteType.MEASUREHS, UpdateSelectedButton));
             //
             this.First().SetSelected();
         }
