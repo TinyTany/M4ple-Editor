@@ -180,7 +180,7 @@ namespace NE4S.Notes
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 selectedNote = airHold.Find(x => x.Contains(location));
-                if (selectedNote != null)
+                if (selectedNote != null && !(selectedNote is AirHoldBegin))
                 {
                     return selectedNote;
                 }
