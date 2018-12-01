@@ -100,6 +100,19 @@ namespace NE4S.Notes
             return;
         }
 
+        /// <summary>
+        /// このノーツの位置変更とそれに付随するAir、AirHoldノーツの位置のみを変更します
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="location"></param>
+        public new void RelocateOnly(Position pos, PointF location)
+        {
+            base.RelocateOnly(pos, location);
+            air?.RelocateOnly(pos, location);
+            //AirHold全体に変更を反映させるためRelocateを使う
+            airHoldBegin?.Relocate(pos, location);
+        }
+
         public override void Relocate(Position pos, PointF location)
         {
             Relocate(location);

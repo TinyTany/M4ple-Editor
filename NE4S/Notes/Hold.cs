@@ -55,16 +55,21 @@ namespace NE4S.Notes
         {
             if(note is HoldBegin)
             {
+                int diffLane;
                 foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
                 {
-                    
+                    diffLane = itrNote.Pos.Lane - note.Pos.Lane;
+                    //貫通する
+                    itrNote.Relocate(
+                        new Position(itrNote.Pos.Bar, itrNote.Pos.BeatCount, itrNote.Pos.BaseBeat, note.Pos.Lane),
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y));
                 }
             }
             else if(note is HoldEnd)
             {
                 Note holdBegin = this.OrderBy(x => x.Pos).First();
                 int diffLane = holdBegin.Pos.Lane - note.Pos.Lane;
-                note.RelocateOnly(
+                (note as AirableNote).RelocateOnly(
                         new Position(note.Pos.Bar, note.Pos.BeatCount, note.Pos.BaseBeat, holdBegin.Pos.Lane),
                         new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y));
             }

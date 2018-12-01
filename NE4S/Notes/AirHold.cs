@@ -153,9 +153,13 @@ namespace NE4S.Notes
         {
             if (note is AirHoldBegin)
             {
+                int diffLane;
                 foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
                 {
-
+                    diffLane = itrNote.Pos.Lane - note.Pos.Lane;
+                    itrNote.RelocateOnly(
+                        new Position(itrNote.Pos.Bar, itrNote.Pos.BeatCount, itrNote.Pos.BaseBeat, note.Pos.Lane),
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y));
                 }
             }
             else if (note is AirAction)
