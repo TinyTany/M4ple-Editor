@@ -22,7 +22,7 @@ namespace NE4S.Notes
 
         }
 
-        public AirAction(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location)
+        public AirAction(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
             LaneIndex = laneIndex;
         }

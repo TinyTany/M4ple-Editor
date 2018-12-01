@@ -46,7 +46,7 @@ namespace NE4S.Notes
 
 		}
 
-        public Air(int size, Position pos, PointF location) : base(size, pos, location)
+        public Air(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
             
         }

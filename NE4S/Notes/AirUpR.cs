@@ -17,7 +17,7 @@ namespace NE4S.Notes
 
         }
 
-        public AirUpR(int size, Position pos, PointF location) : base(size, pos, location) { }
+        public AirUpR(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public override bool Contains(PointF location)
         {

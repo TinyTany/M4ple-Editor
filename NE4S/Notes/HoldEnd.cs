@@ -20,9 +20,9 @@ namespace NE4S.Notes
 
         }
 
-        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location)
+        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
-            LaneIndex = laneIndex;
+            
         }
 
         public override void ReSize(int size)
