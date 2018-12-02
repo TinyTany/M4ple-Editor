@@ -33,7 +33,7 @@ namespace NE4S.Scores
 		{
 			PointF normalizedPos = new PointF(
 				pX - HitRect.X,
-				HitRect.Height - (pY - HitRect.Y) + ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * (Range.Inf - 1) / Score.BeatDenom
+				HitRect.Height - (pY - HitRect.Y) + ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * (Range.Min - 1) / Score.BeatDenom
 				);
 			Position pos = new Position(Score.Index + 1, (int)(normalizedPos.Y / ScoreInfo.MaxBeatHeight), ScoreInfo.MaxBeatDiv, (int)(normalizedPos.X / ScoreInfo.MinLaneWidth));
 			return pos;

@@ -12,19 +12,19 @@ namespace NE4S
     [Serializable()]
     public class Range
     {
-        public int Inf { get; set; }
-        public int Sup { get; set; }
+        public int Min { get; set; }
+        public int Max { get; set; }
 
         /// <summary>
-        /// Scoreの範囲[Inf, Sup]を設定
-        /// 範囲は1 ≦ Inf ＜ Sup ≦ bearNumer
+        /// Scoreの範囲[Min, Max]を設定
+        /// 範囲は1 ≦ Min ＜ Max ≦ bearNumer
         /// </summary>
-        /// <param name="inf">下限</param>
-        /// <param name="sup">上限</param>
-        public Range(int inf, int sup)
+        /// <param name="min">下限</param>
+        /// <param name="max">上限</param>
+        public Range(int min, int max)
         {
-            Inf = inf;
-            Sup = sup;
+            Min = min;
+            Max = max;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace NE4S
         /// <returns></returns>
         public int Size()
         {
-            return Sup - Inf + 1;
+            return Max - Min + 1;
         }
     }
 }

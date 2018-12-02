@@ -123,8 +123,8 @@ namespace NE4S.Scores
                 //ScoreのIndexは0から始まるがPosのBarは1から始まる
                 x.Score.Index + 1 == note.Pos.Bar &&
                 //RangeのInfは1から始まるがPosのCountは0から始まる
-                note.Pos.Size >= (x.Range.Inf - 1) / (float)x.Score.BeatDenom &&
-                note.Pos.Size <= x.Range.Sup / (float)x.Score.BeatDenom) != null)
+                note.Pos.Size >= (x.Range.Min - 1) / (float)x.Score.BeatDenom &&
+                note.Pos.Size <= x.Range.Max / (float)x.Score.BeatDenom) != null)
             {
                 return true;
             }
@@ -321,7 +321,7 @@ namespace NE4S.Scores
                 material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
 			}
             //tScoresの最後の要素のScoreが閉じているか判定
-            if (scoreMaterialList.Any() && scoreMaterialList.Last().Range.Sup == scoreMaterialList.Last().Score.BeatNumer)
+            if (scoreMaterialList.Any() && scoreMaterialList.Last().Range.Max == scoreMaterialList.Last().Score.BeatNumer)
             {
                 //閉じていた場合
                 //最後の小節を黄色線で閉じる
