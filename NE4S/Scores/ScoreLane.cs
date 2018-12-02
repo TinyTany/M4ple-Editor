@@ -46,7 +46,7 @@ namespace NE4S.Scores
 			PointF hitRectLocation = new PointF(
 				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
 				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（1ピクセル下げる）
-				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - HitRect.Height + 1);
+				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRectSize.Height + 1);
             HitRect = new RectangleF(hitRectLocation, hitRectSize);
 			drawRegion.Size = new SizeF(
 				Margin.Left + scoreWidth + Margin.Right,
