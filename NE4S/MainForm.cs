@@ -15,28 +15,37 @@ namespace NE4S
 {
     public partial class MainForm : Form
     {
-        private List<Tuple<ScorePanel, PictureBox, HScrollBar>> viewComponentList;
+        private readonly int tabPageCount = 3;
 
         public MainForm()
         {
             InitializeComponent();
-            viewComponentList = new List<Tuple<ScorePanel, PictureBox, HScrollBar>>();
-            for(int i = 0; i < tabScore.TabCount; ++i)
+            tabScore.TabPages.Clear();
+            tabScore.Font = new Font("Yu Gothic UI", 9);
+            tabNoteButton.Font = tabScore.Font;
+            for(int i = 0; i < tabPageCount; ++i)
             {
+                TabPageEx tabPageEx = new TabPageEx("NewScore" + (i+1));
+                tabScore.TabPages.Add(tabPageEx);
                 //PictureBoxの追加と初期化
-                PictureBox pBox = new PictureBox();
-                pBox.Size = tabScore.TabPages[i].Size;
+                PictureBox pBox = new PictureBox
+                {
+                    Size = tabScore.TabPages[i].Size
+                };
                 //TabPageに初期化したPictureBoxを入れる
                 tabScore.TabPages[i].Controls.Add(pBox);
                 //HScrollBarの追加と初期化
-                HScrollBar hScroll = new HScrollBar();
-                hScroll.Size = new Size(pBox.Width, 17);
+                HScrollBar hScroll = new HScrollBar
+                {
+                    Size = new Size(pBox.Width, 17)
+                };
                 //HScrollBarをPictureBoxに入れる
                 pBox.Controls.Add(hScroll);
                 //HScrollBarの親コントロール内での位置を設定
                 hScroll.Dock = DockStyle.Bottom;
                 //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
                 ScorePanel sPanel = new ScorePanel(pBox, hScroll);
+                tabPageEx.ScorePanel = sPanel;
                 //PictureBoxとHScrollBarの各種デリゲートの設定
                 pBox.MouseWheel += Score_MouseWheel;
                 pBox.Paint += Score_Paint;
@@ -46,8 +55,6 @@ namespace NE4S
                 pBox.MouseMove += Score_MouseMove;
                 pBox.MouseUp += Score_MouseUp;
                 hScroll.Scroll += Score_Scroll;
-                //初期化した部品たちをタプルにしてリストに追加
-                viewComponentList.Add(new Tuple<ScorePanel, PictureBox, HScrollBar>(sPanel, pBox, hScroll));
             }
 			InitializeToolStrip();
 			tsbAdd.Click += TbsAdd_Click;
@@ -56,6 +63,8 @@ namespace NE4S
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
+            tsbOpen.Click += TsbOpen_Click;
+            tsbSave.Click += TsbSave_Click;
             //
             tsmiIsSlideRelay.Click += (s, e) => 
             {
@@ -77,76 +86,83 @@ namespace NE4S
             }
         }
 
+        private void TsbOpen_Click(object sender, EventArgs e)
+        {
+            DataLoader dataLoader = new DataLoader();
+            Model model = dataLoader.ShowDialog();
+            if (model == null)
+            {
+                MessageBox.Show("ファイルを開けませんでした。\nファイルが破損しているか、対応していない可能性があります。");
+                return;
+            }
+            //現在開かれているタブを判別してそれにたいしてロードするようにする
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.SetModelForIO(model);
+            tabScore.SelectedTab.Controls[0].Refresh();
+            return;
+        }
+
+        private void TsbSave_Click(object sender, EventArgs e)
+        {
+            //現在開かれているタブを判別してそれを対象にセーブするようにする
+            Model model = (tabScore.SelectedTab as TabPageEx).ScorePanel.GetModelForIO();
+            DataSaver dataSaver = new DataSaver();
+            dataSaver.ShowDialog(model);
+            return;
+        }
+
+        #region イベント渡し
+        //現在開かれているタブに対して行う
+
         private void Score_MouseUp(object sender, MouseEventArgs e)
         {
-            //クリックされたPictureBoxに対応するScorePanelで処理
-            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
-            selectedComponent.Item1.MouseUp(e);
-            selectedComponent.Item2.Refresh();
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseUp(e);
+            tabScore.SelectedTab.Controls[0].Refresh();
         }
 
         private void Score_MouseMove(object sender, MouseEventArgs e)
         {
-            //クリックされたPictureBoxに対応するScorePanelで処理
-            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
-            selectedComponent.Item1.MouseMove(e);
-            selectedComponent.Item2.Refresh();
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseMove(e);
+            tabScore.SelectedTab.Controls[0].Refresh();
         }
 
         private void Score_MouseDown(object sender, MouseEventArgs e)
         {
-            //クリックされたPictureBoxに対応するScorePanelで処理
-            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
-            selectedComponent.Item1.MouseDown(e);
-            selectedComponent.Item2.Refresh();
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseDown(e);
+            tabScore.SelectedTab.Controls[0].Refresh();
         }
 
         private void Score_MouseEnter(object sender, EventArgs e)
         {
-            //クリックされたPictureBoxに対応するScorePanelで処理
-            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
-            selectedComponent.Item1.MouseEnter(e);
-            selectedComponent.Item2.Refresh();
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseEnter(e);
+            tabScore.SelectedTab.Controls[0].Refresh();
         }
 
         private void Score_MouseClick(object sender, MouseEventArgs e)
         {
-            //クリックされたPictureBoxに対応するScorePanelで処理
-            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
-            selectedComponent.Item1.MouseClick(e);
-            selectedComponent.Item2.Refresh();
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseClick(e);
+            tabScore.SelectedTab.Controls[0].Refresh();
         }
 
         private void Score_MouseWheel(object sender, MouseEventArgs e)
         {
-            //クリックされたPictureBoxに対応するScorePanelで処理
-            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender));
-            selectedComponent.Item1.MouseScroll(e.Delta);
-            selectedComponent.Item2.Refresh();
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseScroll(e.Delta);
+            tabScore.SelectedTab.Controls[0].Refresh();
         }
 
         private void Score_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            viewComponentList.Find(x => x.Item2.Equals((PictureBox)sender)).Item1.PaintPanel(e);
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.PaintPanel(e);
         }
 
         private void Score_Scroll(object sender, ScrollEventArgs e)
         {
-            //クリックされたHScrollBarに対応するScorePanelで処理
-            Tuple<ScorePanel, PictureBox, HScrollBar> selectedComponent =
-                viewComponentList.Find(x => x.Item3.Equals((HScrollBar)sender));
-            selectedComponent.Item1.HSBarScroll(e);
-            selectedComponent.Item2.Refresh();
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.HSBarScroll(e);
+            tabScore.SelectedTab.Controls[0].Refresh();
         }
+        #endregion
 
-		private void InitializeToolStrip()
+        private void InitializeToolStrip()
 		{
 			tscbBeat.SelectedIndex = tscbBeat.Items.IndexOf(Status.Beat.ToString());
 			tscbGrid.SelectedIndex = tscbGrid.Items.IndexOf(Status.Grid.ToString());
@@ -167,7 +183,8 @@ namespace NE4S
 			}
 		}
 
-		private void TbsAdd_Click(object sender, EventArgs e)
+        #region 汚い...汚くない？
+        private void TbsAdd_Click(object sender, EventArgs e)
 		{
 			tsbAdd.Checked = true;
 			tsbEdit.Checked = false;
@@ -190,11 +207,12 @@ namespace NE4S
 			tsbDelete.Checked = true;
 			Status.Mode = Mode.DELETE;
 		}
+        #endregion
 
-		private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
+        private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
 		{
 			tsbInvisibleSlideTap.Checked = !tsbInvisibleSlideTap.Checked;
 			Status.InvisibleSlideTap = tsbInvisibleSlideTap.Checked;
 		}
-	}
+    }
 }

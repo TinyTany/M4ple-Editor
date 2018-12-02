@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class AirUpC : Air
     {
         public AirUpC()
@@ -16,7 +17,7 @@ namespace NE4S.Notes
 
         }
 
-        public AirUpC(int size, Position pos, PointF location) : base(size, pos, location) { }
+        public AirUpC(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public override bool Contains(PointF location)
         {

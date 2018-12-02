@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
 	public class Air : Note
 	{
         //描画とあたり判定位置調整
@@ -37,14 +38,24 @@ namespace NE4S.Notes
         /// </summary>
         private static readonly float widthRatio = 0.8f;
 
+        public delegate void VoidHandler();
+        public event VoidHandler DetachAir;
+
         public Air()
 		{
 
 		}
 
-        public Air(int size, Position pos, PointF location) : base(size, pos, location)
+        public Air(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
             
+        }
+
+        public void DetachNote() => DetachAir?.Invoke();
+
+        public override bool Contains(PointF location)
+        {
+            return GetAirPath(0, 0).IsVisible(location);
         }
 
         /// <summary>

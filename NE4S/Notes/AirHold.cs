@@ -10,10 +10,14 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class AirHold : LongNote
     {
         private static readonly float lineWidth = 5f;
         private static readonly Color lineColor = Color.FromArgb(225, 115, 255, 20);
+
+        public delegate void VoidHandler();
+        public event VoidHandler DetachAirHold;
 
         public AirHold()
         {
@@ -42,6 +46,8 @@ namespace NE4S.Notes
                 return this.First() as AirHoldBegin;
             }
         }
+
+        public void DetachNote() => DetachAirHold?.Invoke();
 
         public void Add(AirAction airAction)
         {
@@ -147,9 +153,13 @@ namespace NE4S.Notes
         {
             if (note is AirHoldBegin)
             {
+                int diffLane;
                 foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
                 {
-
+                    diffLane = itrNote.Pos.Lane - note.Pos.Lane;
+                    itrNote.RelocateOnly(
+                        new Position(itrNote.Pos.Bar, itrNote.Pos.BeatCount, itrNote.Pos.BaseBeat, note.Pos.Lane),
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y));
                 }
             }
             else if (note is AirAction)

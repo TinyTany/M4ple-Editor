@@ -10,6 +10,7 @@ using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class Slide : LongNote
     {
         /// <summary>
@@ -53,12 +54,17 @@ namespace NE4S.Notes
 
         protected new bool IsPositionAvailable(Note note, Position position)
         {
-            if (note is SlideBegin && position.CompareTo(this.Where(x => x != note).OrderBy(x => x.Pos).First().Pos) > 0) return false;
-            if (note is SlideEnd && position.CompareTo(this.Where(x => x != note).OrderByDescending(x => x.Pos).First().Pos) < 0) return false;
-            foreach (Note itrNote in this.Where(x => x != note))
+            var list = this.OrderBy(x => x.Pos).Where(x => x != note);
+            var listUnderPosition = list.Where(x => x.Pos.CompareTo(position) < 0);
+            var listOverPosition = list.Where(x => x.Pos.CompareTo(position) > 0);
+            if (note is SlideBegin && position.CompareTo(list.First().Pos) > 0) return false;
+            if (note is SlideEnd && position.CompareTo(list.Last().Pos) < 0) return false;
+            foreach (Note itrNote in list)
             {
                 if (itrNote is SlideBegin && position.CompareTo(itrNote.Pos) < 0) return false;
                 else if (itrNote is SlideEnd && position.CompareTo(itrNote.Pos) > 0) return false;
+                else if (itrNote is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
+                else if (itrNote is SlideCurve && (!listOverPosition.Any() || listOverPosition.First() is SlideCurve)) return false;
                 else if (position.Equals(itrNote.Pos)) return false;
             }
             return true;
@@ -110,6 +116,21 @@ namespace NE4S.Notes
             base.Add(slideEnd);
             slideEnd.IsPositionAvailable += IsPositionAvailable;
             return;
+        }
+
+        /// <summary>
+        /// 削除後にノーツのチェックも行う
+        /// </summary>
+        /// <param name="note"></param>
+        public new void Remove(Note note)
+        {
+            base.Remove(note);
+            Note past = this.OrderBy(x => x.Pos).Where(x => x.Pos.CompareTo(note.Pos) < 0).Last();
+            Note future = this.OrderBy(x => x.Pos).Where(x => x.Pos.CompareTo(note.Pos) > 0).First();
+            if(past is SlideCurve && future is SlideCurve)
+            {
+                base.Remove(future);
+            }
         }
 
         /// <summary>

@@ -11,6 +11,7 @@ namespace NE4S.Scores
     /// <summary>
     /// 譜面そのもの
     /// </summary>
+    [Serializable()]
     public class Score
     {
         private int beatNumer, beatDenom, index, linkCount;
@@ -117,7 +118,7 @@ namespace NE4S.Scores
                 }
             }
             //指定範囲の開始が1拍目か判定
-            if(range.Inf == 1)
+            if(range.Min == 1)
             {
                 //1拍目に小節開始の黄色線を描画
                 using (Pen myPen = new Pen(Color.Yellow, 1))

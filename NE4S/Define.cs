@@ -32,7 +32,10 @@ namespace NE4S.Define
             AIRDOWNR = 15,
             AIRHOLD = 16,
             BPM = 17,
-            SPEED = 18;
+            NOTEHS = 18,
+            MEASUREHS = 19,
+            HIGHSPEED = 20,
+            EXTAPDOWN = 21;
     }
 
     public struct NoteArea

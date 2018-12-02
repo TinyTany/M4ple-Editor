@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NE4S.Define;
+using System.Drawing.Drawing2D;
+using NE4S.Notes;
 
 namespace NE4S.Component
 {
@@ -34,6 +36,8 @@ namespace NE4S.Component
             Size = new Size(150, 100);
             previewBox.Size = new Size(Width - margin * 2, Height - margin * 2);
             previewBox.Location = new Point(margin - 1, margin - 1);
+            //
+            AutoScaleMode = AutoScaleMode.None;
         }
 
         protected virtual void PreviewBox_MouseDown(object sender, MouseEventArgs e)
@@ -63,6 +67,9 @@ namespace NE4S.Component
             }
             //
             //TODO: このへんでノーツ画像描画？
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            Tap.Draw(e, new RectangleF(50, 50, 60, 10));
+            
             //
             return;
         }

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class AirUpL : AirUpC
     {
         public AirUpL()
@@ -16,7 +17,7 @@ namespace NE4S.Notes
 
         }
 
-        public AirUpL(int size, Position pos, PointF location) : base(size, pos, location) { }
+        public AirUpL(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public override bool Contains(PointF location)
         {

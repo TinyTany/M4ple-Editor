@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace NE4S.Scores
 {
+    [Serializable()]
     public class LaneBook : List<ScoreLane>
     {
         public LaneBook()
@@ -165,13 +166,13 @@ namespace NE4S.Scores
             {
                 //nextLaneに何かScoreが入っていて、そのnextLaneの最初のScoreをitrLaneに詰める余裕がある場合のみ処理を行う
                 for (ScoreLane nextLane = Next(itrLane);
-                    nextLane != null && nextLane.Any() && itrLane.CurrentBarSize + nextLane.BeginScore().BarSize <= ScoreInfo.LaneMaxBar;
+                    nextLane != null && nextLane.Any() && itrLane.CurrentBarSize + nextLane.FirstScore.BarSize <= ScoreInfo.LaneMaxBar;
                     nextLane = Next(itrLane)
                     )
                 {
                     //itrLaneとnextLaneの間でScoreを詰める
-                    itrLane.AddScore(nextLane.BeginScore());
-                    nextLane.DeleteScore(nextLane.BeginScore());
+                    itrLane.AddScore(nextLane.FirstScore);
+                    nextLane.DeleteScore(nextLane.FirstScore);
                     //詰めた結果nextLaneが空になったらnextLaneを削除
                     if (!nextLane.Any()) Remove(nextLane);
                 }
@@ -183,13 +184,13 @@ namespace NE4S.Scores
             //scoreを初めて含むレーンを取得
             ScoreLane lane = Find(x => x.Contains(score));
             //scoreがlaneの最初の要素の時は分割の意味がないので何もせずメソッドを抜ける
-            if (lane.BeginScore().Equals(score)) return;
+            if (lane.FirstScore.Equals(score)) return;
             ScoreLane newLane = new ScoreLane();
             Insert(lane.Index, newLane);
-            while (!lane.BeginScore().Equals(score))
+            while (!lane.FirstScore.Equals(score))
             {
-                newLane.AddScore(lane.BeginScore(), lane.BeginRange());
-                lane.DeleteScore(lane.BeginScore());
+                newLane.AddScore(lane.FirstScore, lane.FirstRange);
+                lane.DeleteScore(lane.FirstScore);
             }
             //lane以降のレーンを詰める
             FillLane(lane);

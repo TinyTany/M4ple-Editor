@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class HoldEnd : AirableNote
     {
         public event NoteEventHandler CheckNotePosition, CheckNoteSize;
@@ -19,9 +20,9 @@ namespace NE4S.Notes
 
         }
 
-        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location)
+        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
-            LaneIndex = laneIndex;
+            
         }
 
         public override void ReSize(int size)
@@ -71,9 +72,9 @@ namespace NE4S.Notes
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);
             }
-            using (Pen pen = new Pen(Color.White, 1))
+            using (Pen pen = new Pen(Color.LightGray, 1))
             {
-                //e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
             return;
         }

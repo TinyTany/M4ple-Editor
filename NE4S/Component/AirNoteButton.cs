@@ -153,9 +153,8 @@ namespace NE4S.Component
                 Color guideColor = Color.FromArgb(150, 255, 255, 255);
                 using (Pen pen = new Pen(guideColor))
                 {
-                    e.Graphics.DrawLine(pen, new Point(virtualButtonWeight - 1, 0), new Point(virtualButtonWeight - 1, previewBox.Height));
+                    e.Graphics.DrawLine(pen, new Point(virtualButtonWeight, 0), new Point(virtualButtonWeight, previewBox.Height));
                     e.Graphics.DrawLine(pen, new Point(previewBox.Width - virtualButtonWeight, 0), new Point(previewBox.Width - virtualButtonWeight, previewBox.Height));
-
                 }
                 using (SolidBrush brush = new SolidBrush(guideColor))
                 {

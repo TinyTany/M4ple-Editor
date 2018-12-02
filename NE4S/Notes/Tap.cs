@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class Tap : AirableNote
     {
         public Tap()
@@ -16,12 +17,11 @@ namespace NE4S.Notes
 			
         }
 
-		public Tap(int size, Position pos, PointF location) : base(size, pos, location)
+		public Tap(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
             
         }
 
-#if DEBUG
 		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
             RectangleF drawRect = new RectangleF(
@@ -31,15 +31,33 @@ namespace NE4S.Notes
                 noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
 			{
-				e.Graphics.FillRectangle(gradientBrush, drawRect);
-                //e.Graphics.FillRectangle(gradientBrush, new RectangleF(100, 100, 100, 500));
+				e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
 			}
 			using (Pen pen = new Pen(Color.White, 1))
 			{
                 e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
-				//e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
 			}
-		}
-#endif
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
+
+        //NOTE: NoteButtonでのノーツイメージ描画用に作ったけど本当にこんなのでええんか？
+        public static void Draw(PaintEventArgs e, RectangleF drawRect)
+        {
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
+            {
+                e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
+            }
+            using (Pen pen = new Pen(Color.White, 1))
+            {
+                e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
 	}
 }

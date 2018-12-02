@@ -12,6 +12,7 @@ namespace NE4S.Notes
     /// <summary>
     /// 長いノーツ(Hold,Slide,AirHold)1つ分を表す
     /// </summary>
+    [Serializable()]
     public class LongNote : List<Note>
     {
         //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
@@ -33,6 +34,9 @@ namespace NE4S.Notes
             }
             return true;
         }
+
+        public bool IsDrawable() => 
+            this.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).Any();
 
         public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{

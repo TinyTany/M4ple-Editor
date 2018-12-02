@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class SlideCurve : Note
     {
         public event PositionCheckHandler IsPositionAvailable;
@@ -18,9 +19,9 @@ namespace NE4S.Notes
 
         }
 
-        public SlideCurve(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location)
+        public SlideCurve(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
-            LaneIndex = laneIndex;
+            
         }
 
         public override void Relocate(Position pos, PointF location)
@@ -51,7 +52,7 @@ namespace NE4S.Notes
             }
             using (Pen pen = new Pen(Color.Blue, 1))
             {
-                e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
         }
     }

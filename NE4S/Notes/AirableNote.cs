@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class AirableNote : Note
     {
         protected Air air = null;
@@ -17,7 +18,14 @@ namespace NE4S.Notes
 
         public AirableNote() { }
 
-        public AirableNote(int size, Position pos, PointF location) : base(size, pos, location) { }
+        public AirableNote(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, 0)
+        {
+            LaneIndex = laneIndex;
+        }
+
+        public Air GetAirForDelete() => air;
+
+        public AirHold GetAirHoldForDelete() => airHold;
 
         //airHoldBeginのインデックスも変更しないと描画がおかしくなるぞ！
         public override int LaneIndex
@@ -32,33 +40,39 @@ namespace NE4S.Notes
         }
 
         /// <summary>
-        /// Air,AirHoldが取り付けられているか判定します
-        /// どちらもついていない時falseを返します
+        /// Airが取り付けられているか判定します
+        /// 取り付けられている場合trueを返します
         /// </summary>
-        public bool IsAttached
+        public bool IsAirAttached
         {
             get
             {
-                if(air == null && airHold == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return air != null;
+            }
+        }
+
+        /// <summary>
+        /// AirHoldが取り付けられているか判定します
+        /// 取り付けられている場合trueを返します
+        /// </summary>
+        public bool IsAirHoldAttached
+        {
+            get
+            {
+                return airHold != null;
             }
         }
 
         public void AttachAir(Air air)
         {
             this.air = air;
-            return;
+            air.DetachAir += DetachAir;
         }
 
         public void AttachAirHold(AirHold airHold)
         {
             this.airHold = airHold;
+            airHold.DetachAirHold += DetachAirHold;
             airHoldBegin = airHold.AirHoldBegin;
             System.Diagnostics.Debug.Assert(airHoldBegin != null, "だめです");
             return;
@@ -85,11 +99,23 @@ namespace NE4S.Notes
             return;
         }
 
+        /// <summary>
+        /// このノーツの位置変更とそれに付随するAir、AirHoldノーツの位置のみを変更します
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="location"></param>
+        public new void RelocateOnly(Position pos, PointF location)
+        {
+            base.RelocateOnly(pos, location);
+            air?.RelocateOnly(pos, location);
+            //AirHold全体に変更を反映させるためRelocateを使う
+            airHoldBegin?.Relocate(pos, location);
+        }
+
         public override void Relocate(Position pos, PointF location)
         {
             Relocate(location);
             Relocate(pos);
-            return;
         }
 
         public override void Relocate(PointF location)
@@ -119,9 +145,9 @@ namespace NE4S.Notes
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);
             }
-            using (Pen pen = new Pen(Color.White, 1))
+            using (Pen pen = new Pen(Color.LightGray, 1))
             {
-                //e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
         }
     }

@@ -12,6 +12,7 @@ namespace NE4S.Scores
     /// <summary>
     /// 画面上で譜面を表示するための1本分の譜面レーン
     /// </summary>
+    [Serializable()]
     public class ScoreLane
     {
 		private static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
@@ -19,7 +20,7 @@ namespace NE4S.Scores
         public static float Width { get; set; } = scoreWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
         private int index;
-		private RectangleF drawRegion, hitRect;
+		private RectangleF drawRegion;
         private List<ScoreMaterial> scoreMaterialList;
 
         /// <summary>
@@ -32,23 +33,21 @@ namespace NE4S.Scores
         /// PictureBoxの左上を原点としたときの座標
         /// index,currentBarSizeが変わると変わる
         /// </summary>
-        public RectangleF HitRect
-		{
-			get { return hitRect; }
-		}
+        public RectangleF HitRect { get; private set; }
 
         /// <summary>
         /// レーンの当たり判定矩形と描画領域矩形を更新
         /// </summary>
 		private void RefreshRects()
 		{
-			hitRect.Size = new SizeF(
+			SizeF hitRectSize = new SizeF(
 				scoreWidth,
 				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * CurrentBarSize);
-			hitRect.Location = new PointF(
+			PointF hitRectLocation = new PointF(
 				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
 				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（1ピクセル下げる）
-				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRect.Height + 1);
+				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - HitRect.Height + 1);
+            HitRect = new RectangleF(hitRectLocation, hitRectSize);
 			drawRegion.Size = new SizeF(
 				Margin.Left + scoreWidth + Margin.Right,
 				Margin.Top + maxScoreHeight + Margin.Bottom);
@@ -69,7 +68,7 @@ namespace NE4S.Scores
 			foreach (ScoreMaterial sMaterial in scoreMaterialList)
 			{
 				sMaterial.HitRect = new RectangleF(
-					hitRect.X,
+					HitRect.X,
 					ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + normalizeDeltaHeight,
 					sMaterial.Width,
 					sMaterial.Height);
@@ -96,7 +95,7 @@ namespace NE4S.Scores
         {
             scoreMaterialList = new List<ScoreMaterial>();
             CurrentBarSize = 0;
-            hitRect = new RectangleF();
+            HitRect = new RectangleF();
 			drawRegion = new RectangleF();
             index = -1;
         }
@@ -124,8 +123,8 @@ namespace NE4S.Scores
                 //ScoreのIndexは0から始まるがPosのBarは1から始まる
                 x.Score.Index + 1 == note.Pos.Bar &&
                 //RangeのInfは1から始まるがPosのCountは0から始まる
-                note.Pos.Size >= (x.Range.Inf - 1) / (float)x.Score.BeatDenom &&
-                note.Pos.Size <= x.Range.Sup / (float)x.Score.BeatDenom) != null)
+                note.Pos.Size >= (x.Range.Min - 1) / (float)x.Score.BeatDenom &&
+                note.Pos.Size <= x.Range.Max / (float)x.Score.BeatDenom) != null)
             {
                 return true;
             }
@@ -168,7 +167,7 @@ namespace NE4S.Scores
 				int normalizeDeltaHeight = 1;
 				//Scoreの当たり判定矩形を作成
 				RectangleF newScoreHitRect = new RectangleF(
-					hitRect.X,
+					HitRect.X,
                     ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
 					newScore.Width,
 					physicalHeight);
@@ -219,23 +218,42 @@ namespace NE4S.Scores
             }
         }
 
-        public Score BeginScore()
+        public Score FirstScore
         {
-            if(scoreMaterialList.Any()) return scoreMaterialList.First().Score;
-            else
+            get
             {
-                System.Diagnostics.Debug.Assert(false, "BeginScore() : tScoresは空です");
-                return null;
+                if (scoreMaterialList.Any()) return scoreMaterialList.First().Score;
+                else
+                {
+                    System.Diagnostics.Debug.Assert(false, "FirstScore() : tScoresは空です");
+                    return null;
+                }
             }
         }
 
-        public Range BeginRange()
+        public Score LastScore
         {
-            if (scoreMaterialList.Any()) return scoreMaterialList.First().Range;
-            else
+            get
             {
-                System.Diagnostics.Debug.Assert(false, "BeginRange() : tScoresは空です");
-                return null;
+                if (scoreMaterialList.Any()) return scoreMaterialList.Last().Score;
+                else
+                {
+                    System.Diagnostics.Debug.Assert(false, "FirstScore() : tScoresは空です");
+                    return null;
+                }
+            }            
+        }
+
+        public Range FirstRange
+        {
+            get
+            {
+                if (scoreMaterialList.Any()) return scoreMaterialList.First().Range;
+                else
+                {
+                    System.Diagnostics.Debug.Assert(false, "FirstRange() : tScoresは空です");
+                    return null;
+                }
             }
         }
 
@@ -301,16 +319,9 @@ namespace NE4S.Scores
             {
                 currentDrawPosY -= material.Score.Height * material.Range.Size() / material.Score.BeatNumer;
                 material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
-#if DEBUG
-                //Scoreの描画位置を表示
-                /*
-				e.Graphics.DrawString(
-					material.HitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX + 10, currentDrawPosY + 10));
-                //*/
-#endif
 			}
             //tScoresの最後の要素のScoreが閉じているか判定
-            if (scoreMaterialList.Any() && scoreMaterialList.Last().Range.Sup == scoreMaterialList.Last().Score.BeatNumer)
+            if (scoreMaterialList.Any() && scoreMaterialList.Last().Range.Max == scoreMaterialList.Last().Score.BeatNumer)
             {
                 //閉じていた場合
                 //最後の小節を黄色線で閉じる
@@ -331,13 +342,6 @@ namespace NE4S.Scores
                 //余ってる部分は塗りつぶす
                 e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
             }
-#if DEBUG
-            //Laneのインデックスと描画位置を表示
-            /*
-            e.Graphics.DrawString(Index.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY));
-            e.Graphics.DrawString(hitRect.Location.ToString(), new Font("MS UI Gothic", 10, FontStyle.Bold), Brushes.Red, new PointF(drawPosX, drawPosY + 20));
-            //*/
-#endif
 		}
     }
 }

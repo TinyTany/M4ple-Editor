@@ -10,6 +10,7 @@ namespace NE4S
     /// <summary>
     /// 置いたノーツの位置情報
     /// </summary>
+    [Serializable()]
     public class Position : IComparable<Position>
     {
         /// <summary>

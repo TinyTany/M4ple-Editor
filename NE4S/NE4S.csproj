@@ -62,9 +62,11 @@
     <Compile Include="Component\BarDeleteCustomForm.Designer.cs">
       <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Component\DataLoader.cs" />
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Component\DataSaver.cs" />
     <Compile Include="Component\NoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -72,6 +74,9 @@
       <DependentUpon>NoteButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Component\NoteButtonManager.cs" />
+    <Compile Include="Component\TabPageEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Component\SizableNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -97,7 +102,6 @@
     <Compile Include="Notes\AirUpL.cs" />
     <Compile Include="Notes\AirUpR.cs" />
     <Compile Include="Notes\AwesomeExTap.cs" />
-    <Compile Include="Notes\LongNoteMaterial.cs" />
     <Compile Include="Notes\NoteBook.cs" />
     <Compile Include="Notes\ExTap.cs" />
     <Compile Include="Notes\Flick.cs" />
@@ -107,8 +111,6 @@
     <Compile Include="Notes\HoldEnd.cs" />
     <Compile Include="Notes\LongNote.cs" />
     <Compile Include="Notes\Note.cs" />
-    <Compile Include="Notes\NoteMaterial.cs" />
-    <Compile Include="Notes\NoteMaterialBook.cs" />
     <Compile Include="Notes\PreviewNote.cs" />
     <Compile Include="Notes\Slide.cs" />
     <Compile Include="Notes\SlideBegin.cs" />

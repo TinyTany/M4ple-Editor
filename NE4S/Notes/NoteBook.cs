@@ -12,6 +12,7 @@ namespace NE4S.Notes
     /// <summary>
     /// 置かれている全ノーツをまとめる
     /// </summary>
+    [Serializable()]
     public class NoteBook
     {
         private List<Note> shortNotes;
@@ -44,8 +45,53 @@ namespace NE4S.Notes
 
 		public void Delete(Note note)
 		{
-			if (note is Air) airNotes.Remove(note as Air);
-			else shortNotes.Remove(note);
+            if (note is Air)
+            {
+                Air air = note as Air;
+                airNotes.Remove(air);
+                air.DetachNote();
+            }
+            else if (note is HoldBegin || note is HoldEnd)
+            {
+                Hold hold = holdNotes.Find(x => x.Contains(note));
+                if (hold != null) holdNotes.Remove(hold);
+                //終点にAirやAirHoldがくっついていたときの処理
+                HoldEnd holdEnd = hold.Find(x => x is HoldEnd) as HoldEnd;
+                airNotes.Remove(holdEnd.GetAirForDelete());
+                airHoldNotes.Remove(holdEnd.GetAirHoldForDelete());
+            }
+            else if (note is SlideBegin || note is SlideEnd)
+            {
+                Slide slide = slideNotes.Find(x => x.Contains(note));
+                if (slide != null) slideNotes.Remove(slide);
+                //終点にAirやAirHoldがくっついていたときの処理
+                SlideEnd slideEnd = slide.Find(x => x is SlideEnd) as SlideEnd;
+                airNotes.Remove(slideEnd.GetAirForDelete());
+                airHoldNotes.Remove(slideEnd.GetAirHoldForDelete());
+            }
+            else if (note is SlideTap || note is SlideRelay || note is SlideCurve)
+            {
+                Slide slide = slideNotes.Find(x => x.Contains(note));
+                slide?.Remove(note);
+            }
+            else if (note is AirAction)
+            {
+                AirHold airHold = airHoldNotes.Find(x => x.Contains(note));
+                airHold?.Remove(note);
+                if (airHold != null && !airHold.Where(x => x is AirAction).Any())
+                {
+                    airHoldNotes.Remove(airHold);
+                    airHold.DetachNote();
+                }
+            }
+            else if (note is AirableNote)
+            {
+                AirableNote airable = note as AirableNote;
+                airNotes.Remove(airable.GetAirForDelete());
+                airHoldNotes.Remove(airable.GetAirHoldForDelete());
+                shortNotes.Remove(note);
+            }
+            else shortNotes.Remove(note);
 		}
 
 		public void Delete(LongNote longNote)
@@ -75,6 +121,7 @@ namespace NE4S.Notes
         public Note SelectedNote(PointF location, ref int noteArea)
         {
             Note selectedNote;
+            //AirHold
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 selectedNote = airHold.Find(x => x.Contains(location));
@@ -84,18 +131,21 @@ namespace NE4S.Notes
                     return selectedNote;
                 }
             }
+            //Air
             selectedNote = airNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
+            //ShortNote
             selectedNote = shortNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
+            //Slide
             foreach (Slide slide in slideNotes.Reverse<Slide>())
             {
                 selectedNote = slide.Find(x => x.Contains(location));
@@ -105,6 +155,7 @@ namespace NE4S.Notes
                     return selectedNote;
                 }
             }
+            //Hold
             foreach (Hold hold in holdNotes.Reverse<Hold>())
             {
                 selectedNote = hold.Find(x => x.Contains(location));
@@ -129,7 +180,7 @@ namespace NE4S.Notes
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 selectedNote = airHold.Find(x => x.Contains(location));
-                if (selectedNote != null)
+                if (selectedNote != null && !(selectedNote is AirHoldBegin))
                 {
                     return selectedNote;
                 }
@@ -173,35 +224,18 @@ namespace NE4S.Notes
             return airHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
-#if DEBUG
-        //今はちょっとだけ実装
-        //TODO: 範囲外のノーツは描画しないようにして軽くする
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
-            foreach (Hold hold in holdNotes)
-            {
-                hold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            }
-            foreach (Slide slide in slideNotes)
-            {
-                slide.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            }
-            //お試し
-            //範囲外のノーツは描画しないようにするというこころ
-            foreach (Note note in shortNotes.Where(
-                x => x.Location.X > originPosX && x.Location.X < originPosX + 1031))
-            {
-                note.Draw(e, originPosX, originPosY);
-            }
-            foreach (Air air in airNotes)
-            {
-                air.Draw(e, originPosX, originPosY);
-            }
-            foreach (AirHold airHold in airHoldNotes)
-            {
-                airHold.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
-            }
+            //Hold
+            holdNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            //Slide
+            slideNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            //ShortNote
+            shortNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            //Air
+            airNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            //AirHold
+            airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
 		}
-#endif
 	}
 }

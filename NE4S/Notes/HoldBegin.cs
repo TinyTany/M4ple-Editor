@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class HoldBegin : Note
     {
         public event NoteEventHandler CheckNotePosition, CheckNoteSize;
@@ -18,9 +19,9 @@ namespace NE4S.Notes
 
         }
 
-        public HoldBegin(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location)
+        public HoldBegin(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
-            LaneIndex = laneIndex;
+            
         }
 
         public override void ReSize(int size)
@@ -32,7 +33,6 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos, PointF location)
         {
-            //基底のものを使うかこのクラスのものを使うか検討する
             base.Relocate(pos);
             base.Relocate(location);
             CheckNotePosition?.Invoke(this);
@@ -62,12 +62,15 @@ namespace NE4S.Notes
                 noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Orange, Color.DarkOrange))
             {
-                e.Graphics.FillRectangle(gradientBrush, drawRect);
+                e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
             }
             using (Pen pen = new Pen(Color.White, 1))
             {
                 e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
-                //e.Graphics.DrawRectangles(pen, new RectangleF[]{ drawRect });
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
         }
     }
