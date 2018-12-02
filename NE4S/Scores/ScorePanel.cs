@@ -324,7 +324,12 @@ namespace NE4S.Scores
                     }
 					break;
 				case Mode.DELETE:
-					break;
+                    var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX));
+                    if(Status.IsMousePressed && selectedNote != null)
+                    {
+                        model.NoteBook.Delete(selectedNote);
+                    }
+                    break;
 				default:
 					break;
 			}
