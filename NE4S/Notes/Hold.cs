@@ -101,6 +101,23 @@ namespace NE4S.Notes
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
             var list = this.OrderBy(x => x.Pos).ToList();
+            //ノーツ位置のチェック（手抜きver）
+            //HACK: 適当に書いたので再検討する
+            //でかいScoreだとうまくいかなかったりする
+            for (Note past = list.First(); past != list.Last(); past = list.ElementAt(list.IndexOf(past) + 1))
+            {
+                Note future = list.ElementAt(list.IndexOf(past) + 1);
+                if (laneBook.Find(x => x.HitRect.Contains(future.Location)) == null)
+                {
+                    ScoreLane lane = laneBook.Find(x => x.HitRect.Contains(past.Location));
+                    if (lane == null) break;
+                    PointF location = new PointF(future.Location.X + ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, future.Location.Y + lane.HitRect.Height);
+                    Position position = new Position(future.Pos.Bar + 1, 0, 1, future.Pos.Lane);
+                    future.RelocateOnly(position, location);
+                    future.LaneIndex++;
+                }
+            }
+            //Draw
             foreach (Note note in list)
             {
                 if(list.IndexOf(note) < list.Count - 1)
