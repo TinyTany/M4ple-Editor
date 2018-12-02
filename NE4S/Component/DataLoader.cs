@@ -33,6 +33,10 @@ namespace NE4S.Component
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 model = DeserializeData();
+                if(model == null)
+                {
+                    MessageBox.Show("ファイルを開けませんでした。\nファイルが破損しているか、対応していない可能性があります。");
+                }
             }
             return model;
         }

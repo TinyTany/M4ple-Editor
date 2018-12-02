@@ -23,16 +23,15 @@ namespace NE4S.Scores
 			//まとめた譜面たちをscoreBookに入れる
 			scoreBook.Append(newScores);
             //新譜面たちをレーンに割り当て
+            if (!this.Any())
+            {
+                Add(new ScoreLane());
+            }
             foreach (Score newScore in newScores)
             {
                 //newScoreが1つのレーンの最大サイズで収まるか判定
                 if (newScore.BarSize <= ScoreInfo.LaneMaxBar)
                 {
-                    //そもそも現在のレーンリストが空の時は新レーンを1つ補充
-                    if (!this.Any())
-                    {
-                        Add(new ScoreLane());
-                    }
                     //現在のリストにあるレーンの末尾にまだnewScoreを入れる余裕があるか判定
                     if (this.Last().CurrentBarSize + newScore.BarSize > ScoreInfo.LaneMaxBar)
                     {
@@ -40,7 +39,7 @@ namespace NE4S.Scores
                         Add(new ScoreLane());
                     }
                     //レーン末尾にnewScoreを格納
-                    this.Last().AddScore(newScore, new Range(1, newScore.BeatNumer));
+                    this.Last().AddScore(newScore);
                 }
                 //収まらなかった場合
                 else
@@ -179,8 +178,13 @@ namespace NE4S.Scores
             }
         }
 
+        /// <summary>
+        /// 指定したscoreからレーンを改行する
+        /// </summary>
+        /// <param name="score"></param>
         public void DivideLane(Score score)
         {
+            if (score.BarSize > ScoreInfo.LaneMaxBar) return;
             //scoreを初めて含むレーンを取得
             ScoreLane lane = Find(x => x.Contains(score));
             //scoreがlaneの最初の要素の時は分割の意味がないので何もせずメソッドを抜ける
