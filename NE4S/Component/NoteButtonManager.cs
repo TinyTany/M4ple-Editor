@@ -29,8 +29,6 @@ namespace NE4S.Component
             //数値の変更だけ
             Add(new NoteButton(NoteType.BPM, UpdateSelectedButton));
             Add(new NoteButton(NoteType.HIGHSPEED, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.NOTEHS, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.MEASUREHS, UpdateSelectedButton));
             //
             this.First().SetSelected();
         }
