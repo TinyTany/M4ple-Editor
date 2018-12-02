@@ -55,16 +55,17 @@ namespace NE4S.Notes
         protected new bool IsPositionAvailable(Note note, Position position)
         {
             var list = this.OrderBy(x => x.Pos).Where(x => x != note);
+            var listUnderPosition = list.Where(x => x.Pos.CompareTo(position) < 0);
+            var listOverPosition = list.Where(x => x.Pos.CompareTo(position) > 0);
             if (note is SlideBegin && position.CompareTo(list.First().Pos) > 0) return false;
             if (note is SlideEnd && position.CompareTo(list.Last().Pos) < 0) return false;
             foreach (Note itrNote in list)
             {
                 if (itrNote is SlideBegin && position.CompareTo(itrNote.Pos) < 0) return false;
                 else if (itrNote is SlideEnd && position.CompareTo(itrNote.Pos) > 0) return false;
-                else if (itrNote is SlideCurve && list.Where(x => x.Pos.CompareTo(position) < 0).Last() is SlideCurve) return false;
-                else if (itrNote is SlideCurve && list.Where(x => x.Pos.CompareTo(position) > 0).First() is SlideCurve) return false;
+                else if (itrNote is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
+                else if (itrNote is SlideCurve && (!listOverPosition.Any() || listOverPosition.First() is SlideCurve)) return false;
                 else if (position.Equals(itrNote.Pos)) return false;
-
             }
             return true;
         }
