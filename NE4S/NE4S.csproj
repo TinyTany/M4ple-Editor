@@ -80,6 +80,9 @@
     <Compile Include="Component\SizableNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Component\ValueNoteButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Define.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -102,6 +105,8 @@
     <Compile Include="Notes\AirUpL.cs" />
     <Compile Include="Notes\AirUpR.cs" />
     <Compile Include="Notes\AwesomeExTap.cs" />
+    <Compile Include="Notes\AttributeNote.cs" />
+    <Compile Include="Notes\BPM.cs" />
     <Compile Include="Notes\NoteBook.cs" />
     <Compile Include="Notes\ExTap.cs" />
     <Compile Include="Notes\Flick.cs" />
@@ -118,6 +123,7 @@
     <Compile Include="Notes\SlideEnd.cs" />
     <Compile Include="Notes\SlideRelay.cs" />
     <Compile Include="Notes\SlideTap.cs" />
+    <Compile Include="Notes\Speed.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
