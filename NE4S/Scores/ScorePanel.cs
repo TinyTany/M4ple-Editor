@@ -268,7 +268,7 @@ namespace NE4S.Scores
 						
 					}
                     //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずほぼそのままコピペ
-                    //PointToGridのオーバーライドが違うだけ
+                    //PointToGridのオーバーロードが違うだけ
                     //動いた
                     if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
                     {
@@ -288,7 +288,8 @@ namespace NE4S.Scores
                         {
                             case NoteArea.LEFT:
                                 {
-                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
+                                    if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).Add(currentPositionX);
                                     int newSize = (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
                                     if (newSize <= 0) newSize = 1;
                                     else if (newSize > 16) newSize = 16;
@@ -298,7 +299,7 @@ namespace NE4S.Scores
                             case NoteArea.CENTER:
                                 {
                                     //ノーツのサイズを考慮したほうのメソッドを使う
-                                    Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote);
+                                    Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote.Size);
                                     Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
                                     Position newPos = selectedLane.GetPos(virtualGridPoint);
                                     Status.SelectedNote.Relocate(newPos, virtualGridPoint);
@@ -308,7 +309,8 @@ namespace NE4S.Scores
                                 break;
                             case NoteArea.RIGHT:
                                 {
-                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, new Note()).Add(currentPositionX);
+                                    if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).Add(currentPositionX);
                                     int newSize = (int)((virtualGridPoint.X - Status.SelectedNote.Location.X) / ScoreInfo.MinLaneWidth);
                                     ++newSize;
                                     if (newSize <= 0) newSize = 1;
@@ -335,15 +337,9 @@ namespace NE4S.Scores
             Status.SelectedNoteArea = NoteArea.NONE;
 		}
 
-        public void MouseEnter(EventArgs e)
-        {
+        public void MouseEnter(EventArgs e) { }
 
-        }
-
-        public void MouseLeave(EventArgs e)
-        {
-
-        }
+        public void MouseLeave(EventArgs e) { }
 
         public void MouseScroll(int delta)
         {
@@ -509,20 +505,7 @@ namespace NE4S.Scores
         /// <returns></returns>
         private Point PointToGrid(Point location, ScoreLane lane)
         {
-            Point gridP = new Point();
-			//HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
-            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1));
-            Point deltaP = new Point();
-			float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
-			float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-			float maxGridX = (ScoreInfo.Lanes - Status.NoteSize) * ScoreInfo.MinLaneWidth;
-			//現在の自由座標とそこから計算したグリッド座標の差分
-			deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
-			deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
-            gridP.X = location.X + deltaP.X;
-            gridP.Y = location.Y + deltaP.Y;
-            //帰ってくる座標はXにcurrentPositionX足されていない生のもの
-            return gridP;
+            return PointToGrid(location, lane, Status.NoteSize);
         }
 
         /// <summary>
@@ -532,17 +515,16 @@ namespace NE4S.Scores
         /// </summary>
         /// <param name="location"></param>
         /// <param name="lane"></param>
-        /// <param name="note"></param>
         /// <returns></returns>
-        private Point PointToGrid(Point location, ScoreLane lane, Note note)
+        private Point PointToGrid(Point location, ScoreLane lane, int noteSize)
         {
             Point gridP = new Point();
             //HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
-            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1));
+            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1 + lane.HitRect.Height));
             Point deltaP = new Point();
             float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
             float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            float maxGridX = (ScoreInfo.Lanes - note.Size) * ScoreInfo.MinLaneWidth;
+            float maxGridX = (ScoreInfo.Lanes - noteSize) * ScoreInfo.MinLaneWidth;
             //現在の自由座標とそこから計算したグリッド座標の差分
             deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
             deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;

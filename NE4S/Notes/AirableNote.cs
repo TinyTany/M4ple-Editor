@@ -67,7 +67,6 @@ namespace NE4S.Notes
         {
             this.air = air;
             air.DetachAir += DetachAir;
-            return;
         }
 
         public void AttachAirHold(AirHold airHold)
@@ -117,7 +116,6 @@ namespace NE4S.Notes
         {
             Relocate(location);
             Relocate(pos);
-            return;
         }
 
         public override void Relocate(PointF location)

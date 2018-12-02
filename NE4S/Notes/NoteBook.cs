@@ -224,7 +224,6 @@ namespace NE4S.Notes
             return airHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
-        //TODO: 範囲外のノーツは描画しないようにして軽くする
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
             //Hold
