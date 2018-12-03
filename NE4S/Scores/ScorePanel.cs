@@ -191,9 +191,10 @@ namespace NE4S.Scores
             if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
-				if(selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y) != null)
+                Position position = selectedLane.GetPos(gridPoint.AddX(currentPositionX));
+				if(position != null)
 				{
-					selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y).PrintPos();
+                    position.PrintPosition();
 				}
 				else
 				{

@@ -22,6 +22,7 @@ namespace NE4S.Scores
         public static float MaxBeatHeight { get; } = 2;
         /// <summary>
         /// 最大分数
+        /// 1tick
         /// </summary>
         public static int MaxBeatDiv { get; } = 192;
         /// <summary>

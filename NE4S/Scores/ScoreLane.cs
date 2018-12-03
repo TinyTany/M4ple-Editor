@@ -280,25 +280,20 @@ namespace NE4S.Scores
 		/// <summary>
 		/// 試作
 		/// </summary>
-		public Position GetPos(int pX, int pY)
+		public Position GetPos(PointF location)
 		{
             ScoreMaterial selectedScoreMaterial =
-                scoreMaterialList.Find(x => x.HitRect.Contains(pX, pY));
+                scoreMaterialList.Find(x => x.HitRect.Contains(location));
 			if (selectedScoreMaterial != null)
 			{
-				return selectedScoreMaterial.CalculatePos(pX, pY);
+                return selectedScoreMaterial.GetPosition(location);
 			}
 			else
 			{
-				System.Diagnostics.Debug.WriteLine("GetPos(Point) : selectedTScore = null");
+                System.Diagnostics.Debug.Assert(false, "ノーツの相対位置を計算できませんでした");
 				return null;
 			}
 		}
-
-        public Position GetPos(Point p)
-        {
-            return GetPos(p.X, p.Y);
-        }
 
 		/// <summary>
 		/// originPosXとoriginPosYは、ScorePanelでのcurrentPositionXと0が入る

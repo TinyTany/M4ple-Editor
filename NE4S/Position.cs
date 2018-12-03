@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using NE4S.Scores;
 
 namespace NE4S
 {
@@ -14,39 +15,25 @@ namespace NE4S
     public class Position : IComparable<Position>
     {
         /// <summary>
-        /// 小節番号
-        /// 1スタート
-        /// </summary>
-		public int Bar { get; }
-        public int BaseBeat { get; private set; }
-        public int BeatCount { get; private set; }
-        /// <summary>
         /// ノーツの左端のレーン番号（0-15）
         /// </summary>
         public int Lane { get; private set; }
-        public float Size { get; private set; }
+        public int Tick { get; private set; }
 
-        public Position(int bar, int beatCount, int baseBeat, int lane)
+        public Position(int lane, int tick)
         {
-            //barは1始まり(ScoreMaterialのCalculatePosメソッド参照)
-			Bar = bar;
-			BeatCount = beatCount;
-			BaseBeat = baseBeat;
-			Lane = lane;
-			RefreshPos();
+            Lane = lane;
+            Tick = tick;
         }
 
-		public void PrintPos()
+		public void PrintPosition()
 		{
-			System.Diagnostics.Debug.WriteLine(Bar + "(" + BeatCount + "/" + BaseBeat + "), " + Lane);
-		}
+            System.Diagnostics.Debug.WriteLine("(Lane, Tick) = (" + Lane + ", " + Tick + ")");
+        }
 
         public Position Next()
         {
-            Position nextPosition = new Position(Bar, BeatCount, BaseBeat, Lane);
-            nextPosition.BeatCount++;
-            nextPosition.RefreshPos();
-            return nextPosition;
+            return new Position(Lane, Tick + (ScoreInfo.MaxBeatDiv / Status.Beat));
         }
 
         public override bool Equals(object obj)
@@ -59,26 +46,14 @@ namespace NE4S
             return 0;
         }
 
-        private void RefreshPos()
-		{
-			int Gcd = MyUtil.Gcd(BeatCount, BaseBeat);
-			BeatCount /= Gcd;
-			BaseBeat /= Gcd;
-            Size = BeatCount / (float)BaseBeat;
-		}
-
         /// <summary>
-        /// otherと比べて自分が小さければ-1、同じなら0、大きければ1を返す
+        /// otherと比べて自分が小さければ負の値、同じなら0、大きければ正の値を返す
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
         public int CompareTo(Position other)
         {
-            if(Bar < other.Bar) { return -1; }
-            else if(Bar > other.Bar) { return 1; }
-            else if(BeatCount / (float)BaseBeat < other.BeatCount / (float)other.BaseBeat) { return -1; }
-            else if(BeatCount / (float)BaseBeat > other.BeatCount / (float)other.BaseBeat) { return 1; }
-            else { return 0; }
+            return Tick - other.Tick;
         }
 
         
