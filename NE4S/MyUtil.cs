@@ -89,7 +89,7 @@ namespace NE4S
             return new PointF(pointF.X * k, pointF.Y * k);
         }
 
-        public static Point Add(this Point point, int x)
+        public static Point AddX(this Point point, int x)
         {
             return new Point(point.X + x, point.Y);
         }

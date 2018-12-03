@@ -16,8 +16,11 @@ namespace NE4S.Notes
     [Serializable()]
     public class Note
     {
-        private int size;
-        private Position pos;
+        /// <summary>
+        /// 1 ≦ Size ≦ 16
+        /// </summary>
+        public int Size { get; private set; }
+        public Position Position { get; private set; }
 		protected RectangleF noteRect;
         protected PointF adjustNoteRect = new PointF(0, -2);
         //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
@@ -32,35 +35,18 @@ namespace NE4S.Notes
 
 		public Note()
 		{
-			size = 0;
-			pos = null;
+			Size = 0;
+			Position = null;
 			noteRect = new RectangleF();
 		}
 
         public Note(int size, Position pos, PointF location, int laneIndex)
         {
-			this.size = size;
-			this.pos = pos;
+			Size = size;
+			Position = pos;
 			noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
 			noteRect.Location = location;
             LaneIndex = laneIndex;
-        }
-
-        /// <summary>
-        /// 1 ≦ Size ≦ 16
-        /// </summary>
-        public int Size
-        {
-            get { return size; }
-			//外で変更されるの嫌じゃない？知らんけど
-			//set { size = value; }
-        }
-
-        public Position Pos
-        {
-            get { return pos; }
-			//同上
-			//set { pos = value; }
         }
 
         public PointF Location
@@ -96,13 +82,13 @@ namespace NE4S.Notes
         /// <param name="size"></param>
         public void ReSizeOnly(int size)
         {
-            int diffSize = size - this.size;
-            this.size = size;
+            int diffSize = size - Size;
+            Size = size;
             noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
             if (Status.SelectedNoteArea == NoteArea.LEFT)
             {
                 noteRect.X -= diffSize * ScoreInfo.MinLaneWidth;
-                pos = new Position(pos.Bar, pos.BeatCount, pos.BaseBeat, pos.Lane - diffSize);
+                Position = new Position(Position.Lane - diffSize, Position.Tick);
             }
             return;
         }
@@ -128,7 +114,7 @@ namespace NE4S.Notes
 
         public void RelocateOnly(Position pos)
         {
-            this.pos = pos;
+            Position = pos;
             return;
         }
 
