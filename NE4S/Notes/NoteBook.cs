@@ -231,9 +231,9 @@ namespace NE4S.Notes
             //Slide
             slideNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
             //ShortNote
-            shortNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            shortNotes.Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
             //Air
-            airNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            airNotes.Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
             //AirHold
             airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
 		}

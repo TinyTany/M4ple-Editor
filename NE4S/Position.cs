@@ -12,7 +12,7 @@ namespace NE4S
     /// 置いたノーツの位置情報
     /// </summary>
     [Serializable()]
-    public class Position : IComparable<Position>
+    public class Position
     {
         /// <summary>
         /// ノーツの左端のレーン番号（0-15）
@@ -35,27 +35,5 @@ namespace NE4S
         {
             return new Position(Lane, Tick + (ScoreInfo.MaxBeatDiv / Status.Beat));
         }
-
-        public override bool Equals(object obj)
-        {
-            return CompareTo((Position)obj) == 0;
-        }
-
-        public override int GetHashCode()
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// otherと比べて自分が小さければ負の値、同じなら0、大きければ正の値を返す
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public int CompareTo(Position other)
-        {
-            return Tick - other.Tick;
-        }
-
-        
     }
 }

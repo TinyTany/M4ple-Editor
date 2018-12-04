@@ -51,7 +51,7 @@ namespace NE4S.Notes
 
         public void Add(AirAction airAction)
         {
-            if (!IsPositionAvailable(airAction, airAction.Pos))
+            if (!IsPositionAvailable(airAction, airAction.Position))
             {
                 Status.SelectedNote = null;
                 return;
@@ -89,7 +89,7 @@ namespace NE4S.Notes
         /// <returns></returns>
         public bool Contains(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
         {
-            var list = this.OrderBy(x => x.Pos).ToList();
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 PointF drawOffset = new PointF(note.Width / 2f - lineWidth / 2f, LongNote.drawOffset.Y);
@@ -110,8 +110,8 @@ namespace NE4S.Notes
                 }
                 else if (passingLanes >= 1)
                 {
-                    float positionDistance = PositionDistance(note.Pos, next.Pos, scoreBook);
-                    float diffX = (next.Pos.Lane - note.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                    float positionDistance = (next.Position.Tick - note.Position.Tick) * ScoreInfo.MaxBeatDiv;
+                    float diffX = (next.Position.Lane - note.Position.Lane) * ScoreInfo.MinLaneWidth;
                     #region 最初のレーンでの判定処理
                     PointF topLeft = note.Location.Add(drawOffset).Add(diffX, -positionDistance);
                     PointF topRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width).Add(diffX, -positionDistance);
@@ -129,11 +129,11 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= next.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        topLeft.X = curLane.HitRect.X + next.Pos.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
+                        topLeft.X = curLane.HitRect.X + next.Position.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
                         topLeft.Y += prevLane.HitRect.Height;
                         topRight.X = topLeft.X + next.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.HitRect.Height;
-                        bottomLeft.X = curLane.HitRect.X + note.Pos.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
+                        bottomLeft.X = curLane.HitRect.X + note.Position.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
                         bottomLeft.Y += prevLane.HitRect.Height;
                         bottomRight.X = bottomLeft.X + note.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.HitRect.Height;
@@ -154,20 +154,20 @@ namespace NE4S.Notes
             if (note is AirHoldBegin)
             {
                 int diffLane;
-                foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
+                foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
                 {
-                    diffLane = itrNote.Pos.Lane - note.Pos.Lane;
+                    diffLane = itrNote.Position.Lane - note.Position.Lane;
                     itrNote.RelocateOnly(
-                        new Position(itrNote.Pos.Bar, itrNote.Pos.BeatCount, itrNote.Pos.BaseBeat, note.Pos.Lane),
+                        new Position(note.Position.Lane, itrNote.Position.Tick),
                         new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y));
                 }
             }
             else if (note is AirAction)
             {
-                Note airHoldBegin = this.OrderBy(x => x.Pos).First();
-                int diffLane = airHoldBegin.Pos.Lane - note.Pos.Lane;
+                Note airHoldBegin = this.OrderBy(x => x.Position.Tick).First();
+                int diffLane = airHoldBegin.Position.Lane - note.Position.Lane;
                 note.RelocateOnly(
-                        new Position(note.Pos.Bar, note.Pos.BeatCount, note.Pos.BaseBeat, airHoldBegin.Pos.Lane),
+                        new Position(airHoldBegin.Position.Lane, note.Position.Tick),
                         new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y));
             }
             else
@@ -180,7 +180,7 @@ namespace NE4S.Notes
 
         private void CheckNoteSize(Note note)
         {
-            foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
+            foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
             {
                 //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
                 itrNote.ReSizeOnly(note.Size);
@@ -190,7 +190,7 @@ namespace NE4S.Notes
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
-            var list = this.OrderBy(x => x.Pos).ToList();
+            var list = this.OrderBy(x => x.Position).ToList();
             foreach (Note note in list)
             {
                 if (list.IndexOf(note) < list.Count - 1)
@@ -206,7 +206,7 @@ namespace NE4S.Notes
 
         private static void DrawAirHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
         {
-            float distance = PositionDistance(past.Pos, future.Pos, scoreBook);
+            float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatDiv;
             PointF drawOffset = new PointF(past.Width / 2f - lineWidth / 2f, LongNote.drawOffset.Y);
             //相対位置
             PointF pastRerativeLocation = new PointF(past.Location.X - originPosX, past.Location.Y - originPosY);
@@ -232,8 +232,8 @@ namespace NE4S.Notes
             //スライドのノーツとノーツがレーンをまたぐとき
             else if (passingLanes >= 1)
             {
-                float positionDistance = PositionDistance(past.Pos, future.Pos, scoreBook);
-                float diffX = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                float positionDistance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatDiv;
+                float diffX = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
                 #region 最初のレーンでの描画
                 //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
                 PointF topLeft = pastRerativeLocation.Add(diffX, -positionDistance).Add(drawOffset);
@@ -263,11 +263,11 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= future.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        topLeft.X = curLane.HitRect.X + future.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        topLeft.X = curLane.HitRect.X + future.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         topLeft.Y += prevLane.HitRect.Height;
                         topRight.X = topLeft.X + future.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.HitRect.Height;
-                        bottomLeft.X = curLane.HitRect.X + past.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        bottomLeft.X = curLane.HitRect.X + past.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         bottomLeft.Y += prevLane.HitRect.Height;
                         bottomRight.X = bottomLeft.X + past.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.HitRect.Height;
