@@ -139,7 +139,7 @@ namespace NE4S.Scores
         /// <returns></returns>
         public bool IsScoreClose(Score score)
         {
-            if (scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() == score.BeatNumer) return true;
+            if (scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size == score.BeatNumer) return true;
             else return false;
         }
 
@@ -162,7 +162,7 @@ namespace NE4S.Scores
 			if (newScore != null && newRange != null)
             {
                 float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * CurrentBarSize;
-				float physicalHeight = newScore.Height * newRange.Size() / newScore.BeatNumer;
+				float physicalHeight = newScore.Height * newRange.Size / newScore.BeatNumer;
 				//当たり判定が縦に1ピクセル分ずれているので調整用の変数を作成
 				int normalizeDeltaHeight = 1;
 				//Scoreの当たり判定矩形を作成
@@ -173,7 +173,7 @@ namespace NE4S.Scores
 					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
                 scoreMaterialList.Add(new ScoreMaterial(newScore, newRange, newScoreHitRect));
-                CurrentBarSize += newRange.Size() / (float)newScore.BeatDenom;
+                CurrentBarSize += newRange.Size / (float)newScore.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
 				RefreshRects();
@@ -203,7 +203,7 @@ namespace NE4S.Scores
         {
 			if (score != null && Contains(score))
             {
-                CurrentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
+                CurrentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size / (float)score.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
 				RefreshRects();
@@ -312,7 +312,7 @@ namespace NE4S.Scores
             //リスト内のScoreについてY座標を変更しながら描画
             foreach (ScoreMaterial material in scoreMaterialList)
             {
-                currentDrawPosY -= material.Score.Height * material.Range.Size() / material.Score.BeatNumer;
+                currentDrawPosY -= material.Score.Height * material.Range.Size / material.Score.BeatNumer;
                 material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
 			}
             //tScoresの最後の要素のScoreが閉じているか判定

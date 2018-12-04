@@ -227,15 +227,15 @@ namespace NE4S.Notes
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
             //Hold
-            holdNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            holdNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
             //Slide
-            slideNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            slideNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
             //ShortNote
             shortNotes.Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
             //Air
             airNotes.Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
             //AirHold
-            airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
 		}
 	}
 }

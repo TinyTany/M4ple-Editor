@@ -188,7 +188,7 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
             var list = this.OrderBy(x => x.Position).ToList();
             foreach (Note note in list)
@@ -196,7 +196,7 @@ namespace NE4S.Notes
                 if (list.IndexOf(note) < list.Count - 1)
                 {
                     Note next = list.Next(note);
-                    DrawAirHoldLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+                    DrawAirHoldLine(e, note, next, originPosX, originPosY, laneBook, currentPositionX);
                 }
                 //クリッピングの解除を忘れないこと
                 e.Graphics.ResetClip();
@@ -204,7 +204,7 @@ namespace NE4S.Notes
             }
         }
 
-        private static void DrawAirHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        private static void DrawAirHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
             float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatDiv;
             PointF drawOffset = new PointF(past.Width / 2f - lineWidth / 2f, LongNote.drawOffset.Y);

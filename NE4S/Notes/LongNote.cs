@@ -38,6 +38,6 @@ namespace NE4S.Notes
         public bool IsDrawable() => 
             this.Where(x => Status.DrawTickFirst <= x.Position.Tick && x.Position.Tick <= Status.DrawTickLast).Any();
 
-        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX) { }
+        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX) { }
     }
 }

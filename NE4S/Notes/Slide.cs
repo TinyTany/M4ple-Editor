@@ -214,7 +214,7 @@ namespace NE4S.Notes
         /// <param name="scoreBook"></param>
         /// <param name="laneBook"></param>
         /// <param name="currentPositionX"></param>
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
             if (e == null) return;
             RectangleF gradientRect = new RectangleF();
@@ -241,7 +241,7 @@ namespace NE4S.Notes
                     Note next = list.Next(note);
                     if(!(next is SlideCurve))
                     {
-                        DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, ref gradientRect);
+                        DrawSlideLine(e, note, next, originPosX, originPosY, laneBook, currentPositionX, ref gradientRect);
                     }
                     else
                     {
@@ -250,7 +250,7 @@ namespace NE4S.Notes
                         if (list.IndexOf(curve) < list.Count - 1)
                         {
                             next = list.Next(curve);
-                            DrawSlideCurve(e, note, curve, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, ref gradientRect);
+                            DrawSlideCurve(e, note, curve, next, originPosX, originPosY, laneBook, currentPositionX, ref gradientRect);
                         }
                     }
                 }
@@ -267,7 +267,7 @@ namespace NE4S.Notes
         /// ノーツ間を繋ぐ帯の描画（直線）
         /// </summary>
         /// 全体的にコードが汚いのでなんとかしたい
-        private static void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
+        private static void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;
@@ -370,7 +370,7 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（ベジェ）
         /// </summary>
-        private static void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
+        private static void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;

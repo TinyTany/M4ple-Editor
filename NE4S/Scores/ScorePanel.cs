@@ -43,7 +43,8 @@ namespace NE4S.Scores
             hSBar.Minimum = 0;
 			pNote = new PreviewNote();
 #if DEBUG
-			//*
+            //*
+            //SetScore(11, 4, 1);
 			SetScore(4, 4, 10);
             SetScore(3, 4, 5);
             SetScore(6, 8, 8);

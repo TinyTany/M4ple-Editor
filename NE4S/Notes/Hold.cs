@@ -98,7 +98,7 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
             var list = this.OrderBy(x => x.Position).ToList();
             //ノーツ位置のチェック（手抜きver）
@@ -122,7 +122,7 @@ namespace NE4S.Notes
                 if(list.IndexOf(note) < list.Count - 1)
                 {
                     Note next = list.Next(note);
-                    DrawHoldLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+                    DrawHoldLine(e, note, next, originPosX, originPosY, laneBook, currentPositionX);
                 }
                 //クリッピングの解除を忘れないこと
                 e.Graphics.ResetClip();
@@ -130,7 +130,7 @@ namespace NE4S.Notes
             }
         }
 
-        private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
             float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatDiv;
             //グラデーション矩形

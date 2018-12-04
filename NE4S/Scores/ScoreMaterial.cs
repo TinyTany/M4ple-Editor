@@ -23,7 +23,7 @@ namespace NE4S.Scores
 			Range = scoreRange;
 			HitRect = hitRect;
 			Width = score.Width;
-			Height = score.Height * scoreRange.Size() / score.BeatNumer;
+			Height = score.Height * scoreRange.Size / score.BeatNumer;
 		}
 
         /// <summary>
