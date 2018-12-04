@@ -132,7 +132,7 @@ namespace NE4S.Notes
 
         private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
-            float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatDiv;
+            float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
             //グラデーション矩形
             //x座標と幅は適当だけど動いてるはず。重要なのはy座標と高さ
             RectangleF gradientRect = new RectangleF(0, past.Location.Y - distance + drawOffset.Y, 10, distance <= 0 ? 1 : distance);
@@ -161,7 +161,7 @@ namespace NE4S.Notes
             //スライドのノーツとノーツがレーンをまたぐとき
             else if (passingLanes >= 1)
             {
-                float positionDistance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatDiv;
+                float positionDistance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
                 float diffX = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
                 #region 最初のレーンでの描画
                 //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意

@@ -48,7 +48,7 @@ namespace NE4S.Scores
                     for (int i = 0; i < newScore.BarSize / ScoreInfo.LaneMaxBar; ++i)
                     {
                         //新たにレーンを追加
-                        Add(new ScoreLane());
+                        if(this.Last().CurrentBarSize > 0) Add(new ScoreLane());
                         //末尾のレーンに新たなScoreを範囲を指定して格納
                         this.Last().AddScore(
                             newScore,

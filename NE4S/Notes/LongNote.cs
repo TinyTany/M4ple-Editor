@@ -35,8 +35,12 @@ namespace NE4S.Notes
             return true;
         }
 
-        public bool IsDrawable() => 
-            this.Where(x => Status.DrawTickFirst <= x.Position.Tick && x.Position.Tick <= Status.DrawTickLast).Any();
+        public bool IsDrawable()
+        {
+            bool isAllNoteBehind = !this.Where(x => x.Position.Tick >= Status.DrawTickFirst).Any();
+            bool isAllNoteBeyond = !this.Where(x => x.Position.Tick <= Status.DrawTickLast).Any();
+            return !(isAllNoteBehind && isAllNoteBeyond);
+        }
 
         public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX) { }
     }
