@@ -15,7 +15,16 @@ namespace NE4S.Scores
         public RectangleF HitRect { get; set; }
         public float Width { get; }
         public float Height { get; }
-        public int StartTick { get; private set; }
+
+        public int StartTick
+        {
+            get { return Score.StartTick + (Range.Min - 1) * ScoreInfo.MaxBeatDiv / Score.BeatDenom; }
+        }
+
+        public int EndTick
+        {
+            get { return Score.StartTick + Range.Size * ScoreInfo.MaxBeatDiv / Score.BeatDenom - 1; }
+        }
 
         public ScoreMaterial(Score score, Range scoreRange, RectangleF hitRect)
 		{

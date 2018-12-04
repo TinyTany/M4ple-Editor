@@ -191,6 +191,7 @@ namespace NE4S.Scores
             //本番では必要ない
             if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
+                System.Diagnostics.Debug.WriteLine(selectedLane.Index);
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
                 Position position = selectedLane.GetPos(gridPoint.AddX(currentPositionX));
 				if(position != null)
@@ -555,8 +556,8 @@ namespace NE4S.Scores
             if (drawLaneBook.Any())
             {
                 //現在の描画範囲にあるレーンの小節数の範囲を設定
-                Status.DrawTickFirst = drawLaneBook.First().FirstScore;
-                Status.DrawTickLast = drawLaneBook.Last().LastScore;
+                Status.DrawTickFirst = drawLaneBook.First().FirstScore.StartTick;
+                Status.DrawTickLast = drawLaneBook.Last().LastScore.EndTick;
             }
             //ノーツ描画
             model.PaintNote(e, originPosX, originPosY, currentPositionX);

@@ -120,11 +120,8 @@ namespace NE4S.Scores
         {
             if(scoreMaterialList.Find(
                 x => 
-                //ScoreのIndexは0から始まるがPosのBarは1から始まる
-                x.Score.Index + 1 == note.Pos.Bar &&
-                //RangeのInfは1から始まるがPosのCountは0から始まる
-                note.Pos.Size >= (x.Range.Min - 1) / (float)x.Score.BeatDenom &&
-                note.Pos.Size <= x.Range.Max / (float)x.Score.BeatDenom) != null)
+                x.StartTick <= note.Position.Tick &&
+                note.Position.Tick <= x.EndTick) != null)
             {
                 return true;
             }

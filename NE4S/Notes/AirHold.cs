@@ -190,7 +190,7 @@ namespace NE4S.Notes
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
-            var list = this.OrderBy(x => x.Position).ToList();
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 if (list.IndexOf(note) < list.Count - 1)

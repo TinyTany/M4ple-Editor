@@ -76,6 +76,12 @@ namespace NE4S.Scores
         private void SetScoreIndex()
         {
             for (int i = 0; i < Count; ++i) this[i].Index = i;
+            int tick = 0;
+            foreach(Score score in this)
+            {
+                score.StartTick = tick;
+                tick = score.EndTick + 1;
+            }
 #if DEBUG
             System.Diagnostics.Debug.WriteLine("ScoreCount : " + Count.ToString());
 #endif

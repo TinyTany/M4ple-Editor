@@ -83,7 +83,7 @@ namespace NE4S.Notes
 
         private void CheckNoteSize(Note note)
         {
-            foreach(Note itrNote in this.OrderBy(x => x.Position).Where(x => x != note))
+            foreach(Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
             {
                 if (itrNote is AirableNote airableNote)
                 {
@@ -100,7 +100,7 @@ namespace NE4S.Notes
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
-            var list = this.OrderBy(x => x.Position).ToList();
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
             //ノーツ位置のチェック（手抜きver）
             for (Note past = list.First(); past != list.Last(); past = list.ElementAt(list.IndexOf(past) + 1))
             {

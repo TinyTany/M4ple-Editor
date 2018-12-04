@@ -143,7 +143,7 @@ namespace NE4S.Notes
         /// <returns></returns>
         public bool Contains(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
         {
-            var list = this.OrderBy(x => x.Position).ToList();
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach(Note note in list)
             {
                 if (list.IndexOf(note) >= list.Count - 1) break;
