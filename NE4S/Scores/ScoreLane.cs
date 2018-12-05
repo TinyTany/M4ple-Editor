@@ -126,7 +126,6 @@ namespace NE4S.Scores
                 return true;
             }
             else return false;
-            //HACK: ↑IndexとかInfとか始まりがずれてて気持ち悪いので直したほうがいいのかな？
         }
 
         /// <summary>
@@ -287,7 +286,7 @@ namespace NE4S.Scores
 			}
 			else
 			{
-                System.Diagnostics.Debug.Assert(false, "ノーツの相対位置を計算できませんでした");
+                System.Diagnostics.Debug.WriteLine( "ノーツの相対位置を計算できませんでした");
 				return null;
 			}
 		}
