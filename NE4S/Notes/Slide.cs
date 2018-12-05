@@ -58,7 +58,7 @@ namespace NE4S.Notes
             var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
             var listOverPosition = list.Where(x => x.Position.Tick > position.Tick);
             if (note is SlideBegin && position.Tick > list.First().Position.Tick) return false;
-            if (note is SlideEnd && position.Tick < list.First().Position.Tick) return false;
+            if (note is SlideEnd && position.Tick < list.Last().Position.Tick) return false;
             foreach (Note itrNote in list)
             {
                 if (itrNote is SlideBegin && position.Tick < itrNote.Position.Tick) return false;

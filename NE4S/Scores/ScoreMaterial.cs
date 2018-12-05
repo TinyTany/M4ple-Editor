@@ -23,7 +23,7 @@ namespace NE4S.Scores
 
         public int EndTick
         {
-            get { return Score.StartTick + Range.Size * ScoreInfo.MaxBeatDiv / Score.BeatDenom - 1; }
+            get { return StartTick + Range.Size * ScoreInfo.MaxBeatDiv / Score.BeatDenom - 1; }
         }
 
         public ScoreMaterial(Score score, Range scoreRange, RectangleF hitRect)
