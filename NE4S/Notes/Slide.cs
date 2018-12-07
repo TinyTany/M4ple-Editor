@@ -213,8 +213,9 @@ namespace NE4S.Notes
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
             if (e == null) return;
-            RectangleF gradientRect = new RectangleF();
+            base.Draw(e, originPosX, originPosY, laneBook, currentPositionX);
             var list = this.OrderBy(x => x.Position.Tick).ToList();
+            RectangleF gradientRect = new RectangleF();
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
             foreach (Note note in list)
             {
@@ -241,6 +242,7 @@ namespace NE4S.Notes
                     {
                         Note curve = next;
                         //SlideRelayは末尾に来ることはないし，SlideRelayが2つ以上連続に並ぶことはないという確信の元実装
+                        //↑実際ノーツの束縛処理でそうなるような実装をしている（した）
                         if (list.IndexOf(curve) < list.Count - 1)
                         {
                             next = list.Next(curve);
