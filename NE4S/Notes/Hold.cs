@@ -62,7 +62,8 @@ namespace NE4S.Notes
                     //貫通する
                     itrNote.Relocate(
                         new Position(note.Position.Lane, itrNote.Position.Tick),
-                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y));
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y),
+                        itrNote.LaneIndex);
                 }
             }
             else if(note is HoldEnd)
@@ -71,7 +72,8 @@ namespace NE4S.Notes
                 int diffLane = holdBegin.Position.Lane - note.Position.Lane;
                 (note as AirableNote).RelocateOnly(
                         new Position(holdBegin.Position.Lane, note.Position.Tick),
-                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y));
+                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y),
+                        note.LaneIndex);
             }
             else
             {
@@ -112,8 +114,7 @@ namespace NE4S.Notes
                     PointF location = new PointF(future.Location.X + ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, future.Location.Y + lane.HitRect.Height);
                     Position position = laneBook.Next(lane)?.GetPos(location);
                     if (position == null) break;
-                    future.RelocateOnly(position, location);
-                    future.LaneIndex++;
+                    future.RelocateOnly(position, location, future.LaneIndex + 1);
                 }
             }
             //Draw

@@ -278,9 +278,7 @@ namespace NE4S.Scores
                         Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
                         Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
                         Position newPos = selectedLane.GetPos(virtualGridPoint);
-                        Status.SelectedNote.Relocate(newPos, virtualGridPoint);
-                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                        Status.SelectedNote.LaneIndex = selectedLane.Index;
+                        Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                     }
                     break;
 				case Mode.EDIT:
@@ -305,9 +303,7 @@ namespace NE4S.Scores
                                     Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote.Size);
                                     Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
                                     Position newPos = selectedLane.GetPos(virtualGridPoint);
-                                    Status.SelectedNote.Relocate(newPos, virtualGridPoint);
-                                    //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                                    Status.SelectedNote.LaneIndex = selectedLane.Index;
+                                    Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                                 }
                                 break;
                             case NoteArea.RIGHT:

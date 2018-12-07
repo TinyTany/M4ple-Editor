@@ -31,10 +31,10 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Relocate(Position pos, PointF location)
+        public override void Relocate(Position pos, PointF location, int laneIndex)
         {
             base.Relocate(pos);
-            base.Relocate(location);
+            base.Relocate(location, laneIndex);
             CheckNotePosition?.Invoke(this);
             return;
         }
@@ -46,9 +46,9 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Relocate(PointF location)
+        public override void Relocate(PointF location, int laneIndex)
         {
-            base.Relocate(location);
+            base.Relocate(location, laneIndex);
             CheckNotePosition?.Invoke(this);
             return;
         }

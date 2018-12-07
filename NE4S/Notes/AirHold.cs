@@ -159,7 +159,8 @@ namespace NE4S.Notes
                     diffLane = itrNote.Position.Lane - note.Position.Lane;
                     itrNote.RelocateOnly(
                         new Position(note.Position.Lane, itrNote.Position.Tick),
-                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y));
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y),
+                        itrNote.LaneIndex);
                 }
             }
             else if (note is AirAction)
@@ -168,7 +169,8 @@ namespace NE4S.Notes
                 int diffLane = airHoldBegin.Position.Lane - note.Position.Lane;
                 note.RelocateOnly(
                         new Position(airHoldBegin.Position.Lane, note.Position.Tick),
-                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y));
+                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y),
+                        note.LaneIndex);
             }
             else
             {

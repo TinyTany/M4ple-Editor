@@ -25,7 +25,7 @@ namespace NE4S.Notes
         protected PointF adjustNoteRect = new PointF(0, -2);
         //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
         //NOTE: すべてのノーツに対して設定することにした（ノーツサイズ変更操作時に現在のレーンとノーツのレーンを比較して、別レーン上にカーソルがある時にサイズ変更がされないようにしたい）
-        public virtual int LaneIndex { get; set; } = -1;
+        public virtual int LaneIndex { get; private set; } = -1;
         /// <summary>
         /// ノーツを渡すイベントハンドラです（知らんけど）
         /// </summary>
@@ -93,16 +93,16 @@ namespace NE4S.Notes
             return;
         }
 
-        public virtual void Relocate(Position pos, PointF location)
+        public virtual void Relocate(Position pos, PointF location, int laneIndex)
 		{
-            RelocateOnly(pos, location);
+            RelocateOnly(pos, location, laneIndex);
 			return;
 		}
 
-        public void RelocateOnly(Position pos, PointF location)
+        public void RelocateOnly(Position pos, PointF location, int laneIndex)
         {
             RelocateOnly(pos);
-            RelocateOnly(location);
+            RelocateOnly(location, laneIndex);
             return;
         }
 
@@ -118,15 +118,16 @@ namespace NE4S.Notes
             return;
         }
 
-        public virtual void Relocate(PointF location)
+        public virtual void Relocate(PointF location, int laneIndex)
 		{
-            RelocateOnly(location);
+            RelocateOnly(location, laneIndex);
 			return;
 		}
 
-        public void RelocateOnly(PointF location)
+        public void RelocateOnly(PointF location, int laneIndex)
         {
             noteRect.Location = location;
+            LaneIndex = laneIndex;
             return;
         }
         #endregion
