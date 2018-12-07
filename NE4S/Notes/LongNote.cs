@@ -42,6 +42,33 @@ namespace NE4S.Notes
             return !(isAllNoteBehind && isAllNoteBeyond);
         }
 
-        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX) { }
+        /// <summary>
+        /// ノーツ位置のチェックのみ行う
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="originPosX"></param>
+        /// <param name="originPosY"></param>
+        /// <param name="laneBook"></param>
+        /// <param name="currentPositionX"></param>
+        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
+        {
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            //ノーツ位置のチェック
+            for (Note past = list.First(); past != list.Last(); past = list.ElementAt(list.IndexOf(past) + 1))
+            {
+                Note future = list.ElementAt(list.IndexOf(past) + 1);
+                //
+                if (laneBook.Find(x => x.HitRect.Contains(future.Location)) == null)
+                {
+                    ScoreLane lane = laneBook.Find(x => x.StartTick <= future.Position.Tick && future.Position.Tick <= x.EndTick);
+                    if (lane == null) break;
+                    PointF location = new PointF(
+                        lane.HitRect.Left + future.Position.Lane * ScoreInfo.MinLaneWidth,
+                        //HACK: Y座標が微妙にずれるので-1して調節する
+                        lane.HitRect.Bottom - (future.Position.Tick - lane.StartTick) * ScoreInfo.MaxBeatHeight - 1);
+                    future.RelocateOnly(location, lane.Index);
+                }
+            }
+        }
     }
 }

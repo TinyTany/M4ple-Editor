@@ -82,6 +82,42 @@ namespace NE4S.Scores
             set { index = value; RefreshRects(); RefreshScoreMaterialList(); }
         }
 
+        /// <summary>
+        /// このレーンに対するStartTickを取得します
+        /// </summary>
+        public int StartTick
+        {
+            get
+            {
+                if (!scoreMaterialList.Any())
+                {
+                    return -1;
+                }
+                else
+                {
+                    return scoreMaterialList.First().StartTick;
+                }
+            }
+        }
+
+        /// <summary>
+        /// このレーンに対するEndTickを取得します
+        /// </summary>
+        public int EndTick
+        {
+            get
+            {
+                if (!scoreMaterialList.Any())
+                {
+                    return -1;
+                }
+                else
+                {
+                    return scoreMaterialList.Last().EndTick;
+                }
+            }
+        }
+
         class Margin
         {
             public static int 
