@@ -34,17 +34,13 @@ namespace NE4S.Notes
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
-        public Slide()
-        {
-
-        }
+        public Slide() { }
 
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
             SlideBegin slideBegin = new SlideBegin(size, pos, location, laneIndex);
             slideBegin.IsPositionAvailable += IsPositionAvailable;
             Add(slideBegin);
-            //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             SlideEnd slideEnd = new SlideEnd(size, pos.Next(), location, laneIndex);
             slideEnd.IsPositionAvailable += IsPositionAvailable;
@@ -222,8 +218,6 @@ namespace NE4S.Notes
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
             foreach (Note note in list)
             {
-                //!(note is SlideEnd)よりもこっちのほうが確実で安全かも
-                //↑だと例外で怒られた…
                 if (list.IndexOf(note) < list.Count - 1 && !(note is SlideCurve))
                 {
                     //スライド帯のグラデーション用矩形を設定する

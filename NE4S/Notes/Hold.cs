@@ -30,10 +30,7 @@ namespace NE4S.Notes
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
-        public Hold()
-        {
-
-        }
+        public Hold() { }
 
         public Hold(int size, Position pos, PointF location, int laneIndex)
         {
@@ -41,7 +38,6 @@ namespace NE4S.Notes
             holdBegin.CheckNotePosition += CheckNotePosition;
             holdBegin.CheckNoteSize += CheckNoteSize;
             Add(holdBegin);
-            //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             HoldEnd holdEnd = new HoldEnd(size, pos.Next(), location, laneIndex);
             holdEnd.CheckNotePosition += CheckNotePosition;

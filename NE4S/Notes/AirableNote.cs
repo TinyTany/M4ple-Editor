@@ -27,20 +27,6 @@ namespace NE4S.Notes
 
         public AirHold GetAirHoldForDelete() => airHold;
 
-        //airHoldBeginのインデックスも変更しないと描画がおかしくなるぞ！
-        /*
-        public override int LaneIndex
-        {
-            set {
-                base.LaneIndex = value;
-                if(airHoldBegin != null)
-                {
-                    airHoldBegin.LaneIndex = value;
-                }
-            }
-        }
-        //*/
-
         /// <summary>
         /// Airが取り付けられているか判定します
         /// 取り付けられている場合trueを返します

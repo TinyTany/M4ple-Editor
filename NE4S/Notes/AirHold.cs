@@ -19,10 +19,7 @@ namespace NE4S.Notes
         public delegate void VoidHandler();
         public event VoidHandler DetachAirHold;
 
-        public AirHold()
-        {
-
-        }
+        public AirHold() { }
 
         public AirHold(int size, Position pos, PointF location, int laneIndex)
         {
@@ -30,7 +27,6 @@ namespace NE4S.Notes
             airholdBegin.CheckNotePosition += CheckNotePosition;
             airholdBegin.CheckNoteSize += CheckNoteSize;
             Add(airholdBegin);
-            //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             AirAction airAction = new AirAction(size, pos.Next(), location, laneIndex);
             airAction.CheckNotePosition += CheckNotePosition;

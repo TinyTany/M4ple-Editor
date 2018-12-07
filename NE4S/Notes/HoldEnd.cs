@@ -15,15 +15,9 @@ namespace NE4S.Notes
         public event NoteEventHandler CheckNotePosition, CheckNoteSize;
         public event PositionCheckHandler IsPositionAvailable;
 
-        public HoldEnd()
-        {
+        public HoldEnd() { }
 
-        }
-
-        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            
-        }
+        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public override void ReSize(int size)
         {
