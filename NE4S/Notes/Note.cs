@@ -31,6 +31,7 @@ namespace NE4S.Notes
         /// </summary>
         /// <param name="note"></param>
         public delegate void NoteEventHandler(Note note);
+        public delegate void NoteEventHandlerEx(Note note, int deltaTick);
         public delegate bool PositionCheckHandler(Note note, Position position);
 
 		public Note()

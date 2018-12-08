@@ -55,7 +55,7 @@ namespace NE4S.Notes
             base.Add(airAction);
             airAction.CheckNotePosition += CheckNotePosition;
             airAction.IsPositionAvailable += IsPositionAvailable;
-            CheckNotePosition(airAction);
+            CheckNotePosition(airAction, 0);
             CheckNoteSize(airAction);
             return;
         }
@@ -145,7 +145,7 @@ namespace NE4S.Notes
             return false;
         }
 
-        private void CheckNotePosition(Note note)
+        private void CheckNotePosition(Note note, int deltaTick)
         {
             if (note is AirHoldBegin)
             {
@@ -154,8 +154,8 @@ namespace NE4S.Notes
                 {
                     diffLane = itrNote.Position.Lane - note.Position.Lane;
                     itrNote.RelocateOnly(
-                        new Position(note.Position.Lane, itrNote.Position.Tick),
-                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y),
+                        new Position(note.Position.Lane, itrNote.Position.Tick + deltaTick),
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y - deltaTick * ScoreInfo.MaxBeatHeight),
                         itrNote.LaneIndex);
                 }
             }

@@ -12,7 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class AirHoldBegin : Note
     {
-        public event NoteEventHandler CheckNotePosition, CheckNoteSize;
+        public event NoteEventHandler CheckNoteSize;
+        public event NoteEventHandlerEx CheckNotePosition;
 
         public AirHoldBegin()
         {
@@ -33,24 +34,25 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos, PointF location, int laneIndex)
         {
-            //基底のものを使うかこのクラスのものを使うか検討する
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
             base.Relocate(location, laneIndex);
-            CheckNotePosition?.Invoke(this);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
         public override void Relocate(Position pos)
         {
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
-            CheckNotePosition?.Invoke(this);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
         public override void Relocate(PointF location, int laneIndex)
         {
             base.Relocate(location, laneIndex);
-            CheckNotePosition?.Invoke(this);
+            CheckNotePosition?.Invoke(this, 0);
             return;
         }
 

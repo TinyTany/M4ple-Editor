@@ -47,7 +47,7 @@ namespace NE4S.Notes
             Status.SelectedNote = holdEnd;
         }
 
-        private void CheckNotePosition(Note note)
+        private void CheckNotePosition(Note note, int deltaTick)
         {
             if(note is HoldBegin)
             {
@@ -57,8 +57,8 @@ namespace NE4S.Notes
                     diffLane = itrNote.Position.Lane - note.Position.Lane;
                     //貫通する
                     itrNote.Relocate(
-                        new Position(note.Position.Lane, itrNote.Position.Tick),
-                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y),
+                        new Position(note.Position.Lane, itrNote.Position.Tick + deltaTick),
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y - deltaTick * ScoreInfo.MaxBeatHeight),
                         itrNote.LaneIndex);
                 }
             }
