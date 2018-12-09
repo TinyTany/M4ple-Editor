@@ -370,28 +370,41 @@ namespace NE4S.Scores
             switch (Status.Note)
             {
                 case NoteType.TAP:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new Tap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.EXTAP:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new ExTap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
+                case NoteType.EXTAPDOWN:
+                    if (!Status.IsShortNoteVisible) break;
+                    newNote = new ExTapDown(Status.NoteSize, position, locationVirtual, lane.Index);
+                    break;
                 case NoteType.AWEXTAP:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new AwesomeExTap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.HELL:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new HellTap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.FLICK:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new Flick(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.HOLD:
+                    if (!Status.IsHoldVisible) break;
                     model.AddLongNote(new Hold(Status.NoteSize, position, locationVirtual, lane.Index));
                     break;
                 case NoteType.SLIDE:
+                    if (!Status.IsSlideVisible) break;
                     //Slideとの当たり判定は自由仮想座標を使う
                     Slide selectedSlide = model.SelectedSlide(location.AddX(currentPositionX));
-                    if(selectedSlide != null)
+                    //Shiftキーを押しながら追加した際はかならず新規Slideノーツを追加する
+                    if(selectedSlide != null && Control.ModifierKeys != Keys.Shift)
                     {
+                        if (!Status.IsSlideRelayVisible) break;
                         if (Status.InvisibleSlideTap)
                         {
                             SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
@@ -411,6 +424,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.SLIDECURVE:
+                    if (!Status.IsSlideVisible || !Status.IsSlideCurveVisible) break;
                     selectedSlide = model.SelectedSlide(location.AddX(currentPositionX));
                     if (selectedSlide != null)
                     {
@@ -420,6 +434,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRHOLD:
+                    if (!Status.IsAirHoldVisible) break;
                     AirHold selectedAirHold = model.SelectedAirHold(location.AddX(currentPositionX));
                     var selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedAirHold != null)
@@ -441,6 +456,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRUPC:
+                    if (!Status.IsAirVisible) break;
                     selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
@@ -450,6 +466,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRUPL:
+                    if (!Status.IsAirVisible) break;
                     selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
@@ -459,6 +476,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRUPR:
+                    if (!Status.IsAirVisible) break;
                     selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
@@ -468,6 +486,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRDOWNC:
+                    if (!Status.IsAirVisible) break;
                     selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
@@ -477,6 +496,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRDOWNL:
+                    if (!Status.IsAirVisible) break;
                     selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
@@ -486,6 +506,7 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRDOWNR:
+                    if (!Status.IsAirVisible) break;
                     selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
