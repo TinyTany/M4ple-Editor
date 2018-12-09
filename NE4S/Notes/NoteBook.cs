@@ -124,6 +124,7 @@ namespace NE4S.Notes
             //AirHold
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
+                if (!Status.IsAirHoldVisible) break;
                 selectedNote = airHold.Find(x => x.Contains(location));
                 if (selectedNote != null && !(selectedNote is AirHoldBegin))
                 {
@@ -133,14 +134,14 @@ namespace NE4S.Notes
             }
             //Air
             selectedNote = airNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
+            if (selectedNote != null && Status.IsAirVisible)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
             //ShortNote
             selectedNote = shortNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
+            if (selectedNote != null && Status.IsShortNoteVisible)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
@@ -148,6 +149,7 @@ namespace NE4S.Notes
             //Slide
             foreach (Slide slide in slideNotes.Reverse<Slide>())
             {
+                if (!Status.IsSlideVisible) break;
                 selectedNote = slide.Find(x => x.Contains(location));
                 if (selectedNote != null)
                 {
@@ -158,6 +160,7 @@ namespace NE4S.Notes
             //Hold
             foreach (Hold hold in holdNotes.Reverse<Hold>())
             {
+                if (!Status.IsHoldVisible) break;
                 selectedNote = hold.Find(x => x.Contains(location));
                 if (selectedNote != null)
                 {
