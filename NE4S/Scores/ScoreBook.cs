@@ -70,7 +70,7 @@ namespace NE4S.Scores
 		}
 
         /// <summary>
-        /// scores内のScoreのインデックスを更新
+        /// scores内のScoreのインデックスとTick数を更新
         /// リストscoresの内容が変更された際に必ず呼ぶ
         /// </summary>
         private void SetScoreIndex()

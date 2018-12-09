@@ -42,6 +42,8 @@ namespace NE4S.Notes
             return !(isAllNoteBehind && isAllNoteBeyond);
         }
 
+        public void UpdateLocation(LaneBook laneBook) => ForEach(x => x.UpdateLocation(laneBook));
+
         /// <summary>
         /// ノーツ位置のチェックのみ行う
         /// </summary>
@@ -54,9 +56,9 @@ namespace NE4S.Notes
         {
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             //ノーツ位置のチェック
-            for (Note past = list.First(); past != list.Last(); past = list.ElementAt(list.IndexOf(past) + 1))
+            for (Note past = list.First(); past != list.Last(); past = list.Next(past))
             {
-                Note future = list.ElementAt(list.IndexOf(past) + 1);
+                Note future = list.Next(past);
                 //
                 if (laneBook.Find(x => x.HitRect.Contains(future.Location)) == null)
                 {

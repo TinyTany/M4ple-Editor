@@ -179,42 +179,9 @@ namespace NE4S.Notes
         /// <returns></returns>
         public Note SelectedNote(PointF location)
         {
-            Note selectedNote;
-            foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
-            {
-                selectedNote = airHold.Find(x => x.Contains(location));
-                if (selectedNote != null && !(selectedNote is AirHoldBegin))
-                {
-                    return selectedNote;
-                }
-            }
-            selectedNote = airNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
-            {
-                return selectedNote;
-            }
-            selectedNote = shortNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
-            {
-                return selectedNote;
-            }
-            foreach (Slide slide in slideNotes.Reverse<Slide>())
-            {
-                selectedNote = slide.Find(x => x.Contains(location));
-                if (selectedNote != null)
-                {
-                    return selectedNote;
-                }
-            }
-            foreach (Hold hold in holdNotes.Reverse<Hold>())
-            {
-                selectedNote = hold.Find(x => x.Contains(location));
-                if (selectedNote != null)
-                {
-                    return selectedNote;
-                }
-            }
-            return null;
+            //この変数は使用しない
+            int noteArea = 0;
+            return SelectedNote(location, ref noteArea);
         }
 
         public Slide SelectedSlide(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
