@@ -66,6 +66,24 @@ namespace NE4S
             tsbOpen.Click += TsbOpen_Click;
             tsbSave.Click += TsbSave_Click;
             //
+            tsmiIsShortNote.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsShortNoteVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsHold.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsHoldVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsSlide.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsSlideVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
             tsmiIsSlideRelay.Click += (s, e) => 
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
@@ -76,6 +94,24 @@ namespace NE4S
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
                 Status.IsSlideCurveVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsAirHold.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsAirHoldVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsAir.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsAirVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsExTapDistinct.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsExTapDistinct = menuItem.Checked = !menuItem.Checked;
                 Refresh();
             };
             //ノーツボタンを追加
