@@ -107,6 +107,7 @@
     <Compile Include="Notes\AwesomeExTap.cs" />
     <Compile Include="Notes\AttributeNote.cs" />
     <Compile Include="Notes\BPM.cs" />
+    <Compile Include="Notes\ExTapDown.cs" />
     <Compile Include="Notes\NoteBook.cs" />
     <Compile Include="Notes\ExTap.cs" />
     <Compile Include="Notes\Flick.cs" />
