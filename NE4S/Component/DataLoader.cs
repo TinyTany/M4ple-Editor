@@ -35,7 +35,7 @@ namespace NE4S.Component
                 model = DeserializeData();
                 if(model == null)
                 {
-                    MessageBox.Show("ファイルを開けませんでした。\nファイルが破損しているか、対応していない可能性があります。");
+                    MessageBox.Show("ファイルを開けませんでした。\nファイルが破損しているか、対応していない可能性があります。", "読み込みエラー");
                 }
             }
             return model;
@@ -46,7 +46,15 @@ namespace NE4S.Component
             string path = openFileDialog.FileName;
             FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
-            Model model = binaryFormatter.Deserialize(fileStream) as Model;
+            Model model;
+            try
+            {
+                model = binaryFormatter.Deserialize(fileStream) as Model;
+            }
+            catch (Exception)
+            {
+                model = null;
+            }
             fileStream.Close();
             System.Diagnostics.Debug.Assert(model != null, "デシリアライズ失敗");
             return model;
