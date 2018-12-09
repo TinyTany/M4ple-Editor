@@ -48,6 +48,12 @@ namespace NE4S.Notes
             Status.SelectedNote = slideEnd;
         }
 
+        /// <summary>
+        /// このSlide内のノーツに対しての移動が有効かを調べます
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
         protected new bool IsPositionAvailable(Note note, Position position)
         {
             var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
@@ -55,13 +61,25 @@ namespace NE4S.Notes
             var listOverPosition = list.Where(x => x.Position.Tick > position.Tick);
             if (note is SlideBegin && position.Tick > list.First().Position.Tick) return false;
             if (note is SlideEnd && position.Tick < list.Last().Position.Tick) return false;
+            if (note is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
+            if (note is SlideCurve && (!listOverPosition.Any() || listOverPosition.First() is SlideCurve)) return false;
+            if (!(IsCurvesValid(listUnderPosition.ToList()) && IsCurvesValid(listOverPosition.ToList()))) return false;
             foreach (Note itrNote in list)
             {
                 if (itrNote is SlideBegin && position.Tick < itrNote.Position.Tick) return false;
                 else if (itrNote is SlideEnd && position.Tick > itrNote.Position.Tick) return false;
-                else if (itrNote is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
-                else if (itrNote is SlideCurve && (!listOverPosition.Any() || listOverPosition.First() is SlideCurve)) return false;
                 else if (position.Tick == itrNote.Position.Tick) return false;
+            }
+            return true;
+        }
+
+        private bool IsCurvesValid(List<Note> list)
+        {
+            foreach(Note note in list)
+            {
+                Note next = list.Next(note);
+                if (next == null) break;
+                if (note is SlideCurve && next is SlideCurve) return false;
             }
             return true;
         }
