@@ -22,6 +22,7 @@ namespace NE4S
             NoteBook = new NoteBook();
             ScoreBook = new ScoreBook();
 			LaneBook = new LaneBook();
+            LaneBook.UpdateNoteLocation += NoteBook.UpdateNoteLocation;
         }
 
 		public void SetScore(int beatNumer, int beatDenom, int barCount)
