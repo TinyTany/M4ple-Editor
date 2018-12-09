@@ -227,6 +227,15 @@ namespace NE4S.Notes
             return airHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
+        public void UpdateNoteLocation(LaneBook laneBook)
+        {
+            shortNotes.ForEach(x => x.UpdateLocation(laneBook));
+            holdNotes.ForEach(x => x.UpdateLocation(laneBook));
+            slideNotes.ForEach(x => x.UpdateLocation(laneBook));
+            airHoldNotes.ForEach(x => x.UpdateLocation(laneBook));
+            airNotes.ForEach(x => x.UpdateLocation(laneBook));
+        }
+
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
             //Hold

@@ -133,6 +133,17 @@ namespace NE4S.Notes
         }
         #endregion
 
+        public void UpdateLocation(LaneBook laneBook)
+        {
+            ScoreLane lane = laneBook.Find(x => x.StartTick <= Position.Tick && Position.Tick <= x.EndTick);
+            if (lane == null) return;
+            PointF location = new PointF(
+                lane.HitRect.Left + Position.Lane * ScoreInfo.MinLaneWidth,
+                //HACK: Y座標が微妙にずれるので-1して調節する
+                lane.HitRect.Bottom - (Position.Tick - lane.StartTick) * ScoreInfo.MaxBeatHeight - 1);
+            RelocateOnly(location, lane.Index);
+        }
+
         public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
 		{
 			RectangleF drawRect = new RectangleF(

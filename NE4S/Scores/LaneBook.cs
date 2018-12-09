@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace NE4S.Scores
 {
+    public delegate void LaneEventHandler(LaneBook laneBook);
+
     [Serializable()]
     public class LaneBook : List<ScoreLane>
     {
+        public event LaneEventHandler UpdateNoteLocation;
+
         public LaneBook()
         {
 			
@@ -58,6 +62,7 @@ namespace NE4S.Scores
                     }
                 }
             }
+            UpdateNoteLocation?.Invoke(this);
         }
 
         public void InsetScoreForward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
@@ -176,6 +181,7 @@ namespace NE4S.Scores
                     if (!nextLane.Any()) Remove(nextLane);
                 }
             }
+            UpdateNoteLocation?.Invoke(this);
         }
 
         /// <summary>
