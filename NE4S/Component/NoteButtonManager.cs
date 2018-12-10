@@ -27,8 +27,8 @@ namespace NE4S.Component
             //サイズも向きもない
             Add(new NoteButton(NoteType.AIRHOLD, UpdateSelectedButton));
             //数値の変更だけ
-            Add(new NoteButton(NoteType.BPM, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.HIGHSPEED, UpdateSelectedButton));
+            Add(new ValueNoteButton(NoteType.BPM, UpdateSelectedButton));
+            Add(new ValueNoteButton(NoteType.HIGHSPEED, UpdateSelectedButton));
             //
             this.First().SetSelected();
         }

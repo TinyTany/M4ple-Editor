@@ -14,7 +14,7 @@ namespace NE4S
         public static int Grid { get; set; } = 16;
         public static int Note { get; set; } = Define.NoteType.AIRHOLD;
         public static int NoteSize { get; set; } = 4;
-        public static double BPM { get; set; } = 120.0;
+        public static float CurrentValue { get; set; } = 0;
         public static bool InvisibleSlideTap { get; set; } = true;
 		public static bool IsMousePressed { get; set; } = true;
 		public static Note SelectedNote { get; set; } = null;
