@@ -19,13 +19,13 @@ namespace NE4S.Notes
         /// <summary>
         /// 1 ≦ Size ≦ 16
         /// </summary>
-        public int Size { get; private set; }
-        public Position Position { get; private set; }
+        public int Size { get; protected set; }
+        public Position Position { get; protected set; }
 		protected RectangleF noteRect;
         protected PointF adjustNoteRect = new PointF(0, -2);
         //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
         //NOTE: すべてのノーツに対して設定することにした（ノーツサイズ変更操作時に現在のレーンとノーツのレーンを比較して、別レーン上にカーソルがある時にサイズ変更がされないようにしたい）
-        public virtual int LaneIndex { get; private set; } = -1;
+        public virtual int LaneIndex { get; protected set; } = -1;
         /// <summary>
         /// ノーツを渡すイベントハンドラです（知らんけど）
         /// </summary>
