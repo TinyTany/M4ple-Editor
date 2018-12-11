@@ -62,6 +62,9 @@
     <Compile Include="Component\BarDeleteCustomForm.Designer.cs">
       <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Component\BPMNoteButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Component\DataLoader.cs" />
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
@@ -74,6 +77,15 @@
       <DependentUpon>NoteButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Component\NoteButtonManager.cs" />
+    <Compile Include="Component\SetValueCustomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\SetValueCustomForm.Designer.cs">
+      <DependentUpon>SetValueCustomForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Component\SpeedNoteButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Component\TabPageEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -147,6 +159,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Component\NoteButton.resx">
       <DependentUpon>NoteButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\SetValueCustomForm.resx">
+      <DependentUpon>SetValueCustomForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
