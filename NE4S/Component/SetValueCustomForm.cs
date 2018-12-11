@@ -25,6 +25,16 @@ namespace NE4S.Component
             numericUpDown1.Value = (decimal)valueNoteButton.CurrentValue;
         }
 
+        public string LabelMainText
+        {
+            set { labelMain.Text = value; }
+        }
+
+        public string LabelSubText
+        {
+            set { labelSub.Text = value; }
+        }
+
         private void ButtonOK_Click(object sender, EventArgs e)
         {
             Status.CurrentValue = valueNoteButton.CurrentValue = (float)numericUpDown1.Value.MyRound();

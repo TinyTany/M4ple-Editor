@@ -59,6 +59,11 @@ namespace NE4S
             return Math.Round(value * 100m) / 100m;
         }
 
+        public static float MyRound(this float value)
+        {
+            return (float)Math.Round(value * 100f) / 100f;
+        }
+
         public static PointF AddX(this PointF pointF, float x)
         {
             return new PointF(pointF.X + x, pointF.Y);

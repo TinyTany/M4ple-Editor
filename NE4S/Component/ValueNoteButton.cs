@@ -14,7 +14,7 @@ namespace NE4S.Component
         public float ValueMin { get; set; }
         public float ValueMax { get; set; }
         public float CurrentValue { get; set; }
-        protected int valueDelta;
+        protected float valueDelta;
 
         public ValueNoteButton(int noteType, NoteButtonEventHandler handler) : base(noteType, handler)
         {
@@ -37,6 +37,11 @@ namespace NE4S.Component
         {
             int pixelPerSize = 15;
             valueDelta = -(location.Y - pressedLocation.Y) / pixelPerSize;
+            if(ModifierKeys == Keys.Shift)
+            {
+                valueDelta /= 100f;
+                valueDelta = valueDelta.MyRound();
+            }
             if (CurrentValue + valueDelta < ValueMin)
             {
                 valueDelta = (int)(ValueMin - CurrentValue);
