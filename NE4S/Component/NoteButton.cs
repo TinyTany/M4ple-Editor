@@ -68,10 +68,60 @@ namespace NE4S.Component
             //
             //TODO: このへんでノーツ画像描画？
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            Tap.Draw(e, new RectangleF(50, 50, 60, 10));
-            
+            DrawNote(e);
             //
             return;
+        }
+
+        private void DrawNote(PaintEventArgs e)
+        {
+            switch (noteType)
+            {
+                case NoteType.TAP:
+                    Tap.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.EXTAP:
+                    ExTap.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.EXTAPDOWN:
+                    ExTapDown.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.AWEXTAP:
+                    AwesomeExTap.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.FLICK:
+                    Flick.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.HELL:
+                    HellTap.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.HOLD:
+                    HoldBegin.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.SLIDE:
+                    SlideBegin.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.SLIDECURVE:
+                    SlideCurve.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
+                    break;
+                case NoteType.AIRUPL:
+                    break;
+                case NoteType.AIRUPC:
+                    break;
+                case NoteType.AIRUPR:
+                    break;
+                case NoteType.AIRDOWNL:
+                    break;
+                case NoteType.AIRDOWNC:
+                    break;
+                case NoteType.AIRDOWNR:
+                    break;
+                case NoteType.AIRHOLD:
+                    AirAction.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(78, 8));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
