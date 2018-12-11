@@ -190,7 +190,6 @@ namespace NE4S.Component
                 {
                     e.Graphics.DrawLine(pen, new Point(0, virtualButtonWeight), new Point(previewBox.Width, virtualButtonWeight));
                     e.Graphics.DrawLine(pen, new Point(0, previewBox.Height - virtualButtonWeight), new Point(previewBox.Width, previewBox.Height - virtualButtonWeight));
-                    
                 }
                 using (SolidBrush brush = new SolidBrush(guideColor))
                 {
