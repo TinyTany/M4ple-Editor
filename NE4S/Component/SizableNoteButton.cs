@@ -79,14 +79,19 @@ namespace NE4S.Component
             else
             {
                 RefreshButtonArea(e.Location);
-                if(buttonArea == ButtonArea.Top)
-                {
-                    Status.NoteSize = noteSize < 16 ? ++noteSize : noteSize;
-                }
-                else if(buttonArea == ButtonArea.Bottom)
-                {
-                    Status.NoteSize = noteSize > 1 ? --noteSize : noteSize;
-                }
+                ChangeValueByButton();
+            }
+        }
+
+        protected virtual void ChangeValueByButton()
+        {
+            if (buttonArea == ButtonArea.Top)
+            {
+                Status.NoteSize = noteSize < 16 ? ++noteSize : noteSize;
+            }
+            else if (buttonArea == ButtonArea.Bottom)
+            {
+                Status.NoteSize = noteSize > 1 ? --noteSize : noteSize;
             }
         }
 
@@ -102,7 +107,7 @@ namespace NE4S.Component
             previewBox.Refresh();
         }
 
-        private void PreviewBox_MouseMove(object sender, MouseEventArgs e)
+        protected void PreviewBox_MouseMove(object sender, MouseEventArgs e)
         {
             RefreshButtonArea(e.Location);
             if (isSelected && buttonArea == ButtonArea.Center)
@@ -115,20 +120,26 @@ namespace NE4S.Component
             }
             if (isMousePressed)
             {
-                int pixelPerSize = 15;
-                sizeDelta = -(e.Y - pressedLocation.Y) / pixelPerSize;
-                if (noteSize + sizeDelta < 1) {
-                    sizeDelta = 1 - noteSize;
-                }
-                else if (noteSize + sizeDelta > 16)
-                {
-                    sizeDelta = 16 - noteSize;
-                }
+                ChangeValueByMouse(e.Location);
             }
             previewBox.Refresh();
         }
 
-        private void PreviewBox_MouseUp(object sender, MouseEventArgs e)
+        protected virtual void ChangeValueByMouse(Point location)
+        {
+            int pixelPerSize = 15;
+            sizeDelta = -(location.Y - pressedLocation.Y) / pixelPerSize;
+            if (noteSize + sizeDelta < 1)
+            {
+                sizeDelta = 1 - noteSize;
+            }
+            else if (noteSize + sizeDelta > 16)
+            {
+                sizeDelta = 16 - noteSize;
+            }
+        }
+
+        protected virtual void PreviewBox_MouseUp(object sender, MouseEventArgs e)
         {
             isMousePressed = false;
             Status.NoteSize = noteSize += sizeDelta;
@@ -193,6 +204,11 @@ namespace NE4S.Component
                     }
                 }
             }
+            DrawValue(e);
+        }
+
+        protected virtual void DrawValue(PaintEventArgs e)
+        {
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {
                 e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
@@ -200,7 +216,7 @@ namespace NE4S.Component
                 "NoteSize: " + (noteSize + sizeDelta),
                 myFont,
                 Brushes.White,
-                new PointF(10, 70));
+                new PointF(1, 78));
             }
         }
     }
