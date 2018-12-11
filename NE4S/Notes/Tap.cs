@@ -17,12 +17,12 @@ namespace NE4S.Notes
 			
         }
 
-		public Tap(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
+        public Tap(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
         {
             
         }
 
-		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
             RectangleF drawRect = new RectangleF(
                 noteRect.X - originPosX + adjustNoteRect.X,
@@ -30,29 +30,31 @@ namespace NE4S.Notes
                 noteRect.Width,
                 noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
-			{
-				e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
-			}
-			using (Pen pen = new Pen(Color.White, 1))
-			{
-                e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
-			}
-            using (Pen pen = new Pen(Color.LightGray, 1))
-            {
-                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
-            }
-        }
-
-        //NOTE: NoteButtonでのノーツイメージ描画用に作ったけど本当にこんなのでええんか？
-        public static void Draw(PaintEventArgs e, RectangleF drawRect)
-        {
-            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
             {
                 e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
             }
             using (Pen pen = new Pen(Color.White, 1))
             {
                 e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+            return;
+        }
+
+        //NOTE: NoteButtonでのノーツイメージ描画用に作ったけど本当にこんなのでええんか？
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2f, location.Y - size.Height / 2f, size.Width, size.Height);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Red, Color.DarkRed))
+            {
+                e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
+            }
+            using (Pen pen = new Pen(Color.White, 1))
+            {
+                e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + size.Height / 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + size.Height / 2));
             }
             using (Pen pen = new Pen(Color.LightGray, 1))
             {

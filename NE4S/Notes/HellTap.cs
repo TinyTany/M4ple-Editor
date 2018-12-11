@@ -37,5 +37,18 @@ namespace NE4S.Notes
                 e.Graphics.DrawRectangles(pen, new RectangleF[] { drawRect });
             }
         }
-	}
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2f, location.Y - size.Height / 2f, size.Width, size.Height);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.DarkSlateBlue, Color.DarkBlue))
+            {
+                e.Graphics.FillRectangle(gradientBrush, drawRect);
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawRectangles(pen, new RectangleF[] { drawRect });
+            }
+        }
+    }
 }

@@ -79,5 +79,18 @@ namespace NE4S.Notes
                 e.Graphics.DrawPath(pen, drawRect.RoundedPath());
             }
         }
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2f, location.Y - size.Height / 2f, size.Width, size.Height);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Pink, Color.DeepPink))
+            {
+                e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
     }
 }
