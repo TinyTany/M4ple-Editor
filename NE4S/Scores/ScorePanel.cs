@@ -22,6 +22,7 @@ namespace NE4S.Scores
         private HScrollBar hSBar;
         private PictureBox pBox;
         private PreviewNote pNote;
+        private DataIO dataIO;
 
         class Margin
         {
@@ -41,7 +42,9 @@ namespace NE4S.Scores
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
+            hSBar.Value = 0;
 			pNote = new PreviewNote();
+            dataIO = new DataIO();
 #if DEBUG
             //*
             //SetScore(11, 4, 1);
@@ -66,7 +69,6 @@ namespace NE4S.Scores
 #endif
 		}
 
-        public Model GetModelForIO() => model;
         public void SetEventForEditedWithoutSave(Model.EditedStatusHandler handler)
         {
             model.IsEditedWithoutSaveChanged += handler;
@@ -77,8 +79,59 @@ namespace NE4S.Scores
             get { return model.IsEditedWithoutSave; }
         }
 
+        public string FileName
+        {
+            get { return dataIO.FileName; }
+        }
 
-        public void SetModelForIO(Model model) => this.model = model;
+        public bool Load()
+        {
+            Model loadData = null;
+            //ファイルが保存されていない場合はメッセージボックスを出す
+            if (model.IsEditedWithoutSave)
+            {
+                DialogResult dialogResult = 
+                    MessageBox.Show(
+                        "ファイルは変更されています。保存しますか？",
+                        "開く", 
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                if(dialogResult == DialogResult.Yes)
+                {
+                    Save();
+                }
+                else if(dialogResult == DialogResult.No)
+                {
+                    loadData = dataIO.Load();
+                }
+                else if(dialogResult == DialogResult.Cancel) { }
+            }
+            else
+            {
+                loadData = dataIO.Load();
+            }
+            //読み込みの処理
+            if(loadData != null)
+            {
+                model = loadData;
+                model.IsEditedWithoutSave = false;
+                return true;
+            }
+            return false;
+        }
+
+        public void Save()
+        {
+            bool isSaved = dataIO.Save(model);
+            model.IsEditedWithoutSave = !isSaved;
+        }
+
+        public void SaveAs()
+        {
+            bool isSaved =  dataIO.SaveAs(model);
+            model.IsEditedWithoutSave = !isSaved;
+        }
 
         #region laneBookを触る用メソッド群
         /// <summary>

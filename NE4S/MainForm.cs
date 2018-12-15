@@ -59,15 +59,23 @@ namespace NE4S
                 sPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
             }
 			InitializeToolStrip();
-			tsbAdd.Click += TbsAdd_Click;
+            #region 各種ボタンに対するイベント紐づけ
+            tabScore.SelectedIndexChanged += (s, e) =>
+            {
+                Text = tabScore.SelectedTab.Text;
+                Text += " - M4ple";
+            };
+            //
+            tsbAdd.Click += TbsAdd_Click;
 			tsbEdit.Click += TbsEdit_Click;
 			tsbDelete.Click += TbsDelete_Click;
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
+            tsbNew.Click += TsbNew_Click;
             tsbOpen.Click += TsbOpen_Click;
             tsbSave.Click += TsbSave_Click;
-            //
+            #region ノーツ表示設定ボタン
             tsmiIsShortNote.Click += (s, e) =>
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
@@ -116,6 +124,25 @@ namespace NE4S
                 Status.IsExTapDistinct = menuItem.Checked = !menuItem.Checked;
                 Refresh();
             };
+            #endregion
+            tsmiNew.Click += TsbNew_Click;
+            tsmiOpen.Click += TsbOpen_Click;
+            tsmiSave.Click += TsbSave_Click;
+            tsmiSaveAs.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.SaveAs();
+                UpdateTextOfTabAndForm(false);
+            };
+            tsmiQuit.Click += (s, e) =>
+            {
+                Close();
+            };
+            FormClosing += (s, e) =>
+            {
+                e.Cancel = !IsExit();
+            };
+            #endregion
             //ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
             foreach (NoteButton noteButton in noteButtonManager)
@@ -124,16 +151,32 @@ namespace NE4S
             }
         }
 
-        private void TsbOpen_Click(object sender, EventArgs e)
+        private bool IsExit()
         {
-            DataLoader dataLoader = new DataLoader();
-            Model model = dataLoader.ShowDialog();
-            if (model == null)
+            foreach(TabPageEx tabPageEx in tabScore.TabPages)
             {
-                return;
+                if (tabPageEx.ScorePanel.IsEditedWithoutSave)
+                {
+                    DialogResult dialogResult =
+                    MessageBox.Show(
+                        "変更されているファイルがあります。本当に終了しますか？",
+                        "終了",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        return true;
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        return false;
+                    }
+                }
             }
-            //現在開かれているタブを判別してそれにたいしてロードするようにする
-            (tabScore.SelectedTab as TabPageEx).ScorePanel.SetModelForIO(model);
+            return true;
+        }
+
         /// <summary>
         /// valueの値を考慮して、タブのテキストとフォームのテキストを更新します
         /// </summary>
@@ -159,16 +202,67 @@ namespace NE4S
             tabScore.SelectedTab.Refresh();
         }
 
+        private void TsbNew_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            if (selectedPanel.IsEditedWithoutSave)
+            {
+                DialogResult dialogResult =
+                    MessageBox.Show(
+                        "ファイルは変更されています。保存しますか？",
+                        "新規作成",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    selectedPanel.Save();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    SetNewPanel();
+                }
+                else if (dialogResult == DialogResult.Cancel) { }
+            }
+            else
+            {
+                SetNewPanel();
+            }
+        }
+
+        private void SetNewPanel()
+        {
+            //新規パネル生成処理
+            PictureBox pBox = tabScore.SelectedTab.Controls[0] as PictureBox;
+            if (pBox == null) return;
+            HScrollBar hScrollBar = pBox.Controls[0] as HScrollBar;
+            if (hScrollBar == null) return;
+            (tabScore.SelectedTab as TabPageEx).ScorePanel = new ScorePanel(pBox, hScrollBar);
+            //タブ名をデフォルトにする
+            int tabIndex = tabScore.SelectedIndex;
+            tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
+            //
             tabScore.SelectedTab.Controls[0].Refresh();
+        }
+
+        private void TsbOpen_Click(object sender, EventArgs e)
+        {
+            //現在開かれているタブを判別してそれにたいしてロードするようにする
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            if (selectedPanel.Load())
+            {
+                UpdateTextOfTabAndForm(false);
+                selectedPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
+                tabScore.SelectedTab.Controls[0].Refresh();
+            }
             return;
         }
 
         private void TsbSave_Click(object sender, EventArgs e)
         {
             //現在開かれているタブを判別してそれを対象にセーブするようにする
-            Model model = (tabScore.SelectedTab as TabPageEx).ScorePanel.GetModelForIO();
-            DataSaver dataSaver = new DataSaver();
-            dataSaver.ShowDialog(model);
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.Save();
+            UpdateTextOfTabAndForm(false);
             return;
         }
 
