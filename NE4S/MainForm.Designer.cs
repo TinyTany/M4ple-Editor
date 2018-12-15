@@ -31,15 +31,37 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiNew = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiExport = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiCut = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiView = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIsShortNote = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIsHold = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiIsSlide = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiIsSlideRelay = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiIsSlideCurve = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiIsAirHold = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIsAir = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiIsExTapDistinct = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiShowHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiVersion = new System.Windows.Forms.ToolStripMenuItem();
             this.tabNoteButton = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.flpNotePanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabScore = new System.Windows.Forms.TabControl();
             this.Score1 = new System.Windows.Forms.TabPage();
             this.Score2 = new System.Windows.Forms.TabPage();
@@ -67,29 +89,6 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
-            this.tsmiNew = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSaveAs = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiExport = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiQuit = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiCut = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiPaste = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiShowHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiVersion = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiIsShortNote = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiIsHold = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiIsSlide = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiIsAir = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiIsAirHold = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiIsExTapDistinct = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -125,6 +124,53 @@
             this.tsmiFile.Size = new System.Drawing.Size(53, 20);
             this.tsmiFile.Text = "ファイル";
             // 
+            // tsmiNew
+            // 
+            this.tsmiNew.Name = "tsmiNew";
+            this.tsmiNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.tsmiNew.Size = new System.Drawing.Size(227, 22);
+            this.tsmiNew.Text = "新規作成(N)";
+            // 
+            // tsmiOpen
+            // 
+            this.tsmiOpen.Name = "tsmiOpen";
+            this.tsmiOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.tsmiOpen.Size = new System.Drawing.Size(227, 22);
+            this.tsmiOpen.Text = "開く(O)...";
+            // 
+            // tsmiSave
+            // 
+            this.tsmiSave.Name = "tsmiSave";
+            this.tsmiSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.tsmiSave.Size = new System.Drawing.Size(227, 22);
+            this.tsmiSave.Text = "上書き保存(S)";
+            // 
+            // tsmiSaveAs
+            // 
+            this.tsmiSaveAs.Name = "tsmiSaveAs";
+            this.tsmiSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.tsmiSaveAs.Size = new System.Drawing.Size(227, 22);
+            this.tsmiSaveAs.Text = "名前を付けて保存(A)...";
+            // 
+            // tsmiExport
+            // 
+            this.tsmiExport.Name = "tsmiExport";
+            this.tsmiExport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.tsmiExport.Size = new System.Drawing.Size(227, 22);
+            this.tsmiExport.Text = "エクスポート...";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(183, 6);
+            // 
+            // tsmiQuit
+            // 
+            this.tsmiQuit.Name = "tsmiQuit";
+            this.tsmiQuit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.tsmiQuit.Size = new System.Drawing.Size(227, 22);
+            this.tsmiQuit.Text = "終了(X)";
+            // 
             // tsmiEdit
             // 
             this.tsmiEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -135,6 +181,30 @@
             this.tsmiEdit.Name = "tsmiEdit";
             this.tsmiEdit.Size = new System.Drawing.Size(43, 20);
             this.tsmiEdit.Text = "編集";
+            // 
+            // tsmiCut
+            // 
+            this.tsmiCut.Name = "tsmiCut";
+            this.tsmiCut.Size = new System.Drawing.Size(115, 22);
+            this.tsmiCut.Text = "切り取り";
+            // 
+            // tsmiCopy
+            // 
+            this.tsmiCopy.Name = "tsmiCopy";
+            this.tsmiCopy.Size = new System.Drawing.Size(115, 22);
+            this.tsmiCopy.Text = "コピー";
+            // 
+            // tsmiPaste
+            // 
+            this.tsmiPaste.Name = "tsmiPaste";
+            this.tsmiPaste.Size = new System.Drawing.Size(115, 22);
+            this.tsmiPaste.Text = "貼り付け";
+            // 
+            // tsmiDelete
+            // 
+            this.tsmiDelete.Name = "tsmiDelete";
+            this.tsmiDelete.Size = new System.Drawing.Size(115, 22);
+            this.tsmiDelete.Text = "削除";
             // 
             // tsmiView
             // 
@@ -154,6 +224,35 @@
             this.tsmiView.Size = new System.Drawing.Size(43, 20);
             this.tsmiView.Text = "表示";
             // 
+            // tsmiIsShortNote
+            // 
+            this.tsmiIsShortNote.Checked = true;
+            this.tsmiIsShortNote.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsShortNote.Name = "tsmiIsShortNote";
+            this.tsmiIsShortNote.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsShortNote.Text = "ShortNote";
+            // 
+            // tsmiIsHold
+            // 
+            this.tsmiIsHold.Checked = true;
+            this.tsmiIsHold.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsHold.Name = "tsmiIsHold";
+            this.tsmiIsHold.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsHold.Text = "Hold";
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(212, 6);
+            // 
+            // tsmiIsSlide
+            // 
+            this.tsmiIsSlide.Checked = true;
+            this.tsmiIsSlide.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsSlide.Name = "tsmiIsSlide";
+            this.tsmiIsSlide.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsSlide.Text = "Slide";
+            // 
             // tsmiIsSlideRelay
             // 
             this.tsmiIsSlideRelay.Checked = true;
@@ -170,6 +269,40 @@
             this.tsmiIsSlideCurve.Size = new System.Drawing.Size(215, 22);
             this.tsmiIsSlideCurve.Text = "SlideCurve(曲線ノーツ)";
             // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(212, 6);
+            // 
+            // tsmiIsAirHold
+            // 
+            this.tsmiIsAirHold.Checked = true;
+            this.tsmiIsAirHold.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsAirHold.Name = "tsmiIsAirHold";
+            this.tsmiIsAirHold.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsAirHold.Text = "AirHold/AirAction";
+            // 
+            // tsmiIsAir
+            // 
+            this.tsmiIsAir.Checked = true;
+            this.tsmiIsAir.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsAir.Name = "tsmiIsAir";
+            this.tsmiIsAir.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsAir.Text = "Air";
+            // 
+            // toolStripSeparator10
+            // 
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(212, 6);
+            // 
+            // tsmiIsExTapDistinct
+            // 
+            this.tsmiIsExTapDistinct.Checked = true;
+            this.tsmiIsExTapDistinct.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsmiIsExTapDistinct.Name = "tsmiIsExTapDistinct";
+            this.tsmiIsExTapDistinct.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsExTapDistinct.Text = "ExTap系ノーツの色を区別する";
+            // 
             // tsmiHelp
             // 
             this.tsmiHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -180,10 +313,26 @@
             this.tsmiHelp.Size = new System.Drawing.Size(48, 20);
             this.tsmiHelp.Text = "ヘルプ";
             // 
+            // tsmiShowHelp
+            // 
+            this.tsmiShowHelp.Name = "tsmiShowHelp";
+            this.tsmiShowHelp.Size = new System.Drawing.Size(142, 22);
+            this.tsmiShowHelp.Text = "ヘルプの表示";
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(139, 6);
+            // 
+            // tsmiVersion
+            // 
+            this.tsmiVersion.Name = "tsmiVersion";
+            this.tsmiVersion.Size = new System.Drawing.Size(142, 22);
+            this.tsmiVersion.Text = "バージョン情報";
+            // 
             // tabNoteButton
             // 
             this.tabNoteButton.Controls.Add(this.tabPage1);
-            this.tabNoteButton.Controls.Add(this.tabPage2);
             this.tabNoteButton.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tabNoteButton.Location = new System.Drawing.Point(7, 52);
             this.tabNoteButton.Multiline = true;
@@ -211,16 +360,6 @@
             this.flpNotePanel.Name = "flpNotePanel";
             this.flpNotePanel.Size = new System.Drawing.Size(173, 814);
             this.flpNotePanel.TabIndex = 0;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(179, 820);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Custom";
-            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // tabScore
             // 
@@ -464,6 +603,7 @@
             // 
             // tslEstimatedNotes
             // 
+            this.tslEstimatedNotes.Enabled = false;
             this.tslEstimatedNotes.Name = "tslEstimatedNotes";
             this.tslEstimatedNotes.Size = new System.Drawing.Size(141, 22);
             this.tslEstimatedNotes.Text = "Total notes (estimated) : 0";
@@ -475,151 +615,6 @@
             this.tslRealNotes.Size = new System.Drawing.Size(109, 22);
             this.tslRealNotes.Text = "Total notes (real) : 0";
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
-            // 
-            // tsmiNew
-            // 
-            this.tsmiNew.Name = "tsmiNew";
-            this.tsmiNew.Size = new System.Drawing.Size(186, 22);
-            this.tsmiNew.Text = "新規作成(N)";
-            // 
-            // tsmiOpen
-            // 
-            this.tsmiOpen.Name = "tsmiOpen";
-            this.tsmiOpen.Size = new System.Drawing.Size(186, 22);
-            this.tsmiOpen.Text = "開く(O)...";
-            // 
-            // tsmiSave
-            // 
-            this.tsmiSave.Name = "tsmiSave";
-            this.tsmiSave.Size = new System.Drawing.Size(186, 22);
-            this.tsmiSave.Text = "上書き保存(S)";
-            // 
-            // tsmiSaveAs
-            // 
-            this.tsmiSaveAs.Name = "tsmiSaveAs";
-            this.tsmiSaveAs.Size = new System.Drawing.Size(186, 22);
-            this.tsmiSaveAs.Text = "名前を付けて保存(A)...";
-            // 
-            // tsmiExport
-            // 
-            this.tsmiExport.Name = "tsmiExport";
-            this.tsmiExport.Size = new System.Drawing.Size(186, 22);
-            this.tsmiExport.Text = "エクスポート...";
-            // 
-            // tsmiQuit
-            // 
-            this.tsmiQuit.Name = "tsmiQuit";
-            this.tsmiQuit.Size = new System.Drawing.Size(186, 22);
-            this.tsmiQuit.Text = "終了(X)";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(183, 6);
-            // 
-            // tsmiCut
-            // 
-            this.tsmiCut.Name = "tsmiCut";
-            this.tsmiCut.Size = new System.Drawing.Size(180, 22);
-            this.tsmiCut.Text = "切り取り";
-            // 
-            // tsmiCopy
-            // 
-            this.tsmiCopy.Name = "tsmiCopy";
-            this.tsmiCopy.Size = new System.Drawing.Size(180, 22);
-            this.tsmiCopy.Text = "コピー";
-            // 
-            // tsmiPaste
-            // 
-            this.tsmiPaste.Name = "tsmiPaste";
-            this.tsmiPaste.Size = new System.Drawing.Size(180, 22);
-            this.tsmiPaste.Text = "貼り付け";
-            // 
-            // tsmiDelete
-            // 
-            this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(180, 22);
-            this.tsmiDelete.Text = "削除";
-            // 
-            // tsmiShowHelp
-            // 
-            this.tsmiShowHelp.Name = "tsmiShowHelp";
-            this.tsmiShowHelp.Size = new System.Drawing.Size(180, 22);
-            this.tsmiShowHelp.Text = "ヘルプの表示";
-            // 
-            // tsmiVersion
-            // 
-            this.tsmiVersion.Name = "tsmiVersion";
-            this.tsmiVersion.Size = new System.Drawing.Size(180, 22);
-            this.tsmiVersion.Text = "バージョン情報";
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
-            // 
-            // tsmiIsShortNote
-            // 
-            this.tsmiIsShortNote.Checked = true;
-            this.tsmiIsShortNote.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsShortNote.Name = "tsmiIsShortNote";
-            this.tsmiIsShortNote.Size = new System.Drawing.Size(215, 22);
-            this.tsmiIsShortNote.Text = "ShortNote";
-            // 
-            // tsmiIsHold
-            // 
-            this.tsmiIsHold.Checked = true;
-            this.tsmiIsHold.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsHold.Name = "tsmiIsHold";
-            this.tsmiIsHold.Size = new System.Drawing.Size(215, 22);
-            this.tsmiIsHold.Text = "Hold";
-            // 
-            // tsmiIsSlide
-            // 
-            this.tsmiIsSlide.Checked = true;
-            this.tsmiIsSlide.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsSlide.Name = "tsmiIsSlide";
-            this.tsmiIsSlide.Size = new System.Drawing.Size(215, 22);
-            this.tsmiIsSlide.Text = "Slide";
-            // 
-            // tsmiIsAir
-            // 
-            this.tsmiIsAir.Checked = true;
-            this.tsmiIsAir.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsAir.Name = "tsmiIsAir";
-            this.tsmiIsAir.Size = new System.Drawing.Size(215, 22);
-            this.tsmiIsAir.Text = "Air";
-            // 
-            // tsmiIsAirHold
-            // 
-            this.tsmiIsAirHold.Checked = true;
-            this.tsmiIsAirHold.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsAirHold.Name = "tsmiIsAirHold";
-            this.tsmiIsAirHold.Size = new System.Drawing.Size(215, 22);
-            this.tsmiIsAirHold.Text = "AirHold/AirAction";
-            // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(212, 6);
-            // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(212, 6);
-            // 
-            // tsmiIsExTapDistinct
-            // 
-            this.tsmiIsExTapDistinct.Checked = true;
-            this.tsmiIsExTapDistinct.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tsmiIsExTapDistinct.Name = "tsmiIsExTapDistinct";
-            this.tsmiIsExTapDistinct.Size = new System.Drawing.Size(215, 22);
-            this.tsmiIsExTapDistinct.Text = "ExTap系ノーツの色を区別する";
-            // 
-            // toolStripSeparator10
-            // 
-            this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(212, 6);
             // 
             // MainForm
             // 
@@ -654,7 +649,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiHelp;
         private System.Windows.Forms.TabControl tabNoteButton;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabControl tabScore;
         private System.Windows.Forms.TabPage Score1;
         private System.Windows.Forms.TabPage Score2;

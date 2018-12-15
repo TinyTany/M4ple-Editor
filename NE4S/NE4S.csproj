@@ -65,6 +65,7 @@
     <Compile Include="Component\BPMNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Component\DataIO.cs" />
     <Compile Include="Component\DataLoader.cs" />
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
