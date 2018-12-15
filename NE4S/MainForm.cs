@@ -55,6 +55,8 @@ namespace NE4S
                 pBox.MouseMove += Score_MouseMove;
                 pBox.MouseUp += Score_MouseUp;
                 hScroll.Scroll += Score_Scroll;
+                //
+                sPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
             }
 			InitializeToolStrip();
 			tsbAdd.Click += TbsAdd_Click;
@@ -132,6 +134,31 @@ namespace NE4S
             }
             //現在開かれているタブを判別してそれにたいしてロードするようにする
             (tabScore.SelectedTab as TabPageEx).ScorePanel.SetModelForIO(model);
+        /// <summary>
+        /// valueの値を考慮して、タブのテキストとフォームのテキストを更新します
+        /// </summary>
+        /// <param name="isEditedWithoutSave"></param>
+        private void UpdateTextOfTabAndForm(bool isEditedWithoutSave)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            if (selectedPanel.FileName != null)
+            {
+                tabScore.SelectedTab.Text = selectedPanel.FileName;
+            }
+            else
+            {
+                int tabIndex = tabScore.SelectedIndex;
+                tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
+            }
+            if (isEditedWithoutSave)
+            {
+                tabScore.SelectedTab.Text += "*";
+            }
+            Text = tabScore.SelectedTab.Text;
+            Text += " - M4ple";
+            tabScore.SelectedTab.Refresh();
+        }
+
             tabScore.SelectedTab.Controls[0].Refresh();
             return;
         }

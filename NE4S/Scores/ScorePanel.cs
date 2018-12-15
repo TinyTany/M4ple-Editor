@@ -67,6 +67,16 @@ namespace NE4S.Scores
 		}
 
         public Model GetModelForIO() => model;
+        public void SetEventForEditedWithoutSave(Model.EditedStatusHandler handler)
+        {
+            model.IsEditedWithoutSaveChanged += handler;
+        }
+
+        public bool IsEditedWithoutSave
+        {
+            get { return model.IsEditedWithoutSave; }
+        }
+
 
         public void SetModelForIO(Model model) => this.model = model;
 
