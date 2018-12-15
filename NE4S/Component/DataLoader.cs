@@ -13,6 +13,7 @@ namespace NE4S.Component
     public class DataLoader
     {
         private readonly OpenFileDialog openFileDialog;
+        public string Path { get; private set; } = null;
 
         public DataLoader()
         {
@@ -43,8 +44,8 @@ namespace NE4S.Component
 
         private Model DeserializeData()
         {
-            string path = openFileDialog.FileName;
-            FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            Path = openFileDialog.FileName;
+            FileStream fileStream = new FileStream(Path, FileMode.Open, FileAccess.Read);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             Model model;
             try
