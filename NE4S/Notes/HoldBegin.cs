@@ -12,7 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class HoldBegin : Note
     {
-        public event NoteEventHandler CheckNotePosition, CheckNoteSize;
+        public event NoteEventHandler CheckNoteSize;
+        public event NoteEventHandlerEx CheckNotePosition;
 
         public HoldBegin()
         {
@@ -31,25 +32,27 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Relocate(Position pos, PointF location)
+        public override void Relocate(Position pos, PointF location, int laneIndex)
         {
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
-            base.Relocate(location);
-            CheckNotePosition?.Invoke(this);
+            base.Relocate(location, laneIndex);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
         public override void Relocate(Position pos)
         {
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
-            CheckNotePosition?.Invoke(this);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
-        public override void Relocate(PointF location)
+        public override void Relocate(PointF location, int laneIndex)
         {
-            base.Relocate(location);
-            CheckNotePosition?.Invoke(this);
+            base.Relocate(location, laneIndex);
+            CheckNotePosition?.Invoke(this, 0);
             return;
         }
 
@@ -67,6 +70,23 @@ namespace NE4S.Notes
             using (Pen pen = new Pen(Color.White, 1))
             {
                 e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2f, location.Y - size.Height / 2f, size.Width, size.Height);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Orange, Color.DarkOrange))
+            {
+                e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
+            }
+            using (Pen pen = new Pen(Color.White, 1))
+            {
+                e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + size.Height / 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + size.Height / 2));
             }
             using (Pen pen = new Pen(Color.LightGray, 1))
             {

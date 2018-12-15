@@ -13,6 +13,7 @@ namespace NE4S.Component
     public class DataSaver
     {
         private readonly SaveFileDialog saveFileDialog;
+        public string Path { get; set; } = null;
 
         public DataSaver()
         {
@@ -27,23 +28,23 @@ namespace NE4S.Component
             };
         }
 
-        public void ShowDialog(Model model)
+        public bool ShowDialog(Model model)
         {
             if(saveFileDialog.ShowDialog() == DialogResult.OK)
             {
+                Path = saveFileDialog.FileName;
                 SerializeData(model);
+                return true;
             }
-            return;
+            return false;
         }
 
-        private void SerializeData(Model model)
+        public void SerializeData(Model model)
         {
-            string path = saveFileDialog.FileName;
-            FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+            FileStream fileStream = new FileStream(Path, FileMode.Create, FileAccess.Write);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             binaryFormatter.Serialize(fileStream, model);
             fileStream.Close();
-            return;
         }
     }
 }

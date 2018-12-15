@@ -41,15 +41,9 @@ namespace NE4S.Notes
         public delegate void VoidHandler();
         public event VoidHandler DetachAir;
 
-        public Air()
-		{
+        public Air() { }
 
-		}
-
-        public Air(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            
-        }
+        public Air(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public void DetachNote() => DetachAir?.Invoke();
 

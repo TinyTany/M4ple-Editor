@@ -27,10 +27,14 @@ namespace NE4S.Component
             //サイズも向きもない
             Add(new NoteButton(NoteType.AIRHOLD, UpdateSelectedButton));
             //数値の変更だけ
-            Add(new NoteButton(NoteType.BPM, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.HIGHSPEED, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.NOTEHS, UpdateSelectedButton));
-            Add(new NoteButton(NoteType.MEASUREHS, UpdateSelectedButton));
+            Add(new BPMNoteButton(NoteType.BPM, UpdateSelectedButton)
+            {
+                ValueMin = 1, ValueMax = 99999, CurrentValue = 120
+            });
+            Add(new SpeedNoteButton(NoteType.HIGHSPEED, UpdateSelectedButton)
+            {
+                ValueMin = -10000, ValueMax = 10000, CurrentValue = 1
+            });
             //
             this.First().SetSelected();
         }

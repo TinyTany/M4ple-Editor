@@ -22,6 +22,7 @@ namespace NE4S.Scores
         private HScrollBar hSBar;
         private PictureBox pBox;
         private PreviewNote pNote;
+        private DataIO dataIO;
 
         class Margin
         {
@@ -41,9 +42,12 @@ namespace NE4S.Scores
             model = new Model();
             this.hSBar = hSBar;
             hSBar.Minimum = 0;
+            hSBar.Value = 0;
 			pNote = new PreviewNote();
+            dataIO = new DataIO();
 #if DEBUG
-			//*
+            //*
+            //SetScore(11, 4, 1);
 			SetScore(4, 4, 10);
             SetScore(3, 4, 5);
             SetScore(6, 8, 8);
@@ -65,9 +69,69 @@ namespace NE4S.Scores
 #endif
 		}
 
-        public Model GetModelForIO() => model;
+        public void SetEventForEditedWithoutSave(Model.EditedStatusHandler handler)
+        {
+            model.IsEditedWithoutSaveChanged += handler;
+        }
 
-        public void SetModelForIO(Model model) => this.model = model;
+        public bool IsEditedWithoutSave
+        {
+            get { return model.IsEditedWithoutSave; }
+        }
+
+        public string FileName
+        {
+            get { return dataIO.FileName; }
+        }
+
+        public bool Load()
+        {
+            Model loadData = null;
+            //ファイルが保存されていない場合はメッセージボックスを出す
+            if (model.IsEditedWithoutSave)
+            {
+                DialogResult dialogResult = 
+                    MessageBox.Show(
+                        "ファイルは変更されています。保存しますか？",
+                        "開く", 
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                if(dialogResult == DialogResult.Yes)
+                {
+                    Save();
+                }
+                else if(dialogResult == DialogResult.No)
+                {
+                    loadData = dataIO.Load();
+                }
+                else if(dialogResult == DialogResult.Cancel) { }
+            }
+            else
+            {
+                loadData = dataIO.Load();
+            }
+            //読み込みの処理
+            if(loadData != null)
+            {
+                model = loadData;
+                model.IsEditedWithoutSave = false;
+                return true;
+            }
+            return false;
+        }
+
+        public void Save()
+        {
+            bool isSaved = dataIO.Save(model);
+            model.IsEditedWithoutSave = !isSaved;
+        }
+
+        public void SaveAs()
+        {
+            bool isSaved =  dataIO.SaveAs(model);
+            model.IsEditedWithoutSave = !isSaved;
+        }
 
         #region laneBookを触る用メソッド群
         /// <summary>
@@ -172,10 +236,10 @@ namespace NE4S.Scores
         {
 			var laneBook = model.LaneBook;
             //クリックされたレーンを特定
-            ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
-            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
+            ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
+            if (selectedLane != null && selectedLane.SelectedScore(e.Location.AddX(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
             {
-                new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(currentPositionX))).Show(pBox, e.Location);
+                new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.AddX(currentPositionX))).Show(pBox, e.Location);
             }
         }
 
@@ -183,17 +247,19 @@ namespace NE4S.Scores
         {
 			var laneBook = model.LaneBook;
 			Status.IsMousePressed = true;
-			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
+			ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
             #region 座標などをコンソール出力（デバッグ時のみ）
 #if DEBUG
             //デバッグ用にクリックした座標などをコンソールに出力する
             //本番では必要ない
             if (selectedLane != null && e.Button == MouseButtons.Left)
 			{
+                System.Diagnostics.Debug.WriteLine(selectedLane.Index);
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
-				if(selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y) != null)
+                Position position = selectedLane.GetPos(gridPoint.AddX(currentPositionX));
+				if(position != null)
 				{
-					selectedLane.GetPos(gridPoint.X + currentPositionX, gridPoint.Y).PrintPos();
+                    position.PrintPosition();
 				}
 				else
 				{
@@ -205,7 +271,7 @@ namespace NE4S.Scores
             if (e.Button == MouseButtons.Left)
 			{
                 int noteArea = NoteArea.NONE;
-                var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX), ref noteArea);
+                var selectedNote = model.NoteBook.SelectedNote(e.Location.AddX(currentPositionX), ref noteArea);
 				switch (Status.Mode)
 				{
 					case Mode.ADD:
@@ -253,7 +319,7 @@ namespace NE4S.Scores
 			switch (Status.Mode)
 			{
 				case Mode.ADD:
-					ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
+					ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
 					if (selectedLane != null)
 					{
 						pNote.Location = PointToGrid(e.Location, selectedLane);
@@ -273,15 +339,13 @@ namespace NE4S.Scores
                     if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
                     {
                         Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
-                        Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
+                        Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
                         Position newPos = selectedLane.GetPos(virtualGridPoint);
-                        Status.SelectedNote.Relocate(newPos, virtualGridPoint);
-                        //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                        Status.SelectedNote.LaneIndex = selectedLane.Index;
+                        Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                     }
                     break;
 				case Mode.EDIT:
-					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(currentPositionX)));
+					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
                         switch (Status.SelectedNoteArea)
@@ -289,7 +353,7 @@ namespace NE4S.Scores
                             case NoteArea.LEFT:
                                 {
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
-                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).Add(currentPositionX);
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX);
                                     int newSize = (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
                                     if (newSize <= 0) newSize = 1;
                                     else if (newSize > 16) newSize = 16;
@@ -300,17 +364,15 @@ namespace NE4S.Scores
                                 {
                                     //ノーツのサイズを考慮したほうのメソッドを使う
                                     Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote.Size);
-                                    Point virtualGridPoint = physicalGridPoint.Add(currentPositionX);
+                                    Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
                                     Position newPos = selectedLane.GetPos(virtualGridPoint);
-                                    Status.SelectedNote.Relocate(newPos, virtualGridPoint);
-                                    //ロングノーツで使うのでどのレーンにノーツが乗ってるかちゃんと更新する
-                                    Status.SelectedNote.LaneIndex = selectedLane.Index;
+                                    Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                                 }
                                 break;
                             case NoteArea.RIGHT:
                                 {
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
-                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).Add(currentPositionX);
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX);
                                     int newSize = (int)((virtualGridPoint.X - Status.SelectedNote.Location.X) / ScoreInfo.MinLaneWidth);
                                     ++newSize;
                                     if (newSize <= 0) newSize = 1;
@@ -324,7 +386,7 @@ namespace NE4S.Scores
                     }
 					break;
 				case Mode.DELETE:
-                    var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(currentPositionX));
+                    var selectedNote = model.NoteBook.SelectedNote(e.Location.AddX(currentPositionX));
                     if(Status.IsMousePressed && selectedNote != null)
                     {
                         model.NoteBook.Delete(selectedNote);
@@ -364,35 +426,48 @@ namespace NE4S.Scores
         {
             //与えられた自由物理座標からグリッド仮想座標とポジション座標を作成
             Point gridPoint = PointToGrid(location, lane);
-            Position position = lane.GetPos(gridPoint.Add(currentPositionX));
-            PointF locationVirtual = gridPoint.Add(currentPositionX);
+            Position position = lane.GetPos(gridPoint.AddX(currentPositionX));
+            PointF locationVirtual = gridPoint.AddX(currentPositionX);
 
             Note newNote = null;
             switch (Status.Note)
             {
                 case NoteType.TAP:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new Tap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.EXTAP:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new ExTap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
+                case NoteType.EXTAPDOWN:
+                    if (!Status.IsShortNoteVisible) break;
+                    newNote = new ExTapDown(Status.NoteSize, position, locationVirtual, lane.Index);
+                    break;
                 case NoteType.AWEXTAP:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new AwesomeExTap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.HELL:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new HellTap(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.FLICK:
+                    if (!Status.IsShortNoteVisible) break;
                     newNote = new Flick(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
                 case NoteType.HOLD:
+                    if (!Status.IsHoldVisible) break;
                     model.AddLongNote(new Hold(Status.NoteSize, position, locationVirtual, lane.Index));
                     break;
                 case NoteType.SLIDE:
+                    if (!Status.IsSlideVisible) break;
                     //Slideとの当たり判定は自由仮想座標を使う
-                    Slide selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
-                    if(selectedSlide != null)
+                    Slide selectedSlide = model.SelectedSlide(location.AddX(currentPositionX));
+                    //Shiftキーを押しながら追加した際はかならず新規Slideノーツを追加する
+                    if(selectedSlide != null && Control.ModifierKeys != Keys.Shift)
                     {
+                        if (!Status.IsSlideRelayVisible) break;
                         if (Status.InvisibleSlideTap)
                         {
                             SlideRelay slideRelay = new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
@@ -412,7 +487,8 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.SLIDECURVE:
-                    selectedSlide = model.SelectedSlide(location.Add(currentPositionX));
+                    if (!Status.IsSlideVisible || !Status.IsSlideCurveVisible) break;
+                    selectedSlide = model.SelectedSlide(location.AddX(currentPositionX));
                     if (selectedSlide != null)
                     {
                         SlideCurve slideCurve = new SlideCurve(Status.NoteSize, position, locationVirtual, lane.Index);
@@ -421,8 +497,9 @@ namespace NE4S.Scores
                     }
                     break;
                 case NoteType.AIRHOLD:
-                    AirHold selectedAirHold = model.SelectedAirHold(location.Add(currentPositionX));
-                    var selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (!Status.IsAirHoldVisible) break;
+                    AirHold selectedAirHold = model.SelectedAirHold(location.AddX(currentPositionX));
+                    var selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedAirHold != null)
                     {
                         AirAction airAction = new AirAction(selectedAirHold.Size, position, locationVirtual, lane.Index);
@@ -431,66 +508,72 @@ namespace NE4S.Scores
                     }
                     if (selectedNote != null && !selectedNote.IsAirHoldAttached)
                     {
-                        AirHold airHold = new AirHold(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirHold airHold = new AirHold(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddLongNote(airHold);
                         selectedNote.AttachAirHold(airHold);
                     }
                     if (selectedNote != null && !selectedNote.IsAirAttached) { 
-                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
                 case NoteType.AIRUPC:
-                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (!Status.IsAirVisible) break;
+                    selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
                 case NoteType.AIRUPL:
-                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (!Status.IsAirVisible) break;
+                    selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirUpL air = new AirUpL(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirUpL air = new AirUpL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
                 case NoteType.AIRUPR:
-                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (!Status.IsAirVisible) break;
+                    selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirUpR air = new AirUpR(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirUpR air = new AirUpR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
                 case NoteType.AIRDOWNC:
-                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (!Status.IsAirVisible) break;
+                    selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirDownC air = new AirDownC(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirDownC air = new AirDownC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
                 case NoteType.AIRDOWNL:
-                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (!Status.IsAirVisible) break;
+                    selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirDownL air = new AirDownL(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirDownL air = new AirDownL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
                 case NoteType.AIRDOWNR:
-                    selectedNote = model.NoteBook.SelectedNote(location.Add(currentPositionX)) as AirableNote;
+                    if (!Status.IsAirVisible) break;
+                    selectedNote = model.NoteBook.SelectedNote(location.AddX(currentPositionX)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirDownR air = new AirDownR(selectedNote.Size, selectedNote.Pos, selectedNote.Location, lane.Index);
+                        AirDownR air = new AirDownR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         model.AddNote(air);
                         selectedNote.AttachAir(air);
                     }
@@ -553,8 +636,8 @@ namespace NE4S.Scores
             if (drawLaneBook.Any())
             {
                 //現在の描画範囲にあるレーンの小節数の範囲を設定
-                Status.DrawScoreBarFirst = drawLaneBook.First().FirstScore.Index + 1;
-                Status.DrawScoreBarLast = drawLaneBook.Last().LastScore.Index + 1;
+                Status.DrawTickFirst = drawLaneBook.First().FirstScore.StartTick;
+                Status.DrawTickLast = drawLaneBook.Last().LastScore.EndTick;
             }
             //ノーツ描画
             model.PaintNote(e, originPosX, originPosY, currentPositionX);

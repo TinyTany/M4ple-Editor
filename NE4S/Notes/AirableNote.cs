@@ -18,26 +18,11 @@ namespace NE4S.Notes
 
         public AirableNote() { }
 
-        public AirableNote(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, 0)
-        {
-            LaneIndex = laneIndex;
-        }
+        public AirableNote(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public Air GetAirForDelete() => air;
 
         public AirHold GetAirHoldForDelete() => airHold;
-
-        //airHoldBeginのインデックスも変更しないと描画がおかしくなるぞ！
-        public override int LaneIndex
-        {
-            set {
-                base.LaneIndex = value;
-                if(airHoldBegin != null)
-                {
-                    airHoldBegin.LaneIndex = value;
-                }
-            }
-        }
 
         /// <summary>
         /// Airが取り付けられているか判定します
@@ -104,25 +89,26 @@ namespace NE4S.Notes
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="location"></param>
-        public new void RelocateOnly(Position pos, PointF location)
+        /// <param name="laneIndex"></param>
+        public new void RelocateOnly(Position pos, PointF location, int laneIndex)
         {
-            base.RelocateOnly(pos, location);
-            air?.RelocateOnly(pos, location);
+            base.RelocateOnly(pos, location, laneIndex);
+            air?.RelocateOnly(pos, location, laneIndex);
             //AirHold全体に変更を反映させるためRelocateを使う
-            airHoldBegin?.Relocate(pos, location);
+            airHoldBegin?.Relocate(pos, location, laneIndex);
         }
 
-        public override void Relocate(Position pos, PointF location)
+        public override void Relocate(Position pos, PointF location, int laneIndex)
         {
-            Relocate(location);
+            Relocate(location, laneIndex);
             Relocate(pos);
         }
 
-        public override void Relocate(PointF location)
+        public override void Relocate(PointF location, int laneIndex)
         {
-            base.Relocate(location);
-            air?.Relocate(location);
-            airHoldBegin?.Relocate(location);
+            base.Relocate(location, laneIndex);
+            air?.Relocate(location, laneIndex);
+            airHoldBegin?.Relocate(location, laneIndex);
             return;
         }
 

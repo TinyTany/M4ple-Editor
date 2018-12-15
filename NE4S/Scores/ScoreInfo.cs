@@ -22,6 +22,7 @@ namespace NE4S.Scores
         public static float MaxBeatHeight { get; } = 2;
         /// <summary>
         /// 最大分数
+        /// 1tick
         /// </summary>
         public static int MaxBeatDiv { get; } = 192;
         /// <summary>
@@ -48,8 +49,8 @@ namespace NE4S.Scores
         {
             public static int Top { get; } = 5;
             public static int Bottom { get; } = 5;
-            public static int Left { get; } = 30;
-            public static int Right { get; } = 30;
+            public static int Left { get; } = 60;
+            public static int Right { get; } = 60;
         }
 
         /// <summary>
@@ -59,8 +60,8 @@ namespace NE4S.Scores
         {
             public static int Top { get; } = 10;
             public static int Bottom { get; } = 10;
-            public static int Left { get; } = 10;
-            public static int Right { get; } = 10;
+            public static int Left { get; } = 3;
+            public static int Right { get; } = 3;
         }
     }
 }

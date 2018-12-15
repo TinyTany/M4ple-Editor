@@ -31,9 +31,12 @@ namespace NE4S
         /// Rangeの範囲サイズ
         /// </summary>
         /// <returns></returns>
-        public int Size()
+        public int Size
         {
-            return Max - Min + 1;
+            get
+            {
+                return Max - Min + 1;
+            }
         }
     }
 }

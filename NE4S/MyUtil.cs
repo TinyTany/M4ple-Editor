@@ -49,6 +49,21 @@ namespace NE4S
             return list.ElementAt(list.IndexOf(note) + 1);
         }
 
+        /// <summary>
+        /// 小数第3位以下を四捨五入する
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal MyRound(this decimal value)
+        {
+            return Math.Round(value * 100m) / 100m;
+        }
+
+        public static float MyRound(this float value)
+        {
+            return (float)Math.Round(value * 100f) / 100f;
+        }
+
         public static PointF AddX(this PointF pointF, float x)
         {
             return new PointF(pointF.X + x, pointF.Y);
@@ -89,7 +104,7 @@ namespace NE4S
             return new PointF(pointF.X * k, pointF.Y * k);
         }
 
-        public static Point Add(this Point point, int x)
+        public static Point AddX(this Point point, int x)
         {
             return new Point(point.X + x, point.Y);
         }

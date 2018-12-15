@@ -70,12 +70,18 @@ namespace NE4S.Scores
 		}
 
         /// <summary>
-        /// scores内のScoreのインデックスを更新
+        /// scores内のScoreのインデックスとTick数を更新
         /// リストscoresの内容が変更された際に必ず呼ぶ
         /// </summary>
         private void SetScoreIndex()
         {
             for (int i = 0; i < Count; ++i) this[i].Index = i;
+            int tick = 0;
+            foreach(Score score in this)
+            {
+                score.StartTick = tick;
+                tick = score.EndTick + 1;
+            }
 #if DEBUG
             System.Diagnostics.Debug.WriteLine("ScoreCount : " + Count.ToString());
 #endif

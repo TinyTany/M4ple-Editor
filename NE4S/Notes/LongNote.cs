@@ -27,47 +27,50 @@ namespace NE4S.Notes
 
         protected bool IsPositionAvailable(Note note, Position position)
         {
-            if (position.CompareTo(this.OrderBy(x => x.Pos).First().Pos) < 0) return false;
+            if (position.Tick < this.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
             foreach (Note itrNote in this.Where(x => x != note))
             {
-                if (position.Equals(itrNote.Pos)) return false;
+                if (position.Tick == itrNote.Position.Tick) return false;
             }
             return true;
         }
 
-        public bool IsDrawable() => 
-            this.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).Any();
+        public bool IsDrawable()
+        {
+            bool isAllNoteBehind = !this.Where(x => x.Position.Tick >= Status.DrawTickFirst).Any();
+            bool isAllNoteBeyond = !this.Where(x => x.Position.Tick <= Status.DrawTickLast).Any();
+            return !(isAllNoteBehind && isAllNoteBeyond);
+        }
 
-        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
-		{
-
-		}
+        public void UpdateLocation(LaneBook laneBook) => ForEach(x => x.UpdateLocation(laneBook));
 
         /// <summary>
-        /// 2つのPosition変数からその仮想的な縦の距離を計算する
+        /// ノーツ位置のチェックのみ行う
         /// </summary>
-        /// <param name="pastPosition"></param>
-        /// <param name="futurePosition"></param>
-        /// <param name="scoreBook"></param>
-        /// <returns></returns>
-        protected static float PositionDistance(Position pastPosition, Position futurePosition, ScoreBook scoreBook)
+        /// <param name="e"></param>
+        /// <param name="originPosX"></param>
+        /// <param name="originPosY"></param>
+        /// <param name="laneBook"></param>
+        /// <param name="currentPositionX"></param>
+        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
-            float distance = 0;
-            //4分の4拍子1小節分の高さ
-            float baseBarSize = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight;
-            Score pastScore = scoreBook.At(pastPosition.Bar - 1), futureScore = scoreBook.At(futurePosition.Bar - 1);
-            //2ノーツが同一のScore上にある場合も使える
-            if (pastScore.Index == futureScore.Index)
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            //ノーツ位置のチェック
+            for (Note past = list.First(); past != list.Last(); past = list.Next(past))
             {
-                return (futurePosition.Size - pastPosition.Size) * baseBarSize;
+                Note future = list.Next(past);
+                //
+                if (laneBook.Find(x => x.HitRect.Contains(future.Location)) == null)
+                {
+                    ScoreLane lane = laneBook.Find(x => x.StartTick <= future.Position.Tick && future.Position.Tick <= x.EndTick);
+                    if (lane == null) break;
+                    PointF location = new PointF(
+                        lane.HitRect.Left + future.Position.Lane * ScoreInfo.MinLaneWidth,
+                        //HACK: Y座標が微妙にずれるので-1して調節する
+                        lane.HitRect.Bottom - (future.Position.Tick - lane.StartTick) * ScoreInfo.MaxBeatHeight - 1);
+                    future.RelocateOnly(location, lane.Index);
+                }
             }
-            distance += baseBarSize * (pastScore.BarSize - pastPosition.Size);
-            for (int i = pastScore.Index + 1; i <= futureScore.Index - 1; ++i)
-            {
-                distance += scoreBook.At(i).BarSize * baseBarSize;
-            }
-            distance += baseBarSize * futurePosition.Size;
-            return distance;
         }
     }
 }

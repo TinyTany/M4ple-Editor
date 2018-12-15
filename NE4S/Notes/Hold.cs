@@ -30,10 +30,7 @@ namespace NE4S.Notes
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
-        public Hold()
-        {
-
-        }
+        public Hold() { }
 
         public Hold(int size, Position pos, PointF location, int laneIndex)
         {
@@ -41,7 +38,6 @@ namespace NE4S.Notes
             holdBegin.CheckNotePosition += CheckNotePosition;
             holdBegin.CheckNoteSize += CheckNoteSize;
             Add(holdBegin);
-            //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             HoldEnd holdEnd = new HoldEnd(size, pos.Next(), location, laneIndex);
             holdEnd.CheckNotePosition += CheckNotePosition;
@@ -51,27 +47,29 @@ namespace NE4S.Notes
             Status.SelectedNote = holdEnd;
         }
 
-        private void CheckNotePosition(Note note)
+        private void CheckNotePosition(Note note, int deltaTick)
         {
             if(note is HoldBegin)
             {
                 int diffLane;
-                foreach (Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
+                foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
                 {
-                    diffLane = itrNote.Pos.Lane - note.Pos.Lane;
+                    diffLane = itrNote.Position.Lane - note.Position.Lane;
                     //貫通する
                     itrNote.Relocate(
-                        new Position(itrNote.Pos.Bar, itrNote.Pos.BeatCount, itrNote.Pos.BaseBeat, note.Pos.Lane),
-                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y));
+                        new Position(note.Position.Lane, itrNote.Position.Tick + deltaTick),
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y - deltaTick * ScoreInfo.MaxBeatHeight),
+                        itrNote.LaneIndex);
                 }
             }
             else if(note is HoldEnd)
             {
-                Note holdBegin = this.OrderBy(x => x.Pos).First();
-                int diffLane = holdBegin.Pos.Lane - note.Pos.Lane;
+                Note holdBegin = this.OrderBy(x => x.Position.Tick).First();
+                int diffLane = holdBegin.Position.Lane - note.Position.Lane;
                 (note as AirableNote).RelocateOnly(
-                        new Position(note.Pos.Bar, note.Pos.BeatCount, note.Pos.BaseBeat, holdBegin.Pos.Lane),
-                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y));
+                        new Position(holdBegin.Position.Lane, note.Position.Tick),
+                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y),
+                        note.LaneIndex);
             }
             else
             {
@@ -83,7 +81,7 @@ namespace NE4S.Notes
 
         private void CheckNoteSize(Note note)
         {
-            foreach(Note itrNote in this.OrderBy(x => x.Pos).Where(x => x != note))
+            foreach(Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
             {
                 if (itrNote is AirableNote airableNote)
                 {
@@ -98,32 +96,16 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
-            var list = this.OrderBy(x => x.Pos).ToList();
-            //ノーツ位置のチェック（手抜きver）
-            //HACK: 適当に書いたので再検討する
-            //でかいScoreだとうまくいかなかったりする
-            for (Note past = list.First(); past != list.Last(); past = list.ElementAt(list.IndexOf(past) + 1))
-            {
-                Note future = list.ElementAt(list.IndexOf(past) + 1);
-                if (laneBook.Find(x => x.HitRect.Contains(future.Location)) == null)
-                {
-                    ScoreLane lane = laneBook.Find(x => x.HitRect.Contains(past.Location));
-                    if (lane == null) break;
-                    PointF location = new PointF(future.Location.X + ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, future.Location.Y + lane.HitRect.Height);
-                    Position position = new Position(future.Pos.Bar + 1, 0, 1, future.Pos.Lane);
-                    future.RelocateOnly(position, location);
-                    future.LaneIndex++;
-                }
-            }
-            //Draw
+            base.Draw(e, originPosX, originPosY, laneBook, currentPositionX);
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 if(list.IndexOf(note) < list.Count - 1)
                 {
                     Note next = list.Next(note);
-                    DrawHoldLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX);
+                    DrawHoldLine(e, note, next, originPosX, originPosY, laneBook, currentPositionX);
                 }
                 //クリッピングの解除を忘れないこと
                 e.Graphics.ResetClip();
@@ -131,9 +113,9 @@ namespace NE4S.Notes
             }
         }
 
-        private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
-            float distance = PositionDistance(past.Pos, future.Pos, scoreBook);
+            float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
             //グラデーション矩形
             //x座標と幅は適当だけど動いてるはず。重要なのはy座標と高さ
             RectangleF gradientRect = new RectangleF(0, past.Location.Y - distance + drawOffset.Y, 10, distance <= 0 ? 1 : distance);
@@ -162,8 +144,8 @@ namespace NE4S.Notes
             //スライドのノーツとノーツがレーンをまたぐとき
             else if (passingLanes >= 1)
             {
-                float positionDistance = PositionDistance(past.Pos, future.Pos, scoreBook);
-                float diffX = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                float positionDistance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
+                float diffX = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
                 #region 最初のレーンでの描画
                 //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
                 PointF topLeft = pastRerativeLocation.Add(diffX, -positionDistance).Add(drawOffset);
@@ -194,11 +176,11 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= future.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        topLeft.X = curLane.HitRect.X + future.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        topLeft.X = curLane.HitRect.X + future.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         topLeft.Y += prevLane.HitRect.Height;
                         topRight.X = topLeft.X + future.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.HitRect.Height;
-                        bottomLeft.X = curLane.HitRect.X + past.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        bottomLeft.X = curLane.HitRect.X + past.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         bottomLeft.Y += prevLane.HitRect.Height;
                         bottomRight.X = bottomLeft.X + past.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.HitRect.Height;

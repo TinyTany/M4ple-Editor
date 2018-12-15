@@ -14,7 +14,7 @@ namespace NE4S
         public static int Grid { get; set; } = 16;
         public static int Note { get; set; } = Define.NoteType.AIRHOLD;
         public static int NoteSize { get; set; } = 4;
-        public static double BPM { get; set; } = 120.0;
+        public static float CurrentValue { get; set; } = 0;
         public static bool InvisibleSlideTap { get; set; } = true;
 		public static bool IsMousePressed { get; set; } = true;
 		public static Note SelectedNote { get; set; } = null;
@@ -26,8 +26,10 @@ namespace NE4S
         public static bool IsHoldVisible { get; set; } = true;
         public static bool IsSlideVisible { get; set; } = true;
         public static bool IsAirHoldVisible { get; set; } = true;
+        public static bool IsAirVisible { get; set; } = true;
+        public static bool IsExTapDistinct { get; set; } = true;
 
-        public static int DrawScoreBarFirst { get; set; }
-        public static int DrawScoreBarLast { get; set; }
+        public static int DrawTickFirst { get; set; }
+        public static int DrawTickLast { get; set; }
     }
 }

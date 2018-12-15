@@ -16,33 +16,41 @@ namespace NE4S.Scores
         public float Width { get; }
         public float Height { get; }
 
+        public int StartTick
+        {
+            get { return Score.StartTick + (Range.Min - 1) * ScoreInfo.MaxBeatDiv / Score.BeatDenom; }
+        }
+
+        public int EndTick
+        {
+            get { return StartTick + Range.Size * ScoreInfo.MaxBeatDiv / Score.BeatDenom - 1; }
+        }
+
         public ScoreMaterial(Score score, Range scoreRange, RectangleF hitRect)
 		{
 			Score = score;
 			Range = scoreRange;
 			HitRect = hitRect;
 			Width = score.Width;
-			Height = score.Height * scoreRange.Size() / score.BeatNumer;
+			Height = score.Height * scoreRange.Size / score.BeatNumer;
 		}
 
-#if DEBUG
-		/// <summary>
-		/// マウス座標（グリッド）から譜面座標を計算
-		/// </summary>
-		public Position CalculatePos(int pX, int pY)
-		{
-			PointF normalizedPos = new PointF(
-				pX - HitRect.X,
-				HitRect.Height - (pY - HitRect.Y) + ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * (Range.Min - 1) / Score.BeatDenom
-				);
-			Position pos = new Position(Score.Index + 1, (int)(normalizedPos.Y / ScoreInfo.MaxBeatHeight), ScoreInfo.MaxBeatDiv, (int)(normalizedPos.X / ScoreInfo.MinLaneWidth));
-			return pos;
-		}
-
-		public Position CalculatePos(Point location)
-		{
-			return CalculatePos(location.X, location.Y);
-		}
-#endif
+        /// <summary>
+        /// ノーツの相対位置情報を返す
+        /// タプルに入ってる値はレーン，tickの順
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public Position GetPosition(PointF location)
+        {
+            //原点をLane=0, Tick = StartTickにする
+            PointF normalizedPos = new PointF(
+                location.X - HitRect.X,
+                location.Y - (HitRect.Y + HitRect.Height));
+            Position position = new Position(
+                (int)(normalizedPos.X / ScoreInfo.MinLaneWidth),
+                StartTick + -(int)(normalizedPos.Y / ScoreInfo.MaxBeatHeight));
+            return position;
+        }
     }
 }

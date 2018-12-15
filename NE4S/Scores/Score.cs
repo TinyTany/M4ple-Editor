@@ -14,72 +14,52 @@ namespace NE4S.Scores
     [Serializable()]
     public class Score
     {
-        private int beatNumer, beatDenom, index, linkCount;
-        private float width, height, barSize;
-
-        public Score(int beatNumer, int beatDenom)
+        public float Width { get; }
+        public float Height { get; }
+        public int BeatNumer { get; set; }
+        public int BeatDenom { get; set; }
+        public float BarSize { get; set; }
+        private int startTick, endTick;
+        public int StartTick
         {
-            this.beatNumer = beatNumer;//非負整数
-            this.beatDenom = beatDenom;//非負整数かつ2のべき乗のもの
-            barSize = beatNumer / (float)beatDenom;
-            width = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes;
-            height = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * barSize;
-            index = -1;
-            linkCount = 0;
+            get { return startTick; }
+            set {
+                startTick = value;
+                endTick = startTick + (int)(BarSize * ScoreInfo.MaxBeatDiv) - 1;
+            }
         }
-
-        public float Width
+        public int EndTick
         {
-            get { return this.width; }
-        }
-
-        public float Height
-        {
-            get { return this.height; }
-        }
-
-        public int BeatNumer
-        {
-            get { return beatNumer; }
-            set { beatNumer = value; }
-        }
-
-        public int BeatDenom
-        {
-            get { return beatDenom; }
-            set { beatDenom = value; }
-        }
-
-        public float BarSize
-        {
-            get { return barSize; }
-            set { barSize = value; }
+            get { return endTick; }
         }
 
         /// <summary>
         /// 小節番号
         /// 0スタート
         /// </summary>
-        public int Index
+        public int Index { get; set; }
+
+        public int LinkCount { get; set; }
+
+        public Score(int beatNumer, int beatDenom)
         {
-            get { return index; }
-            set { index = value; }
+            BeatNumer = beatNumer;//非負整数
+            BeatDenom = beatDenom;//非負整数かつ2のべき乗のもの
+            BarSize = beatNumer / (float)beatDenom;
+            Width = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes;
+            Height = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * BarSize;
+            Index = -1;
+            LinkCount = 0;
         }
 
-        public int LinkCount
-        {
-            get { return linkCount; }
-            set { linkCount = value; }
-        }
-
-		/// <summary>
-		/// 描画する
-		/// </summary>
-		/// <param name="e">描画対象</param>
-		/// <param name="drawPosX">描画位置の右上のX座標</param>
-		/// <param name="drawPosY">描画位置の右上のY座標</param>
-		/// <param name="range">描画するScoreの範囲</param>
-		public void PaintScore(PaintEventArgs e, float drawPosX, float drawPosY, Range range)
+        /// <summary>
+        /// 描画する
+        /// </summary>
+        /// <param name="e">描画対象</param>
+        /// <param name="drawPosX">描画位置の右上のX座標</param>
+        /// <param name="drawPosY">描画位置の右上のY座標</param>
+        /// <param name="range">描画するScoreの範囲</param>
+        public void PaintScore(PaintEventArgs e, float drawPosX, float drawPosY, Range range)
         {
             //主線の色情報
             Color laneMain = Color.FromArgb(180, 255, 255, 255);
@@ -98,7 +78,7 @@ namespace NE4S.Scores
                         drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY,
                         drawPosX + i * ScoreInfo.MinLaneWidth,
-                        drawPosY + height * range.Size() / beatNumer
+                        drawPosY + Height * range.Size / BeatNumer
                         );
                     }
                 }
@@ -112,7 +92,7 @@ namespace NE4S.Scores
                         drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY,
                         drawPosX + i * ScoreInfo.MinLaneWidth,
-                        drawPosY + height * range.Size() / beatNumer
+                        drawPosY + Height * range.Size / BeatNumer
                         );
                     }
                 }
@@ -126,9 +106,9 @@ namespace NE4S.Scores
                     e.Graphics.DrawLine(
                         myPen,
                         drawPosX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer,
                         drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer
                         );
                 }
                 //小節数を描画
@@ -137,12 +117,12 @@ namespace NE4S.Scores
                     float dX = -23.5f, dY = -9;
                     e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                     e.Graphics.DrawString(
-                    (index + 1).ToString().PadLeft(3, '0'),
+                    (Index + 1).ToString().PadLeft(3, '0'),
                     myFont,
                     Brushes.White,
                     new PointF(
                         drawPosX + dX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer + dY));
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer + dY));
                 }
             }
             else
@@ -153,23 +133,23 @@ namespace NE4S.Scores
                     e.Graphics.DrawLine(
                         myPen,
                         drawPosX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer,
                         drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * barSize * range.Size() / beatNumer
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer
                         );
                 }
             }
             //拍子分母の間隔で白線を描画
-            for(int i = 0; i < range.Size(); ++i)
+            for(int i = 0; i < range.Size; ++i)
             {
                 using (Pen myPen = new Pen(laneMain, 1))
                 {
                     e.Graphics.DrawLine(
                         myPen,
                         drawPosX,
-                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom,
+                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / BeatDenom,
                         drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
-                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / beatDenom
+                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / BeatDenom
                         );
                 } 
             }

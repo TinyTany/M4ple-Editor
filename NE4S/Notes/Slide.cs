@@ -34,17 +34,13 @@ namespace NE4S.Notes
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
-        public Slide()
-        {
-
-        }
+        public Slide() { }
 
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
             SlideBegin slideBegin = new SlideBegin(size, pos, location, laneIndex);
             slideBegin.IsPositionAvailable += IsPositionAvailable;
             Add(slideBegin);
-            //TODO: posとかlocationとかをいい感じに設定する
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             SlideEnd slideEnd = new SlideEnd(size, pos.Next(), location, laneIndex);
             slideEnd.IsPositionAvailable += IsPositionAvailable;
@@ -52,27 +48,45 @@ namespace NE4S.Notes
             Status.SelectedNote = slideEnd;
         }
 
+        /// <summary>
+        /// このSlide内のノーツに対しての移動が有効かを調べます
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
         protected new bool IsPositionAvailable(Note note, Position position)
         {
-            var list = this.OrderBy(x => x.Pos).Where(x => x != note);
-            var listUnderPosition = list.Where(x => x.Pos.CompareTo(position) < 0);
-            var listOverPosition = list.Where(x => x.Pos.CompareTo(position) > 0);
-            if (note is SlideBegin && position.CompareTo(list.First().Pos) > 0) return false;
-            if (note is SlideEnd && position.CompareTo(list.Last().Pos) < 0) return false;
+            var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
+            var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
+            var listOverPosition = list.Where(x => x.Position.Tick > position.Tick);
+            if (note is SlideBegin && position.Tick > list.First().Position.Tick) return false;
+            if (note is SlideEnd && position.Tick < list.Last().Position.Tick) return false;
+            if (note is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
+            if (note is SlideCurve && (!listOverPosition.Any() || listOverPosition.First() is SlideCurve)) return false;
+            if (!(IsCurvesValid(listUnderPosition.ToList()) && IsCurvesValid(listOverPosition.ToList()))) return false;
             foreach (Note itrNote in list)
             {
-                if (itrNote is SlideBegin && position.CompareTo(itrNote.Pos) < 0) return false;
-                else if (itrNote is SlideEnd && position.CompareTo(itrNote.Pos) > 0) return false;
-                else if (itrNote is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
-                else if (itrNote is SlideCurve && (!listOverPosition.Any() || listOverPosition.First() is SlideCurve)) return false;
-                else if (position.Equals(itrNote.Pos)) return false;
+                if (itrNote is SlideBegin && position.Tick < itrNote.Position.Tick) return false;
+                else if (itrNote is SlideEnd && position.Tick > itrNote.Position.Tick) return false;
+                else if (position.Tick == itrNote.Position.Tick) return false;
+            }
+            return true;
+        }
+
+        private bool IsCurvesValid(List<Note> list)
+        {
+            foreach(Note note in list)
+            {
+                Note next = list.Next(note);
+                if (next == null) break;
+                if (note is SlideCurve && next is SlideCurve) return false;
             }
             return true;
         }
 
         public void Add(SlideTap slideTap)
         {
-            if (!IsPositionAvailable(slideTap, slideTap.Pos))
+            if (!IsPositionAvailable(slideTap, slideTap.Position))
             {
                 Status.SelectedNote = null;
                 return;
@@ -84,7 +98,7 @@ namespace NE4S.Notes
 
         public void Add(SlideRelay slideRelay)
         {
-            if (!IsPositionAvailable(slideRelay, slideRelay.Pos))
+            if (!IsPositionAvailable(slideRelay, slideRelay.Position))
             {
                 Status.SelectedNote = null;
                 return;
@@ -96,7 +110,7 @@ namespace NE4S.Notes
 
         public void Add(SlideCurve slideCurve)
         {
-            if (!IsPositionAvailable(slideCurve, slideCurve.Pos))
+            if (!IsPositionAvailable(slideCurve, slideCurve.Position))
             {
                 Status.SelectedNote = null;
                 return;
@@ -108,7 +122,7 @@ namespace NE4S.Notes
 
         public void Add(SlideEnd slideEnd)
         {
-            if (!IsPositionAvailable(slideEnd, slideEnd.Pos))
+            if (!IsPositionAvailable(slideEnd, slideEnd.Position))
             {
                 Status.SelectedNote = null;
                 return;
@@ -125,8 +139,8 @@ namespace NE4S.Notes
         public new void Remove(Note note)
         {
             base.Remove(note);
-            Note past = this.OrderBy(x => x.Pos).Where(x => x.Pos.CompareTo(note.Pos) < 0).Last();
-            Note future = this.OrderBy(x => x.Pos).Where(x => x.Pos.CompareTo(note.Pos) > 0).First();
+            Note past = this.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < note.Position.Tick).Last();
+            Note future = this.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > note.Position.Tick).First();
             if(past is SlideCurve && future is SlideCurve)
             {
                 base.Remove(future);
@@ -143,7 +157,7 @@ namespace NE4S.Notes
         /// <returns></returns>
         public bool Contains(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
         {
-            var list = this.OrderBy(x => x.Pos).ToList();
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach(Note note in list)
             {
                 if (list.IndexOf(note) >= list.Count - 1) break;
@@ -165,8 +179,8 @@ namespace NE4S.Notes
                 }
                 else if(passingLanes >= 1)
                 {
-                    float positionDistance = PositionDistance(note.Pos, next.Pos, scoreBook);
-                    float diffX = (next.Pos.Lane - note.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                    float positionDistance = (next.Position.Tick - note.Position.Tick) * ScoreInfo.MaxBeatHeight;
+                    float diffX = (next.Position.Lane - note.Position.Lane) * ScoreInfo.MinLaneWidth;
                     #region 最初のレーンでの判定処理
                     PointF topLeft = note.Location.Add(drawOffset).Add(diffX, -positionDistance);
                     PointF topRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width).Add(diffX, -positionDistance);
@@ -184,11 +198,11 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= next.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        topLeft.X = curLane.HitRect.X + next.Pos.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
+                        topLeft.X = curLane.HitRect.X + next.Position.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
                         topLeft.Y += prevLane.HitRect.Height;
                         topRight.X = topLeft.X + next.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.HitRect.Height;
-                        bottomLeft.X = curLane.HitRect.X + note.Pos.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
+                        bottomLeft.X = curLane.HitRect.X + note.Position.Lane * ScoreInfo.MinLaneWidth + drawOffset.X;
                         bottomLeft.Y += prevLane.HitRect.Height;
                         bottomRight.X = bottomLeft.X + note.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.HitRect.Height;
@@ -214,16 +228,15 @@ namespace NE4S.Notes
         /// <param name="scoreBook"></param>
         /// <param name="laneBook"></param>
         /// <param name="currentPositionX"></param>
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
         {
             if (e == null) return;
+            base.Draw(e, originPosX, originPosY, laneBook, currentPositionX);
+            var list = this.OrderBy(x => x.Position.Tick).ToList();
             RectangleF gradientRect = new RectangleF();
-            var list = this.OrderBy(x => x.Pos).ToList();
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
             foreach (Note note in list)
             {
-                //!(note is SlideEnd)よりもこっちのほうが確実で安全かも
-                //↑だと例外で怒られた…
                 if (list.IndexOf(note) < list.Count - 1 && !(note is SlideCurve))
                 {
                     //スライド帯のグラデーション用矩形を設定する
@@ -232,7 +245,7 @@ namespace NE4S.Notes
                         Note gradientNote = note, gradientNext = stepList.Next(note);
                         if(gradientNext != null)
                         {
-                            float distance = PositionDistance(gradientNote.Pos, gradientNext.Pos, scoreBook);
+                            float distance = (gradientNext.Position.Tick - gradientNote.Position.Tick) * ScoreInfo.MaxBeatHeight;
                             //x座標と幅は適当な値を入れたけどちゃんとうごいてるっぽい？重要なのはy座標と高さ
                             gradientRect = new RectangleF(0, gradientNote.Location.Y - distance + drawOffset.Y, 10, distance);
                         }
@@ -241,16 +254,17 @@ namespace NE4S.Notes
                     Note next = list.Next(note);
                     if(!(next is SlideCurve))
                     {
-                        DrawSlideLine(e, note, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, ref gradientRect);
+                        DrawSlideLine(e, note, next, originPosX, originPosY, laneBook, currentPositionX, ref gradientRect);
                     }
                     else
                     {
                         Note curve = next;
                         //SlideRelayは末尾に来ることはないし，SlideRelayが2つ以上連続に並ぶことはないという確信の元実装
+                        //↑実際ノーツの束縛処理でそうなるような実装をしている（した）
                         if (list.IndexOf(curve) < list.Count - 1)
                         {
                             next = list.Next(curve);
-                            DrawSlideCurve(e, note, curve, next, originPosX, originPosY, scoreBook, laneBook, currentPositionX, ref gradientRect);
+                            DrawSlideCurve(e, note, curve, next, originPosX, originPosY, laneBook, currentPositionX, ref gradientRect);
                         }
                     }
                 }
@@ -267,7 +281,7 @@ namespace NE4S.Notes
         /// ノーツ間を繋ぐ帯の描画（直線）
         /// </summary>
         /// 全体的にコードが汚いのでなんとかしたい
-        private static void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
+        private static void DrawSlideLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;
@@ -300,8 +314,8 @@ namespace NE4S.Notes
             //スライドのノーツとノーツがレーンをまたぐとき
             else if (passingLanes >= 1)
             {
-                float positionDistance = PositionDistance(past.Pos, future.Pos, scoreBook);
-                float diffX = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                float positionDistance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
+                float diffX = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
                 #region 最初のレーンでの描画
                 //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
                 PointF topLeft = pastRerativeLocation.Add(diffX, -positionDistance).Add(drawOffset);
@@ -336,11 +350,11 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= future.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        topLeft.X = curLane.HitRect.X + future.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        topLeft.X = curLane.HitRect.X + future.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         topLeft.Y += prevLane.HitRect.Height;
                         topRight.X = topLeft.X + future.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.HitRect.Height;
-                        bottomLeft.X = curLane.HitRect.X + past.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        bottomLeft.X = curLane.HitRect.X + past.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         bottomLeft.Y += prevLane.HitRect.Height;
                         bottomRight.X = bottomLeft.X + past.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.HitRect.Height;
@@ -370,7 +384,7 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（ベジェ）
         /// </summary>
-        private static void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
+        private static void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;
@@ -423,10 +437,10 @@ namespace NE4S.Notes
             //スライドのノーツとノーツがレーンをまたぐとき
             else if (passingLanes >= 1)
             {
-                float positionDistanceFuture = PositionDistance(past.Pos, future.Pos, scoreBook);
-                float positionDistanceCurve = PositionDistance(past.Pos, curve.Pos, scoreBook);
-                float diffXFuture = (future.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
-                float diffXCurve = (curve.Pos.Lane - past.Pos.Lane) * ScoreInfo.MinLaneWidth;
+                float positionDistanceFuture = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
+                float positionDistanceCurve = (curve.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
+                float diffXFuture = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
+                float diffXCurve = (curve.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
                 #region 最初のレーンでの描画
                 //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
                 PointF topLeft = pastRerativeLocation.Add(diffXFuture, -positionDistanceFuture).Add(drawOffset);
@@ -473,18 +487,18 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= future.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        topLeft.X = curLane.HitRect.X + future.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        topLeft.X = curLane.HitRect.X + future.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         topLeft.Y += prevLane.HitRect.Height;
                         topRight.X = topLeft.X + future.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.HitRect.Height;
-                        bottomLeft.X = curLane.HitRect.X + past.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        bottomLeft.X = curLane.HitRect.X + past.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
                         bottomLeft.Y += prevLane.HitRect.Height;
                         bottomRight.X = bottomLeft.X + past.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.HitRect.Height;
                         //3つのそれぞれのノーツの中心の座標
                         topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
                         bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
-                        curveCenter.X = curLane.HitRect.X + curve.Pos.Lane * ScoreInfo.MinLaneWidth - currentPositionX + curve.Width / 2f;
+                        curveCenter.X = curLane.HitRect.X + curve.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + curve.Width / 2f;
                         curveCenter.Y += prevLane.HitRect.Height;
                         //
                         //下からアンカーまでの比率

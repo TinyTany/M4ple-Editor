@@ -12,20 +12,14 @@ namespace NE4S.Notes
     [Serializable()]
     public class AirAction : Note
     {
-        public event NoteEventHandler CheckNotePosition;
+        public event NoteEventHandlerEx CheckNotePosition;
         public event PositionCheckHandler IsPositionAvailable;
         private readonly PointF locationOffset = new PointF(0, 1);
         private readonly SizeF sizeOffset = new SizeF(0, -2);
 
-        public AirAction()
-        {
+        public AirAction() { }
 
-        }
-
-        public AirAction(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            LaneIndex = laneIndex;
-        }
+        public AirAction(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public override void ReSize(int size)
         {
@@ -33,27 +27,29 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Relocate(Position pos, PointF location)
+        public override void Relocate(Position pos, PointF location, int laneIndex)
         {
             if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
-            base.Relocate(location);
-            CheckNotePosition?.Invoke(this);
+            base.Relocate(location, laneIndex);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
         public override void Relocate(Position pos)
         {
             if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
-            CheckNotePosition?.Invoke(this);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
-        public override void Relocate(PointF location)
+        public override void Relocate(PointF location, int laneIndex)
         {
-            base.Relocate(location);
-            CheckNotePosition?.Invoke(this);
+            base.Relocate(location, laneIndex);
+            CheckNotePosition?.Invoke(this, 0);
             return;
         }
 
@@ -77,6 +73,19 @@ namespace NE4S.Notes
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Pink, Color.DeepPink))
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);
+            }
+            using (Pen pen = new Pen(Color.LightGray, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2f, location.Y - size.Height / 2f, size.Width, size.Height);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Pink, Color.DeepPink))
+            {
+                e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
             }
             using (Pen pen = new Pen(Color.LightGray, 1))
             {

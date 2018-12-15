@@ -12,18 +12,13 @@ namespace NE4S.Notes
     [Serializable()]
     public class HoldEnd : AirableNote
     {
-        public event NoteEventHandler CheckNotePosition, CheckNoteSize;
+        public event NoteEventHandler CheckNoteSize;
+        public event NoteEventHandlerEx CheckNotePosition;
         public event PositionCheckHandler IsPositionAvailable;
 
-        public HoldEnd()
-        {
+        public HoldEnd() { }
 
-        }
-
-        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            
-        }
+        public HoldEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public override void ReSize(int size)
         {
@@ -32,27 +27,29 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Relocate(Position pos, PointF location)
+        public override void Relocate(Position pos, PointF location, int laneIndex)
         {
             if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
-            base.Relocate(location);
-            CheckNotePosition?.Invoke(this);
+            base.Relocate(location, laneIndex);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
         public override void Relocate(Position pos)
         {
             if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
+            int deltaTick = pos.Tick - Position.Tick;
             base.Relocate(pos);
-            CheckNotePosition?.Invoke(this);
+            CheckNotePosition?.Invoke(this, deltaTick);
             return;
         }
 
-        public override void Relocate(PointF location)
+        public override void Relocate(PointF location, int laneIndex)
         {
-            base.Relocate(location);
-            CheckNotePosition?.Invoke(this);
+            base.Relocate(location, laneIndex);
+            CheckNotePosition?.Invoke(this, 0);
             return;
         }
 

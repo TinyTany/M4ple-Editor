@@ -55,17 +55,45 @@ namespace NE4S
                 pBox.MouseMove += Score_MouseMove;
                 pBox.MouseUp += Score_MouseUp;
                 hScroll.Scroll += Score_Scroll;
+                //
+                sPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
             }
 			InitializeToolStrip();
-			tsbAdd.Click += TbsAdd_Click;
+            #region 各種ボタンに対するイベント紐づけ
+            tabScore.SelectedIndexChanged += (s, e) =>
+            {
+                Text = tabScore.SelectedTab.Text;
+                Text += " - M4ple";
+            };
+            //
+            tsbAdd.Click += TbsAdd_Click;
 			tsbEdit.Click += TbsEdit_Click;
 			tsbDelete.Click += TbsDelete_Click;
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
+            tsbNew.Click += TsbNew_Click;
             tsbOpen.Click += TsbOpen_Click;
             tsbSave.Click += TsbSave_Click;
-            //
+            #region ノーツ表示設定ボタン
+            tsmiIsShortNote.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsShortNoteVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsHold.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsHoldVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsSlide.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsSlideVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
             tsmiIsSlideRelay.Click += (s, e) => 
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
@@ -78,6 +106,43 @@ namespace NE4S
                 Status.IsSlideCurveVisible = menuItem.Checked = !menuItem.Checked;
                 Refresh();
             };
+            tsmiIsAirHold.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsAirHoldVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsAir.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsAirVisible = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            tsmiIsExTapDistinct.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsExTapDistinct = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
+            #endregion
+            tsmiNew.Click += TsbNew_Click;
+            tsmiOpen.Click += TsbOpen_Click;
+            tsmiSave.Click += TsbSave_Click;
+            tsmiSaveAs.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.SaveAs();
+                UpdateTextOfTabAndForm(false);
+            };
+            tsmiQuit.Click += (s, e) =>
+            {
+                Close();
+            };
+            FormClosing += (s, e) =>
+            {
+                e.Cancel = !IsExit();
+            };
+            #endregion
             //ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
             foreach (NoteButton noteButton in noteButtonManager)
@@ -86,27 +151,118 @@ namespace NE4S
             }
         }
 
+        private bool IsExit()
+        {
+            foreach(TabPageEx tabPageEx in tabScore.TabPages)
+            {
+                if (tabPageEx.ScorePanel.IsEditedWithoutSave)
+                {
+                    DialogResult dialogResult =
+                    MessageBox.Show(
+                        "変更されているファイルがあります。本当に終了しますか？",
+                        "終了",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        return true;
+                    }
+                    else if (dialogResult == DialogResult.No)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// valueの値を考慮して、タブのテキストとフォームのテキストを更新します
+        /// </summary>
+        /// <param name="isEditedWithoutSave"></param>
+        private void UpdateTextOfTabAndForm(bool isEditedWithoutSave)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            if (selectedPanel.FileName != null)
+            {
+                tabScore.SelectedTab.Text = selectedPanel.FileName;
+            }
+            else
+            {
+                int tabIndex = tabScore.SelectedIndex;
+                tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
+            }
+            if (isEditedWithoutSave)
+            {
+                tabScore.SelectedTab.Text += "*";
+            }
+            Text = tabScore.SelectedTab.Text;
+            Text += " - M4ple";
+            tabScore.SelectedTab.Refresh();
+        }
+
+        private void TsbNew_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            if (selectedPanel.IsEditedWithoutSave)
+            {
+                DialogResult dialogResult =
+                    MessageBox.Show(
+                        "ファイルは変更されています。保存しますか？",
+                        "新規作成",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    selectedPanel.Save();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    SetNewPanel();
+                }
+                else if (dialogResult == DialogResult.Cancel) { }
+            }
+            else
+            {
+                SetNewPanel();
+            }
+        }
+
+        private void SetNewPanel()
+        {
+            //新規パネル生成処理
+            PictureBox pBox = tabScore.SelectedTab.Controls[0] as PictureBox;
+            if (pBox == null) return;
+            HScrollBar hScrollBar = pBox.Controls[0] as HScrollBar;
+            if (hScrollBar == null) return;
+            (tabScore.SelectedTab as TabPageEx).ScorePanel = new ScorePanel(pBox, hScrollBar);
+            //タブ名をデフォルトにする
+            int tabIndex = tabScore.SelectedIndex;
+            tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
+            //
+            tabScore.SelectedTab.Controls[0].Refresh();
+        }
+
         private void TsbOpen_Click(object sender, EventArgs e)
         {
-            DataLoader dataLoader = new DataLoader();
-            Model model = dataLoader.ShowDialog();
-            if (model == null)
-            {
-                MessageBox.Show("ファイルを開けませんでした。\nファイルが破損しているか、対応していない可能性があります。");
-                return;
-            }
             //現在開かれているタブを判別してそれにたいしてロードするようにする
-            (tabScore.SelectedTab as TabPageEx).ScorePanel.SetModelForIO(model);
-            tabScore.SelectedTab.Controls[0].Refresh();
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            if (selectedPanel.Load())
+            {
+                UpdateTextOfTabAndForm(false);
+                selectedPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
+                tabScore.SelectedTab.Controls[0].Refresh();
+            }
             return;
         }
 
         private void TsbSave_Click(object sender, EventArgs e)
         {
             //現在開かれているタブを判別してそれを対象にセーブするようにする
-            Model model = (tabScore.SelectedTab as TabPageEx).ScorePanel.GetModelForIO();
-            DataSaver dataSaver = new DataSaver();
-            dataSaver.ShowDialog(model);
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.Save();
+            UpdateTextOfTabAndForm(false);
             return;
         }
 

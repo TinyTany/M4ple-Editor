@@ -24,11 +24,11 @@ namespace NE4S.Notes
             
         }
 
-        public override void Relocate(Position pos, PointF location)
+        public override void Relocate(Position pos, PointF location, int laneIndex)
         {
             if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
             base.Relocate(pos);
-            base.Relocate(location);
+            base.Relocate(location, laneIndex);
             return;
         }
 
@@ -49,6 +49,19 @@ namespace NE4S.Notes
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.White, Color.Gray))
             {
                 e.Graphics.FillRectangle(gradientBrush, drawRect);
+            }
+            using (Pen pen = new Pen(Color.Blue, 1))
+            {
+                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+            }
+        }
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2f, location.Y - size.Height / 2f, size.Width, size.Height);
+            using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.White, Color.Gray))
+            {
+                e.Graphics.FillPath(gradientBrush, drawRect.RoundedPath());
             }
             using (Pen pen = new Pen(Color.Blue, 1))
             {

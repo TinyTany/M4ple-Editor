@@ -20,6 +20,7 @@ namespace NE4S.Notes
         private List<Slide> slideNotes;
         private List<AirHold> airHoldNotes;
         private List<Air> airNotes;
+        private List<AttributeNote> attributeNotes;
 
         public NoteBook()
         {
@@ -28,12 +29,14 @@ namespace NE4S.Notes
             slideNotes = new List<Slide>();
             airHoldNotes = new List<AirHold>();
             airNotes = new List<Air>();
+            attributeNotes = new List<AttributeNote>();
         }
 
 		public void Add(Note newNote)
 		{
-			if (newNote is Air) airNotes.Add(newNote as Air);
-			else shortNotes.Add(newNote);
+            if (newNote is Air) airNotes.Add(newNote as Air);
+            else if (newNote is AttributeNote) attributeNotes.Add(newNote as AttributeNote);
+            else shortNotes.Add(newNote);
 		}
 
 		public void Add(LongNote newLongNote)
@@ -124,6 +127,7 @@ namespace NE4S.Notes
             //AirHold
             foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
+                if (!Status.IsAirHoldVisible) break;
                 selectedNote = airHold.Find(x => x.Contains(location));
                 if (selectedNote != null && !(selectedNote is AirHoldBegin))
                 {
@@ -133,14 +137,14 @@ namespace NE4S.Notes
             }
             //Air
             selectedNote = airNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
+            if (selectedNote != null && Status.IsAirVisible)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
             //ShortNote
             selectedNote = shortNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
+            if (selectedNote != null && Status.IsShortNoteVisible)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
@@ -148,6 +152,7 @@ namespace NE4S.Notes
             //Slide
             foreach (Slide slide in slideNotes.Reverse<Slide>())
             {
+                if (!Status.IsSlideVisible) break;
                 selectedNote = slide.Find(x => x.Contains(location));
                 if (selectedNote != null)
                 {
@@ -158,6 +163,7 @@ namespace NE4S.Notes
             //Hold
             foreach (Hold hold in holdNotes.Reverse<Hold>())
             {
+                if (!Status.IsHoldVisible) break;
                 selectedNote = hold.Find(x => x.Contains(location));
                 if (selectedNote != null)
                 {
@@ -176,42 +182,9 @@ namespace NE4S.Notes
         /// <returns></returns>
         public Note SelectedNote(PointF location)
         {
-            Note selectedNote;
-            foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
-            {
-                selectedNote = airHold.Find(x => x.Contains(location));
-                if (selectedNote != null && !(selectedNote is AirHoldBegin))
-                {
-                    return selectedNote;
-                }
-            }
-            selectedNote = airNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
-            {
-                return selectedNote;
-            }
-            selectedNote = shortNotes.FindLast(x => x.Contains(location));
-            if (selectedNote != null)
-            {
-                return selectedNote;
-            }
-            foreach (Slide slide in slideNotes.Reverse<Slide>())
-            {
-                selectedNote = slide.Find(x => x.Contains(location));
-                if (selectedNote != null)
-                {
-                    return selectedNote;
-                }
-            }
-            foreach (Hold hold in holdNotes.Reverse<Hold>())
-            {
-                selectedNote = hold.Find(x => x.Contains(location));
-                if (selectedNote != null)
-                {
-                    return selectedNote;
-                }
-            }
-            return null;
+            //この変数は使用しない
+            int noteArea = 0;
+            return SelectedNote(location, ref noteArea);
         }
 
         public Slide SelectedSlide(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
@@ -224,18 +197,42 @@ namespace NE4S.Notes
             return airHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
         }
 
+        public void UpdateNoteLocation(LaneBook laneBook)
+        {
+            shortNotes.ForEach(x => x.UpdateLocation(laneBook));
+            holdNotes.ForEach(x => x.UpdateLocation(laneBook));
+            slideNotes.ForEach(x => x.UpdateLocation(laneBook));
+            airHoldNotes.ForEach(x => x.UpdateLocation(laneBook));
+            airNotes.ForEach(x => x.UpdateLocation(laneBook));
+        }
+
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
             //Hold
-            holdNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            if (Status.IsHoldVisible)
+            {
+                holdNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
+            }
             //Slide
-            slideNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            if (Status.IsSlideVisible)
+            {
+                slideNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
+            }
             //ShortNote
-            shortNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            if (Status.IsShortNoteVisible)
+            {
+                shortNotes.Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            }
             //Air
-            airNotes.Where(x => x.Pos.Bar >= Status.DrawScoreBarFirst && x.Pos.Bar <= Status.DrawScoreBarLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            if (Status.IsAirVisible)
+            {
+                airNotes.Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
+            }
             //AirHold
-            airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, scoreBook, laneBook, currentPositionX));
+            if (Status.IsAirHoldVisible)
+            {
+                airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
+            }
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace NE4S.Scores
 			PointF hitRectLocation = new PointF(
 				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
 				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（1ピクセル下げる）
-				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - HitRect.Height + 1);
+				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRectSize.Height + 1);
             HitRect = new RectangleF(hitRectLocation, hitRectSize);
 			drawRegion.Size = new SizeF(
 				Margin.Left + scoreWidth + Margin.Right,
@@ -80,6 +80,42 @@ namespace NE4S.Scores
         {
             get { return index; }
             set { index = value; RefreshRects(); RefreshScoreMaterialList(); }
+        }
+
+        /// <summary>
+        /// このレーンに対するStartTickを取得します
+        /// </summary>
+        public int StartTick
+        {
+            get
+            {
+                if (!scoreMaterialList.Any())
+                {
+                    return -1;
+                }
+                else
+                {
+                    return scoreMaterialList.First().StartTick;
+                }
+            }
+        }
+
+        /// <summary>
+        /// このレーンに対するEndTickを取得します
+        /// </summary>
+        public int EndTick
+        {
+            get
+            {
+                if (!scoreMaterialList.Any())
+                {
+                    return -1;
+                }
+                else
+                {
+                    return scoreMaterialList.Last().EndTick;
+                }
+            }
         }
 
         class Margin
@@ -120,16 +156,12 @@ namespace NE4S.Scores
         {
             if(scoreMaterialList.Find(
                 x => 
-                //ScoreのIndexは0から始まるがPosのBarは1から始まる
-                x.Score.Index + 1 == note.Pos.Bar &&
-                //RangeのInfは1から始まるがPosのCountは0から始まる
-                note.Pos.Size >= (x.Range.Min - 1) / (float)x.Score.BeatDenom &&
-                note.Pos.Size <= x.Range.Max / (float)x.Score.BeatDenom) != null)
+                x.StartTick <= note.Position.Tick &&
+                note.Position.Tick <= x.EndTick) != null)
             {
                 return true;
             }
             else return false;
-            //HACK: ↑IndexとかInfとか始まりがずれてて気持ち悪いので直したほうがいいのかな？
         }
 
         /// <summary>
@@ -139,7 +171,7 @@ namespace NE4S.Scores
         /// <returns></returns>
         public bool IsScoreClose(Score score)
         {
-            if (scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() == score.BeatNumer) return true;
+            if (scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size == score.BeatNumer) return true;
             else return false;
         }
 
@@ -162,7 +194,7 @@ namespace NE4S.Scores
 			if (newScore != null && newRange != null)
             {
                 float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * CurrentBarSize;
-				float physicalHeight = newScore.Height * newRange.Size() / newScore.BeatNumer;
+				float physicalHeight = newScore.Height * newRange.Size / newScore.BeatNumer;
 				//当たり判定が縦に1ピクセル分ずれているので調整用の変数を作成
 				int normalizeDeltaHeight = 1;
 				//Scoreの当たり判定矩形を作成
@@ -173,7 +205,7 @@ namespace NE4S.Scores
 					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
                 scoreMaterialList.Add(new ScoreMaterial(newScore, newRange, newScoreHitRect));
-                CurrentBarSize += newRange.Size() / (float)newScore.BeatDenom;
+                CurrentBarSize += newRange.Size / (float)newScore.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
 				RefreshRects();
@@ -203,7 +235,7 @@ namespace NE4S.Scores
         {
 			if (score != null && Contains(score))
             {
-                CurrentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size() / (float)score.BeatDenom;
+                CurrentBarSize -= scoreMaterialList.Find(x => x.Score.Equals(score)).Range.Size / (float)score.BeatDenom;
 				//HACK :currentBarSizeの値が変わるときに呼ぶ
 				//あんまり良くないので改善したい
 				RefreshRects();
@@ -280,25 +312,20 @@ namespace NE4S.Scores
 		/// <summary>
 		/// 試作
 		/// </summary>
-		public Position GetPos(int pX, int pY)
+		public Position GetPos(PointF location)
 		{
             ScoreMaterial selectedScoreMaterial =
-                scoreMaterialList.Find(x => x.HitRect.Contains(pX, pY));
+                scoreMaterialList.Find(x => x.HitRect.Contains(location));
 			if (selectedScoreMaterial != null)
 			{
-				return selectedScoreMaterial.CalculatePos(pX, pY);
+                return selectedScoreMaterial.GetPosition(location);
 			}
 			else
 			{
-				System.Diagnostics.Debug.WriteLine("GetPos(Point) : selectedTScore = null");
+                System.Diagnostics.Debug.WriteLine( "ノーツの相対位置を計算できませんでした");
 				return null;
 			}
 		}
-
-        public Position GetPos(Point p)
-        {
-            return GetPos(p.X, p.Y);
-        }
 
 		/// <summary>
 		/// originPosXとoriginPosYは、ScorePanelでのcurrentPositionXと0が入る
@@ -317,7 +344,7 @@ namespace NE4S.Scores
             //リスト内のScoreについてY座標を変更しながら描画
             foreach (ScoreMaterial material in scoreMaterialList)
             {
-                currentDrawPosY -= material.Score.Height * material.Range.Size() / material.Score.BeatNumer;
+                currentDrawPosY -= material.Score.Height * material.Range.Size / material.Score.BeatNumer;
                 material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
 			}
             //tScoresの最後の要素のScoreが閉じているか判定

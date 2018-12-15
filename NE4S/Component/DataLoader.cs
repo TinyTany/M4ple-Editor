@@ -13,6 +13,7 @@ namespace NE4S.Component
     public class DataLoader
     {
         private readonly OpenFileDialog openFileDialog;
+        public string Path { get; private set; } = null;
 
         public DataLoader()
         {
@@ -33,16 +34,28 @@ namespace NE4S.Component
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 model = DeserializeData();
+                if(model == null)
+                {
+                    MessageBox.Show("ファイルを開けませんでした。\nファイルが破損しているか、対応していない可能性があります。", "読み込みエラー");
+                }
             }
             return model;
         }
 
         private Model DeserializeData()
         {
-            string path = openFileDialog.FileName;
-            FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            Path = openFileDialog.FileName;
+            FileStream fileStream = new FileStream(Path, FileMode.Open, FileAccess.Read);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
-            Model model = binaryFormatter.Deserialize(fileStream) as Model;
+            Model model;
+            try
+            {
+                model = binaryFormatter.Deserialize(fileStream) as Model;
+            }
+            catch (Exception)
+            {
+                model = null;
+            }
             fileStream.Close();
             System.Diagnostics.Debug.Assert(model != null, "デシリアライズ失敗");
             return model;

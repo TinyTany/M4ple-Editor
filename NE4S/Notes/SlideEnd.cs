@@ -19,16 +19,13 @@ namespace NE4S.Notes
             
         }
 
-        public SlideEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            
-        }
+        public SlideEnd(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
-        public override void Relocate(Position pos, PointF location)
+        public override void Relocate(Position pos, PointF location, int laneIndex)
         {
             if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
             base.Relocate(pos);
-            base.Relocate(location);
+            base.Relocate(location, laneIndex);
             return;
         }
 
