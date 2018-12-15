@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class Speed : AttributeNote
     {
         public Speed(Position position, PointF location, int laneIndex) : base(position, location, laneIndex) { }
