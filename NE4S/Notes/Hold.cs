@@ -203,5 +203,20 @@ namespace NE4S.Notes
                 #endregion
             }
         }
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2, location.Y - size.Height / 2, size.Width, size.Height);
+            ColorBlend colorBlend = new ColorBlend(4)
+            {
+                Colors = new Color[] { baseColor, stepColor },
+                Positions = new float[] { 0.0f, 1.0f }
+            };
+            using (LinearGradientBrush myBrush = new LinearGradientBrush(drawRect, baseColor, baseColor, LinearGradientMode.Vertical))
+            {
+                myBrush.InterpolationColors = colorBlend;
+                e.Graphics.FillRectangle(myBrush, drawRect);
+            }
+        }
     }
 }

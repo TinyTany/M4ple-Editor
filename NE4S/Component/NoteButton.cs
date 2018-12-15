@@ -96,9 +96,11 @@ namespace NE4S.Component
                     HellTap.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
                     break;
                 case NoteType.HOLD:
+                    Hold.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f - 25), new SizeF(70, 50));
                     HoldBegin.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
                     break;
                 case NoteType.SLIDE:
+                    Slide.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f - 25), new SizeF(70, 50));
                     SlideBegin.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
                     break;
                 case NoteType.SLIDECURVE:
@@ -117,6 +119,7 @@ namespace NE4S.Component
                 case NoteType.AIRDOWNR:
                     break;
                 case NoteType.AIRHOLD:
+                    AirHold.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f + 25), new SizeF(7, 50));
                     AirAction.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(78, 8));
                     break;
                 default:

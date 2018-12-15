@@ -286,5 +286,14 @@ namespace NE4S.Notes
                 #endregion
             }
         }
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2, location.Y - size.Height / 2, size.Width, size.Height);
+            using (SolidBrush myBrush = new SolidBrush(lineColor))
+            {
+                e.Graphics.FillRectangle(myBrush, drawRect);
+            }
+        }
     }
 }
