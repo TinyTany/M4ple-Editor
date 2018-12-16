@@ -94,6 +94,10 @@ namespace NE4S.Notes
                 airHoldNotes.Remove(airable.GetAirHoldForDelete());
                 shortNotes.Remove(note);
             }
+            else if (note is AttributeNote)
+            {
+                attributeNotes.Remove(note as AttributeNote);
+            }
             else shortNotes.Remove(note);
 		}
 
@@ -171,6 +175,13 @@ namespace NE4S.Notes
                     return selectedNote;
                 }
             }
+            //AttributeNote
+            selectedNote = attributeNotes.FindLast(x => x.Contains(location));
+            if (selectedNote != null)
+            {
+                noteArea = Define.NoteArea.CENTER;
+                return selectedNote;
+            }
             return null;
         }
 
@@ -204,10 +215,13 @@ namespace NE4S.Notes
             slideNotes.ForEach(x => x.UpdateLocation(laneBook));
             airHoldNotes.ForEach(x => x.UpdateLocation(laneBook));
             airNotes.ForEach(x => x.UpdateLocation(laneBook));
+            attributeNotes.ForEach(x => x.UpdateLocation(laneBook));
         }
 
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
 		{
+            //AttributeNote
+            attributeNotes.Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().ForEach(x => x.Draw(e, originPosX, originPosY));
             //Hold
             if (Status.IsHoldVisible)
             {
@@ -233,6 +247,6 @@ namespace NE4S.Notes
             {
                 airHoldNotes.Where(x => x.IsDrawable()).ToList().ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
             }
-		}
+        }
 	}
 }

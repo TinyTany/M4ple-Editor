@@ -578,6 +578,12 @@ namespace NE4S.Scores
                         selectedNote.AttachAir(air);
                     }
                     break;
+                case NoteType.BPM:
+                    newNote = new BPM(position, locationVirtual, lane.Index);
+                    break;
+                case NoteType.HIGHSPEED:
+                    newNote = new Speed(position, locationVirtual, lane.Index);
+                    break;
                 default:
                     break;
             }
