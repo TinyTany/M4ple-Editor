@@ -32,6 +32,10 @@ namespace NE4S.Scores
         {
             get { return endTick; }
         }
+        public int TickSize
+        {
+            get { return endTick - startTick + 1; }
+        }
 
         /// <summary>
         /// 小節番号
