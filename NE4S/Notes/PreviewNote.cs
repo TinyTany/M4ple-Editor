@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
 using NE4S.Scores;
+using NE4S.Define;
 
 namespace NE4S.Notes
 {
@@ -24,6 +25,7 @@ namespace NE4S.Notes
         public void Paint(PaintEventArgs e)
         {
             if (!Visible || !Enable) return;
+            if (NoteType.AIRUPC <= Status.Note && Status.Note <= NoteType.AIRHOLD) return;
             note.Size = new SizeF(ScoreInfo.MinLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
 			note.Location = Location;
             //HACK: 今の設定だとノーツ矩形位置調節用の値が(0, -2)なのでこのようにしてるけど嫌だよねこういうの
