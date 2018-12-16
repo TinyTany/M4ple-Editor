@@ -15,7 +15,7 @@ namespace NE4S.Scores
     [Serializable()]
     public class ScoreLane
     {
-		private static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
+		public static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
 		private static readonly float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
         public static float Width { get; set; } = scoreWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
