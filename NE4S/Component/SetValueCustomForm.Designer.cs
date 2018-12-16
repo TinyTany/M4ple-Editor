@@ -40,7 +40,7 @@
             // 
             this.numericUpDown1.DecimalPlaces = 2;
             this.numericUpDown1.Location = new System.Drawing.Point(177, 68);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(72, 19);
             this.numericUpDown1.TabIndex = 0;
@@ -58,17 +58,17 @@
             // buttonOK
             // 
             this.buttonOK.Location = new System.Drawing.Point(90, 134);
-            this.buttonOK.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(2);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(48, 20);
-            this.buttonOK.TabIndex = 2;
+            this.buttonOK.TabIndex = 0;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             // 
             // buttonCancel
             // 
             this.buttonCancel.Location = new System.Drawing.Point(150, 134);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.buttonCancel.Size = new System.Drawing.Size(48, 20);
@@ -96,7 +96,7 @@
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.labelMain);
             this.Controls.Add(this.numericUpDown1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SetValueCustomForm";
             this.Text = "SetValueCustomForm";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();

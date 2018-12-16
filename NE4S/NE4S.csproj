@@ -74,6 +74,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Component\DataSaver.cs" />
+    <Compile Include="Component\ExportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\ExportForm.Designer.cs">
+      <DependentUpon>ExportForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Component\NoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -160,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Component\BarDeleteCustomForm.resx">
       <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\ExportForm.resx">
+      <DependentUpon>ExportForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Component\NoteButton.resx">
       <DependentUpon>NoteButton.cs</DependentUpon>
