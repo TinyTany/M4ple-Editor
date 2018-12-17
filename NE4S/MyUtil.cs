@@ -19,6 +19,11 @@ namespace NE4S
 			return Gcd(n, m % n);
 		}
 
+        public static int Lcm(int m, int n)
+        {
+            return m * n / Gcd(m, n);
+        }
+
         /// <summary>
         /// ノーツが選択されたとき、どのへんの領域をクリックしたのか判定します
         /// Editモードでノーツをクリックした位置に応じてサイズ変更か位置変更かを決めるために使う
