@@ -20,6 +20,10 @@ namespace NE4S.Notes
         //帯の大きさが縦に少し短いので調整
         protected static readonly float deltaHeight = .2f;
 
+        public int StartTick => this.OrderBy(x => x.Position.Tick).First().Position.Tick;
+
+        public int EndTick => this.OrderBy(x => x.Position.Tick).Last().Position.Tick;
+
         public LongNote()
         {
             
