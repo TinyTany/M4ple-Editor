@@ -15,9 +15,45 @@ namespace NE4S.Component
 {
     public partial class ExportForm : Form
     {
-        public ExportForm()
+        private readonly SaveFileDialog saveFileDialog;
+        private ScoreBook scoreBook;
+        private NoteBook noteBook;
+
+        public ExportForm(ScoreBook scoreBook, NoteBook noteBook)
         {
             InitializeComponent();
+            this.scoreBook = scoreBook;
+            this.noteBook = noteBook;
+            saveFileDialog = new SaveFileDialog()
+            {
+                FileName = "NewScore.sus",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Filter = "Seaurchin譜面ファイル(*.sus)|*.sus",
+                FilterIndex = 0,
+                Title = "エクスポート",
+                RestoreDirectory = true
+            };
+            ExportButton.Click += ExportButton_Click;
+            ExportPathButton.Click += (s, e)  => 
+            {
+                if(saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    exportPathText.Text = saveFileDialog.FileName;
+                }
+            };
+        }
+
+        private void ExportButton_Click(object sender, EventArgs e)
+        {
+            if (exportPathText.Text == "")
+            {
+                MessageBox.Show("出力先を指定してください");
+            }
+            else
+            {
+                Export(exportPathText.Text, scoreBook, noteBook);
+                Close();
+            }
         }
 
         private bool Export(in string path, in ScoreBook scoreBook, in NoteBook noteBook)
@@ -57,7 +93,7 @@ namespace NE4S.Component
         }
 
         /// <summary>
-        /// scoreに属するnotesに対してデータの書き出しを行います
+        /// notesのうちscoreに属するものに対してデータの書き出しを行います
         /// </summary>
         /// <param name="notes"></param>
         /// <param name="score"></param>
@@ -101,7 +137,7 @@ namespace NE4S.Component
                         streamWriter.Write("00");
                     }
                 }
-                streamWriter.Write("\n");
+                streamWriter.WriteLine("");
             }
         }
 
