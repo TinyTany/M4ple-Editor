@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class AirUpC : Air
     {
+        public override int NoteID => 1;
+
         public AirUpC()
         {
 

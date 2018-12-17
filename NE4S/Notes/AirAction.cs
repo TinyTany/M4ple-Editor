@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class AirAction : Note
     {
+        public override int NoteID => 3;
+
         public event NoteEventHandlerEx CheckNotePosition;
         public event PositionCheckHandler IsPositionAvailable;
         private readonly PointF locationOffset = new PointF(0, 1);

@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class HoldBegin : Note
     {
+        public override int NoteID => 1;
+
         public event NoteEventHandler CheckNoteSize;
         public event NoteEventHandlerEx CheckNotePosition;
 

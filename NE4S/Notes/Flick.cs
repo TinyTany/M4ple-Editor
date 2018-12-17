@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class Flick : AirableNote
     {
+        public override int NoteID => 3;
+
         public Flick()
         {
 

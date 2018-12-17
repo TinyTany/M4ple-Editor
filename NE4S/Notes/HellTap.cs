@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class HellTap : AirableNote
     {
+        public override int NoteID => 4;
+
         public HellTap()
         {
 

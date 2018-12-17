@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class SlideEnd : AirableNote
     {
+        public override int NoteID => 2;
+
         public event PositionCheckHandler IsPositionAvailable;
 
         public SlideEnd()

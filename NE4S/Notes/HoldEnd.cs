@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class HoldEnd : AirableNote
     {
+        public override int NoteID => 2;
+
         public event NoteEventHandler CheckNoteSize;
         public event NoteEventHandlerEx CheckNotePosition;
         public event PositionCheckHandler IsPositionAvailable;

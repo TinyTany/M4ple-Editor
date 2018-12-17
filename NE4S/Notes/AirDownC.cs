@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class AirDownC : Air
     {
+        public override int NoteID => 2;
+
         protected static readonly float downOffsetY = 15;
 
         public AirDownC()

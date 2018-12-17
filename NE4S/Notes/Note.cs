@@ -16,6 +16,7 @@ namespace NE4S.Notes
     [Serializable()]
     public class Note
     {
+        public virtual int NoteID => -1;
         /// <summary>
         /// 1 ≦ Size ≦ 16
         /// </summary>
