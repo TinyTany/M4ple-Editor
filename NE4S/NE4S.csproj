@@ -82,6 +82,7 @@
     <Compile Include="Component\ExportForm.Designer.cs">
       <DependentUpon>ExportForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Component\LongLaneSignProvider.cs" />
     <Compile Include="Component\NoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
