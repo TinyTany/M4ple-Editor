@@ -20,7 +20,7 @@ namespace NE4S.Component
             InitializeComponent();
         }
 
-        private bool Export(string path, ScoreBook scoreBook, NoteBook noteBook)
+        private bool Export(in string path, in ScoreBook scoreBook, in NoteBook noteBook)
         {
             using (StreamWriter streamWriter = new StreamWriter(path, false, Encoding.UTF8))
             {
@@ -37,19 +37,85 @@ namespace NE4S.Component
                     }
                 }
                 streamWriter.WriteLine("\nShortNote");
-                List<Note> shortNotes = noteBook.ShortNotes;
                 foreach (Score score in scoreBook)
                 {
-                    List<Note> currentScoreNotes = shortNotes.Where(x => score.StartTick <= x.Position.Tick && x.Position.Tick <= score.EndTick).ToList();
-                    for(int lane = 0; lane < ScoreInfo.Lanes; ++lane)
-                    {
-                        List<Note> currentLaneNotes = currentScoreNotes.Where(x => x.Position.Lane == lane).ToList();
-                        if (!currentLaneNotes.Any()) continue;
-
-                    }
+                    WriteNotesByScore(noteBook.ShortNotes, score, 1, streamWriter, "");
+                }
+                streamWriter.WriteLine("\nHold");
+                WriteLongNotes(noteBook.HoldNotes.ConvertAll(x => x as LongNote), scoreBook, 2, streamWriter);
+                streamWriter.WriteLine("\nSlide");
+                WriteLongNotes(noteBook.SlideNotes.ConvertAll(x => x as LongNote), scoreBook, 3, streamWriter);
+                streamWriter.WriteLine("\nAirHold");
+                WriteLongNotes(noteBook.AirHoldNotes.ConvertAll(x => x as LongNote), scoreBook, 4, streamWriter);
+                streamWriter.WriteLine("\nAir");
+                foreach (Score score in scoreBook)
+                {
+                    WriteNotesByScore(noteBook.AirNotes.ConvertAll(x => x as Note), score, 5, streamWriter, "");
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// scoreに属するnotesに対してデータの書き出しを行います
+        /// </summary>
+        /// <param name="notes"></param>
+        /// <param name="score"></param>
+        /// <param name="laneType">レーン種別</param>
+        /// <param name="streamWriter"></param>
+        /// <param name="longLaneSign">ロングノーツの際に使うロングレーンの識別番号</param>
+        private void WriteNotesByScore(in List<Note> notes, Score score, in int laneType, in StreamWriter streamWriter, in string longLaneSign)
+        {
+            List<Note> currentScoreNotes = notes.Where(x => score.StartTick <= x.Position.Tick && x.Position.Tick <= score.EndTick).ToList();
+            for (int lane = 0; lane < ScoreInfo.Lanes; ++lane)
+            {
+                List<Note> currentLaneNotes = currentScoreNotes.Where(x => x.Position.Lane == lane).ToList();
+                if (!currentLaneNotes.Any()) continue;
+                int lcm = 1;
+                currentLaneNotes.ForEach(x =>
+                {
+                    // 1 ≦ tick ≦ TickSize にする
+                    int tick = x.Position.Tick - score.StartTick + 1;
+                    int gcd = MyUtil.Gcd(tick, score.TickSize);
+                    lcm = MyUtil.Lcm(lcm, gcd);
+                });
+                //
+                streamWriter.Write("#" + score.Index.ToString("D3") + laneType + lane.ToString("x") + longLaneSign + ": ");
+                for (int i = 1; i <= lcm; ++i)
+                {
+                    Note writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick + 1 == i * score.TickSize / lcm);
+                    if (writeNote != null)
+                    {
+                        streamWriter.Write(writeNote.NoteID);
+                        if (writeNote.Size == 16)
+                        {
+                            streamWriter.Write("g");
+                        }
+                        else
+                        {
+                            streamWriter.Write(writeNote.Size.ToString("x"));
+                        }
+                    }
+                    else
+                    {
+                        streamWriter.Write("00");
+                    }
+                }
+                streamWriter.Write("\n");
+            }
+        }
+
+        private void WriteLongNotes(in List<LongNote> longNoteList, ScoreBook scoreBook, in int laneType, in StreamWriter streamWriter)
+        {
+            LongLaneSignProvider signProvider = new LongLaneSignProvider();
+            foreach (LongNote longNote in longNoteList)
+            {
+                string sign = signProvider.GetAvailableSign(longNote.StartTick, longNote.EndTick);
+                foreach(Score score in scoreBook.Where(x => x.EndTick >= longNote.StartTick && x.StartTick <= longNote.EndTick))
+                {
+                    WriteNotesByScore(longNote, score, laneType, streamWriter, sign);
+                }
+            }
         }
     }
 }
