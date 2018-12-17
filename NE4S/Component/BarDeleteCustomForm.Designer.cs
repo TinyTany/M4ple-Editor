@@ -37,9 +37,10 @@
             // 
             // OK
             // 
-            this.OK.Location = new System.Drawing.Point(150, 202);
+            this.OK.Location = new System.Drawing.Point(90, 135);
+            this.OK.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(80, 30);
+            this.OK.Size = new System.Drawing.Size(48, 20);
             this.OK.TabIndex = 0;
             this.OK.Text = "OK";
             this.OK.UseVisualStyleBackColor = true;
@@ -47,9 +48,10 @@
             // 
             // Cancel
             // 
-            this.Cancel.Location = new System.Drawing.Point(250, 202);
+            this.Cancel.Location = new System.Drawing.Point(150, 135);
+            this.Cancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(80, 30);
+            this.Cancel.Size = new System.Drawing.Size(48, 20);
             this.Cancel.TabIndex = 1;
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
@@ -58,22 +60,24 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(80, 104);
+            this.label1.Location = new System.Drawing.Point(48, 69);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 18);
+            this.label1.Size = new System.Drawing.Size(29, 12);
             this.label1.TabIndex = 2;
             this.label1.Text = "個数";
             // 
             // BarCount
             // 
-            this.BarCount.Location = new System.Drawing.Point(295, 102);
+            this.BarCount.Location = new System.Drawing.Point(177, 68);
+            this.BarCount.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.BarCount.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.BarCount.Name = "BarCount";
-            this.BarCount.Size = new System.Drawing.Size(120, 25);
+            this.BarCount.Size = new System.Drawing.Size(72, 19);
             this.BarCount.TabIndex = 3;
             this.BarCount.Value = new decimal(new int[] {
             1,
@@ -83,14 +87,17 @@
             // 
             // BarDeleteCustomForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(478, 244);
+            this.ClientSize = new System.Drawing.Size(287, 163);
             this.Controls.Add(this.BarCount);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "BarDeleteCustomForm";
             this.Text = "カスタム小節削除";
             ((System.ComponentModel.ISupportInitialize)(this.BarCount)).EndInit();

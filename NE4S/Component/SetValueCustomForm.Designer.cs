@@ -97,6 +97,8 @@
             this.Controls.Add(this.labelMain);
             this.Controls.Add(this.numericUpDown1);
             this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SetValueCustomForm";
             this.Text = "SetValueCustomForm";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();

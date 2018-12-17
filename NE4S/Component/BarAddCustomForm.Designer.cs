@@ -44,35 +44,39 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(33, 42);
+            this.label1.Location = new System.Drawing.Point(20, 28);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 18);
+            this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 0;
             this.label1.Text = "挿入位置";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(33, 108);
+            this.label2.Location = new System.Drawing.Point(20, 72);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 18);
+            this.label2.Size = new System.Drawing.Size(29, 12);
             this.label2.TabIndex = 1;
             this.label2.Text = "拍数";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(33, 182);
+            this.label3.Location = new System.Drawing.Point(20, 121);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 18);
+            this.label3.Size = new System.Drawing.Size(29, 12);
             this.label3.TabIndex = 2;
             this.label3.Text = "個数";
             // 
             // OK
             // 
-            this.OK.Location = new System.Drawing.Point(150, 302);
+            this.OK.Location = new System.Drawing.Point(90, 201);
+            this.OK.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(80, 30);
+            this.OK.Size = new System.Drawing.Size(48, 20);
             this.OK.TabIndex = 3;
             this.OK.Text = "OK";
             this.OK.UseVisualStyleBackColor = true;
@@ -80,9 +84,10 @@
             // 
             // Cancel
             // 
-            this.Cancel.Location = new System.Drawing.Point(250, 302);
+            this.Cancel.Location = new System.Drawing.Point(150, 201);
+            this.Cancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(80, 30);
+            this.Cancel.Size = new System.Drawing.Size(48, 20);
             this.Cancel.TabIndex = 4;
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
@@ -91,9 +96,10 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(322, 108);
+            this.label4.Location = new System.Drawing.Point(193, 72);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(17, 18);
+            this.label4.Size = new System.Drawing.Size(11, 12);
             this.label4.TabIndex = 5;
             this.label4.Text = "/";
             // 
@@ -103,9 +109,10 @@
             this.Direction.Items.AddRange(new object[] {
             "選択小節の1つ先",
             "選択小節の1つ前"});
-            this.Direction.Location = new System.Drawing.Point(260, 34);
+            this.Direction.Location = new System.Drawing.Point(156, 23);
+            this.Direction.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Direction.Name = "Direction";
-            this.Direction.Size = new System.Drawing.Size(185, 26);
+            this.Direction.Size = new System.Drawing.Size(113, 20);
             this.Direction.TabIndex = 6;
             // 
             // BeatNumer
@@ -144,9 +151,10 @@
             "30",
             "31",
             "32"});
-            this.BeatNumer.Location = new System.Drawing.Point(216, 105);
+            this.BeatNumer.Location = new System.Drawing.Point(130, 70);
+            this.BeatNumer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.BeatNumer.Name = "BeatNumer";
-            this.BeatNumer.Size = new System.Drawing.Size(100, 26);
+            this.BeatNumer.Size = new System.Drawing.Size(62, 20);
             this.BeatNumer.TabIndex = 7;
             // 
             // BeatDenom
@@ -160,21 +168,23 @@
             "16",
             "32",
             "64"});
-            this.BeatDenom.Location = new System.Drawing.Point(345, 105);
+            this.BeatDenom.Location = new System.Drawing.Point(207, 70);
+            this.BeatDenom.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.BeatDenom.Name = "BeatDenom";
-            this.BeatDenom.Size = new System.Drawing.Size(100, 26);
+            this.BeatDenom.Size = new System.Drawing.Size(62, 20);
             this.BeatDenom.TabIndex = 8;
             // 
             // BarCount
             // 
-            this.BarCount.Location = new System.Drawing.Point(325, 180);
+            this.BarCount.Location = new System.Drawing.Point(195, 120);
+            this.BarCount.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.BarCount.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.BarCount.Name = "BarCount";
-            this.BarCount.Size = new System.Drawing.Size(120, 25);
+            this.BarCount.Size = new System.Drawing.Size(72, 19);
             this.BarCount.TabIndex = 9;
             this.BarCount.Value = new decimal(new int[] {
             1,
@@ -184,9 +194,9 @@
             // 
             // BarAddCustomForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(478, 344);
+            this.ClientSize = new System.Drawing.Size(287, 229);
             this.Controls.Add(this.BarCount);
             this.Controls.Add(this.BeatDenom);
             this.Controls.Add(this.BeatNumer);
@@ -198,6 +208,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "BarAddCustomForm";
             this.Text = "カスタム小節挿入";
             ((System.ComponentModel.ISupportInitialize)(this.BarCount)).EndInit();
