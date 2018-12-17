@@ -134,6 +134,11 @@ namespace NE4S
                 selectedPanel.SaveAs();
                 UpdateTextOfTabAndForm(false);
             };
+            tsmiExport.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.Export();
+            };
             tsmiQuit.Click += (s, e) =>
             {
                 Close();

@@ -133,6 +133,11 @@ namespace NE4S.Scores
             model.IsEditedWithoutSave = !isSaved;
         }
 
+        public void Export()
+        {
+            new ExportForm(model.ScoreBook, model.NoteBook).Show();
+        }
+
         #region laneBookを触る用メソッド群
         /// <summary>
         /// 末尾に指定した拍子数の譜面を指定した個数追加
