@@ -16,6 +16,7 @@ namespace NE4S.Component
     public partial class ExportForm : Form
     {
         private readonly SaveFileDialog saveFileDialog;
+        private readonly float measureConstant = 4f;
         private ScoreBook scoreBook;
         private NoteBook noteBook;
 
@@ -64,14 +65,20 @@ namespace NE4S.Component
                 streamWriter.WriteLine("This score was created by M4ple Editor.");
 
                 /* TODO: この辺に基本情報やBPM,ハイスピの情報を書き出す処理書く */
+                streamWriter.WriteLine("\nBPM");
+                streamWriter.WriteLine("\nHighSpeed");
+                streamWriter.WriteLine("#TIL00: \"");
+                foreach(HighSpeed speed in noteBook.AttributeNotes.Where(x => x is HighSpeed).OrderBy(x => x.Position.Tick))
+                {
 
-
-                streamWriter.WriteLine("\nSet measure's pulse");
+                }
+                streamWriter.Write("\"");
+                streamWriter.WriteLine("\nMeasure's pulse");
                 foreach(Score score in scoreBook)
                 {
                     if(score == scoreBook.First() || (score.BarSize != scoreBook.Prev(score).BarSize))
                     {
-                        streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + (4.0 * score.BarSize));
+                        streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + (measureConstant * score.BarSize));
                     }
                 }
                 streamWriter.WriteLine("\nShortNote");
@@ -112,7 +119,6 @@ namespace NE4S.Component
                 int lcm = 1;
                 currentLaneNotes.ForEach(x =>
                 {
-                    // 1 ≦ tick ≦ TickSize にする
                     int tick = x.Position.Tick - score.StartTick;
                     int gcd = MyUtil.Gcd(tick, score.TickSize);
                     lcm = MyUtil.Lcm(lcm, score.TickSize / gcd);
