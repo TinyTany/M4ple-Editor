@@ -40,10 +40,10 @@ namespace NE4S.Component
             {
                 System.Diagnostics.Debug.Assert(false, "レーン識別番号を取得できませんでした");
                 return signArray.Last().ToString();
-            } 
-            keyValuePair = new KeyValuePair<char, TickRange>(keyValuePair.Key, new TickRange(startTick, endTick));
+            }
+            int index = keyValuePairs.IndexOf(keyValuePair);
+            keyValuePairs[index] = new KeyValuePair<char, TickRange>(keyValuePair.Key, new TickRange(startTick, endTick));
             return keyValuePair.Key.ToString();
         }
-
     }
 }

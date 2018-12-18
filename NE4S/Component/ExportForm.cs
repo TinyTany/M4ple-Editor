@@ -34,6 +34,7 @@ namespace NE4S.Component
                 RestoreDirectory = true
             };
             ExportButton.Click += ExportButton_Click;
+            exportCancelButton.Click += (s, e) => Close();
             ExportPathButton.Click += (s, e)  => 
             {
                 if(saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -63,6 +64,7 @@ namespace NE4S.Component
                 streamWriter.WriteLine("This score was created by M4ple Editor.");
 
                 /* TODO: この辺に基本情報やBPM,ハイスピの情報を書き出す処理書く */
+
 
                 streamWriter.WriteLine("\nSet measure's pulse");
                 foreach(Score score in scoreBook)
@@ -111,15 +113,15 @@ namespace NE4S.Component
                 currentLaneNotes.ForEach(x =>
                 {
                     // 1 ≦ tick ≦ TickSize にする
-                    int tick = x.Position.Tick - score.StartTick + 1;
+                    int tick = x.Position.Tick - score.StartTick;
                     int gcd = MyUtil.Gcd(tick, score.TickSize);
-                    lcm = MyUtil.Lcm(lcm, gcd);
+                    lcm = MyUtil.Lcm(lcm, score.TickSize / gcd);
                 });
                 //
                 streamWriter.Write("#" + score.Index.ToString("D3") + laneType + lane.ToString("x") + longLaneSign + ": ");
-                for (int i = 1; i <= lcm; ++i)
+                for (int i = 0; i < lcm; ++i)
                 {
-                    Note writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick + 1 == i * score.TickSize / lcm);
+                    Note writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick == i * score.TickSize / lcm);
                     if (writeNote != null)
                     {
                         streamWriter.Write(writeNote.NoteID);
