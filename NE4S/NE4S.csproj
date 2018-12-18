@@ -150,7 +150,7 @@
     <Compile Include="Notes\SlideEnd.cs" />
     <Compile Include="Notes\SlideRelay.cs" />
     <Compile Include="Notes\SlideTap.cs" />
-    <Compile Include="Notes\Speed.cs" />
+    <Compile Include="Notes\HighSpeed.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

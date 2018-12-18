@@ -587,7 +587,7 @@ namespace NE4S.Scores
                     newNote = new BPM(position, locationVirtual, lane.Index);
                     break;
                 case NoteType.HIGHSPEED:
-                    newNote = new Speed(position, locationVirtual, lane.Index);
+                    newNote = new HighSpeed(position, locationVirtual, lane.Index);
                     break;
                 default:
                     break;
