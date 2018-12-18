@@ -29,7 +29,7 @@ namespace NE4S.Notes
             
         }
 
-        protected bool IsPositionAvailable(Note note, Position position)
+        protected virtual bool IsPositionAvailable(Note note, Position position)
         {
             if (position.Tick < this.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
             foreach (Note itrNote in this.Where(x => x != note))

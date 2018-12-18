@@ -54,7 +54,7 @@ namespace NE4S.Notes
         /// <param name="note"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        protected new bool IsPositionAvailable(Note note, Position position)
+        protected override bool IsPositionAvailable(Note note, Position position)
         {
             var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
             var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
