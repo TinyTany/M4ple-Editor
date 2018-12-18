@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace NE4S.Notes
 {
+    [Serializable()]
     public class AirHoldEnd : AirAction
     {
         public override int NoteID => 2;
