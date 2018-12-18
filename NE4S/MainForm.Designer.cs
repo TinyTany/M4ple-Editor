@@ -162,7 +162,7 @@
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(183, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(224, 6);
             // 
             // tsmiQuit
             // 
@@ -603,11 +603,11 @@
             // 
             // tslEstimatedNotes
             // 
-            this.tslEstimatedNotes.Enabled = false;
             this.tslEstimatedNotes.Name = "tslEstimatedNotes";
             this.tslEstimatedNotes.Size = new System.Drawing.Size(141, 22);
             this.tslEstimatedNotes.Text = "Total notes (estimated) : 0";
             this.tslEstimatedNotes.ToolTipText = "シミュレーター上で表示される総ノーツ数（推定）";
+            this.tslEstimatedNotes.Visible = false;
             // 
             // tslRealNotes
             // 
@@ -615,6 +615,7 @@
             this.tslRealNotes.Size = new System.Drawing.Size(109, 22);
             this.tslRealNotes.Text = "Total notes (real) : 0";
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
+            this.tslRealNotes.Visible = false;
             // 
             // MainForm
             // 

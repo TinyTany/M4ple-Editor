@@ -135,7 +135,7 @@ namespace NE4S.Scores
 
         public void Export()
         {
-            new ExportForm(model.ScoreBook, model.NoteBook).Show();
+            new ExportForm().ShowDialog(model.ScoreBook, model.NoteBook);
         }
 
         #region laneBookを触る用メソッド群
