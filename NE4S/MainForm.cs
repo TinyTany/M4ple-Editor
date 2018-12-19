@@ -45,6 +45,7 @@ namespace NE4S
                 hScroll.Dock = DockStyle.Bottom;
                 //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
                 ScorePanel sPanel = new ScorePanel(pBox, hScroll);
+                sPanel.SetScore(4, 4, 200);
                 tabPageEx.ScorePanel = sPanel;
                 //PictureBoxとHScrollBarの各種デリゲートの設定
                 pBox.MouseWheel += Score_MouseWheel;
@@ -247,12 +248,16 @@ namespace NE4S
             if (pBox == null) return;
             HScrollBar hScrollBar = pBox.Controls[0] as HScrollBar;
             if (hScrollBar == null) return;
-            (tabScore.SelectedTab as TabPageEx).ScorePanel = new ScorePanel(pBox, hScrollBar);
-            //タブ名をデフォルトにする
-            int tabIndex = tabScore.SelectedIndex;
-            tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
-            //
-            tabScore.SelectedTab.Controls[0].Refresh();
+            ScorePanel newPanel = new ScorePanel(pBox, hScrollBar);
+            if(new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
+            {
+                (tabScore.SelectedTab as TabPageEx).ScorePanel = newPanel;
+                //タブ名をデフォルトにする
+                int tabIndex = tabScore.SelectedIndex;
+                tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
+                //
+                tabScore.SelectedTab.Controls[0].Refresh();
+            }
         }
 
         private void TsbOpen_Click(object sender, EventArgs e)

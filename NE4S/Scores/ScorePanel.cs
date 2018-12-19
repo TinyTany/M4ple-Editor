@@ -45,28 +45,6 @@ namespace NE4S.Scores
             hSBar.Value = 0;
 			pNote = new PreviewNote();
             dataIO = new DataIO();
-#if DEBUG
-            //*
-            //SetScore(11, 4, 1);
-			SetScore(4, 4, 10);
-            SetScore(3, 4, 5);
-            SetScore(6, 8, 8);
-            //
-            SetScore(2, 64, 32);
-            SetScore(13, 4, 2);
-            SetScore(2, 4, 8);
-            SetScore(26, 8, 2);
-            SetScore(1, 32, 32);
-            //
-            SetScore(7, 1, 1);
-            SetScore(4, 4, 1);
-            SetScore(8, 8, 1);
-            SetScore(16, 16, 1);
-			//*/
-			//SetScore(4, 4, 1000);
-#else
-			SetScore(4, 4, 200);
-#endif
 		}
 
         public void SetEventForEditedWithoutSave(Model.EditedStatusHandler handler)
@@ -158,7 +136,7 @@ namespace NE4S.Scores
         /// <param name="beatNumer">拍子分子</param>
         /// <param name="beatDenom">拍子分母</param>
         /// <param name="barCount">個数</param>
-        private void SetScore(int beatNumer, int beatDenom, int barCount)
+        public void SetScore(int beatNumer, int beatDenom, int barCount)
         {
             model.SetScore(beatNumer, beatDenom, barCount);
             Update();
