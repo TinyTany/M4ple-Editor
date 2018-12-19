@@ -249,7 +249,8 @@ namespace NE4S
             HScrollBar hScrollBar = pBox.Controls[0] as HScrollBar;
             if (hScrollBar == null) return;
             ScorePanel newPanel = new ScorePanel(pBox, hScrollBar);
-            if(new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
+            newPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
+            if (new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
             {
                 (tabScore.SelectedTab as TabPageEx).ScorePanel = newPanel;
                 //タブ名をデフォルトにする
