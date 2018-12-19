@@ -22,7 +22,17 @@ namespace NE4S.Notes
         public List<Air> AirNotes { get; private set; } = new List<Air>();
         public List<AttributeNote> AttributeNotes { get; private set; } = new List<AttributeNote>();
 
-        public NoteBook() { }
+        public NoteBook()
+        {
+            //HACK: 開始時BPMを無理やり設定
+            Status.CurrentValue = 120;
+            AttributeNotes.Add(new BPM(
+                new Position(0, 0),
+                new PointF(
+                    ScoreInfo.PanelMargin.Left + ScoreInfo.LaneMargin.Left,
+                    ScoreInfo.PanelMargin.Top + ScoreLane.Height - ScoreInfo.LaneMargin.Bottom),
+                0));
+        }
 
 		public void Add(Note newNote)
 		{
