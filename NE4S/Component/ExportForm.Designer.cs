@@ -62,28 +62,33 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.metoronomeBox = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.curveSlideUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.measureOffserUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weStarUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.curveSlideUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // exportButton
             // 
-            this.exportButton.Location = new System.Drawing.Point(14, 364);
+            this.exportButton.Location = new System.Drawing.Point(15, 445);
             this.exportButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.exportButton.Name = "exportButton";
             this.exportButton.Size = new System.Drawing.Size(325, 29);
-            this.exportButton.TabIndex = 0;
+            this.exportButton.TabIndex = 14;
             this.exportButton.Text = "エクスポート";
             this.exportButton.UseVisualStyleBackColor = true;
             // 
             // exportCancelButton
             // 
-            this.exportCancelButton.Location = new System.Drawing.Point(346, 364);
+            this.exportCancelButton.Location = new System.Drawing.Point(346, 445);
             this.exportCancelButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.exportCancelButton.Name = "exportCancelButton";
             this.exportCancelButton.Size = new System.Drawing.Size(87, 29);
-            this.exportCancelButton.TabIndex = 1;
+            this.exportCancelButton.TabIndex = 15;
             this.exportCancelButton.Text = "キャンセル";
             this.exportCancelButton.UseVisualStyleBackColor = true;
             // 
@@ -94,7 +99,7 @@
             this.exportPathText.Name = "exportPathText";
             this.exportPathText.ReadOnly = true;
             this.exportPathText.Size = new System.Drawing.Size(209, 23);
-            this.exportPathText.TabIndex = 2;
+            this.exportPathText.TabIndex = 99;
             // 
             // exportPathButton
             // 
@@ -102,7 +107,7 @@
             this.exportPathButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.exportPathButton.Name = "exportPathButton";
             this.exportPathButton.Size = new System.Drawing.Size(27, 29);
-            this.exportPathButton.TabIndex = 3;
+            this.exportPathButton.TabIndex = 12;
             this.exportPathButton.Text = "...";
             this.exportPathButton.UseVisualStyleBackColor = true;
             // 
@@ -112,7 +117,7 @@
             this.pathClearButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pathClearButton.Name = "pathClearButton";
             this.pathClearButton.Size = new System.Drawing.Size(54, 29);
-            this.pathClearButton.TabIndex = 4;
+            this.pathClearButton.TabIndex = 99;
             this.pathClearButton.Text = "クリア";
             this.pathClearButton.UseVisualStyleBackColor = true;
             // 
@@ -123,7 +128,7 @@
             this.musicPathText.Name = "musicPathText";
             this.musicPathText.ReadOnly = true;
             this.musicPathText.Size = new System.Drawing.Size(209, 23);
-            this.musicPathText.TabIndex = 5;
+            this.musicPathText.TabIndex = 99;
             // 
             // musicPathButton
             // 
@@ -131,7 +136,7 @@
             this.musicPathButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.musicPathButton.Name = "musicPathButton";
             this.musicPathButton.Size = new System.Drawing.Size(27, 29);
-            this.musicPathButton.TabIndex = 6;
+            this.musicPathButton.TabIndex = 9;
             this.musicPathButton.Text = "...";
             this.musicPathButton.UseVisualStyleBackColor = true;
             // 
@@ -140,8 +145,8 @@
             this.musicPathClearButton.Location = new System.Drawing.Point(380, 202);
             this.musicPathClearButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.musicPathClearButton.Name = "musicPathClearButton";
-            this.musicPathClearButton.Size = new System.Drawing.Size(54, 29);
-            this.musicPathClearButton.TabIndex = 7;
+            this.musicPathClearButton.Size = new System.Drawing.Size(53, 29);
+            this.musicPathClearButton.TabIndex = 99;
             this.musicPathClearButton.Text = "クリア";
             this.musicPathClearButton.UseVisualStyleBackColor = true;
             // 
@@ -152,7 +157,7 @@
             this.JacketPathText.Name = "JacketPathText";
             this.JacketPathText.ReadOnly = true;
             this.JacketPathText.Size = new System.Drawing.Size(209, 23);
-            this.JacketPathText.TabIndex = 8;
+            this.JacketPathText.TabIndex = 99;
             // 
             // jacketPathButton
             // 
@@ -160,7 +165,7 @@
             this.jacketPathButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.jacketPathButton.Name = "jacketPathButton";
             this.jacketPathButton.Size = new System.Drawing.Size(27, 29);
-            this.jacketPathButton.TabIndex = 9;
+            this.jacketPathButton.TabIndex = 11;
             this.jacketPathButton.Text = "...";
             this.jacketPathButton.UseVisualStyleBackColor = true;
             // 
@@ -170,7 +175,7 @@
             this.jacketPathClearButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.jacketPathClearButton.Name = "jacketPathClearButton";
             this.jacketPathClearButton.Size = new System.Drawing.Size(54, 29);
-            this.jacketPathClearButton.TabIndex = 10;
+            this.jacketPathClearButton.TabIndex = 99;
             this.jacketPathClearButton.Text = "クリア";
             this.jacketPathClearButton.UseVisualStyleBackColor = true;
             // 
@@ -196,7 +201,7 @@
             -2147483648});
             this.offsetUpDown.Name = "offsetUpDown";
             this.offsetUpDown.Size = new System.Drawing.Size(140, 23);
-            this.offsetUpDown.TabIndex = 11;
+            this.offsetUpDown.TabIndex = 10;
             // 
             // measureOffserUpDown
             // 
@@ -204,7 +209,7 @@
             this.measureOffserUpDown.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.measureOffserUpDown.Name = "measureOffserUpDown";
             this.measureOffserUpDown.Size = new System.Drawing.Size(140, 23);
-            this.measureOffserUpDown.TabIndex = 12;
+            this.measureOffserUpDown.TabIndex = 13;
             // 
             // titleText
             // 
@@ -212,7 +217,7 @@
             this.titleText.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.titleText.Name = "titleText";
             this.titleText.Size = new System.Drawing.Size(304, 23);
-            this.titleText.TabIndex = 13;
+            this.titleText.TabIndex = 1;
             // 
             // songIdText
             // 
@@ -220,7 +225,7 @@
             this.songIdText.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.songIdText.Name = "songIdText";
             this.songIdText.Size = new System.Drawing.Size(304, 23);
-            this.songIdText.TabIndex = 14;
+            this.songIdText.TabIndex = 8;
             // 
             // designerText
             // 
@@ -228,7 +233,7 @@
             this.designerText.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.designerText.Name = "designerText";
             this.designerText.Size = new System.Drawing.Size(304, 23);
-            this.designerText.TabIndex = 15;
+            this.designerText.TabIndex = 3;
             // 
             // artistText
             // 
@@ -236,7 +241,7 @@
             this.artistText.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.artistText.Name = "artistText";
             this.artistText.Size = new System.Drawing.Size(304, 23);
-            this.artistText.TabIndex = 16;
+            this.artistText.TabIndex = 2;
             // 
             // DifficultyBox
             // 
@@ -252,7 +257,7 @@
             this.DifficultyBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.DifficultyBox.Name = "DifficultyBox";
             this.DifficultyBox.Size = new System.Drawing.Size(159, 23);
-            this.DifficultyBox.TabIndex = 17;
+            this.DifficultyBox.TabIndex = 4;
             // 
             // playLevelBox
             // 
@@ -286,7 +291,7 @@
             this.playLevelBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.playLevelBox.Name = "playLevelBox";
             this.playLevelBox.Size = new System.Drawing.Size(139, 23);
-            this.playLevelBox.TabIndex = 18;
+            this.playLevelBox.TabIndex = 7;
             // 
             // weText
             // 
@@ -294,7 +299,7 @@
             this.weText.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.weText.Name = "weText";
             this.weText.Size = new System.Drawing.Size(59, 23);
-            this.weText.TabIndex = 19;
+            this.weText.TabIndex = 5;
             // 
             // weStarUpDown
             // 
@@ -306,8 +311,8 @@
             0,
             0});
             this.weStarUpDown.Name = "weStarUpDown";
-            this.weStarUpDown.Size = new System.Drawing.Size(54, 23);
-            this.weStarUpDown.TabIndex = 20;
+            this.weStarUpDown.Size = new System.Drawing.Size(53, 23);
+            this.weStarUpDown.TabIndex = 6;
             this.weStarUpDown.Value = new decimal(new int[] {
             1,
             0,
@@ -421,11 +426,62 @@
             this.label12.TabIndex = 32;
             this.label12.Text = "☆";
             // 
+            // metoronomeBox
+            // 
+            this.metoronomeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.metoronomeBox.FormattingEnabled = true;
+            this.metoronomeBox.Items.AddRange(new object[] {
+            "鳴らす",
+            "鳴らさない"});
+            this.metoronomeBox.Location = new System.Drawing.Point(294, 362);
+            this.metoronomeBox.Name = "metoronomeBox";
+            this.metoronomeBox.Size = new System.Drawing.Size(139, 23);
+            this.metoronomeBox.TabIndex = 100;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(12, 365);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(103, 15);
+            this.label13.TabIndex = 101;
+            this.label13.Text = "開始時のメトロノーム";
+            // 
+            // curveSlideUpDown
+            // 
+            this.curveSlideUpDown.Location = new System.Drawing.Point(294, 391);
+            this.curveSlideUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.curveSlideUpDown.Name = "curveSlideUpDown";
+            this.curveSlideUpDown.Size = new System.Drawing.Size(139, 23);
+            this.curveSlideUpDown.TabIndex = 102;
+            this.curveSlideUpDown.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(12, 393);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(187, 15);
+            this.label14.TabIndex = 103;
+            this.label14.Text = "曲線Slideの分割数（デフォルト: 20）";
+            // 
             // ExportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(448, 409);
+            this.ClientSize = new System.Drawing.Size(448, 487);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.curveSlideUpDown);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.metoronomeBox);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -470,6 +526,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.measureOffserUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.weStarUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.curveSlideUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -510,5 +567,9 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ComboBox metoronomeBox;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown curveSlideUpDown;
+        private System.Windows.Forms.Label label14;
     }
 }
