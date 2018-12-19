@@ -106,6 +106,7 @@
             // 
             // Direction
             // 
+            this.Direction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Direction.FormattingEnabled = true;
             this.Direction.Items.AddRange(new object[] {
             "選択小節の1つ先",
@@ -118,6 +119,7 @@
             // 
             // BeatNumer
             // 
+            this.BeatNumer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BeatNumer.FormattingEnabled = true;
             this.BeatNumer.Items.AddRange(new object[] {
             "1",
@@ -160,6 +162,7 @@
             // 
             // BeatDenom
             // 
+            this.BeatDenom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BeatDenom.FormattingEnabled = true;
             this.BeatDenom.Items.AddRange(new object[] {
             "1",
