@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppInfo.cs" />
     <Compile Include="Component\AirNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
