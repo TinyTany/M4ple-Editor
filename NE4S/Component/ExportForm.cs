@@ -16,6 +16,7 @@ namespace NE4S.Component
     public partial class ExportForm : Form
     {
         private readonly SaveFileDialog saveFileDialog;
+        private readonly OpenFileDialog musicSelectDialog, jacketSelectDialog;
         private readonly float measureConstant = 4f;
         private ScoreBook scoreBook;
         private NoteBook noteBook;
@@ -34,8 +35,30 @@ namespace NE4S.Component
                 Title = "エクスポート",
                 RestoreDirectory = true
             };
+            musicSelectDialog = new OpenFileDialog()
+            {
+                FileName = "",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Filter = "音楽ファイル(*.wav;*.mp3;*.ogg)|*.wav;*.mp3;*.ogg",
+                FilterIndex = 0,
+                Title = "楽曲ファイル選択",
+                RestoreDirectory = true
+            };
+            jacketSelectDialog = new OpenFileDialog()
+            {
+                FileName = "",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Filter = "画像ファイル(*.bmp;*.jpg;*.png)|*.bmp;*.jpg;*.png",
+                FilterIndex = 0,
+                Title = "ジャケットファイル選択",
+                RestoreDirectory = true
+            };
             exportButton.Click += ExportButton_Click;
-            exportCancelButton.Click += (s, e) => Close();
+            exportCancelButton.Click += (s, e) =>
+            {
+                SaveMusicInfo(false);
+                Close();
+            };
             exportPathButton.Click += (s, e)  => 
             {
                 if(saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -43,7 +66,23 @@ namespace NE4S.Component
                     exportPathText.Text = saveFileDialog.FileName;
                 }
             };
+            musicPathButton.Click += (s, e) =>
+            {
+                if(musicSelectDialog.ShowDialog() == DialogResult.OK)
+                {
+                    musicPathText.Text = Path.GetFileName(musicSelectDialog.FileName);
+                }
+            };
+            jacketPathButton.Click += (s, e) =>
+            {
+                if(jacketSelectDialog.ShowDialog() == DialogResult.OK)
+                {
+                    JacketPathText.Text = Path.GetFileName(jacketSelectDialog.FileName);
+                }
+            };
             pathClearButton.Click += (s, e) => exportPathText.Text = "";
+            musicPathClearButton.Click += (s, e) => musicPathText.Text = "";
+            jacketPathClearButton.Click += (s, e) => JacketPathText.Text = "";
             DifficultyBox.SelectedIndexChanged += (s, e) =>
             {
                 if(DifficultyBox.SelectedIndex == 4)
@@ -58,6 +97,7 @@ namespace NE4S.Component
                 }
             };
             DifficultyBox.SelectedIndex = 0;
+            metoronomeBox.SelectedIndex = 0;
         }
 
         public void ShowDialog(ScoreBook scoreBook, NoteBook noteBook)
@@ -77,6 +117,21 @@ namespace NE4S.Component
             {
                 Export(exportPathText.Text);
                 Close();
+            }
+        }
+
+        public void Export(ScoreBook scoreBook, NoteBook noteBook)
+        {
+            this.scoreBook = scoreBook;
+            this.noteBook = noteBook;
+            if (MusicInfo.HasExported)
+            {
+                Export(exportPathText.Text);
+                SaveMusicInfo(true);
+            }
+            else
+            {
+                ShowDialog();
             }
         }
 
