@@ -135,7 +135,20 @@ namespace NE4S.Scores
 
         public void Export()
         {
-            new ExportForm().ShowDialog(model.ScoreBook, model.NoteBook);
+            using(ExportForm exportForm = new ExportForm(model.MusicInfo))
+            {
+                exportForm.Export(model.ScoreBook, model.NoteBook);
+                model.MusicInfo = exportForm.MusicInfo;
+            }
+        }
+
+        public void ExportAs()
+        {
+            using (ExportForm exportForm = new ExportForm(model.MusicInfo))
+            {
+                exportForm.ShowDialog(model.ScoreBook, model.NoteBook);
+                model.MusicInfo = exportForm.MusicInfo;
+            }
         }
 
         #region laneBookを触る用メソッド群

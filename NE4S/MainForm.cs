@@ -75,6 +75,11 @@ namespace NE4S
             tsbNew.Click += TsbNew_Click;
             tsbOpen.Click += TsbOpen_Click;
             tsbSave.Click += TsbSave_Click;
+            tsbExport.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.Export();
+            };
             #region ノーツ表示設定ボタン
             tsmiIsShortNote.Click += (s, e) =>
             {
@@ -137,7 +142,7 @@ namespace NE4S
             tsmiExport.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
-                selectedPanel.Export();
+                selectedPanel.ExportAs();
             };
             tsmiQuit.Click += (s, e) =>
             {

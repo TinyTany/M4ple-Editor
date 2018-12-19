@@ -16,6 +16,7 @@ namespace NE4S
         public NoteBook NoteBook { get; }
         public ScoreBook ScoreBook { get; }
         public LaneBook LaneBook { get; }
+        public MusicInfo MusicInfo { get; set; } = null;
         /// <summary>
         /// この変数は使用しない
         /// プロパティを常に使う

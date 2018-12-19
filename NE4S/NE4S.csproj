@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="MusicInfo.cs" />
     <Compile Include="MyUtil.cs" />
     <Compile Include="Notes\Air.cs" />
     <Compile Include="Notes\AirableNote.cs" />

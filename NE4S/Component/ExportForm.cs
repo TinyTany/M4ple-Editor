@@ -20,8 +20,9 @@ namespace NE4S.Component
         private readonly float measureConstant = 4f;
         private ScoreBook scoreBook;
         private NoteBook noteBook;
+        public MusicInfo MusicInfo { get; private set; } = new MusicInfo();
 
-        public ExportForm()
+        public ExportForm(MusicInfo musicInfo)
         {
             InitializeComponent();
             scoreBook = null;
@@ -98,6 +99,54 @@ namespace NE4S.Component
             };
             DifficultyBox.SelectedIndex = 0;
             metoronomeBox.SelectedIndex = 0;
+            LoadMusicInfo(musicInfo);
+        }
+
+        private void LoadMusicInfo(MusicInfo musicInfo)
+        {
+            if (musicInfo == null)
+            {
+                return;
+            }
+            titleText.Text = musicInfo.Title;
+            artistText.Text = musicInfo.Artist;
+            designerText.Text = musicInfo.Designer;
+            DifficultyBox.SelectedIndex = musicInfo.Difficulty;
+            weText.Text = musicInfo.WeKanji;
+            weStarUpDown.Value = musicInfo.WeStars;
+            playLevelBox.Text = musicInfo.PlayLevel;
+            songIdText.Text = musicInfo.SongID;
+            musicPathText.Text = musicInfo.MusicFileName;
+            offsetUpDown.Value = musicInfo.MusicOffset;
+            JacketPathText.Text = musicInfo.JacketFileName;
+            exportPathText.Text = musicInfo.ExportPath;
+            measureOffserUpDown.Value = musicInfo.MeasureOffset;
+            metoronomeBox.SelectedIndex = musicInfo.Metronome;
+            curveSlideUpDown.Value = musicInfo.SlideCurveSegment;
+            MusicInfo.HasExported = musicInfo.HasExported;
+        }
+
+        private void SaveMusicInfo(bool hasExported)
+        {
+            MusicInfo = new MusicInfo()
+            {
+                Title = titleText.Text,
+                Artist = artistText.Text,
+                Designer = designerText.Text,
+                Difficulty = DifficultyBox.SelectedIndex,
+                WeKanji = weText.Text,
+                WeStars = weStarUpDown.Value,
+                PlayLevel = playLevelBox.Text,
+                SongID = songIdText.Text,
+                MusicFileName = musicPathText.Text,
+                MusicOffset = offsetUpDown.Value,
+                JacketFileName = JacketPathText.Text,
+                ExportPath = exportPathText.Text,
+                MeasureOffset = measureOffserUpDown.Value,
+                Metronome = metoronomeBox.SelectedIndex,
+                SlideCurveSegment = curveSlideUpDown.Value,
+                HasExported = hasExported
+            };
         }
 
         public void ShowDialog(ScoreBook scoreBook, NoteBook noteBook)
@@ -116,6 +165,7 @@ namespace NE4S.Component
             else
             {
                 Export(exportPathText.Text);
+                SaveMusicInfo(true);
                 Close();
             }
         }
