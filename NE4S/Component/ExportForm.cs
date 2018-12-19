@@ -230,8 +230,25 @@ namespace NE4S.Component
                     streamWriter.WriteLine("#REQUEST \"metronome disabled\"");
                 }
                 streamWriter.WriteLine("#REQUEST \"segment_per_second " + (int)curveSlideUpDown.Value + "\"");
-                streamWriter.WriteLine("\r\nCommand");
-                streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffserUpDown.Value).ToString("D3"));
+                if (measureOffserUpDown.Value != 0)
+                {
+                    streamWriter.WriteLine("\r\nInitial state");
+                    var bpmList = noteBook.AttributeNotes.OrderBy(x => x.Position.Tick).Where(x => x is BPM);
+                    if (!bpmList.Any())
+                    {
+                        streamWriter.WriteLine("#BPM01: 120");
+                    }
+                    else
+                    {
+                        streamWriter.WriteLine("#BPM01: " + bpmList.First().NoteValue);
+                    }
+                    streamWriter.WriteLine("#00008: 01");
+                    streamWriter.WriteLine("#00002: " + scoreBook.First().BarSize * measureConstant);
+                    streamWriter.WriteLine("\r\nCommand");
+                    streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffserUpDown.Value).ToString("D3"));
+                }
+                streamWriter.WriteLine("\r\nBPM");
+                WriteBPMNotes(streamWriter);
                 streamWriter.WriteLine("\r\nMeasure's pulse");
                 foreach(Score score in scoreBook)
                 {
@@ -240,8 +257,6 @@ namespace NE4S.Component
                         streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + (measureConstant * score.BarSize));
                     }
                 }
-                streamWriter.WriteLine("\r\nBPM");
-                WriteBPMNotes(streamWriter);
                 if(noteBook.AttributeNotes.Where(x => x is HighSpeed).Any())
                 {
                     streamWriter.WriteLine("\r\nHighSpeed");
@@ -295,7 +310,7 @@ namespace NE4S.Component
                         defaultValue));
                 }
             }
-            idList.RemoveAt(0);
+            idList.RemoveRange(0, 2);
             foreach(BPM bpm in bpmNotes)
             {
                 if (!idList.TakeWhile(x => x.Value != defaultValue).Any() || 
@@ -319,7 +334,7 @@ namespace NE4S.Component
                     lcm = MyUtil.Lcm(lcm, score.TickSize / gcd);
                 });
                 //
-                streamWriter.Write("#" + score.Index.ToString("D3") + "02: ");
+                streamWriter.Write("#" + score.Index.ToString("D3") + "08: ");
                 for (int i = 0; i < lcm; ++i)
                 {
                     var writeNote = currentScoreNotes.Find(x => x.Position.Tick - score.StartTick == i * score.TickSize / lcm);
