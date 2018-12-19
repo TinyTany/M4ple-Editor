@@ -89,9 +89,44 @@ namespace NE4S.Component
             using (StreamWriter streamWriter = new StreamWriter(path, false))
             {
                 streamWriter.WriteLine("This score was created by M4ple Editor.");
-
-                /* TODO: この辺に基本情報を書き出す処理書く */
-                
+                streamWriter.WriteLine("\r\nMusic info");
+                streamWriter.WriteLine("#TITLE \"" + titleText.Text + "\"");
+                streamWriter.WriteLine("#ARTIST \"" + artistText.Text + "\"");
+                streamWriter.WriteLine("#DESIGNER \"" + designerText.Text + "\"");
+                streamWriter.Write("#DIFFICULTY ");
+                if (DifficultyBox.SelectedIndex == 4)
+                {
+                    streamWriter.WriteLine("\"4:" + weText.Text + "\"");
+                }
+                else
+                {
+                    streamWriter.WriteLine(DifficultyBox.SelectedIndex);
+                }
+                streamWriter.Write("#PLAYLEVEL ");
+                if (DifficultyBox.SelectedIndex == 4)
+                {
+                    streamWriter.WriteLine((int)weStarUpDown.Value);
+                }
+                else
+                {
+                    streamWriter.WriteLine(playLevelBox.Text);
+                }
+                streamWriter.WriteLine("#SONGID \"" + songIdText.Text + "\"");
+                streamWriter.WriteLine("#WAVE \"" + musicPathText.Text + "\"");
+                streamWriter.WriteLine("#WAVEOFFSET " + offsetUpDown.Value);
+                streamWriter.WriteLine("#JACKET \"" + JacketPathText.Text + "\"");
+                streamWriter.WriteLine("\r\nRequest");
+                if (metoronomeBox.SelectedIndex == 0)
+                {
+                    streamWriter.WriteLine("#REQUEST \"metronome enabled\"");
+                }
+                else
+                {
+                    streamWriter.WriteLine("#REQUEST \"metronome disabled\"");
+                }
+                streamWriter.WriteLine("#REQUEST \"segment_per_second " + (int)curveSlideUpDown.Value + "\"");
+                streamWriter.WriteLine("\r\nCommand");
+                streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffserUpDown.Value).ToString("D3"));
                 streamWriter.WriteLine("\r\nMeasure's pulse");
                 foreach(Score score in scoreBook)
                 {
