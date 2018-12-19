@@ -112,10 +112,10 @@ namespace NE4S.Component
             artistText.Text = musicInfo.Artist;
             designerText.Text = musicInfo.Designer;
             DifficultyBox.SelectedIndex = musicInfo.Difficulty;
-            weText.Text = musicInfo.WeKanji;
-            weStarUpDown.Value = musicInfo.WeStars;
+            weText.Text = musicInfo.WEKanji;
+            weStarUpDown.Value = musicInfo.WEStars;
             playLevelBox.Text = musicInfo.PlayLevel;
-            songIdText.Text = musicInfo.SongID;
+            songIdText.Text = musicInfo.SongId;
             musicPathText.Text = musicInfo.MusicFileName;
             offsetUpDown.Value = musicInfo.MusicOffset;
             JacketPathText.Text = musicInfo.JacketFileName;
@@ -134,10 +134,10 @@ namespace NE4S.Component
                 Artist = artistText.Text,
                 Designer = designerText.Text,
                 Difficulty = DifficultyBox.SelectedIndex,
-                WeKanji = weText.Text,
-                WeStars = weStarUpDown.Value,
+                WEKanji = weText.Text,
+                WEStars = weStarUpDown.Value,
                 PlayLevel = playLevelBox.Text,
-                SongID = songIdText.Text,
+                SongId = songIdText.Text,
                 MusicFileName = musicPathText.Text,
                 MusicOffset = offsetUpDown.Value,
                 JacketFileName = JacketPathText.Text,
@@ -360,7 +360,7 @@ namespace NE4S.Component
         /// <param name="laneType">レーン種別</param>
         /// <param name="streamWriter"></param>
         /// <param name="longLaneSign">ロングノーツの際に使うロングレーンの識別番号</param>
-        private void WriteNotesByScore(in List<Note> notes, Score score, in int laneType, in StreamWriter streamWriter, in string longLaneSign)
+        private static void WriteNotesByScore(in List<Note> notes, Score score, in int laneType, in StreamWriter streamWriter, in string longLaneSign)
         {
             List<Note> currentScoreNotes = notes.Where(x => score.StartTick <= x.Position.Tick && x.Position.Tick <= score.EndTick).ToList();
             for (int lane = 0; lane < ScoreInfo.Lanes; ++lane)

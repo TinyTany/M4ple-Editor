@@ -24,7 +24,7 @@ namespace NE4S.Scores
         private PreviewNote pNote;
         private DataIO dataIO;
 
-        class Margin
+        static class Margin
         {
             public static int
                 Top = ScoreInfo.PanelMargin.Top,

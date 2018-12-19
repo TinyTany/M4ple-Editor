@@ -13,10 +13,10 @@ namespace NE4S
         public string Artist { get; set; }
         public string Designer { get; set; }
         public int Difficulty { get; set; }
-        public string WeKanji { get; set; }
-        public decimal WeStars { get; set; }
+        public string WEKanji { get; set; }
+        public decimal WEStars { get; set; }
         public string PlayLevel { get; set; }
-        public string SongID { get; set; }
+        public string SongId { get; set; }
         public string MusicFileName { get; set; }
         public decimal MusicOffset { get; set; }
         public string JacketFileName { get; set; }
