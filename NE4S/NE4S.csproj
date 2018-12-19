@@ -84,6 +84,12 @@
       <DependentUpon>ExportForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Component\LongLaneSignProvider.cs" />
+    <Compile Include="Component\NewScoreForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\NewScoreForm.Designer.cs">
+      <DependentUpon>NewScoreForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Component\NoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -175,6 +181,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Component\ExportForm.resx">
       <DependentUpon>ExportForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\NewScoreForm.resx">
+      <DependentUpon>NewScoreForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Component\NoteButton.resx">
       <DependentUpon>NoteButton.cs</DependentUpon>
