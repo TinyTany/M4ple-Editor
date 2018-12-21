@@ -51,13 +51,13 @@ namespace NE4S
 
 		public void InsertScoreForward(Score score, int beatNumer, int beatDenom, int barCount)
 		{
-			LaneBook.InsetScoreForward(ScoreBook, score, beatNumer, beatDenom, barCount);
+			LaneBook.InsetScoreForward(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
             IsEditedWithoutSave = true;
 		}
 
 		public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
 		{
-			LaneBook.InsertScoreBackward(ScoreBook, score, beatNumer, beatDenom, barCount);
+			LaneBook.InsertScoreBackward(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
             IsEditedWithoutSave = true;
         }
 

@@ -110,16 +110,6 @@ namespace NE4S.Notes
 			else if (longNote is AirHold) AirHoldNotes.Remove(longNote as AirHold);
 		}
 
-		public void Relocate(Note note, Position pos)
-		{
-			if(note != null) note.Relocate(pos);
-		}
-
-		public void Resize(Note note, int size)
-		{
-			if (note != null) note.ReSize(size);
-		}
-
         /// <summary>
         /// クリックされてるノーツがあったら投げる
         /// なかったらnullを投げる
@@ -218,6 +208,13 @@ namespace NE4S.Notes
             AirHoldNotes.ForEach(x => x.UpdateLocation(laneBook));
             AirNotes.ForEach(x => x.UpdateLocation(laneBook));
             AttributeNotes.ForEach(x => x.UpdateLocation(laneBook));
+        }
+
+        public void RelocateNoteTickAfterScoreTick(int scoreTick, int deltaTick)
+        {
+            ShortNotes.Where(x => x.Position.Tick >= scoreTick).ToList().ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
+            AirNotes.Where(x => x.Position.Tick >= scoreTick).ToList().ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
+            AttributeNotes.Where(x => x.Position.Tick >= scoreTick).ToList().ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
         }
 
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
