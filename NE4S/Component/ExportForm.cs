@@ -223,13 +223,13 @@ namespace NE4S.Component
                 streamWriter.WriteLine("\r\nRequest");
                 if (metoronomeBox.SelectedIndex == 0)
                 {
-                    streamWriter.WriteLine("#REQUEST \"metronome enabled\"");
+                    streamWriter.WriteLine("#REQUEST \"mertonome enabled\"");
                 }
                 else
                 {
-                    streamWriter.WriteLine("#REQUEST \"metronome disabled\"");
+                    streamWriter.WriteLine("#REQUEST \"mertonome disabled\"");
                 }
-                streamWriter.WriteLine("#REQUEST \"segment_per_second " + (int)curveSlideUpDown.Value + "\"");
+                streamWriter.WriteLine("#REQUEST \"segments_per_second " + (int)curveSlideUpDown.Value + "\"");
                 if (measureOffserUpDown.Value != 0)
                 {
                     streamWriter.WriteLine("\r\nInitial state");
