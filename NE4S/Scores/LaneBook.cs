@@ -87,9 +87,7 @@ namespace NE4S.Scores
 			//これはLaneBookではないのでRefreshIndex()が行われない
             List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
-            //まとめた譜面たちをmodelに挿入
             scoreBook.InsertRange(score.Index, newScores);
-            //挿入する譜面を格納するためのレーンリストを作成
             List<ScoreLane> newLanes = new List<ScoreLane>();
             //新譜面たちをnewLanesに割り当て
             foreach (Score newScore in newScores)

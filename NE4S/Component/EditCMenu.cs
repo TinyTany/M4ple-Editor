@@ -19,19 +19,19 @@ namespace NE4S.Component
         {
             barAddItems = new ToolStripItem[]
             {
-                new ToolStripMenuItem("選択小節の1つ前", null, new EventHandler(BarAddBackward)),
-                new ToolStripMenuItem("選択小節の1つ先", null, new EventHandler(BarAddForward)),
-                new ToolStripMenuItem("カスタム...", null, new EventHandler(BarAddCustom))
+                new ToolStripMenuItem("選択小節の1つ前", null, BarAddBackward),
+                new ToolStripMenuItem("選択小節の1つ先", null, BarAddForward),
+                new ToolStripMenuItem("カスタム...", null, BarAddCustom)
             };
             barDeleteItems = new ToolStripItem[]
             {
-                new ToolStripMenuItem("選択小節", null, new EventHandler(BarDeleteSelected)),
-                new ToolStripMenuItem("カスタム...", null, new EventHandler(BarDeleteCustom))
+                new ToolStripMenuItem("選択小節", null, BarDeleteSelected),
+                new ToolStripMenuItem("カスタム...", null, BarDeleteCustom)
             };
             laneFillItems = new ToolStripItem[]
             {
-                new ToolStripMenuItem("レーン全体", null, new EventHandler(LaneFillAll)),
-                new ToolStripMenuItem("選択レーン以降", null, new EventHandler(LaneFill))
+                new ToolStripMenuItem("レーン全体", null, LaneFillAll),
+                new ToolStripMenuItem("選択レーン以降", null, LaneFill)
             };
             ToolStripMenuItem barAdd = new ToolStripMenuItem("小節を挿入", null);
             barAdd.DropDownItems.AddRange(barAddItems);
@@ -43,9 +43,9 @@ namespace NE4S.Component
             {
                 barAdd,
                 barDelete,
-                new ToolStripMenuItem("小節を分割", null, new EventHandler(BarDivide)),
+                new ToolStripMenuItem("選択小節を改行", null, BarDivide),
                 laneFill,
-                new ToolStripMenuItem("貼り付け", null, new EventHandler(Paste))
+                new ToolStripMenuItem("貼り付け", null, Paste)
             };
             Items.AddRange(stripItems);
             Items.Insert(Items.Count - 1, new ToolStripSeparator());
