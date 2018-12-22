@@ -39,6 +39,11 @@ namespace NE4S.Notes
             return true;
         }
 
+        public void RelocateNoteTickAfterScoreTick(int scoreTick, int deltaTick)
+        {
+            this.Where(x => x.Position.Tick >= scoreTick).ToList().ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
+        }
+
         public bool IsDrawable()
         {
             bool isAllNoteBehind = !this.Where(x => x.Position.Tick >= Status.DrawTickFirst).Any();
