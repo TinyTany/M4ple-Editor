@@ -155,6 +155,12 @@ namespace NE4S.Scores
 			Update();
         }
 
+        public void InsertScoreForwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            model.InsertScoreForwardWithNote(score, beatNumer, beatDenom, barCount);
+            Update();
+        }
+
         /// <summary>
         /// scoreの1つ前に新たにscoreを挿入
         /// </summary>
@@ -165,6 +171,12 @@ namespace NE4S.Scores
         public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
         {
             model.InsertScoreBackward(score, beatNumer, beatDenom, barCount);
+            Update();
+        }
+
+        public void InsertScoreBackwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            model.InsertScoreBackwardWithNote(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -187,6 +199,11 @@ namespace NE4S.Scores
             DeleteScore(score, 1);
         }
 
+        public void DeleteScoreWithNote(Score score)
+        {
+            DeleteScoreWithNote(score, 1);
+        }
+
         /// <summary>
         /// 指定されたscoreからcount個のScoreを削除
         /// </summary>
@@ -195,6 +212,12 @@ namespace NE4S.Scores
         public void DeleteScore(Score score, int count)
         {
             model.DeleteScore(score, count);
+            Update();
+        }
+
+        public void DeleteScoreWithNote(Score score, int count)
+        {
+            model.DeleteScoreWithNote(score, count);
             Update();
         }
 

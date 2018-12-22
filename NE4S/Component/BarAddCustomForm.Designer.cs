@@ -218,7 +218,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "BarAddCustomForm";
-            this.Text = "カスタム小節挿入";
+            this.Text = "カスタム小節挿入（小節のみ）";
             ((System.ComponentModel.ISupportInitialize)(this.BarCount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -233,9 +233,9 @@
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox Direction;
-        private System.Windows.Forms.ComboBox BeatNumer;
-        private System.Windows.Forms.ComboBox BeatDenom;
-        private System.Windows.Forms.NumericUpDown BarCount;
+        protected System.Windows.Forms.ComboBox Direction;
+        protected System.Windows.Forms.ComboBox BeatNumer;
+        protected System.Windows.Forms.ComboBox BeatDenom;
+        protected System.Windows.Forms.NumericUpDown BarCount;
     }
 }

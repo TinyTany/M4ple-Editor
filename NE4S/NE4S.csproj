@@ -62,11 +62,17 @@
     <Compile Include="Component\BarAddCustomForm.Designer.cs">
       <DependentUpon>BarAddCustomForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Component\BarAddWithNoteCustomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Component\BarDeleteCustomForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Component\BarDeleteCustomForm.Designer.cs">
       <DependentUpon>BarDeleteCustomForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Component\BarDeleteWithNoteCustomForm.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Component\BPMNoteButton.cs">
       <SubType>UserControl</SubType>

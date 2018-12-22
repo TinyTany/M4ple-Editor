@@ -79,7 +79,19 @@ namespace NE4S.Scores
             }
         }
 
-        public void InsertScoreBackward(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
+        public void InsetScoreForwardWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            if (scoreBook.Next(score) == null)
+            {
+                SetScore(scoreBook, beatNumer, beatDenom, barCount);
+            }
+            else
+            {
+                InsertScoreBackwardWithNote(noteBook, scoreBook, scoreBook.Next(score), beatNumer, beatDenom, barCount);
+            }
+        }
+
+        public void InsertScoreBackward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
             int initialScoreTick = score.StartTick;
             //scoreを初めて含むレーンを取得

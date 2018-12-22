@@ -102,7 +102,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "BarDeleteCustomForm";
-            this.Text = "カスタム小節削除";
+            this.Text = "カスタム小節削除（小節のみ）";
             ((System.ComponentModel.ISupportInitialize)(this.BarCount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -114,6 +114,6 @@
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown BarCount;
+        protected System.Windows.Forms.NumericUpDown BarCount;
     }
 }

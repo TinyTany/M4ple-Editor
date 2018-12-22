@@ -55,13 +55,26 @@ namespace NE4S
             IsEditedWithoutSave = true;
 		}
 
-		public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
+        public void InsertScoreForwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            LaneBook.InsetScoreForwardWithNote(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
+            IsEditedWithoutSave = true;
+        }
+
+
+        public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
 		{
 			LaneBook.InsertScoreBackward(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
             IsEditedWithoutSave = true;
         }
 
-		public void DivideLane(Score score)
+        public void InsertScoreBackwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            LaneBook.InsertScoreBackwardWithNote(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
+            IsEditedWithoutSave = true;
+        }
+
+        public void DivideLane(Score score)
 		{
 			LaneBook.DivideLane(score);
             IsEditedWithoutSave = true;
@@ -73,7 +86,13 @@ namespace NE4S
             IsEditedWithoutSave = true;
         }
 
-		public void FillLane()
+        public void DeleteScoreWithNote(Score score, int count)
+        {
+            LaneBook.DeleteScoreWithNote(NoteBook, ScoreBook, score, count);
+            IsEditedWithoutSave = true;
+        }
+
+        public void FillLane()
 		{
 			if (LaneBook.Any()) FillLane(LaneBook.First());
 		}
