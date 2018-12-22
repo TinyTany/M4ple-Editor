@@ -368,11 +368,17 @@ namespace NE4S.Notes
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {
                                 myBrush.InterpolationColors = colorBlend;
-                                e.Graphics.FillPath(myBrush, graphicsPath);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.FillPath(myBrush, graphicsPath);
+                                }
                             }
                             using (Pen myPen = new Pen(lineColor, 2))
                             {
-                                e.Graphics.DrawLine(myPen, (bottomLeft.X + bottomRight.X) / 2, bottomLeft.Y, (topLeft.X + topRight.X) / 2, topLeft.Y);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.DrawLine(myPen, (bottomLeft.X + bottomRight.X) / 2, bottomLeft.Y, (topLeft.X + topRight.X) / 2, topLeft.Y);
+                                }
                             }
                         }
                     }
@@ -518,11 +524,17 @@ namespace NE4S.Notes
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {
                                 myBrush.InterpolationColors = colorBlend;
-                                e.Graphics.FillPath(myBrush, graphicsPath);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.FillPath(myBrush, graphicsPath);
+                                }
                             }
                             using (Pen myPen = new Pen(lineColor, 2))
                             {
-                                e.Graphics.DrawBezier(myPen, bottomCenter, curveCenter, topCenter);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.DrawBezier(myPen, bottomCenter, curveCenter, topCenter);
+                                }
                             }
                         }
                     }

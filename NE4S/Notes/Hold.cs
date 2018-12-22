@@ -194,7 +194,10 @@ namespace NE4S.Notes
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {
                                 myBrush.InterpolationColors = colorBlend;
-                                e.Graphics.FillPath(myBrush, graphicsPath);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.FillPath(myBrush, graphicsPath);
+                                }
                             }
                         }
                     }
