@@ -23,6 +23,7 @@ namespace NE4S.Scores
         private PictureBox pBox;
         private PreviewNote pNote;
         private DataIO dataIO;
+        private SelectionArea selectionArea;
 
         static class Margin
         {
@@ -45,6 +46,7 @@ namespace NE4S.Scores
             hSBar.Value = 0;
 			pNote = new PreviewNote();
             dataIO = new DataIO();
+            selectionArea = new SelectionArea();
 		}
 
         #region 譜面のセーブとロード、エクスポートに関わるもの
@@ -324,6 +326,8 @@ namespace NE4S.Scores
                         }
                         else if (selectedLane != null)
                         {
+                            selectionArea.StartPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                            selectionArea.EndPosition = null;
                         }
                         break;
 					case Mode.DELETE:
@@ -410,7 +414,12 @@ namespace NE4S.Scores
                                 break;
                         }
                     }
-					break;
+                    //
+                    if (Status.IsMousePressed && selectedLane != null)
+                    {
+                        selectionArea.EndPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                    }
+                    break;
 				case Mode.DELETE:
                     var selectedNote = model.NoteBook.SelectedNote(e.Location.AddX(currentPositionX));
                     if(Status.IsMousePressed && selectedNote != null)
@@ -682,6 +691,11 @@ namespace NE4S.Scores
             model.PaintNote(e, originPosX, originPosY, currentPositionX);
             //プレビューノーツ描画
 			pNote.Paint(e);
+            //矩形選択領域描画
+            if(Status.Mode == Mode.EDIT)
+            {
+                selectionArea.Draw(e, model.LaneBook, new Point(originPosX, originPosY));
+            }
 		}
     }
 }

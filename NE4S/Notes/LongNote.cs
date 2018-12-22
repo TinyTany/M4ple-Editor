@@ -24,10 +24,11 @@ namespace NE4S.Notes
 
         public int EndTick => this.OrderBy(x => x.Position.Tick).Last().Position.Tick;
 
-        public LongNote()
-        {
-            
-        }
+        public int LaneLeft => this.OrderBy(x => x.Position.Lane).First().Position.Lane;
+
+        public int LaneRight => this.OrderBy(x => x.Position.Lane + x.Size).Last().Position.Lane;
+
+        public LongNote() { }
 
         protected virtual bool IsPositionAvailable(Note note, Position position)
         {
