@@ -49,7 +49,7 @@ namespace NE4S.Scores
 
         #region 譜面のセーブとロード、エクスポートに関わるもの
 
-        public void SetEventForEditedWithoutSave(Model.EditedStatusHandler handler)
+        public void SetEventForEditedWithoutSave(EditedStatusHandler handler)
         {
             model.IsEditedWithoutSaveChanged += handler;
         }
@@ -313,14 +313,17 @@ namespace NE4S.Scores
                         {
                             Status.SelectedNote = selectedNote;
                             Status.SelectedNoteArea = noteArea;
+                            if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                            {
+                                Status.SelectedNote = null;
+                            }
+                            if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
+                            {
+                                Status.SelectedNote = null;
+                            }
                         }
-                        if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                        else if (selectedLane != null)
                         {
-                            Status.SelectedNote = null;
-                        }
-                        if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
-                        {
-                            Status.SelectedNote = null;
                         }
                         break;
 					case Mode.DELETE:

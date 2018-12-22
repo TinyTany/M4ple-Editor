@@ -10,6 +10,8 @@ using System.Drawing;
 
 namespace NE4S
 {
+    public delegate void EditedStatusHandler(bool isEditedWithoutSave);
+
     [Serializable()]
     public class Model
     {
@@ -31,7 +33,6 @@ namespace NE4S
                 IsEditedWithoutSaveChanged?.Invoke(isEditedWithoutSave);
             }
         }
-        public delegate void EditedStatusHandler(bool isEditedWithoutSave);
         [field: NonSerialized]
         public event EditedStatusHandler IsEditedWithoutSaveChanged;
 

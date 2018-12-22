@@ -352,7 +352,7 @@ namespace NE4S.Scores
             {
                 //閉じていた場合
                 //最後の小節を黄色線で閉じる
-                using (Pen myPen = new Pen(Color.Yellow, 1))
+                using (Pen myPen = new Pen(Score.measureBorder, 1))
                 {
                     e.Graphics.DrawLine(
                         myPen,

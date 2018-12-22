@@ -362,6 +362,7 @@ namespace NE4S
 			tsbEdit.Checked = false;
 			tsbDelete.Checked = false;
 			Status.Mode = Mode.ADD;
+            Refresh();
 		}
 
 		private void TbsEdit_Click(object sender, EventArgs e)
@@ -370,7 +371,8 @@ namespace NE4S
 			tsbEdit.Checked = true;
 			tsbDelete.Checked = false;
 			Status.Mode = Mode.EDIT;
-		}
+            Refresh();
+        }
 
 		private void TbsDelete_Click(object sender, EventArgs e)
 		{
@@ -378,7 +380,8 @@ namespace NE4S
 			tsbEdit.Checked = false;
 			tsbDelete.Checked = true;
 			Status.Mode = Mode.DELETE;
-		}
+            Refresh();
+        }
         #endregion
 
         private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
