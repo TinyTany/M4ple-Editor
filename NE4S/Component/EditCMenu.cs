@@ -10,9 +10,12 @@ namespace NE4S.Component
 {
     public class EditCMenu : ContextMenuStrip
     {
-        private ToolStripItem[] stripItems, barAddItems, barDeleteItems, laneFillItems;
+        private readonly ToolStripItem[] stripItems;
+        private readonly ToolStripItem[] barAddItems;
         private readonly ToolStripItem[] barAddWithNoteItems;
+        private readonly ToolStripItem[] barDeleteItems;
         private readonly ToolStripItem[] barDeleteWithNoteItems;
+        private readonly ToolStripItem[] laneFillItems;
         private ScorePanel sPanel;
         private ScoreLane selectedLane;
         private Score selectedScore;
@@ -46,19 +49,25 @@ namespace NE4S.Component
                 new ToolStripMenuItem("レーン全体", null, LaneFillAll),
                 new ToolStripMenuItem("選択レーン以降", null, LaneFill)
             };
-            ToolStripMenuItem barAdd = new ToolStripMenuItem("小節を挿入", null);
             ToolStripMenuItem barAddWithNote = new ToolStripMenuItem("小節を挿入", null)
             {
                 ToolTipText = "選択した小節の前後に新しい小節を追加します\nすでに配置されているノーツの相対座標は変更されます"
             };
             barAddWithNote.DropDownItems.AddRange(barAddWithNoteItems);
+            ToolStripMenuItem barAdd = new ToolStripMenuItem("小節を挿入（小節のみ）", null)
+            {
+                ToolTipText = "選択した小節の前後に新しい小節を追加します\nすでに配置されているノーツの相対座標は変更されません"
+            };
             barAdd.DropDownItems.AddRange(barAddItems);
-            ToolStripMenuItem barDelete = new ToolStripMenuItem("小節を削除", null);
             ToolStripMenuItem barDeleteWithNote = new ToolStripMenuItem("小節を削除", null)
             {
                 ToolTipText = "選択した小節またはそれ以降の複数の小節を削除します\n削除対象の小節にノーツが配置されている場合、ノーツも削除されます"
             };
             barDeleteWithNote.DropDownItems.AddRange(barDeleteWithNoteItems);
+            ToolStripMenuItem barDelete = new ToolStripMenuItem("小節を削除（小節のみ）", null)
+            {
+                ToolTipText = "選択した小節またはそれ以降の複数の小節を削除します\n小節のみ削除するため、ノーツは削除されません"
+            };
             barDelete.DropDownItems.AddRange(barDeleteItems);
             ToolStripMenuItem laneFill = new ToolStripMenuItem("レーンを詰める", null);
             laneFill.DropDownItems.AddRange(laneFillItems);
@@ -96,7 +105,7 @@ namespace NE4S.Component
 
         private void Paste(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            //UNDONE
         }
 
         private void BarDeleteSelected(object sender, EventArgs e)

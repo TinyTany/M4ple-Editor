@@ -47,6 +47,8 @@ namespace NE4S.Scores
             dataIO = new DataIO();
 		}
 
+        #region 譜面のセーブとロード、エクスポートに関わるもの
+
         public void SetEventForEditedWithoutSave(Model.EditedStatusHandler handler)
         {
             model.IsEditedWithoutSaveChanged += handler;
@@ -128,8 +130,10 @@ namespace NE4S.Scores
                 model.MusicInfo = exportForm.MusicInfo;
             }
         }
+        #endregion
 
         #region laneBookを触る用メソッド群
+
         /// <summary>
         /// 末尾に指定した拍子数の譜面を指定した個数追加
         /// </summary>
@@ -610,6 +614,8 @@ namespace NE4S.Scores
             return;
         }
 
+        #region 座標変換
+
         /// <summary>
         /// 与えられた座標を現在のグリッド情報に合わせて変換します
         /// 与えられる座標も返り値もXにcurrentPositionXを足していない生のもの
@@ -646,7 +652,12 @@ namespace NE4S.Scores
             //帰ってくる座標はXにcurrentPositionX足されていない生のもの
             return gridP;
         }
+        #endregion
 
+        /// <summary>
+        /// レーン、譜面、ノーツなどをすべて描画します
+        /// </summary>
+        /// <param name="e"></param>
         public void PaintPanel(PaintEventArgs e)
 		{
 			//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定

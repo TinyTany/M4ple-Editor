@@ -67,7 +67,7 @@ namespace NE4S.Scores
             UpdateNoteLocation?.Invoke(this);
         }
 
-        public void InsetScoreForward(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
+        public void InsetScoreForward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
             if (scoreBook.Next(score) == null)
             {
@@ -75,7 +75,7 @@ namespace NE4S.Scores
             }
             else
             {
-                InsertScoreBackward(noteBook, scoreBook, scoreBook.Next(score), beatNumer, beatDenom, barCount);
+                InsertScoreBackward(scoreBook, scoreBook.Next(score), beatNumer, beatDenom, barCount);
             }
         }
 
@@ -93,7 +93,6 @@ namespace NE4S.Scores
 
         public void InsertScoreBackward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
-            int initialScoreTick = score.StartTick;
             //scoreを初めて含むレーンを取得
             ScoreLane lane = Find(x => x.Contains(score));
             //新たに追加する譜面たちをリストでまとめる
@@ -143,11 +142,18 @@ namespace NE4S.Scores
             DivideLane(score);
             //
             InsertRange(lane.Index, newLanes);
+            //
+            FillLane();
+        }
+
+        public void InsertScoreBackwardWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            int initialScoreTick = score.StartTick;
+            InsertScoreBackward(scoreBook, score, beatNumer, beatDenom, barCount);
             //score以降に含まれるすべてのノーツに対して位置をずらす
             int deltaTick = barCount * ScoreInfo.MaxBeatDiv * beatNumer / beatDenom;
             noteBook.RelocateNoteTickAfterScoreTick(initialScoreTick, deltaTick);
-            //
-            FillLane();
+            UpdateNoteLocation?.Invoke(this);
         }
 
         /// <summary>
