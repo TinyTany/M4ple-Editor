@@ -226,6 +226,15 @@ namespace NE4S.Notes
                 ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
         }
 
+        public List<Note> GetNotesFromTickRange(int startTick, int endTick)
+        {
+            var notes = ShortNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick);
+            HoldNotes.ForEach(x => notes = notes.Union(x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick)));
+            SlideNotes.ForEach(x => notes = notes.Union(x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick)));
+            AirHoldNotes.ForEach(x => notes = notes.Union(x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick)));
+            notes = notes.Union(AirNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
+            notes = notes.Union(AttributeNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
+            return notes.ToList();
         }
 
         public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
