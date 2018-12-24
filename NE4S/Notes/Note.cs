@@ -130,6 +130,12 @@ namespace NE4S.Notes
             LaneIndex = laneIndex;
             return;
         }
+
+        public virtual void RelocateOnlyAndUpdate(Position position, LaneBook laneBook)
+        {
+            RelocateOnly(position);
+            UpdateLocation(laneBook);
+        }
         #endregion
 
         public void UpdateLocation(LaneBook laneBook)
