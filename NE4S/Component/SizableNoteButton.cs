@@ -72,11 +72,8 @@ namespace NE4S.Component
         {
             isMousePressed = true;
             pressedLocation = e.Location;
-            if (!isSelected)
-            {
-                base.PreviewBox_MouseDown(sender, e);
-            }
-            else
+            base.PreviewBox_MouseDown(sender, e);
+            if (isSelected)
             {
                 RefreshButtonArea(e.Location);
                 ChangeValueByButton();

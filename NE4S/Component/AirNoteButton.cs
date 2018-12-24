@@ -46,11 +46,8 @@ namespace NE4S.Component
 
         protected override void PreviewBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!isSelected)
-            {
-                base.PreviewBox_MouseDown(sender, e);
-            }
-            else
+            base.PreviewBox_MouseDown(sender, e);
+            if (isSelected)
             {
                 RefreshButtonArea(e.Location);
                 if (buttonArea == ButtonArea.Left)

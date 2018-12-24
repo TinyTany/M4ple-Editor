@@ -166,6 +166,7 @@ namespace NE4S
             #endregion
             //ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
+            noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.ADD);
             foreach (NoteButton noteButton in noteButtonManager)
             {
                 flpNotePanel.Controls.Add(noteButton);
