@@ -103,6 +103,9 @@
       <DependentUpon>NoteButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Component\NoteButtonManager.cs" />
+    <Compile Include="Component\NoteEditCMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Component\SelectionArea.cs" />
     <Compile Include="Component\SetValueCustomForm.cs">
       <SubType>Form</SubType>

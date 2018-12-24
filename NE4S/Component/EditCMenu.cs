@@ -20,7 +20,7 @@ namespace NE4S.Component
         private ScoreLane selectedLane;
         private Score selectedScore;
 
-        public EditCMenu(ScorePanel sPanel, ScoreLane selectedLane, Score selectedScore)
+        public EditCMenu(ScorePanel sPanel, ScoreLane selectedLane, Score selectedScore, Position clickPosition)
         {
             barAddItems = new ToolStripItem[]
             {
@@ -79,7 +79,7 @@ namespace NE4S.Component
                 barDelete,
                 new ToolStripMenuItem("選択小節を改行", null, BarDivide),
                 laneFill,
-                new ToolStripMenuItem("貼り付け", null, Paste)
+                new ToolStripMenuItem("貼り付け", null, (s, e) => sPanel.PasteNotes(clickPosition))
             };
             Items.AddRange(stripItems);
             Items.Insert(Items.Count - 1, new ToolStripSeparator());
@@ -101,11 +101,6 @@ namespace NE4S.Component
         private void BarDivide(object sender, EventArgs e)
         {
             sPanel.DivideLane(selectedScore);
-        }
-
-        private void Paste(object sender, EventArgs e)
-        {
-            //UNDONE
         }
 
         private void BarDeleteSelected(object sender, EventArgs e)
