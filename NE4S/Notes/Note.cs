@@ -40,6 +40,8 @@ namespace NE4S.Notes
 			noteRect = new RectangleF();
 		}
 
+        public Note(Note note) : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
+
         public Note(int size, Position pos, PointF location, int laneIndex)
         {
 			Size = size;

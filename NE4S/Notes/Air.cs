@@ -43,6 +43,8 @@ namespace NE4S.Notes
 
         public Air() { }
 
+        public Air(Note note) : base(note) { }
+
         public Air(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
         public void DetachNote() => DetachAir?.Invoke();

@@ -14,10 +14,9 @@ namespace NE4S.Notes
     {
         public override int NoteID => 3;
 
-        public AirUpL()
-        {
+        public AirUpL() { }
 
-        }
+        public AirUpL(Note note) : base(note) { }
 
         public AirUpL(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
