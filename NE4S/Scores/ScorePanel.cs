@@ -140,23 +140,38 @@ namespace NE4S.Scores
         {
             selectionArea.SetContainsNotes(model.NoteBook);
             Clipboard.SetDataObject(selectionArea);
+            //NOTE: どっちにするか（コピー後矩形を保持or破棄）迷う...
+            //selectionArea = new SelectionArea();
         }
 
         public void CutNotes()
         {
             CopyNotes();
-            ClearAreaNotes();
+            selectionArea.ClearNotes(model.NoteBook);
+            selectionArea = new SelectionArea();
         }
 
+        /// <summary>
+        /// 相対座標を自動で設定してクリップボードからノーツを貼り付けます
+        /// </summary>
+        public void PasteNotes()
+        {
+            var scoreLane = model.LaneBook.Find(x => x.HitRect.Left >= currentPositionX);
+            Position position = new Position(0, scoreLane.EndTick - ScoreInfo.MaxBeatDiv / Status.Beat);
+            PasteNotes(position);
+        }
+
+        /// <summary>
+        /// 相対座標を指定してクリップボードからノーツを貼り付けます
+        /// </summary>
+        /// <param name="position"></param>
         public void PasteNotes(Position position)
         {
-            SelectionArea data = Clipboard.GetDataObject().GetData(typeof(SelectionArea)) as SelectionArea;
-            if (data != null)
+            if (Clipboard.GetDataObject().GetData(typeof(SelectionArea)) is SelectionArea data)
             {
                 selectionArea = data;
                 selectionArea.MovePositionDelta = new Position();
-                selectionArea.Relocate(position, model.LaneBook);
-                foreach(Note note in selectionArea.SelectedNoteList)
+                foreach (Note note in selectionArea.SelectedNoteList)
                 {
                     model.NoteBook.Add(note);
                     if (note is AirableNote)
@@ -164,15 +179,15 @@ namespace NE4S.Scores
                         AirableNote airable = note as AirableNote;
                         if (airable.IsAirAttached)
                         {
-                            model.NoteBook.Add(airable.GetAirForDelete());
+                            model.NoteBook.Add(airable.Air);
                         }
                         if (airable.IsAirHoldAttached)
                         {
-                            model.NoteBook.Add(airable.GetAirHoldForDelete());
+                            model.NoteBook.Add(airable.AirHold);
                         }
                     }
                 }
-                foreach(LongNote longNote in selectionArea.SelectedLongNoteList)
+                foreach (LongNote longNote in selectionArea.SelectedLongNoteList)
                 {
                     model.NoteBook.Add(longNote);
                     longNote.ForEach(x =>
@@ -182,26 +197,27 @@ namespace NE4S.Scores
                             AirableNote airable = x as AirableNote;
                             if (airable.IsAirAttached)
                             {
-                                model.NoteBook.Add(airable.GetAirForDelete());
+                                model.NoteBook.Add(airable.Air);
                             }
                             if (airable.IsAirHoldAttached)
                             {
-                                model.NoteBook.Add(airable.GetAirHoldForDelete());
+                                model.NoteBook.Add(airable.AirHold);
                             }
                         }
                     });
                 }
+                selectionArea.Relocate(position, model.LaneBook);
             }
         }
 
         public void ClearAreaNotes()
         {
-            selectionArea.ClearNotes(model.NoteBook);
+            selectionArea.ClearAllNotes(model.NoteBook);
         }
 
         public void ReverseNotes()
         {
-            selectionArea.ReverseNotes(model.NoteBook);
+            selectionArea.ReverseNotes(model.NoteBook, model.LaneBook);
         }
         #endregion
 

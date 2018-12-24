@@ -100,6 +100,11 @@ namespace NE4S.Component
             }
         }
 
+        /// <summary>
+        /// NoteBookから選択範囲内のノーツを削除します
+        /// SelectionArea自体が持つ選択範囲内のノーツオブジェクトは保持されます
+        /// </summary>
+        /// <param name="noteBook"></param>
         public void ClearNotes(NoteBook noteBook)
         {
             SetContainsNotes(noteBook);
@@ -107,20 +112,66 @@ namespace NE4S.Component
             {
                 noteBook.Delete(note);
             }
-            SelectedNoteList.Clear();
             foreach(LongNote longNote in SelectedLongNoteList.ToArray())
             {
                 noteBook.Delete(longNote);
             }
+        }
+
+        /// <summary>
+        /// NoteBookおよびSelectionAreaから範囲内のすべてのノーツを削除します
+        /// </summary>
+        /// <param name="noteBook"></param>
+        public void ClearAllNotes(NoteBook noteBook)
+        {
+            ClearNotes(noteBook);
+            SelectedNoteList.Clear();
             SelectedLongNoteList.Clear();
         }
 
-        public void ReverseNotes(NoteBook noteBook)
+        public void ReverseNotes(NoteBook noteBook, LaneBook laneBook)
         {
             SetContainsNotes(noteBook);
-            SelectedNoteList.ForEach(x =>
+            ReverseShortNotes(SelectedNoteList, laneBook, noteBook);
+            SelectedLongNoteList.ForEach(x =>
             {
+                ReverseShortNotes(x, laneBook, noteBook);
+            });
+        }
 
+        private void ReverseShortNotes(List<Note> noteList, LaneBook laneBook, NoteBook noteBook)
+        {
+            noteList.ForEach(x =>
+            {
+                int reverseLane = BottomRightPosition.Lane - (x.Position.Lane - TopLeftPosition.Lane + x.Size) + 1;
+                Position newPosition = new Position(reverseLane, x.Position.Tick);
+                x.RelocateOnlyAndUpdate(newPosition, laneBook);
+                if (x is AirableNote airable && airable.IsAirAttached)
+                {
+                    Air newAir = null;
+                    if(airable.Air is AirUpL)
+                    {
+                        newAir = new AirUpR(x);
+                    }
+                    else if(airable.Air is AirUpR)
+                    {
+                        newAir = new AirUpL(x);
+                    }
+                    else if(airable.Air is AirDownL)
+                    {
+                        newAir = new AirDownR(x);
+                    }
+                    else if(airable.Air is AirDownR)
+                    {
+                        newAir = new AirDownL(x);
+                    }
+                    if (newAir != null)
+                    {
+                        noteBook.Delete(airable.Air);
+                        noteBook.Add(newAir);
+                        airable.AttachAir(newAir);
+                    }
+                }
             });
         }
 

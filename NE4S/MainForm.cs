@@ -82,6 +82,10 @@ namespace NE4S
                 selectedPanel.Export();
             };
             #region ノーツ表示設定ボタン
+            tsbCopy.Click += Copy_Click;
+            tsbCut.Click += Cut_Click;
+            tsbPaste.Click += Paste_Click;
+            #endregion
             tsmiIsShortNote.Click += (s, e) =>
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
@@ -153,6 +157,12 @@ namespace NE4S
             {
                 e.Cancel = !IsExit();
             };
+            #endregion
+            #region ToolStripMenuItem(編集)
+            tsmiCopy.Click += Copy_Click;
+            tsmiCut.Click += Cut_Click;
+            tsmiPaste.Click += Paste_Click;
+            #endregion
             #endregion
             //ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
@@ -280,6 +290,27 @@ namespace NE4S
             (tabScore.SelectedTab as TabPageEx).ScorePanel.Save();
             UpdateTextOfTabAndForm(false);
             return;
+        }
+
+        private void Copy_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            selectedPanel.CopyNotes();
+            Refresh();
+        }
+
+        private void Cut_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            selectedPanel.CutNotes();
+            Refresh();
+        }
+
+        private void Paste_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            selectedPanel.PasteNotes();
+            Refresh();
         }
 
         #region イベント渡し
