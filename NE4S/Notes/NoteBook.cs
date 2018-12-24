@@ -62,8 +62,8 @@ namespace NE4S.Notes
                 if (hold != null) HoldNotes.Remove(hold);
                 //終点にAirやAirHoldがくっついていたときの処理
                 HoldEnd holdEnd = hold.Find(x => x is HoldEnd) as HoldEnd;
-                AirNotes.Remove(holdEnd.GetAirForDelete());
-                AirHoldNotes.Remove(holdEnd.GetAirHoldForDelete());
+                AirNotes.Remove(holdEnd.Air);
+                AirHoldNotes.Remove(holdEnd.AirHold);
             }
             else if (note is SlideBegin || note is SlideEnd)
             {
@@ -71,8 +71,8 @@ namespace NE4S.Notes
                 if (slide != null) SlideNotes.Remove(slide);
                 //終点にAirやAirHoldがくっついていたときの処理
                 SlideEnd slideEnd = slide.Find(x => x is SlideEnd) as SlideEnd;
-                AirNotes.Remove(slideEnd.GetAirForDelete());
-                AirHoldNotes.Remove(slideEnd.GetAirHoldForDelete());
+                AirNotes.Remove(slideEnd.Air);
+                AirHoldNotes.Remove(slideEnd.AirHold);
             }
             else if (note is SlideTap || note is SlideRelay || note is SlideCurve)
             {
@@ -92,8 +92,8 @@ namespace NE4S.Notes
             else if (note is AirableNote)
             {
                 AirableNote airable = note as AirableNote;
-                AirNotes.Remove(airable.GetAirForDelete());
-                AirHoldNotes.Remove(airable.GetAirHoldForDelete());
+                AirNotes.Remove(airable.Air);
+                AirHoldNotes.Remove(airable.AirHold);
                 ShortNotes.Remove(note);
             }
             else if (note is AttributeNote)
