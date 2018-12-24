@@ -26,6 +26,12 @@ namespace NE4S
             Tick = 0;
         }
 
+        public Position(Position position)
+        {
+            Lane = position.Lane;
+            Tick = position.Tick;
+        }
+
         public Position(int lane, int tick)
         {
             Lane = lane;

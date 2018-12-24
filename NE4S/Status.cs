@@ -7,6 +7,9 @@ using NE4S.Notes;
 
 namespace NE4S
 {
+    /// <summary>
+    /// グローバル変数
+    /// </summary>
     public static class Status
     {
         public static int Mode { get; set; } = Define.Mode.ADD;
