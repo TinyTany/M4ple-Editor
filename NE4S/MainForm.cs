@@ -66,26 +66,26 @@ namespace NE4S
                 Text = tabScore.SelectedTab.Text;
                 Text += " - M4ple";
             };
-            //
-            tsbAdd.Click += TbsAdd_Click;
-			tsbEdit.Click += TbsEdit_Click;
-			tsbDelete.Click += TbsDelete_Click;
+            #region ToolStripButton
+            tsbAdd.Click += (s, e) => SetMode(Mode.ADD);
+            tsbEdit.Click += (s, e) => SetMode(Mode.EDIT);
+            tsbDelete.Click += (s, e) => SetMode(Mode.DELETE);
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
-            tsbNew.Click += TsbNew_Click;
-            tsbOpen.Click += TsbOpen_Click;
-            tsbSave.Click += TsbSave_Click;
+            tsbNew.Click += New_Click;
+            tsbOpen.Click += Open_Click;
+            tsbSave.Click += Save_Click;
             tsbExport.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 selectedPanel.Export();
             };
-            #region ノーツ表示設定ボタン
             tsbCopy.Click += Copy_Click;
             tsbCut.Click += Cut_Click;
             tsbPaste.Click += Paste_Click;
             #endregion
+            #region ToolStripMenuItem(表示)
             tsmiIsShortNote.Click += (s, e) =>
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
@@ -135,9 +135,10 @@ namespace NE4S
                 Refresh();
             };
             #endregion
-            tsmiNew.Click += TsbNew_Click;
-            tsmiOpen.Click += TsbOpen_Click;
-            tsmiSave.Click += TsbSave_Click;
+            #region ToolStlipMenuItem(ファイル)
+            tsmiNew.Click += New_Click;
+            tsmiOpen.Click += Open_Click;
+            tsmiSave.Click += Save_Click;
             tsmiSaveAs.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
@@ -224,7 +225,7 @@ namespace NE4S
             tabScore.SelectedTab.Refresh();
         }
 
-        private void TsbNew_Click(object sender, EventArgs e)
+        private void New_Click(object sender, EventArgs e)
         {
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
             if (selectedPanel.IsEditedWithoutSave)
@@ -255,10 +256,8 @@ namespace NE4S
         private void SetNewPanel()
         {
             //新規パネル生成処理
-            PictureBox pBox = tabScore.SelectedTab.Controls[0] as PictureBox;
-            if (pBox == null) return;
-            HScrollBar hScrollBar = pBox.Controls[0] as HScrollBar;
-            if (hScrollBar == null) return;
+            if (!(tabScore.SelectedTab.Controls[0] is PictureBox pBox)) return;
+            if (!(pBox.Controls[0] is HScrollBar hScrollBar)) return;
             ScorePanel newPanel = new ScorePanel(pBox, hScrollBar);
             newPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
             if (new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
@@ -272,7 +271,7 @@ namespace NE4S
             }
         }
 
-        private void TsbOpen_Click(object sender, EventArgs e)
+        private void Open_Click(object sender, EventArgs e)
         {
             //現在開かれているタブを判別してそれにたいしてロードするようにする
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
@@ -285,7 +284,7 @@ namespace NE4S
             return;
         }
 
-        private void TsbSave_Click(object sender, EventArgs e)
+        private void Save_Click(object sender, EventArgs e)
         {
             //現在開かれているタブを判別してそれを対象にセーブするようにする
             (tabScore.SelectedTab as TabPageEx).ScorePanel.Save();
@@ -387,34 +386,35 @@ namespace NE4S
 			}
 		}
 
-        #region 汚い...汚くない？
-        private void TbsAdd_Click(object sender, EventArgs e)
-		{
-			tsbAdd.Checked = true;
-			tsbEdit.Checked = false;
-			tsbDelete.Checked = false;
-			Status.Mode = Mode.ADD;
-            Refresh();
-		}
-
-		private void TbsEdit_Click(object sender, EventArgs e)
-		{
-			tsbAdd.Checked = false;
-			tsbEdit.Checked = true;
-			tsbDelete.Checked = false;
-			Status.Mode = Mode.EDIT;
+        public void SetMode(int mode)
+        {
+            if (mode != Mode.ADD && mode != Mode.EDIT && mode != Mode.DELETE)
+            {
+                return;
+            }
+            Status.Mode = mode;
+            switch (mode)
+            {
+                case Mode.ADD:
+                    tsbAdd.Checked = true;
+                    tsbEdit.Checked = false;
+                    tsbDelete.Checked = false;
+                    break;
+                case Mode.EDIT:
+                    tsbAdd.Checked = false;
+                    tsbEdit.Checked = true;
+                    tsbDelete.Checked = false;
+                    break;
+                case Mode.DELETE:
+                    tsbAdd.Checked = false;
+                    tsbEdit.Checked = false;
+                    tsbDelete.Checked = true;
+                    break;
+                default:
+                    break;
+            }
             Refresh();
         }
-
-		private void TbsDelete_Click(object sender, EventArgs e)
-		{
-			tsbAdd.Checked = false;
-			tsbEdit.Checked = false;
-			tsbDelete.Checked = true;
-			Status.Mode = Mode.DELETE;
-            Refresh();
-        }
-        #endregion
 
         private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
 		{

@@ -16,9 +16,9 @@ namespace NE4S.Component
         private readonly ToolStripItem[] barDeleteItems;
         private readonly ToolStripItem[] barDeleteWithNoteItems;
         private readonly ToolStripItem[] laneFillItems;
-        private ScorePanel sPanel;
-        private ScoreLane selectedLane;
-        private Score selectedScore;
+        private readonly ScorePanel sPanel;
+        private readonly ScoreLane selectedLane;
+        private readonly Score selectedScore;
 
         public EditCMenu(ScorePanel sPanel, ScoreLane selectedLane, Score selectedScore, Position clickPosition)
         {
@@ -71,7 +71,7 @@ namespace NE4S.Component
             barDelete.DropDownItems.AddRange(barDeleteItems);
             ToolStripMenuItem laneFill = new ToolStripMenuItem("レーンを詰める", null);
             laneFill.DropDownItems.AddRange(laneFillItems);
-            stripItems = new ToolStripMenuItem[]
+            stripItems = new ToolStripItem[]
             {
                 barAddWithNote,
                 barAdd,
@@ -79,10 +79,15 @@ namespace NE4S.Component
                 barDelete,
                 new ToolStripMenuItem("選択小節を改行", null, BarDivide),
                 laneFill,
-                new ToolStripMenuItem("貼り付け", null, (s, e) => sPanel.PasteNotes(clickPosition))
+                new ToolStripSeparator(),
+                new ToolStripMenuItem("貼り付け", null, (s, e) => sPanel.PasteNotes(clickPosition)),
+                new ToolStripMenuItem("左右反転して貼り付け", null, (s, e) => 
+                {
+                    sPanel.PasteNotes(clickPosition);
+                    sPanel.ReverseNotes();
+                })
             };
             Items.AddRange(stripItems);
-            Items.Insert(Items.Count - 1, new ToolStripSeparator());
             this.sPanel = sPanel;
             this.selectedLane = selectedLane;
             this.selectedScore = selectedScore;
