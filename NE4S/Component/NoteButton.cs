@@ -65,11 +65,9 @@ namespace NE4S.Component
             {
                 e.Graphics.FillRectangle(brush, previewBox.ClientRectangle);
             }
-            //
-            //TODO: このへんでノーツ画像描画？
+            //ノーツ画像描画
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             DrawNote(e);
-            //
             return;
         }
 
@@ -96,27 +94,39 @@ namespace NE4S.Component
                     HellTap.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
                     break;
                 case NoteType.HOLD:
+                    Hold.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f - 25), new SizeF(70, 50));
                     HoldBegin.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
                     break;
                 case NoteType.SLIDE:
+                    Slide.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f - 25), new SizeF(70, 50));
                     SlideBegin.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
                     break;
                 case NoteType.SLIDECURVE:
                     SlideCurve.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(80, 10));
                     break;
+                #region Air系の描画
+                //HACK: いろいろとコードがガバガバなので後で直してもええんやで...
                 case NoteType.AIRUPL:
+                    new AirUpL(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, 0, 0);
                     break;
                 case NoteType.AIRUPC:
+                    new AirUpC(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, 0, 0);
                     break;
                 case NoteType.AIRUPR:
+                    new AirUpR(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, 0, 0);
                     break;
                 case NoteType.AIRDOWNL:
+                    new AirDownL(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, 0, 0);
                     break;
                 case NoteType.AIRDOWNC:
+                    new AirDownC(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, 0, 0);
                     break;
                 case NoteType.AIRDOWNR:
+                    new AirDownR(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, 0, 0);
                     break;
+                #endregion
                 case NoteType.AIRHOLD:
+                    AirHold.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f + 25), new SizeF(7, 50));
                     AirAction.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(78, 8));
                     break;
                 default:

@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class SlideCurve : Note
     {
+        public override int NoteID => 4;
+
         public event PositionCheckHandler IsPositionAvailable;
 
         public SlideCurve()

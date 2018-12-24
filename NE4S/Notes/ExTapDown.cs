@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class ExTapDown : AirableNote
     {
+        public override int NoteID => 6;
+
         public ExTapDown() { }
 
         public ExTapDown(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }

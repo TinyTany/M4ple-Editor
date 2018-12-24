@@ -1,8 +1,10 @@
-﻿using System;
+﻿using NE4S.Notes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NE4S.Scores
 {
@@ -77,6 +79,18 @@ namespace NE4S.Scores
             }
         }
 
+        public void InsetScoreForwardWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            if (scoreBook.Next(score) == null)
+            {
+                SetScore(scoreBook, beatNumer, beatDenom, barCount);
+            }
+            else
+            {
+                InsertScoreBackwardWithNote(noteBook, scoreBook, scoreBook.Next(score), beatNumer, beatDenom, barCount);
+            }
+        }
+
         public void InsertScoreBackward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
             //scoreを初めて含むレーンを取得
@@ -85,9 +99,7 @@ namespace NE4S.Scores
 			//これはLaneBookではないのでRefreshIndex()が行われない
             List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
-            //まとめた譜面たちをmodelに挿入
             scoreBook.InsertRange(score.Index, newScores);
-            //挿入する譜面を格納するためのレーンリストを作成
             List<ScoreLane> newLanes = new List<ScoreLane>();
             //新譜面たちをnewLanesに割り当て
             foreach (Score newScore in newScores)
@@ -132,6 +144,16 @@ namespace NE4S.Scores
             InsertRange(lane.Index, newLanes);
             //
             FillLane();
+        }
+
+        public void InsertScoreBackwardWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            int initialScoreTick = score.StartTick;
+            InsertScoreBackward(scoreBook, score, beatNumer, beatDenom, barCount);
+            //score以降に含まれるすべてのノーツに対して位置をずらす
+            int deltaTick = barCount * ScoreInfo.MaxBeatDiv * beatNumer / beatDenom;
+            noteBook.RelocateNoteTickAfterScoreTick(initialScoreTick, deltaTick);
+            UpdateNoteLocation?.Invoke(this);
         }
 
         /// <summary>
@@ -245,6 +267,39 @@ namespace NE4S.Scores
             scoreBook.Delete(score.Index, count);
             //レーンを詰める
             FillLane();
+        }
+
+        public void DeleteScoreWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int count)
+        {
+            int deleteScoreStartTick = score.StartTick, deleteScoreEndTick = score.StartTick;
+            Score itrScore;
+            int itrCount;
+            for (itrScore = score, itrCount = count; itrScore != null && itrCount > 0; itrScore = scoreBook.Next(itrScore), --itrCount)
+            {
+                deleteScoreEndTick = itrScore.EndTick;
+            }
+            int deleteScoreTickSize = deleteScoreEndTick - deleteScoreStartTick + 1;
+            var notesForDelete = noteBook.GetNotesFromTickRange(deleteScoreStartTick, deleteScoreEndTick);
+            if (notesForDelete.Any())
+            {
+                DialogResult dialogResult = MessageBox.Show(
+                "削除対象の小節に配置されているノーツは削除されます。小節を削除しますか？",
+                "小節削除",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Exclamation,
+                MessageBoxDefaultButton.Button2);
+                if (dialogResult == DialogResult.No)
+                {
+                    return;
+                }
+            }
+            foreach(Note note in notesForDelete.ToArray())
+            {
+                noteBook.Delete(note);
+            }
+            noteBook.RelocateNoteTickAfterScoreTick(score.StartTick, -deleteScoreTickSize);
+            DeleteScore(scoreBook, score, count);
+            UpdateNoteLocation?.Invoke(this);
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NE4S.Scores;
 
 namespace NE4S.Notes
 {
@@ -118,6 +119,14 @@ namespace NE4S.Notes
             air?.Relocate(pos);
             airHoldBegin?.Relocate(pos);
             return;
+        }
+
+        public override void RelocateOnlyAndUpdate(Position position, LaneBook laneBook)
+        {
+            base.RelocateOnlyAndUpdate(position, laneBook);
+            air?.RelocateOnlyAndUpdate(position, laneBook);
+            airHoldBegin?.Relocate(position);
+            airHoldBegin?.UpdateLocation(laneBook);
         }
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)

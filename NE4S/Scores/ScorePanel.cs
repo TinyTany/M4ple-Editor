@@ -23,8 +23,9 @@ namespace NE4S.Scores
         private PictureBox pBox;
         private PreviewNote pNote;
         private DataIO dataIO;
+        private SelectionArea selectionArea;
 
-        class Margin
+        static class Margin
         {
             public static int
                 Top = ScoreInfo.PanelMargin.Top,
@@ -45,31 +46,12 @@ namespace NE4S.Scores
             hSBar.Value = 0;
 			pNote = new PreviewNote();
             dataIO = new DataIO();
-#if DEBUG
-            //*
-            //SetScore(11, 4, 1);
-			SetScore(4, 4, 10);
-            SetScore(3, 4, 5);
-            SetScore(6, 8, 8);
-            //
-            SetScore(2, 64, 32);
-            SetScore(13, 4, 2);
-            SetScore(2, 4, 8);
-            SetScore(26, 8, 2);
-            SetScore(1, 32, 32);
-            //
-            SetScore(7, 1, 1);
-            SetScore(4, 4, 1);
-            SetScore(8, 8, 1);
-            SetScore(16, 16, 1);
-			//*/
-			//SetScore(4, 4, 1000);
-#else
-			SetScore(4, 4, 200);
-#endif
+            selectionArea = new SelectionArea();
 		}
 
-        public void SetEventForEditedWithoutSave(Model.EditedStatusHandler handler)
+        #region 譜面のセーブとロード、エクスポートに関わるもの
+
+        public void SetEventForEditedWithoutSave(EditedStatusHandler handler)
         {
             model.IsEditedWithoutSaveChanged += handler;
         }
@@ -133,14 +115,105 @@ namespace NE4S.Scores
             model.IsEditedWithoutSave = !isSaved;
         }
 
+        public void Export()
+        {
+            using(ExportForm exportForm = new ExportForm(model.MusicInfo))
+            {
+                exportForm.Export(model.ScoreBook, model.NoteBook);
+                model.MusicInfo = exportForm.MusicInfo;
+            }
+        }
+
+        public void ExportAs()
+        {
+            using (ExportForm exportForm = new ExportForm(model.MusicInfo))
+            {
+                exportForm.ShowDialog(model.ScoreBook, model.NoteBook);
+                model.MusicInfo = exportForm.MusicInfo;
+            }
+        }
+        #endregion
+
+        #region コピペなど
+
+        public void CopyNotes()
+        {
+            selectionArea.SetContainsNotes(model.NoteBook);
+            Clipboard.SetDataObject(selectionArea);
+        }
+
+        public void CutNotes()
+        {
+            CopyNotes();
+            ClearAreaNotes();
+        }
+
+        public void PasteNotes(Position position)
+        {
+            SelectionArea data = Clipboard.GetDataObject().GetData(typeof(SelectionArea)) as SelectionArea;
+            if (data != null)
+            {
+                selectionArea = data;
+                selectionArea.MovePositionDelta = new Position();
+                selectionArea.Relocate(position, model.LaneBook);
+                foreach(Note note in selectionArea.SelectedNoteList)
+                {
+                    model.NoteBook.Add(note);
+                    if (note is AirableNote)
+                    {
+                        AirableNote airable = note as AirableNote;
+                        if (airable.IsAirAttached)
+                        {
+                            model.NoteBook.Add(airable.GetAirForDelete());
+                        }
+                        if (airable.IsAirHoldAttached)
+                        {
+                            model.NoteBook.Add(airable.GetAirHoldForDelete());
+                        }
+                    }
+                }
+                foreach(LongNote longNote in selectionArea.SelectedLongNoteList)
+                {
+                    model.NoteBook.Add(longNote);
+                    longNote.ForEach(x =>
+                    {
+                        if (x is AirableNote)
+                        {
+                            AirableNote airable = x as AirableNote;
+                            if (airable.IsAirAttached)
+                            {
+                                model.NoteBook.Add(airable.GetAirForDelete());
+                            }
+                            if (airable.IsAirHoldAttached)
+                            {
+                                model.NoteBook.Add(airable.GetAirHoldForDelete());
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        public void ClearAreaNotes()
+        {
+            selectionArea.ClearNotes(model.NoteBook);
+        }
+
+        public void ReverseNotes()
+        {
+            selectionArea.ReverseNotes(model.NoteBook);
+        }
+        #endregion
+
         #region laneBookを触る用メソッド群
+
         /// <summary>
         /// 末尾に指定した拍子数の譜面を指定した個数追加
         /// </summary>
         /// <param name="beatNumer">拍子分子</param>
         /// <param name="beatDenom">拍子分母</param>
         /// <param name="barCount">個数</param>
-        private void SetScore(int beatNumer, int beatDenom, int barCount)
+        public void SetScore(int beatNumer, int beatDenom, int barCount)
         {
             model.SetScore(beatNumer, beatDenom, barCount);
             Update();
@@ -159,6 +232,12 @@ namespace NE4S.Scores
 			Update();
         }
 
+        public void InsertScoreForwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            model.InsertScoreForwardWithNote(score, beatNumer, beatDenom, barCount);
+            Update();
+        }
+
         /// <summary>
         /// scoreの1つ前に新たにscoreを挿入
         /// </summary>
@@ -169,6 +248,12 @@ namespace NE4S.Scores
         public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
         {
             model.InsertScoreBackward(score, beatNumer, beatDenom, barCount);
+            Update();
+        }
+
+        public void InsertScoreBackwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            model.InsertScoreBackwardWithNote(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -191,6 +276,11 @@ namespace NE4S.Scores
             DeleteScore(score, 1);
         }
 
+        public void DeleteScoreWithNote(Score score)
+        {
+            DeleteScoreWithNote(score, 1);
+        }
+
         /// <summary>
         /// 指定されたscoreからcount個のScoreを削除
         /// </summary>
@@ -199,6 +289,12 @@ namespace NE4S.Scores
         public void DeleteScore(Score score, int count)
         {
             model.DeleteScore(score, count);
+            Update();
+        }
+
+        public void DeleteScoreWithNote(Score score, int count)
+        {
+            model.DeleteScoreWithNote(score, count);
             Update();
         }
 
@@ -239,7 +335,16 @@ namespace NE4S.Scores
             ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
             if (selectedLane != null && selectedLane.SelectedScore(e.Location.AddX(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
             {
-                new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.AddX(currentPositionX))).Show(pBox, e.Location);
+                //クリックされたグリッド座標を特定
+                Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                if (selectionArea.Contains(currentPosition))
+                {
+                    new NoteEditCMenu(this, currentPosition).Show(pBox, e.Location);
+                }
+                else
+                {
+                    new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.AddX(currentPositionX)), currentPosition).Show(pBox, e.Location);
+                }
             }
         }
 
@@ -290,14 +395,30 @@ namespace NE4S.Scores
                         {
                             Status.SelectedNote = selectedNote;
                             Status.SelectedNoteArea = noteArea;
+                            if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                            {
+                                Status.SelectedNote = null;
+                            }
+                            if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
+                            {
+                                Status.SelectedNote = null;
+                            }
                         }
-                        if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                        else if (selectedLane != null)
                         {
-                            Status.SelectedNote = null;
-                        }
-                        if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
-                        {
-                            Status.SelectedNote = null;
+                            Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                            if (selectionArea.Contains(currentPosition))
+                            {
+                                selectionArea.MovePositionDelta = new Position(
+                                    currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
+                                    currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
+                                selectionArea.SetContainsNotes(model.NoteBook);
+                            }
+                            else
+                            {
+                                selectionArea.StartPosition = currentPosition;
+                                selectionArea.EndPosition = null;
+                            }
                         }
                         break;
 					case Mode.DELETE:
@@ -384,7 +505,37 @@ namespace NE4S.Scores
                                 break;
                         }
                     }
-					break;
+                    //
+                    if (Status.IsMousePressed && selectedLane != null && Status.SelectedNote == null && e.Button == MouseButtons.Left)
+                    {
+                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        if (selectionArea.MovePositionDelta != null)
+                        {
+                            pBox.Cursor = Cursors.SizeAll;
+                            selectionArea.Relocate(currentPosition, model.LaneBook);
+                        }
+                        else
+                        {
+                            selectionArea.EndPosition = currentPosition;
+                        }
+                    }
+                    else if (!Status.IsMousePressed && selectedLane != null)
+                    {
+                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        if (selectionArea.Contains(currentPosition))
+                        {
+                            pBox.Cursor = Cursors.SizeAll;
+                        }
+                        else
+                        {
+                            pBox.Cursor = Cursors.Default;
+                        }
+                    }
+                    else
+                    {
+                        pBox.Cursor = Cursors.Default;
+                    }
+                    break;
 				case Mode.DELETE:
                     var selectedNote = model.NoteBook.SelectedNote(e.Location.AddX(currentPositionX));
                     if(Status.IsMousePressed && selectedNote != null)
@@ -402,6 +553,7 @@ namespace NE4S.Scores
 			Status.IsMousePressed = false;
             Status.SelectedNote = null;
             Status.SelectedNoteArea = NoteArea.NONE;
+            selectionArea.MovePositionDelta = null;
 		}
 
         public void MouseEnter(EventArgs e) { }
@@ -578,12 +730,20 @@ namespace NE4S.Scores
                         selectedNote.AttachAir(air);
                     }
                     break;
+                case NoteType.BPM:
+                    newNote = new BPM(position, locationVirtual, lane.Index);
+                    break;
+                case NoteType.HIGHSPEED:
+                    newNote = new HighSpeed(position, locationVirtual, lane.Index);
+                    break;
                 default:
                     break;
             }
             if (newNote != null) model.AddNote(newNote);
             return;
         }
+
+        #region 座標変換
 
         /// <summary>
         /// 与えられた座標を現在のグリッド情報に合わせて変換します
@@ -621,7 +781,12 @@ namespace NE4S.Scores
             //帰ってくる座標はXにcurrentPositionX足されていない生のもの
             return gridP;
         }
+        #endregion
 
+        /// <summary>
+        /// レーン、譜面、ノーツなどをすべて描画します
+        /// </summary>
+        /// <param name="e"></param>
         public void PaintPanel(PaintEventArgs e)
 		{
 			//PictureBox上の原点に対応する現在の仮想譜面座標の座標を設定
@@ -643,6 +808,11 @@ namespace NE4S.Scores
             model.PaintNote(e, originPosX, originPosY, currentPositionX);
             //プレビューノーツ描画
 			pNote.Paint(e);
+            //矩形選択領域描画
+            if(Status.Mode == Mode.EDIT)
+            {
+                selectionArea.Draw(e, model.LaneBook, new Point(originPosX, originPosY));
+            }
 		}
     }
 }

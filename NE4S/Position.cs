@@ -20,6 +20,18 @@ namespace NE4S
         public int Lane { get; private set; }
         public int Tick { get; private set; }
 
+        public Position()
+        {
+            Lane = 0;
+            Tick = 0;
+        }
+
+        public Position(Position position)
+        {
+            Lane = position.Lane;
+            Tick = position.Tick;
+        }
+
         public Position(int lane, int tick)
         {
             Lane = lane;

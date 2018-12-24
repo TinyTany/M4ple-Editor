@@ -10,42 +10,76 @@ namespace NE4S.Component
 {
     public class EditCMenu : ContextMenuStrip
     {
-        private ToolStripItem[] stripItems, barAddItems, barDeleteItems, laneFillItems;
+        private readonly ToolStripItem[] stripItems;
+        private readonly ToolStripItem[] barAddItems;
+        private readonly ToolStripItem[] barAddWithNoteItems;
+        private readonly ToolStripItem[] barDeleteItems;
+        private readonly ToolStripItem[] barDeleteWithNoteItems;
+        private readonly ToolStripItem[] laneFillItems;
         private ScorePanel sPanel;
         private ScoreLane selectedLane;
         private Score selectedScore;
 
-        public EditCMenu(ScorePanel sPanel, ScoreLane selectedLane, Score selectedScore)
+        public EditCMenu(ScorePanel sPanel, ScoreLane selectedLane, Score selectedScore, Position clickPosition)
         {
             barAddItems = new ToolStripItem[]
             {
-                new ToolStripMenuItem("選択小節の1つ前", null, new EventHandler(BarAddBackward)),
-                new ToolStripMenuItem("選択小節の1つ先", null, new EventHandler(BarAddForward)),
-                new ToolStripMenuItem("カスタム...", null, new EventHandler(BarAddCustom))
+                new ToolStripMenuItem("選択小節の1つ前", null, BarAddBackward),
+                new ToolStripMenuItem("選択小節の1つ先", null, BarAddForward),
+                new ToolStripMenuItem("カスタム...", null, BarAddCustom)
+            };
+            barAddWithNoteItems = new ToolStripItem[]
+            {
+                new ToolStripMenuItem("選択小節の1つ前", null, BarAddBackwardWithNote),
+                new ToolStripMenuItem("選択小節の1つ先", null, BarAddForwardWithNote),
+                new ToolStripMenuItem("カスタム...", null, BarAddCustomWithNote)
             };
             barDeleteItems = new ToolStripItem[]
             {
-                new ToolStripMenuItem("選択小節", null, new EventHandler(BarDeleteSelected)),
-                new ToolStripMenuItem("カスタム...", null, new EventHandler(BarDeleteCustom))
+                new ToolStripMenuItem("選択小節", null, BarDeleteSelected),
+                new ToolStripMenuItem("カスタム...", null, BarDeleteCustom)
+            };
+            barDeleteWithNoteItems = new ToolStripItem[]
+            {
+                new ToolStripMenuItem("選択小節", null, BarDeleteSelectedWithNote),
+                new ToolStripMenuItem("カスタム...", null, BarDeleteCustomWithNote)
             };
             laneFillItems = new ToolStripItem[]
             {
-                new ToolStripMenuItem("レーン全体", null, new EventHandler(LaneFillAll)),
-                new ToolStripMenuItem("選択レーン以降", null, new EventHandler(LaneFill))
+                new ToolStripMenuItem("レーン全体", null, LaneFillAll),
+                new ToolStripMenuItem("選択レーン以降", null, LaneFill)
             };
-            ToolStripMenuItem barAdd = new ToolStripMenuItem("小節を挿入", null);
+            ToolStripMenuItem barAddWithNote = new ToolStripMenuItem("小節を挿入", null)
+            {
+                ToolTipText = "選択した小節の前後に新しい小節を追加します\nすでに配置されているノーツの相対座標は変更されます"
+            };
+            barAddWithNote.DropDownItems.AddRange(barAddWithNoteItems);
+            ToolStripMenuItem barAdd = new ToolStripMenuItem("小節を挿入（小節のみ）", null)
+            {
+                ToolTipText = "選択した小節の前後に新しい小節を追加します\nすでに配置されているノーツの相対座標は変更されません"
+            };
             barAdd.DropDownItems.AddRange(barAddItems);
-            ToolStripMenuItem barDelete = new ToolStripMenuItem("小節を削除", null);
+            ToolStripMenuItem barDeleteWithNote = new ToolStripMenuItem("小節を削除", null)
+            {
+                ToolTipText = "選択した小節またはそれ以降の複数の小節を削除します\n削除対象の小節にノーツが配置されている場合、ノーツも削除されます"
+            };
+            barDeleteWithNote.DropDownItems.AddRange(barDeleteWithNoteItems);
+            ToolStripMenuItem barDelete = new ToolStripMenuItem("小節を削除（小節のみ）", null)
+            {
+                ToolTipText = "選択した小節またはそれ以降の複数の小節を削除します\n小節のみ削除するため、ノーツは削除されません"
+            };
             barDelete.DropDownItems.AddRange(barDeleteItems);
             ToolStripMenuItem laneFill = new ToolStripMenuItem("レーンを詰める", null);
             laneFill.DropDownItems.AddRange(laneFillItems);
             stripItems = new ToolStripMenuItem[]
             {
+                barAddWithNote,
                 barAdd,
+                barDeleteWithNote,
                 barDelete,
-                new ToolStripMenuItem("小節を分割", null, new EventHandler(BarDivide)),
+                new ToolStripMenuItem("選択小節を改行", null, BarDivide),
                 laneFill,
-                new ToolStripMenuItem("貼り付け", null, new EventHandler(Paste))
+                new ToolStripMenuItem("貼り付け", null, (s, e) => sPanel.PasteNotes(clickPosition))
             };
             Items.AddRange(stripItems);
             Items.Insert(Items.Count - 1, new ToolStripSeparator());
@@ -69,24 +103,34 @@ namespace NE4S.Component
             sPanel.DivideLane(selectedScore);
         }
 
-        private void Paste(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void BarDeleteSelected(object sender, EventArgs e)
         {
             sPanel.DeleteScore(selectedScore);
         }
 
+        private void BarDeleteSelectedWithNote(object sender, EventArgs e)
+        {
+            sPanel.DeleteScoreWithNote(selectedScore);
+        }
+
         private void BarDeleteCustom(object sender, EventArgs e)
         {
-            new BarDeleteCustomForm(sPanel, selectedScore).Show();
+            new BarDeleteCustomForm(sPanel, selectedScore).ShowDialog();
+        }
+
+        private void BarDeleteCustomWithNote(object sender, EventArgs e)
+        {
+            new BarDeleteWithNoteCustomForm(sPanel, selectedScore).ShowDialog();
         }
 
         private void BarAddCustom(object sender, EventArgs e)
         {
-            new BarAddCustomForm(sPanel, selectedScore).Show();
+            new BarAddCustomForm(sPanel, selectedScore).ShowDialog();
+        }
+
+        private void BarAddCustomWithNote(object sender, EventArgs e)
+        {
+            new BarAddWithNoteCustomForm(sPanel, selectedScore).ShowDialog();
         }
 
         private void BarAddForward(object sender, EventArgs e)
@@ -97,6 +141,16 @@ namespace NE4S.Component
         private void BarAddBackward(object sender, EventArgs e)
         {
             sPanel.InsertScoreBackward(selectedScore, selectedScore.BeatNumer, selectedScore.BeatDenom, 1);
+        }
+
+        private void BarAddForwardWithNote(object sender, EventArgs e)
+        {
+            sPanel.InsertScoreForwardWithNote(selectedScore, selectedScore.BeatNumer, selectedScore.BeatDenom, 1);
+        }
+
+        private void BarAddBackwardWithNote(object sender, EventArgs e)
+        {
+            sPanel.InsertScoreBackwardWithNote(selectedScore, selectedScore.BeatNumer, selectedScore.BeatDenom, 1);
         }
     }
 }

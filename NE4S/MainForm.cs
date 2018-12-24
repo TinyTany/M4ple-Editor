@@ -45,6 +45,7 @@ namespace NE4S
                 hScroll.Dock = DockStyle.Bottom;
                 //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
                 ScorePanel sPanel = new ScorePanel(pBox, hScroll);
+                sPanel.SetScore(4, 4, 200);
                 tabPageEx.ScorePanel = sPanel;
                 //PictureBoxとHScrollBarの各種デリゲートの設定
                 pBox.MouseWheel += Score_MouseWheel;
@@ -75,6 +76,11 @@ namespace NE4S
             tsbNew.Click += TsbNew_Click;
             tsbOpen.Click += TsbOpen_Click;
             tsbSave.Click += TsbSave_Click;
+            tsbExport.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.Export();
+            };
             #region ノーツ表示設定ボタン
             tsmiIsShortNote.Click += (s, e) =>
             {
@@ -133,6 +139,11 @@ namespace NE4S
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 selectedPanel.SaveAs();
                 UpdateTextOfTabAndForm(false);
+            };
+            tsmiExport.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.ExportAs();
             };
             tsmiQuit.Click += (s, e) =>
             {
@@ -237,12 +248,17 @@ namespace NE4S
             if (pBox == null) return;
             HScrollBar hScrollBar = pBox.Controls[0] as HScrollBar;
             if (hScrollBar == null) return;
-            (tabScore.SelectedTab as TabPageEx).ScorePanel = new ScorePanel(pBox, hScrollBar);
-            //タブ名をデフォルトにする
-            int tabIndex = tabScore.SelectedIndex;
-            tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
-            //
-            tabScore.SelectedTab.Controls[0].Refresh();
+            ScorePanel newPanel = new ScorePanel(pBox, hScrollBar);
+            newPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
+            if (new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
+            {
+                (tabScore.SelectedTab as TabPageEx).ScorePanel = newPanel;
+                //タブ名をデフォルトにする
+                int tabIndex = tabScore.SelectedIndex;
+                tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
+                //
+                tabScore.SelectedTab.Controls[0].Refresh();
+            }
         }
 
         private void TsbOpen_Click(object sender, EventArgs e)
@@ -346,6 +362,7 @@ namespace NE4S
 			tsbEdit.Checked = false;
 			tsbDelete.Checked = false;
 			Status.Mode = Mode.ADD;
+            Refresh();
 		}
 
 		private void TbsEdit_Click(object sender, EventArgs e)
@@ -354,7 +371,8 @@ namespace NE4S
 			tsbEdit.Checked = true;
 			tsbDelete.Checked = false;
 			Status.Mode = Mode.EDIT;
-		}
+            Refresh();
+        }
 
 		private void TbsDelete_Click(object sender, EventArgs e)
 		{
@@ -362,7 +380,8 @@ namespace NE4S
 			tsbEdit.Checked = false;
 			tsbDelete.Checked = true;
 			Status.Mode = Mode.DELETE;
-		}
+            Refresh();
+        }
         #endregion
 
         private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)

@@ -10,12 +10,15 @@ using System.Drawing;
 
 namespace NE4S
 {
+    public delegate void EditedStatusHandler(bool isEditedWithoutSave);
+
     [Serializable()]
     public class Model
     {
         public NoteBook NoteBook { get; }
         public ScoreBook ScoreBook { get; }
         public LaneBook LaneBook { get; }
+        public MusicInfo MusicInfo { get; set; } = null;
         /// <summary>
         /// この変数は使用しない
         /// プロパティを常に使う
@@ -30,7 +33,6 @@ namespace NE4S
                 IsEditedWithoutSaveChanged?.Invoke(isEditedWithoutSave);
             }
         }
-        public delegate void EditedStatusHandler(bool isEditedWithoutSave);
         [field: NonSerialized]
         public event EditedStatusHandler IsEditedWithoutSaveChanged;
 
@@ -54,13 +56,26 @@ namespace NE4S
             IsEditedWithoutSave = true;
 		}
 
-		public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
+        public void InsertScoreForwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            LaneBook.InsetScoreForwardWithNote(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
+            IsEditedWithoutSave = true;
+        }
+
+
+        public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
 		{
 			LaneBook.InsertScoreBackward(ScoreBook, score, beatNumer, beatDenom, barCount);
             IsEditedWithoutSave = true;
         }
 
-		public void DivideLane(Score score)
+        public void InsertScoreBackwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
+        {
+            LaneBook.InsertScoreBackwardWithNote(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
+            IsEditedWithoutSave = true;
+        }
+
+        public void DivideLane(Score score)
 		{
 			LaneBook.DivideLane(score);
             IsEditedWithoutSave = true;
@@ -72,7 +87,13 @@ namespace NE4S
             IsEditedWithoutSave = true;
         }
 
-		public void FillLane()
+        public void DeleteScoreWithNote(Score score, int count)
+        {
+            LaneBook.DeleteScoreWithNote(NoteBook, ScoreBook, score, count);
+            IsEditedWithoutSave = true;
+        }
+
+        public void FillLane()
 		{
 			if (LaneBook.Any()) FillLane(LaneBook.First());
 		}

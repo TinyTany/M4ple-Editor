@@ -20,12 +20,17 @@ namespace NE4S.Notes
         //帯の大きさが縦に少し短いので調整
         protected static readonly float deltaHeight = .2f;
 
-        public LongNote()
-        {
-            
-        }
+        public int StartTick => this.OrderBy(x => x.Position.Tick).First().Position.Tick;
 
-        protected bool IsPositionAvailable(Note note, Position position)
+        public int EndTick => this.OrderBy(x => x.Position.Tick).Last().Position.Tick;
+
+        public int LaneLeft => this.OrderBy(x => x.Position.Lane).First().Position.Lane;
+
+        public int LaneRight => this.OrderBy(x => x.Position.Lane + x.Size).Last().Position.Lane;
+
+        public LongNote() { }
+
+        protected virtual bool IsPositionAvailable(Note note, Position position)
         {
             if (position.Tick < this.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
             foreach (Note itrNote in this.Where(x => x != note))
@@ -33,6 +38,11 @@ namespace NE4S.Notes
                 if (position.Tick == itrNote.Position.Tick) return false;
             }
             return true;
+        }
+
+        public void RelocateNoteTickAfterScoreTick(int scoreTick, int deltaTick)
+        {
+            this.Where(x => x.Position.Tick >= scoreTick).ToList().ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
         }
 
         public bool IsDrawable()

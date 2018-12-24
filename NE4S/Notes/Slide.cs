@@ -54,7 +54,7 @@ namespace NE4S.Notes
         /// <param name="note"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        protected new bool IsPositionAvailable(Note note, Position position)
+        protected override bool IsPositionAvailable(Note note, Position position)
         {
             var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
             var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
@@ -368,11 +368,17 @@ namespace NE4S.Notes
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {
                                 myBrush.InterpolationColors = colorBlend;
-                                e.Graphics.FillPath(myBrush, graphicsPath);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.FillPath(myBrush, graphicsPath);
+                                }
                             }
                             using (Pen myPen = new Pen(lineColor, 2))
                             {
-                                e.Graphics.DrawLine(myPen, (bottomLeft.X + bottomRight.X) / 2, bottomLeft.Y, (topLeft.X + topRight.X) / 2, topLeft.Y);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.DrawLine(myPen, (bottomLeft.X + bottomRight.X) / 2, bottomLeft.Y, (topLeft.X + topRight.X) / 2, topLeft.Y);
+                                }
                             }
                         }
                     }
@@ -518,11 +524,17 @@ namespace NE4S.Notes
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {
                                 myBrush.InterpolationColors = colorBlend;
-                                e.Graphics.FillPath(myBrush, graphicsPath);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.FillPath(myBrush, graphicsPath);
+                                }
                             }
                             using (Pen myPen = new Pen(lineColor, 2))
                             {
-                                e.Graphics.DrawBezier(myPen, bottomCenter, curveCenter, topCenter);
+                                if (curLane.StartTick <= Status.DrawTickLast && curLane.EndTick >= Status.DrawTickFirst)
+                                {
+                                    e.Graphics.DrawBezier(myPen, bottomCenter, curveCenter, topCenter);
+                                }
                             }
                         }
                     }
@@ -531,5 +543,24 @@ namespace NE4S.Notes
                 #endregion
             }
         }
-	}
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2, location.Y - size.Height / 2, size.Width, size.Height);
+            ColorBlend colorBlend = new ColorBlend(4)
+            {
+                Colors = new Color[] { baseColor, stepColor },
+                Positions = new float[] { 0.0f, 1.0f }
+            };
+            using (LinearGradientBrush myBrush = new LinearGradientBrush(drawRect, baseColor, baseColor, LinearGradientMode.Vertical))
+            {
+                myBrush.InterpolationColors = colorBlend;
+                e.Graphics.FillRectangle(myBrush, drawRect);
+            }
+            using (Pen myPen = new Pen(lineColor, 2))
+            {
+                e.Graphics.DrawLine(myPen, location.X, drawRect.Bottom, location.X, drawRect.Top);
+            }
+        }
+    }
 }

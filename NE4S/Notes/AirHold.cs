@@ -28,11 +28,25 @@ namespace NE4S.Notes
             airholdBegin.CheckNoteSize += CheckNoteSize;
             Add(airholdBegin);
             location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            AirAction airAction = new AirAction(size, pos.Next(), location, laneIndex);
-            airAction.CheckNotePosition += CheckNotePosition;
-            airAction.IsPositionAvailable += IsPositionAvailable;
-            Add(airAction);
-            Status.SelectedNote = airAction;
+            AirHoldEnd airHoldEnd = new AirHoldEnd(size, pos.Next(), location, laneIndex);
+            airHoldEnd.CheckNotePosition += CheckNotePosition;
+            airHoldEnd.IsPositionAvailable += IsPositionAvailable;
+            Add(airHoldEnd);
+            Status.SelectedNote = airHoldEnd;
+        }
+
+        protected override bool IsPositionAvailable(Note note, Position position)
+        {
+            var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
+            if (position.Tick < this.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
+            if (note is AirHoldEnd && position.Tick < list.Last().Position.Tick) return false;
+            foreach (Note itrNote in list)
+            {
+                if (itrNote is AirHoldBegin && position.Tick < itrNote.Position.Tick) return false;
+                else if (itrNote is AirHoldEnd && position.Tick > itrNote.Position.Tick) return false;
+                else if (position.Tick == itrNote.Position.Tick) return false;
+            }
+            return true;
         }
 
         public AirHoldBegin AirHoldBegin
@@ -284,6 +298,15 @@ namespace NE4S.Notes
                 }
 
                 #endregion
+            }
+        }
+
+        public static void Draw(PaintEventArgs e, PointF location, SizeF size)
+        {
+            RectangleF drawRect = new RectangleF(location.X - size.Width / 2, location.Y - size.Height / 2, size.Width, size.Height);
+            using (SolidBrush myBrush = new SolidBrush(lineColor))
+            {
+                e.Graphics.FillRectangle(myBrush, drawRect);
             }
         }
     }

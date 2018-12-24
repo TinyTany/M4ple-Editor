@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class SlideBegin : Note
     {
+        public override int NoteID => 1;
+
         public event PositionCheckHandler IsPositionAvailable;
 
         public SlideBegin()

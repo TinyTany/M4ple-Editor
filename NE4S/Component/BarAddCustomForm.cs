@@ -13,8 +13,8 @@ namespace NE4S.Component
 {
     public partial class BarAddCustomForm : Form
     {
-        private ScorePanel sPanel;
-        private Score score;
+        protected ScorePanel sPanel;
+        protected Score score;
 
         public BarAddCustomForm(ScorePanel sPanel, Score score)
         {
@@ -23,7 +23,7 @@ namespace NE4S.Component
             this.score = score;
         }
 
-        private void OK_Click(object sender, EventArgs e)
+        protected virtual void OK_Click(object sender, EventArgs e)
         {
             if(Direction.SelectedIndex != -1 && BeatNumer.SelectedIndex != -1 && BeatDenom.SelectedIndex != -1)
             {
@@ -46,7 +46,7 @@ namespace NE4S.Component
             }
         }
 
-        private void Cancel_Click(object sender, EventArgs e)
+        protected void Cancel_Click(object sender, EventArgs e)
         {
             Close();
         }

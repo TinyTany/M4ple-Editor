@@ -14,6 +14,18 @@ namespace NE4S.Scores
     [Serializable()]
     public class Score
     {
+        /// <summary>
+        /// 主線の色情報
+        /// </summary>
+        public static readonly Color laneMain = Color.FromArgb(120, 255, 255, 255);
+        /// <summary>
+        /// 副線の色情報
+        /// </summary>
+        public static readonly Color laneSub = Color.FromArgb(40, 255, 255, 255);
+        /// <summary>
+        /// 小節開始の色情報
+        /// </summary>
+        public static readonly Color measureBorder = Color.FromArgb(120, 255, 255, 0);
         public float Width { get; }
         public float Height { get; }
         public int BeatNumer { get; set; }
@@ -31,6 +43,10 @@ namespace NE4S.Scores
         public int EndTick
         {
             get { return endTick; }
+        }
+        public int TickSize
+        {
+            get { return endTick - startTick + 1; }
         }
 
         /// <summary>
@@ -61,10 +77,6 @@ namespace NE4S.Scores
         /// <param name="range">描画するScoreの範囲</param>
         public void PaintScore(PaintEventArgs e, float drawPosX, float drawPosY, Range range)
         {
-            //主線の色情報
-            Color laneMain = Color.FromArgb(180, 255, 255, 255);
-            //副線の色情報
-            Color laneSub = Color.FromArgb(80, 255, 255, 255);
             //レーンを区切る縦線を描画
             for (int i = 0; i <= ScoreInfo.Lanes; ++i)
             {
@@ -101,7 +113,7 @@ namespace NE4S.Scores
             if(range.Min == 1)
             {
                 //1拍目に小節開始の黄色線を描画
-                using (Pen myPen = new Pen(Color.Yellow, 1))
+                using (Pen myPen = new Pen(measureBorder, 1))
                 {
                     e.Graphics.DrawLine(
                         myPen,

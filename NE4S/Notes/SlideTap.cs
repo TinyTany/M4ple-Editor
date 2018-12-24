@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class SlideTap : Note
     {
+        public override int NoteID => 3;
+
         public event PositionCheckHandler IsPositionAvailable;
 
         public SlideTap()

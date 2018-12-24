@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class AwesomeExTap : AirableNote
     {
+        public override int NoteID => 5;
+
         public AwesomeExTap()
         {
 

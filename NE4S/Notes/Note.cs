@@ -16,6 +16,7 @@ namespace NE4S.Notes
     [Serializable()]
     public class Note
     {
+        public virtual int NoteID => -1;
         /// <summary>
         /// 1 ≦ Size ≦ 16
         /// </summary>
@@ -23,8 +24,6 @@ namespace NE4S.Notes
         public Position Position { get; protected set; }
 		protected RectangleF noteRect;
         protected PointF adjustNoteRect = new PointF(0, -2);
-        //HACK: ロングノーツでしか使わない（現状そんな気がする）ので、ここで宣言しても本当にいいのかはわかんない
-        //NOTE: すべてのノーツに対して設定することにした（ノーツサイズ変更操作時に現在のレーンとノーツのレーンを比較して、別レーン上にカーソルがある時にサイズ変更がされないようにしたい）
         public virtual int LaneIndex { get; protected set; } = -1;
         /// <summary>
         /// ノーツを渡すイベントハンドラです（知らんけど）
@@ -130,6 +129,12 @@ namespace NE4S.Notes
             noteRect.Location = location;
             LaneIndex = laneIndex;
             return;
+        }
+
+        public virtual void RelocateOnlyAndUpdate(Position position, LaneBook laneBook)
+        {
+            RelocateOnly(position);
+            UpdateLocation(laneBook);
         }
         #endregion
 

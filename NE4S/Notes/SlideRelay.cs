@@ -12,6 +12,8 @@ namespace NE4S.Notes
     [Serializable()]
     public class SlideRelay : Note
     {
+        public override int NoteID => 5;
+
         public event PositionCheckHandler IsPositionAvailable;
 
         public SlideRelay()

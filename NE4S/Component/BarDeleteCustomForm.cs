@@ -13,8 +13,8 @@ namespace NE4S.Component
 {
     public partial class BarDeleteCustomForm : Form
     {
-        ScorePanel sPanel;
-        Score score;
+        protected ScorePanel sPanel;
+        protected Score score;
 
         public BarDeleteCustomForm(ScorePanel sPanel, Score score)
         {
@@ -23,13 +23,13 @@ namespace NE4S.Component
             this.score = score;
         }
 
-        private void OK_Click(object sender, EventArgs e)
+        protected virtual void OK_Click(object sender, EventArgs e)
         {
             sPanel.DeleteScore(score, (int)BarCount.Value);
             Close();
         }
 
-        private void Cancel_Click(object sender, EventArgs e)
+        protected void Cancel_Click(object sender, EventArgs e)
         {
             Close();
         }

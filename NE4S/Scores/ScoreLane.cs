@@ -15,7 +15,7 @@ namespace NE4S.Scores
     [Serializable()]
     public class ScoreLane
     {
-		private static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
+		public static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
 		private static readonly float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
         public static float Width { get; set; } = scoreWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
@@ -352,7 +352,7 @@ namespace NE4S.Scores
             {
                 //閉じていた場合
                 //最後の小節を黄色線で閉じる
-                using (Pen myPen = new Pen(Color.Yellow, 1))
+                using (Pen myPen = new Pen(Score.measureBorder, 1))
                 {
                     e.Graphics.DrawLine(
                         myPen,

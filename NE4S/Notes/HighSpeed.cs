@@ -1,20 +1,20 @@
-﻿using System;
+﻿using NE4S.Scores;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using NE4S.Scores;
 
 namespace NE4S.Notes
 {
     [Serializable()]
-    public class BPM : AttributeNote
+    public class HighSpeed : AttributeNote
     {
-        private static readonly PointF adjustPoint = new PointF(2, -9);
+        private static readonly PointF adjustPoint = new PointF(22, -9);
 
-        public BPM(Position position, PointF location, int laneIndex) : base(position, location, laneIndex) { }
+        public HighSpeed(Position position, PointF location, int laneIndex) : base(position, location, laneIndex) { }
 
         public override bool Contains(PointF location)
         {
@@ -29,25 +29,25 @@ namespace NE4S.Notes
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
             PointF drawPoint = new PointF(
-                noteRect.X - Position.Lane * ScoreInfo.MinLaneWidth - originPosX + ScoreLane.scoreWidth, 
+                noteRect.X - Position.Lane * ScoreInfo.MinLaneWidth - originPosX + ScoreLane.scoreWidth,
                 Location.Y);
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {
                 e.Graphics.DrawString(
-                NoteValue.ToString(),
+                "x" + NoteValue.ToString(),
                 myFont,
-                Brushes.LimeGreen,
+                Brushes.Red,
                 new PointF(
                     drawPoint.X + adjustPoint.X,
                     drawPoint.Y + adjustPoint.Y));
             }
-            using (Pen myPen = new Pen(Color.LimeGreen, 1))
+            using (Pen myPen = new Pen(Color.Red, 1))
             {
                 e.Graphics.DrawLine(
                     myPen,
-                    drawPoint.X - ScoreLane.scoreWidth, 
-                    drawPoint.Y, 
+                    drawPoint.X - ScoreLane.scoreWidth,
+                    drawPoint.Y,
                     drawPoint.X,
                     drawPoint.Y);
             }

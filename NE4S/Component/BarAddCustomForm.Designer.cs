@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BarAddCustomForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -44,35 +45,39 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(33, 42);
+            this.label1.Location = new System.Drawing.Point(23, 35);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 18);
+            this.label1.Size = new System.Drawing.Size(55, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "挿入位置";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(33, 108);
+            this.label2.Location = new System.Drawing.Point(23, 90);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 18);
+            this.label2.Size = new System.Drawing.Size(31, 15);
             this.label2.TabIndex = 1;
             this.label2.Text = "拍数";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(33, 182);
+            this.label3.Location = new System.Drawing.Point(23, 151);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 18);
+            this.label3.Size = new System.Drawing.Size(31, 15);
             this.label3.TabIndex = 2;
             this.label3.Text = "個数";
             // 
             // OK
             // 
-            this.OK.Location = new System.Drawing.Point(150, 302);
+            this.OK.Location = new System.Drawing.Point(105, 251);
+            this.OK.Margin = new System.Windows.Forms.Padding(2);
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(80, 30);
+            this.OK.Size = new System.Drawing.Size(56, 25);
             this.OK.TabIndex = 3;
             this.OK.Text = "OK";
             this.OK.UseVisualStyleBackColor = true;
@@ -80,9 +85,10 @@
             // 
             // Cancel
             // 
-            this.Cancel.Location = new System.Drawing.Point(250, 302);
+            this.Cancel.Location = new System.Drawing.Point(175, 251);
+            this.Cancel.Margin = new System.Windows.Forms.Padding(2);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(80, 30);
+            this.Cancel.Size = new System.Drawing.Size(56, 25);
             this.Cancel.TabIndex = 4;
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
@@ -91,25 +97,29 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(322, 108);
+            this.label4.Location = new System.Drawing.Point(225, 90);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(17, 18);
+            this.label4.Size = new System.Drawing.Size(12, 15);
             this.label4.TabIndex = 5;
             this.label4.Text = "/";
             // 
             // Direction
             // 
+            this.Direction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Direction.FormattingEnabled = true;
             this.Direction.Items.AddRange(new object[] {
             "選択小節の1つ先",
             "選択小節の1つ前"});
-            this.Direction.Location = new System.Drawing.Point(260, 34);
+            this.Direction.Location = new System.Drawing.Point(182, 29);
+            this.Direction.Margin = new System.Windows.Forms.Padding(2);
             this.Direction.Name = "Direction";
-            this.Direction.Size = new System.Drawing.Size(185, 26);
+            this.Direction.Size = new System.Drawing.Size(131, 23);
             this.Direction.TabIndex = 6;
             // 
             // BeatNumer
             // 
+            this.BeatNumer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BeatNumer.FormattingEnabled = true;
             this.BeatNumer.Items.AddRange(new object[] {
             "1",
@@ -144,13 +154,15 @@
             "30",
             "31",
             "32"});
-            this.BeatNumer.Location = new System.Drawing.Point(216, 105);
+            this.BeatNumer.Location = new System.Drawing.Point(152, 88);
+            this.BeatNumer.Margin = new System.Windows.Forms.Padding(2);
             this.BeatNumer.Name = "BeatNumer";
-            this.BeatNumer.Size = new System.Drawing.Size(100, 26);
+            this.BeatNumer.Size = new System.Drawing.Size(72, 23);
             this.BeatNumer.TabIndex = 7;
             // 
             // BeatDenom
             // 
+            this.BeatDenom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BeatDenom.FormattingEnabled = true;
             this.BeatDenom.Items.AddRange(new object[] {
             "1",
@@ -160,21 +172,23 @@
             "16",
             "32",
             "64"});
-            this.BeatDenom.Location = new System.Drawing.Point(345, 105);
+            this.BeatDenom.Location = new System.Drawing.Point(241, 88);
+            this.BeatDenom.Margin = new System.Windows.Forms.Padding(2);
             this.BeatDenom.Name = "BeatDenom";
-            this.BeatDenom.Size = new System.Drawing.Size(100, 26);
+            this.BeatDenom.Size = new System.Drawing.Size(72, 23);
             this.BeatDenom.TabIndex = 8;
             // 
             // BarCount
             // 
-            this.BarCount.Location = new System.Drawing.Point(325, 180);
+            this.BarCount.Location = new System.Drawing.Point(227, 150);
+            this.BarCount.Margin = new System.Windows.Forms.Padding(2);
             this.BarCount.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.BarCount.Name = "BarCount";
-            this.BarCount.Size = new System.Drawing.Size(120, 25);
+            this.BarCount.Size = new System.Drawing.Size(84, 23);
             this.BarCount.TabIndex = 9;
             this.BarCount.Value = new decimal(new int[] {
             1,
@@ -184,9 +198,9 @@
             // 
             // BarAddCustomForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(478, 344);
+            this.ClientSize = new System.Drawing.Size(335, 286);
             this.Controls.Add(this.BarCount);
             this.Controls.Add(this.BeatDenom);
             this.Controls.Add(this.BeatNumer);
@@ -197,9 +211,14 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "BarAddCustomForm";
-            this.Text = "カスタム小節挿入";
+            this.Text = "カスタム小節挿入（小節のみ）";
             ((System.ComponentModel.ISupportInitialize)(this.BarCount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -214,9 +233,9 @@
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox Direction;
-        private System.Windows.Forms.ComboBox BeatNumer;
-        private System.Windows.Forms.ComboBox BeatDenom;
-        private System.Windows.Forms.NumericUpDown BarCount;
+        protected System.Windows.Forms.ComboBox Direction;
+        protected System.Windows.Forms.ComboBox BeatNumer;
+        protected System.Windows.Forms.ComboBox BeatDenom;
+        protected System.Windows.Forms.NumericUpDown BarCount;
     }
 }

@@ -72,9 +72,7 @@ namespace NE4S.Notes
             return graphicsPath;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
-        {
-            
-        }
+        public override void Draw(PaintEventArgs e, int originPosX, int originPosY) { }
+
     }
 }
