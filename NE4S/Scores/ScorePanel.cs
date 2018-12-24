@@ -134,6 +134,77 @@ namespace NE4S.Scores
         }
         #endregion
 
+        #region コピペなど
+
+        public void CopyNotes()
+        {
+            selectionArea.SetContainsNotes(model.NoteBook);
+            Clipboard.SetDataObject(selectionArea);
+        }
+
+        public void CutNotes()
+        {
+            CopyNotes();
+            ClearAreaNotes();
+        }
+
+        public void PasteNotes(Position position)
+        {
+            SelectionArea data = Clipboard.GetDataObject().GetData(typeof(SelectionArea)) as SelectionArea;
+            if (data != null)
+            {
+                selectionArea = data;
+                selectionArea.MovePositionDelta = new Position();
+                selectionArea.Relocate(position, model.LaneBook);
+                foreach(Note note in selectionArea.SelectedNoteList)
+                {
+                    model.NoteBook.Add(note);
+                    if (note is AirableNote)
+                    {
+                        AirableNote airable = note as AirableNote;
+                        if (airable.IsAirAttached)
+                        {
+                            model.NoteBook.Add(airable.GetAirForDelete());
+                        }
+                        if (airable.IsAirHoldAttached)
+                        {
+                            model.NoteBook.Add(airable.GetAirHoldForDelete());
+                        }
+                    }
+                }
+                foreach(LongNote longNote in selectionArea.SelectedLongNoteList)
+                {
+                    model.NoteBook.Add(longNote);
+                    longNote.ForEach(x =>
+                    {
+                        if (x is AirableNote)
+                        {
+                            AirableNote airable = x as AirableNote;
+                            if (airable.IsAirAttached)
+                            {
+                                model.NoteBook.Add(airable.GetAirForDelete());
+                            }
+                            if (airable.IsAirHoldAttached)
+                            {
+                                model.NoteBook.Add(airable.GetAirHoldForDelete());
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        public void ClearAreaNotes()
+        {
+            selectionArea.ClearNotes(model.NoteBook);
+        }
+
+        public void ReverseNotes()
+        {
+            selectionArea.ReverseNotes(model.NoteBook);
+        }
+        #endregion
+
         #region laneBookを触る用メソッド群
 
         /// <summary>
