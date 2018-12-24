@@ -335,7 +335,16 @@ namespace NE4S.Scores
             ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
             if (selectedLane != null && selectedLane.SelectedScore(e.Location.AddX(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
             {
-                new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.AddX(currentPositionX))).Show(pBox, e.Location);
+                //クリックされたグリッド座標を特定
+                Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                if (selectionArea.Contains(currentPosition))
+                {
+                    new NoteEditCMenu(this, currentPosition).Show(pBox, e.Location);
+                }
+                else
+                {
+                    new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.AddX(currentPositionX)), currentPosition).Show(pBox, e.Location);
+                }
             }
         }
 
@@ -397,8 +406,19 @@ namespace NE4S.Scores
                         }
                         else if (selectedLane != null)
                         {
-                            selectionArea.StartPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
-                            selectionArea.EndPosition = null;
+                            Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                            if (selectionArea.Contains(currentPosition))
+                            {
+                                selectionArea.MovePositionDelta = new Position(
+                                    currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
+                                    currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
+                                selectionArea.SetContainsNotes(model.NoteBook);
+                            }
+                            else
+                            {
+                                selectionArea.StartPosition = currentPosition;
+                                selectionArea.EndPosition = null;
+                            }
                         }
                         break;
 					case Mode.DELETE:
@@ -486,9 +506,34 @@ namespace NE4S.Scores
                         }
                     }
                     //
-                    if (Status.IsMousePressed && selectedLane != null)
+                    if (Status.IsMousePressed && selectedLane != null && Status.SelectedNote == null && e.Button == MouseButtons.Left)
                     {
-                        selectionArea.EndPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        if (selectionArea.MovePositionDelta != null)
+                        {
+                            pBox.Cursor = Cursors.SizeAll;
+                            selectionArea.Relocate(currentPosition, model.LaneBook);
+                        }
+                        else
+                        {
+                            selectionArea.EndPosition = currentPosition;
+                        }
+                    }
+                    else if (!Status.IsMousePressed && selectedLane != null)
+                    {
+                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        if (selectionArea.Contains(currentPosition))
+                        {
+                            pBox.Cursor = Cursors.SizeAll;
+                        }
+                        else
+                        {
+                            pBox.Cursor = Cursors.Default;
+                        }
+                    }
+                    else
+                    {
+                        pBox.Cursor = Cursors.Default;
                     }
                     break;
 				case Mode.DELETE:
@@ -508,6 +553,7 @@ namespace NE4S.Scores
 			Status.IsMousePressed = false;
             Status.SelectedNote = null;
             Status.SelectedNoteArea = NoteArea.NONE;
+            selectionArea.MovePositionDelta = null;
 		}
 
         public void MouseEnter(EventArgs e) { }
