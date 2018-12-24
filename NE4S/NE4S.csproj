@@ -262,6 +262,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="m4logo.ico" />
+    <None Include="Resources\Cancel_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
