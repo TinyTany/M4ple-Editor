@@ -342,7 +342,7 @@ namespace NE4S.Scores
             pBox.Refresh();
         }
 
-        #region マウス入力とかに反応して処理するメソッドたち  
+        #region マウス入力とかに反応して処理するメソッドたち
 
         public void MouseClick(MouseEventArgs e)
         {
@@ -407,20 +407,7 @@ namespace NE4S.Scores
                         {
                             selectedNote = null;
                         }
-                        if (selectedNote != null)
-                        {
-                            Status.SelectedNote = selectedNote;
-                            Status.SelectedNoteArea = noteArea;
-                            if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
-                            {
-                                Status.SelectedNote = null;
-                            }
-                            if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
-                            {
-                                Status.SelectedNote = null;
-                            }
-                        }
-                        else if (selectedLane != null)
+                        if (selectedLane != null)
                         {
                             Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                             if (selectionArea.Contains(currentPosition))
@@ -428,14 +415,30 @@ namespace NE4S.Scores
                                 selectionArea.MovePositionDelta = new Position(
                                     currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
                                     currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
-                                selectionArea.SetContainsNotes(model.NoteBook);
+                            }
+                            else if (selectedNote != null)
+                            {
+                                Status.SelectedNote = selectedNote;
+                                Status.SelectedNoteArea = noteArea;
+                                if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                                {
+                                    Status.SelectedNote = null;
+                                }
+                                if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
+                                {
+                                    Status.SelectedNote = null;
+                                }
                             }
                             else
                             {
-                                selectionArea.StartPosition = currentPosition;
-                                selectionArea.EndPosition = null;
+                                selectionArea = new SelectionArea
+                                {
+                                    StartPosition = currentPosition,
+                                    EndPosition = null
+                                };
                             }
                         }
+                        
                         break;
 					case Mode.DELETE:
                         if (selectedNote != null)
@@ -570,7 +573,11 @@ namespace NE4S.Scores
             Status.SelectedNote = null;
             Status.SelectedNoteArea = NoteArea.NONE;
             selectionArea.MovePositionDelta = null;
-		}
+            if (!selectionArea.SelectedNoteList.Any() && !selectionArea.SelectedLongNoteList.Any())
+            {
+                selectionArea.SetContainsNotes(model.NoteBook);
+            }
+        }
 
         public void MouseEnter(EventArgs e) { }
 
