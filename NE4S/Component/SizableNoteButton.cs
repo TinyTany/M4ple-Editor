@@ -199,6 +199,28 @@ namespace NE4S.Component
                         e.Graphics.FillRectangle(brush, VirtualButtonRect.Bottom);
                     }
                 }
+                /*
+                using (SolidBrush brush = new SolidBrush(guideColor))
+                using (Font myFont = new Font("Yu Gothic UI", 12, FontStyle.Regular))
+                {
+                    if (buttonArea == ButtonArea.Top)
+                    {
+                        e.Graphics.DrawString(
+                        "Size +",
+                        myFont,
+                        brush,
+                        new PointF(previewBox.Width / 2, 0));
+                    }
+                    else if (buttonArea == ButtonArea.Bottom)
+                    {
+                        e.Graphics.DrawString(
+                        "Size -",
+                        myFont,
+                        brush,
+                        new PointF(previewBox.Width / 2, previewBox.Height - virtualButtonWeight));
+                    }
+                }
+                //*/
             }
             DrawValue(e);
         }
