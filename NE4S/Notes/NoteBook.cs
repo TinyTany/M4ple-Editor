@@ -22,6 +22,8 @@ namespace NE4S.Notes
         public List<Air> AirNotes { get; private set; } = new List<Air>();
         public List<AttributeNote> AttributeNotes { get; private set; } = new List<AttributeNote>();
 
+        public event EventHandler DataChanged;
+
         public NoteBook()
         {
             //HACK: 開始時BPMを無理やり設定
@@ -39,14 +41,16 @@ namespace NE4S.Notes
             if (newNote is Air) AirNotes.Add(newNote as Air);
             else if (newNote is AttributeNote) AttributeNotes.Add(newNote as AttributeNote);
             else ShortNotes.Add(newNote);
-		}
+            DataChanged?.Invoke(this, null);
+        }
 
 		public void Add(LongNote newLongNote)
 		{
 			if (newLongNote is Hold) HoldNotes.Add(newLongNote as Hold);
 			else if (newLongNote is Slide) SlideNotes.Add(newLongNote as Slide);
 			else if (newLongNote is AirHold) AirHoldNotes.Add(newLongNote as AirHold);
-		}
+            DataChanged?.Invoke(this, null);
+        }
 
 		public void Delete(Note note)
 		{
@@ -101,14 +105,16 @@ namespace NE4S.Notes
                 AttributeNotes.Remove(note as AttributeNote);
             }
             else ShortNotes.Remove(note);
-		}
+            DataChanged?.Invoke(this, null);
+        }
 
 		public void Delete(LongNote longNote)
 		{
 			if (longNote is Hold) HoldNotes.Remove(longNote as Hold);
 			else if (longNote is Slide) SlideNotes.Remove(longNote as Slide);
 			else if (longNote is AirHold) AirHoldNotes.Remove(longNote as AirHold);
-		}
+            DataChanged?.Invoke(this, null);
+        }
 
         /// <summary>
         /// クリックされてるノーツがあったら投げる

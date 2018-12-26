@@ -142,8 +142,8 @@ namespace NE4S
             tsmiSaveAs.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
-                selectedPanel.SaveAs();
-                UpdateTextOfTabAndForm(false);
+                bool isSaved = selectedPanel.SaveAs();
+                UpdateTextOfTabAndForm(!isSaved);
             };
             tsmiExport.Click += (s, e) =>
             {
@@ -287,8 +287,8 @@ namespace NE4S
         private void Save_Click(object sender, EventArgs e)
         {
             //現在開かれているタブを判別してそれを対象にセーブするようにする
-            (tabScore.SelectedTab as TabPageEx).ScorePanel.Save();
-            UpdateTextOfTabAndForm(false);
+            bool isSaved = (tabScore.SelectedTab as TabPageEx).ScorePanel.Save();
+            UpdateTextOfTabAndForm(!isSaved);
             return;
         }
 

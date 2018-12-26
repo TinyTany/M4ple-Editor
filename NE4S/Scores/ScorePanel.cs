@@ -54,6 +54,7 @@ namespace NE4S.Scores
         public void SetEventForEditedWithoutSave(EditedStatusHandler handler)
         {
             model.IsEditedWithoutSaveChanged += handler;
+            model.IsEditedWithoutSave = false;
         }
 
         public bool IsEditedWithoutSave
@@ -103,16 +104,18 @@ namespace NE4S.Scores
             return false;
         }
 
-        public void Save()
+        public bool Save()
         {
             bool isSaved = dataIO.Save(model);
             model.IsEditedWithoutSave = !isSaved;
+            return isSaved;
         }
 
-        public void SaveAs()
+        public bool SaveAs()
         {
             bool isSaved =  dataIO.SaveAs(model);
             model.IsEditedWithoutSave = !isSaved;
+            return isSaved;
         }
 
         public void Export()

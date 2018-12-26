@@ -107,7 +107,6 @@ namespace NE4S.Component
         /// <param name="noteBook"></param>
         public void ClearNotes(NoteBook noteBook)
         {
-            SetContainsNotes(noteBook);
             foreach(Note note in SelectedNoteList.ToArray())
             {
                 noteBook.Delete(note);
@@ -131,7 +130,6 @@ namespace NE4S.Component
 
         public void ReverseNotes(NoteBook noteBook, LaneBook laneBook)
         {
-            SetContainsNotes(noteBook);
             ReverseShortNotes(SelectedNoteList, laneBook, noteBook);
             SelectedLongNoteList.ForEach(x =>
             {
