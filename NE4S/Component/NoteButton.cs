@@ -129,6 +129,7 @@ namespace NE4S.Component
             }
             //ノーツ画像描画
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             DrawNote(e);
             return;
         }

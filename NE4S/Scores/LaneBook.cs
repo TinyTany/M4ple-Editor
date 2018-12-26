@@ -269,6 +269,11 @@ namespace NE4S.Scores
             scoreBook.Delete(score.Index, count);
             //レーンを詰める
             FillLane();
+            //詰み対策（雑）
+            if (!this.Any())
+            {
+                SetScore(scoreBook, 4, 4, 1);
+            }
         }
 
         public void DeleteScoreWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int count)

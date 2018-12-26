@@ -229,7 +229,6 @@ namespace NE4S.Component
         {
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {
-                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 e.Graphics.DrawString(
                 "NoteSize: " + (noteSize + sizeDelta),
                 myFont,

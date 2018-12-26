@@ -64,7 +64,7 @@ namespace NE4S
             tabScore.SelectedIndexChanged += (s, e) =>
             {
                 Text = tabScore.SelectedTab.Text;
-                Text += " - M4ple";
+                Text += " - M4ple Editor";
             };
             #region ToolStripButton
             tsbAdd.Click += (s, e) => SetMode(Mode.ADD);
@@ -248,7 +248,7 @@ namespace NE4S
                 tabScore.SelectedTab.Text += "*";
             }
             Text = tabScore.SelectedTab.Text;
-            Text += " - M4ple";
+            Text += " - M4ple Editor";
             tabScore.SelectedTab.Refresh();
         }
 

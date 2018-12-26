@@ -141,7 +141,6 @@ namespace NE4S.Scores
 
         public void CopyNotes()
         {
-            selectionArea.SetContainsNotes(model.NoteBook);
             Clipboard.SetDataObject(selectionArea);
             //NOTE: どっちにするか（コピー後矩形を保持or破棄）迷う...
             //selectionArea = new SelectionArea();
@@ -216,6 +215,7 @@ namespace NE4S.Scores
         public void ClearAreaNotes()
         {
             selectionArea.ClearAllNotes(model.NoteBook);
+            selectionArea = new SelectionArea();
         }
 
         public void ReverseNotes()

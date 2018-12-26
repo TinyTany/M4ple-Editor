@@ -450,6 +450,11 @@
             // curveSlideUpDown
             // 
             this.curveSlideUpDown.Location = new System.Drawing.Point(294, 391);
+            this.curveSlideUpDown.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             this.curveSlideUpDown.Minimum = new decimal(new int[] {
             1,
             0,
@@ -459,7 +464,7 @@
             this.curveSlideUpDown.Size = new System.Drawing.Size(139, 23);
             this.curveSlideUpDown.TabIndex = 102;
             this.curveSlideUpDown.Value = new decimal(new int[] {
-            20,
+            100,
             0,
             0,
             0});
@@ -469,9 +474,9 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(12, 393);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(187, 15);
+            this.label14.Size = new System.Drawing.Size(102, 15);
             this.label14.TabIndex = 103;
-            this.label14.Text = "曲線Slideの分割数（デフォルト: 20）";
+            this.label14.Text = "曲線Slideの分割数";
             // 
             // ExportForm
             // 
