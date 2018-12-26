@@ -125,6 +125,12 @@
     <Compile Include="Component\ValueNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Component\VersionInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\VersionInfoForm.Designer.cs">
+      <DependentUpon>VersionInfoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Define.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -200,6 +206,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Component\SetValueCustomForm.resx">
       <DependentUpon>SetValueCustomForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\VersionInfoForm.resx">
+      <DependentUpon>VersionInfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
