@@ -163,6 +163,32 @@ namespace NE4S
             tsmiCopy.Click += Copy_Click;
             tsmiCut.Click += Cut_Click;
             tsmiPaste.Click += Paste_Click;
+            tsmiPasteReverse.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.PasteNotes();
+                selectedPanel.ReverseNotes();
+            };
+            tsmiDelete.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.ClearAreaNotes();
+            };
+            tsmiReverse.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.ReverseNotes();
+            };
+            #endregion
+            #region ToolStripMenuItem(ヘルプ)
+            tsmiShowHelp.Click += (s, e) =>
+            {
+                System.Diagnostics.Process.Start("https://github.com/TinyTany/M4ple/wiki");
+            };
+            tsmiVersion.Click += (s, e) =>
+            {
+                new VersionInfoForm().ShowDialog();
+            };
             #endregion
             #endregion
             //ノーツボタンを追加
@@ -172,6 +198,7 @@ namespace NE4S
             {
                 flpNotePanel.Controls.Add(noteButton);
             }
+            
         }
 
         private bool IsExit()
