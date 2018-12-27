@@ -42,7 +42,9 @@
             this.tsmiCut = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiPaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPasteReverse = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiReverse = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiView = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiIsShortNote = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiIsHold = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,55 +123,58 @@
             this.toolStripSeparator4,
             this.tsmiQuit});
             this.tsmiFile.Name = "tsmiFile";
-            this.tsmiFile.Size = new System.Drawing.Size(53, 20);
-            this.tsmiFile.Text = "ファイル";
+            this.tsmiFile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
+            this.tsmiFile.Size = new System.Drawing.Size(67, 20);
+            this.tsmiFile.Text = "ファイル(&F)";
             // 
             // tsmiNew
             // 
             this.tsmiNew.Name = "tsmiNew";
             this.tsmiNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.tsmiNew.Size = new System.Drawing.Size(227, 22);
-            this.tsmiNew.Text = "新規作成(N)";
+            this.tsmiNew.Size = new System.Drawing.Size(257, 22);
+            this.tsmiNew.Text = "新規作成(&N)";
             // 
             // tsmiOpen
             // 
             this.tsmiOpen.Name = "tsmiOpen";
             this.tsmiOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.tsmiOpen.Size = new System.Drawing.Size(227, 22);
-            this.tsmiOpen.Text = "開く(O)...";
+            this.tsmiOpen.Size = new System.Drawing.Size(257, 22);
+            this.tsmiOpen.Text = "開く(&O)...";
             // 
             // tsmiSave
             // 
             this.tsmiSave.Name = "tsmiSave";
             this.tsmiSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.tsmiSave.Size = new System.Drawing.Size(227, 22);
-            this.tsmiSave.Text = "上書き保存(S)";
+            this.tsmiSave.Size = new System.Drawing.Size(257, 22);
+            this.tsmiSave.Text = "上書き保存(&S)";
             // 
             // tsmiSaveAs
             // 
             this.tsmiSaveAs.Name = "tsmiSaveAs";
-            this.tsmiSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.tsmiSaveAs.Size = new System.Drawing.Size(227, 22);
-            this.tsmiSaveAs.Text = "名前を付けて保存(A)...";
+            this.tsmiSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.tsmiSaveAs.Size = new System.Drawing.Size(257, 22);
+            this.tsmiSaveAs.Text = "名前を付けて保存(&A)...";
             // 
             // tsmiExport
             // 
             this.tsmiExport.Name = "tsmiExport";
-            this.tsmiExport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.tsmiExport.Size = new System.Drawing.Size(227, 22);
-            this.tsmiExport.Text = "エクスポート...";
+            this.tsmiExport.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.X)));
+            this.tsmiExport.Size = new System.Drawing.Size(257, 22);
+            this.tsmiExport.Text = "エクスポート(&X)...";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(224, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(254, 6);
             // 
             // tsmiQuit
             // 
             this.tsmiQuit.Name = "tsmiQuit";
             this.tsmiQuit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.tsmiQuit.Size = new System.Drawing.Size(227, 22);
-            this.tsmiQuit.Text = "終了(X)";
+            this.tsmiQuit.Size = new System.Drawing.Size(257, 22);
+            this.tsmiQuit.Text = "終了(&Q)";
             // 
             // tsmiEdit
             // 
@@ -177,34 +182,56 @@
             this.tsmiCut,
             this.tsmiCopy,
             this.tsmiPaste,
-            this.tsmiDelete});
+            this.tsmiPasteReverse,
+            this.tsmiDelete,
+            this.tsmiReverse});
             this.tsmiEdit.Name = "tsmiEdit";
-            this.tsmiEdit.Size = new System.Drawing.Size(43, 20);
-            this.tsmiEdit.Text = "編集";
+            this.tsmiEdit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.E)));
+            this.tsmiEdit.Size = new System.Drawing.Size(57, 20);
+            this.tsmiEdit.Text = "編集(&E)";
             // 
             // tsmiCut
             // 
             this.tsmiCut.Name = "tsmiCut";
-            this.tsmiCut.Size = new System.Drawing.Size(115, 22);
+            this.tsmiCut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.tsmiCut.Size = new System.Drawing.Size(252, 22);
             this.tsmiCut.Text = "切り取り";
             // 
             // tsmiCopy
             // 
             this.tsmiCopy.Name = "tsmiCopy";
-            this.tsmiCopy.Size = new System.Drawing.Size(115, 22);
+            this.tsmiCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.tsmiCopy.Size = new System.Drawing.Size(252, 22);
             this.tsmiCopy.Text = "コピー";
             // 
             // tsmiPaste
             // 
             this.tsmiPaste.Name = "tsmiPaste";
-            this.tsmiPaste.Size = new System.Drawing.Size(115, 22);
+            this.tsmiPaste.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.tsmiPaste.Size = new System.Drawing.Size(252, 22);
             this.tsmiPaste.Text = "貼り付け";
+            // 
+            // tsmiPasteReverse
+            // 
+            this.tsmiPasteReverse.Name = "tsmiPasteReverse";
+            this.tsmiPasteReverse.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.V)));
+            this.tsmiPasteReverse.Size = new System.Drawing.Size(252, 22);
+            this.tsmiPasteReverse.Text = "左右反転して貼り付け";
             // 
             // tsmiDelete
             // 
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(115, 22);
+            this.tsmiDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.tsmiDelete.Size = new System.Drawing.Size(252, 22);
             this.tsmiDelete.Text = "削除";
+            // 
+            // tsmiReverse
+            // 
+            this.tsmiReverse.Name = "tsmiReverse";
+            this.tsmiReverse.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.tsmiReverse.Size = new System.Drawing.Size(252, 22);
+            this.tsmiReverse.Text = "左右反転";
             // 
             // tsmiView
             // 
@@ -221,8 +248,9 @@
             this.toolStripSeparator10,
             this.tsmiIsExTapDistinct});
             this.tsmiView.Name = "tsmiView";
-            this.tsmiView.Size = new System.Drawing.Size(43, 20);
-            this.tsmiView.Text = "表示";
+            this.tsmiView.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.V)));
+            this.tsmiView.Size = new System.Drawing.Size(58, 20);
+            this.tsmiView.Text = "表示(&V)";
             // 
             // tsmiIsShortNote
             // 
@@ -310,24 +338,26 @@
             this.toolStripSeparator7,
             this.tsmiVersion});
             this.tsmiHelp.Name = "tsmiHelp";
-            this.tsmiHelp.Size = new System.Drawing.Size(48, 20);
-            this.tsmiHelp.Text = "ヘルプ";
+            this.tsmiHelp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.H)));
+            this.tsmiHelp.Size = new System.Drawing.Size(65, 20);
+            this.tsmiHelp.Text = "ヘルプ(&H)";
             // 
             // tsmiShowHelp
             // 
             this.tsmiShowHelp.Name = "tsmiShowHelp";
-            this.tsmiShowHelp.Size = new System.Drawing.Size(142, 22);
+            this.tsmiShowHelp.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.tsmiShowHelp.Size = new System.Drawing.Size(156, 22);
             this.tsmiShowHelp.Text = "ヘルプの表示";
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(139, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(153, 6);
             // 
             // tsmiVersion
             // 
             this.tsmiVersion.Name = "tsmiVersion";
-            this.tsmiVersion.Size = new System.Drawing.Size(142, 22);
+            this.tsmiVersion.Size = new System.Drawing.Size(156, 22);
             this.tsmiVersion.Text = "バージョン情報";
             // 
             // tabNoteButton
@@ -626,10 +656,12 @@
             this.Controls.Add(this.tabScore);
             this.Controls.Add(this.tabNoteButton);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Text = "M4ple";
+            this.Text = "M4ple Editor";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabNoteButton.ResumeLayout(false);
@@ -662,7 +694,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripButton tsbCut;
 		private System.Windows.Forms.ToolStripButton tsbCopy;
-		private System.Windows.Forms.ToolStripButton tsbPaste;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripLabel tslBeat;
@@ -690,8 +721,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem tsmiCut;
         private System.Windows.Forms.ToolStripMenuItem tsmiCopy;
-        private System.Windows.Forms.ToolStripMenuItem tsmiPaste;
-        private System.Windows.Forms.ToolStripMenuItem tsmiDelete;
         private System.Windows.Forms.ToolStripMenuItem tsmiIsShortNote;
         private System.Windows.Forms.ToolStripMenuItem tsmiIsHold;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
@@ -704,6 +733,11 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiVersion;
         private System.Windows.Forms.ToolStripMenuItem tsmiIsExTapDistinct;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+        private System.Windows.Forms.ToolStripButton tsbPaste;
+        private System.Windows.Forms.ToolStripMenuItem tsmiPaste;
+        private System.Windows.Forms.ToolStripMenuItem tsmiPasteReverse;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDelete;
+        private System.Windows.Forms.ToolStripMenuItem tsmiReverse;
     }
 }
 

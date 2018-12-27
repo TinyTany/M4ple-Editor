@@ -100,27 +100,76 @@ namespace NE4S.Component
             }
         }
 
+        /// <summary>
+        /// NoteBookから選択範囲内のノーツを削除します
+        /// SelectionArea自体が持つ選択範囲内のノーツオブジェクトは保持されます
+        /// </summary>
+        /// <param name="noteBook"></param>
         public void ClearNotes(NoteBook noteBook)
         {
-            SetContainsNotes(noteBook);
             foreach(Note note in SelectedNoteList.ToArray())
             {
                 noteBook.Delete(note);
             }
-            SelectedNoteList.Clear();
             foreach(LongNote longNote in SelectedLongNoteList.ToArray())
             {
                 noteBook.Delete(longNote);
             }
+        }
+
+        /// <summary>
+        /// NoteBookおよびSelectionAreaから範囲内のすべてのノーツを削除します
+        /// </summary>
+        /// <param name="noteBook"></param>
+        public void ClearAllNotes(NoteBook noteBook)
+        {
+            ClearNotes(noteBook);
+            SelectedNoteList.Clear();
             SelectedLongNoteList.Clear();
         }
 
-        public void ReverseNotes(NoteBook noteBook)
+        public void ReverseNotes(NoteBook noteBook, LaneBook laneBook)
         {
-            SetContainsNotes(noteBook);
-            SelectedNoteList.ForEach(x =>
+            ReverseShortNotes(SelectedNoteList, laneBook, noteBook);
+            SelectedLongNoteList.ForEach(x =>
             {
+                ReverseShortNotes(x, laneBook, noteBook);
+            });
+        }
 
+        private void ReverseShortNotes(List<Note> noteList, LaneBook laneBook, NoteBook noteBook)
+        {
+            noteList.ForEach(x =>
+            {
+                int reverseLane = BottomRightPosition.Lane - (x.Position.Lane - TopLeftPosition.Lane + x.Size) + 1;
+                Position newPosition = new Position(reverseLane, x.Position.Tick);
+                x.RelocateOnlyAndUpdate(newPosition, laneBook);
+                if (x is AirableNote airable && airable.IsAirAttached)
+                {
+                    Air newAir = null;
+                    if(airable.Air is AirUpL)
+                    {
+                        newAir = new AirUpR(x);
+                    }
+                    else if(airable.Air is AirUpR)
+                    {
+                        newAir = new AirUpL(x);
+                    }
+                    else if(airable.Air is AirDownL)
+                    {
+                        newAir = new AirDownR(x);
+                    }
+                    else if(airable.Air is AirDownR)
+                    {
+                        newAir = new AirDownL(x);
+                    }
+                    if (newAir != null)
+                    {
+                        noteBook.Delete(airable.Air);
+                        noteBook.Add(newAir);
+                        airable.AttachAir(newAir);
+                    }
+                }
             });
         }
 
@@ -180,17 +229,17 @@ namespace NE4S.Component
                 x => x.StartTick <= BottomRightPosition.Tick && BottomRightPosition.Tick <= x.EndTick);
             int passingLanes = futureLane != null ? futureLane.Index - pastLane.Index : laneBook.Count - pastLane.Index - 1;
             PointF topLeft = new PointF(
-                pastLane.HitRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
+                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
             PointF topRight = new PointF(
-                pastLane.HitRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
+                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
             PointF bottomLeft = new PointF(
-                pastLane.HitRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
+                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
             PointF bottomRight = new PointF(
-                pastLane.HitRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
+                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
             using (GraphicsPath graphicsPath = new GraphicsPath())
             {
                 e.Graphics.SmoothingMode = SmoothingMode.Default;
@@ -205,19 +254,19 @@ namespace NE4S.Component
                         {
                             pen.DashPattern = new float[] { 4f, 4f };
                             RectangleF clipRect = new RectangleF(
-                                itrLane.HitRect.X - originLocation.X,
-                                itrLane.HitRect.Y - originLocation.Y,
+                                itrLane.LaneRect.X - originLocation.X,
+                                itrLane.LaneRect.Y - originLocation.Y,
                                 //HACK: 選択領域矩形が少し大きいので見切れないようにする
-                                itrLane.HitRect.Width + 1,
-                                itrLane.HitRect.Height + 5);
+                                itrLane.LaneRect.Width + 1,
+                                itrLane.LaneRect.Height + 5);
                             e.Graphics.Clip = new Region(clipRect);
                             e.Graphics.DrawPath(pen, graphicsPath);
                         }
                     }
-                    topLeft = topLeft.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
-                    topRight = topRight.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
-                    bottomLeft = bottomLeft.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
-                    bottomRight = bottomRight.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
+                    topLeft = topLeft.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
+                    topRight = topRight.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
+                    bottomLeft = bottomLeft.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
+                    bottomRight = bottomRight.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
                     graphicsPath.ClearMarkers();
                 }
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;

@@ -38,6 +38,68 @@ namespace NE4S.Component
             previewBox.Location = new Point(margin - 1, margin - 1);
             //
             AutoScaleMode = AutoScaleMode.None;
+            #region ToolTip
+            ToolTip toolTip = new ToolTip()
+            {
+                InitialDelay = 1000,
+                ReshowDelay = 500,
+                AutoPopDelay = 5000,
+                ShowAlways = true
+            };
+            string tipStr = "Note";
+            switch (noteType)
+            {
+                case NoteType.TAP:
+                    tipStr = "Tap";
+                    break;
+                case NoteType.EXTAP:
+                    tipStr = "ExTap";
+                    break;
+                case NoteType.AWEXTAP:
+                    tipStr = "AwesomeExTap";
+                    break;
+                case NoteType.EXTAPDOWN:
+                    tipStr = "ExTapDown";
+                    break;
+                case NoteType.FLICK:
+                    tipStr = "Flick";
+                    break;
+                case NoteType.HELL:
+                    tipStr = "Damage";
+                    break;
+                case NoteType.HOLD:
+                    tipStr = "Hold";
+                    break;
+                case NoteType.SLIDE:
+                    tipStr = "Slide";
+                    break;
+                case NoteType.SLIDECURVE:
+                    tipStr = "SlideCurve";
+                    break;
+                case NoteType.AIRUPL:   
+                case NoteType.AIRUPC:
+                case NoteType.AIRUPR:
+                    tipStr = "AirUp";
+                    break;
+                case NoteType.AIRDOWNL:
+                case NoteType.AIRDOWNC:
+                case NoteType.AIRDOWNR:
+                    tipStr = "AirDown";
+                    break;
+                case NoteType.AIRHOLD:
+                    tipStr = "AirHold/AirAction";
+                    break;
+                case NoteType.BPM:
+                    tipStr = "BPM";
+                    break;
+                case NoteType.HIGHSPEED:
+                    tipStr = "HighSpeed";
+                    break;
+                default:
+                    break;
+            }
+            toolTip.SetToolTip(previewBox, tipStr);
+            #endregion
         }
 
         protected virtual void PreviewBox_MouseDown(object sender, MouseEventArgs e)
@@ -67,6 +129,7 @@ namespace NE4S.Component
             }
             //ノーツ画像描画
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             DrawNote(e);
             return;
         }

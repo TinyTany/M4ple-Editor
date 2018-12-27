@@ -57,7 +57,7 @@ namespace NE4S.Notes
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
         {
-            if (air != null || airHold != null)
+            if (Air != null || AirHold != null)
             {
                 base.Draw(e, originPosX, originPosY);
                 return;

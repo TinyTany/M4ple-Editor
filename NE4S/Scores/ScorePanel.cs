@@ -25,13 +25,13 @@ namespace NE4S.Scores
         private DataIO dataIO;
         private SelectionArea selectionArea;
 
-        static class Margin
+        public static class Margin
         {
-            public static int
-                Top = ScoreInfo.PanelMargin.Top,
-                Bottom = ScoreInfo.PanelMargin.Bottom,
-                Left = ScoreInfo.PanelMargin.Left,
-                Right = ScoreInfo.PanelMargin.Right;
+            public static readonly int
+                Top = 10,
+                Bottom = 10,
+                Left = 3,
+                Right = 3;
         }
 
         public ScorePanel(PictureBox pBox, HScrollBar hSBar)
@@ -54,6 +54,7 @@ namespace NE4S.Scores
         public void SetEventForEditedWithoutSave(EditedStatusHandler handler)
         {
             model.IsEditedWithoutSaveChanged += handler;
+            model.IsEditedWithoutSave = false;
         }
 
         public bool IsEditedWithoutSave
@@ -103,16 +104,18 @@ namespace NE4S.Scores
             return false;
         }
 
-        public void Save()
+        public bool Save()
         {
             bool isSaved = dataIO.Save(model);
             model.IsEditedWithoutSave = !isSaved;
+            return isSaved;
         }
 
-        public void SaveAs()
+        public bool SaveAs()
         {
             bool isSaved =  dataIO.SaveAs(model);
             model.IsEditedWithoutSave = !isSaved;
+            return isSaved;
         }
 
         public void Export()
@@ -138,25 +141,39 @@ namespace NE4S.Scores
 
         public void CopyNotes()
         {
-            selectionArea.SetContainsNotes(model.NoteBook);
             Clipboard.SetDataObject(selectionArea);
+            //NOTE: どっちにするか（コピー後矩形を保持or破棄）迷う...
+            //selectionArea = new SelectionArea();
         }
 
         public void CutNotes()
         {
             CopyNotes();
-            ClearAreaNotes();
+            selectionArea.ClearNotes(model.NoteBook);
+            selectionArea = new SelectionArea();
         }
 
+        /// <summary>
+        /// 相対座標を自動で設定してクリップボードからノーツを貼り付けます
+        /// </summary>
+        public void PasteNotes()
+        {
+            var scoreLane = model.LaneBook.Find(x => x.HitRect.Left >= currentPositionX);
+            Position position = new Position(0, scoreLane.EndTick - ScoreInfo.MaxBeatDiv / Status.Beat);
+            PasteNotes(position);
+        }
+
+        /// <summary>
+        /// 相対座標を指定してクリップボードからノーツを貼り付けます
+        /// </summary>
+        /// <param name="position"></param>
         public void PasteNotes(Position position)
         {
-            SelectionArea data = Clipboard.GetDataObject().GetData(typeof(SelectionArea)) as SelectionArea;
-            if (data != null)
+            if (Clipboard.GetDataObject().GetData(typeof(SelectionArea)) is SelectionArea data)
             {
                 selectionArea = data;
                 selectionArea.MovePositionDelta = new Position();
-                selectionArea.Relocate(position, model.LaneBook);
-                foreach(Note note in selectionArea.SelectedNoteList)
+                foreach (Note note in selectionArea.SelectedNoteList)
                 {
                     model.NoteBook.Add(note);
                     if (note is AirableNote)
@@ -164,15 +181,15 @@ namespace NE4S.Scores
                         AirableNote airable = note as AirableNote;
                         if (airable.IsAirAttached)
                         {
-                            model.NoteBook.Add(airable.GetAirForDelete());
+                            model.NoteBook.Add(airable.Air);
                         }
                         if (airable.IsAirHoldAttached)
                         {
-                            model.NoteBook.Add(airable.GetAirHoldForDelete());
+                            model.NoteBook.Add(airable.AirHold);
                         }
                     }
                 }
-                foreach(LongNote longNote in selectionArea.SelectedLongNoteList)
+                foreach (LongNote longNote in selectionArea.SelectedLongNoteList)
                 {
                     model.NoteBook.Add(longNote);
                     longNote.ForEach(x =>
@@ -182,26 +199,28 @@ namespace NE4S.Scores
                             AirableNote airable = x as AirableNote;
                             if (airable.IsAirAttached)
                             {
-                                model.NoteBook.Add(airable.GetAirForDelete());
+                                model.NoteBook.Add(airable.Air);
                             }
                             if (airable.IsAirHoldAttached)
                             {
-                                model.NoteBook.Add(airable.GetAirHoldForDelete());
+                                model.NoteBook.Add(airable.AirHold);
                             }
                         }
                     });
                 }
+                selectionArea.Relocate(position, model.LaneBook);
             }
         }
 
         public void ClearAreaNotes()
         {
-            selectionArea.ClearNotes(model.NoteBook);
+            selectionArea.ClearAllNotes(model.NoteBook);
+            selectionArea = new SelectionArea();
         }
 
         public void ReverseNotes()
         {
-            selectionArea.ReverseNotes(model.NoteBook);
+            selectionArea.ReverseNotes(model.NoteBook, model.LaneBook);
         }
         #endregion
 
@@ -326,7 +345,7 @@ namespace NE4S.Scores
             pBox.Refresh();
         }
 
-        #region マウス入力とかに反応して処理するメソッドたち  
+        #region マウス入力とかに反応して処理するメソッドたち
 
         public void MouseClick(MouseEventArgs e)
         {
@@ -336,7 +355,7 @@ namespace NE4S.Scores
             if (selectedLane != null && selectedLane.SelectedScore(e.Location.AddX(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
             {
                 //クリックされたグリッド座標を特定
-                Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                 if (selectionArea.Contains(currentPosition))
                 {
                     new NoteEditCMenu(this, currentPosition).Show(pBox, e.Location);
@@ -361,7 +380,7 @@ namespace NE4S.Scores
 			{
                 System.Diagnostics.Debug.WriteLine(selectedLane.Index);
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
-                Position position = selectedLane.GetPos(gridPoint.AddX(currentPositionX));
+                Position position = selectedLane.GetLocalPosition(gridPoint.AddX(currentPositionX));
 				if(position != null)
 				{
                     position.PrintPosition();
@@ -391,35 +410,42 @@ namespace NE4S.Scores
                         {
                             selectedNote = null;
                         }
-                        if (selectedNote != null)
+                        if (selectedLane != null)
                         {
-                            Status.SelectedNote = selectedNote;
-                            Status.SelectedNoteArea = noteArea;
-                            if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
-                            {
-                                Status.SelectedNote = null;
-                            }
-                            if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
-                            {
-                                Status.SelectedNote = null;
-                            }
-                        }
-                        else if (selectedLane != null)
-                        {
-                            Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                            Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                             if (selectionArea.Contains(currentPosition))
                             {
                                 selectionArea.MovePositionDelta = new Position(
                                     currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
                                     currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
-                                selectionArea.SetContainsNotes(model.NoteBook);
+                            }
+                            else if (selectedNote != null)
+                            {
+                                Status.SelectedNote = selectedNote;
+                                Status.SelectedNoteArea = noteArea;
+                                if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
+                                {
+                                    Status.SelectedNote = null;
+                                    Status.SelectedNoteArea = NoteArea.NONE;
+                                }
+                                if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
+                                {
+                                    Status.SelectedNote = null;
+                                    Status.SelectedNoteArea = NoteArea.NONE;
+                                }
+                                //カーソルの設定
+                                SetCursor(selectedNote, noteArea);
                             }
                             else
                             {
-                                selectionArea.StartPosition = currentPosition;
-                                selectionArea.EndPosition = null;
+                                selectionArea = new SelectionArea
+                                {
+                                    StartPosition = currentPosition,
+                                    EndPosition = null
+                                };
                             }
                         }
+                        
                         break;
 					case Mode.DELETE:
                         if (selectedNote != null)
@@ -433,6 +459,38 @@ namespace NE4S.Scores
 			}
             if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 		}
+
+        private void SetCursor(Note selectedNote, int noteArea)
+        {
+            if (selectedNote == null)
+            {
+                pBox.Cursor = Cursors.Default;
+                return;
+            }
+            if (selectedNote is AirHoldEnd || selectedNote is AirAction || selectedNote is AttributeNote)
+            {
+                pBox.Cursor = Cursors.SizeNS;
+            }
+            else if (noteArea == NoteArea.LEFT || noteArea == NoteArea.RIGHT)
+            {
+                pBox.Cursor = Cursors.SizeWE;
+            }
+            else if (noteArea == NoteArea.CENTER)
+            {
+                if (selectedNote is HoldEnd)
+                {
+                    pBox.Cursor = Cursors.SizeNS;
+                }
+                else
+                {
+                    pBox.Cursor = Cursors.SizeAll;
+                }
+            }
+            else
+            {
+                pBox.Cursor = Cursors.Default;
+            }
+        }
 
         public void MouseMove(MouseEventArgs e)
         {
@@ -450,10 +508,6 @@ namespace NE4S.Scores
 					{
 						pNote.Visible = false;
 					}
-					if (selectedLane != null && Status.IsMousePressed)
-					{
-						
-					}
                     //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずほぼそのままコピペ
                     //PointToGridのオーバーロードが違うだけ
                     //動いた
@@ -461,12 +515,13 @@ namespace NE4S.Scores
                     {
                         Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
                         Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
-                        Position newPos = selectedLane.GetPos(virtualGridPoint);
+                        Position newPos = selectedLane.GetLocalPosition(virtualGridPoint);
                         Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                     }
                     break;
 				case Mode.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
+                    //選択されているノーツに対するサイズ変更、位置変更を行う
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
                         switch (Status.SelectedNoteArea)
@@ -486,7 +541,7 @@ namespace NE4S.Scores
                                     //ノーツのサイズを考慮したほうのメソッドを使う
                                     Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote.Size);
                                     Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
-                                    Position newPos = selectedLane.GetPos(virtualGridPoint);
+                                    Position newPos = selectedLane.GetLocalPosition(virtualGridPoint);
                                     Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                                 }
                                 break;
@@ -505,10 +560,10 @@ namespace NE4S.Scores
                                 break;
                         }
                     }
-                    //
+                    //選択矩形のいち変更を行う
                     if (Status.IsMousePressed && selectedLane != null && Status.SelectedNote == null && e.Button == MouseButtons.Left)
                     {
-                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                         if (selectionArea.MovePositionDelta != null)
                         {
                             pBox.Cursor = Cursors.SizeAll;
@@ -519,21 +574,20 @@ namespace NE4S.Scores
                             selectionArea.EndPosition = currentPosition;
                         }
                     }
+                    //選択矩形上にカーソルが乗ったときのカーソルのタイプを変更する
                     else if (!Status.IsMousePressed && selectedLane != null)
                     {
-                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                         if (selectionArea.Contains(currentPosition))
                         {
                             pBox.Cursor = Cursors.SizeAll;
                         }
                         else
                         {
-                            pBox.Cursor = Cursors.Default;
+                            int noteArea = NoteArea.NONE;
+                            var note = model.NoteBook.SelectedNote(e.Location.AddX(currentPositionX), ref noteArea);
+                            SetCursor(note, noteArea);
                         }
-                    }
-                    else
-                    {
-                        pBox.Cursor = Cursors.Default;
                     }
                     break;
 				case Mode.DELETE:
@@ -554,7 +608,12 @@ namespace NE4S.Scores
             Status.SelectedNote = null;
             Status.SelectedNoteArea = NoteArea.NONE;
             selectionArea.MovePositionDelta = null;
-		}
+            if (!selectionArea.SelectedNoteList.Any() && !selectionArea.SelectedLongNoteList.Any())
+            {
+                selectionArea.SetContainsNotes(model.NoteBook);
+            }
+            pBox.Cursor = Cursors.Default;
+        }
 
         public void MouseEnter(EventArgs e) { }
 
@@ -578,7 +637,7 @@ namespace NE4S.Scores
         {
             //与えられた自由物理座標からグリッド仮想座標とポジション座標を作成
             Point gridPoint = PointToGrid(location, lane);
-            Position position = lane.GetPos(gridPoint.AddX(currentPositionX));
+            Position position = lane.GetLocalPosition(gridPoint.AddX(currentPositionX));
             PointF locationVirtual = gridPoint.AddX(currentPositionX);
 
             Note newNote = null;
@@ -768,13 +827,25 @@ namespace NE4S.Scores
         {
             Point gridP = new Point();
             //HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
-            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1 + lane.HitRect.Height));
+            Point relativeP = new Point(
+                location.X + currentPositionX - (int)lane.LaneRect.X, 
+                location.Y - (int)(lane.HitRect.Y - 1 + lane.HitRect.Height));
             Point deltaP = new Point();
             float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
             float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             float maxGridX = (ScoreInfo.Lanes - noteSize) * ScoreInfo.MinLaneWidth;
             //現在の自由座標とそこから計算したグリッド座標の差分
-            deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
+            //deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
+            deltaP.X = (int)(Math.Floor(relativeP.X / gridWidth) * gridWidth);
+            if (deltaP.X < 0)
+            {
+                deltaP.X = 0;
+            }
+            else if (deltaP.X > (int)maxGridX)
+            {
+                deltaP.X = (int)maxGridX;
+            }
+            deltaP.X -= relativeP.X;
             deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
             gridP.X = location.X + deltaP.X;
             gridP.Y = location.Y + deltaP.Y;
@@ -794,8 +865,8 @@ namespace NE4S.Scores
 			int originPosY = 0;
             var drawLaneBook = model.LaneBook.Where(
                 x =>
-                x.HitRect.Right >= currentPositionX - ScoreInfo.LaneMargin.Right &&
-                x.HitRect.Left <= currentPositionX + pBox.Width + ScoreInfo.LaneMargin.Left)
+                x.LaneRect.Right >= currentPositionX - ScoreLane.Margin.Right &&
+                x.LaneRect.Left <= currentPositionX + pBox.Width + ScoreLane.Margin.Left)
                 .ToList();
             drawLaneBook.ForEach(x => x.PaintLane(e, originPosX, originPosY));
             if (drawLaneBook.Any())

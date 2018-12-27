@@ -9,6 +9,8 @@ namespace NE4S.Component
 {
     public class NoteButtonManager : List<NoteButton>
     {
+        public event EventHandler ButtonClicked;
+
         public NoteButtonManager()
         {
             //サイズ変更可能，向きはない
@@ -52,6 +54,7 @@ namespace NE4S.Component
                     itrButton.SetUnSelected();
                 }
             }
+            ButtonClicked?.Invoke(noteButton, new EventArgs());
             return;
         }
     }

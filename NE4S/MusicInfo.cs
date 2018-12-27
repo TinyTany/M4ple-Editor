@@ -14,7 +14,7 @@ namespace NE4S
         public string Designer { get; set; }
         public int Difficulty { get; set; }
         public string WEKanji { get; set; }
-        public decimal WEStars { get; set; }
+        public decimal WEStars { get; set; } = 1;
         public string PlayLevel { get; set; }
         public string SongId { get; set; }
         public string MusicFileName { get; set; }
@@ -23,8 +23,8 @@ namespace NE4S
         public string ExportPath { get; set; }
         public decimal MeasureOffset { get; set; }
         public int Metronome { get; set; }
-        public decimal SlideCurveSegment { get; set; }
-        public bool HasExported { get; set; }
+        public decimal SlideCurveSegment { get; set; } = 20;
+        public bool HasExported { get; set; } = false;
 
         public MusicInfo() { }
     }

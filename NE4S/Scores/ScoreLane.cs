@@ -35,25 +35,28 @@ namespace NE4S.Scores
         /// </summary>
         public RectangleF HitRect { get; private set; }
 
+        public RectangleF LaneRect { get; private set; }
+
         /// <summary>
         /// レーンの当たり判定矩形と描画領域矩形を更新
         /// </summary>
 		private void RefreshRects()
 		{
 			SizeF hitRectSize = new SizeF(
-				scoreWidth,
+				scoreWidth + Margin.Left + Margin.Right,
 				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * CurrentBarSize);
 			PointF hitRectLocation = new PointF(
-				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
+				index * (Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right) + ScorePanel.Margin.Left,
 				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（1ピクセル下げる）
-				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRectSize.Height + 1);
+				ScorePanel.Margin.Top + Height - Margin.Bottom - hitRectSize.Height + 1);
             HitRect = new RectangleF(hitRectLocation, hitRectSize);
 			drawRegion.Size = new SizeF(
 				Margin.Left + scoreWidth + Margin.Right,
 				Margin.Top + maxScoreHeight + Margin.Bottom);
 			drawRegion.Location = new PointF(
-				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left,
-				ScoreInfo.PanelMargin.Top);
+				index * (Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right) + ScorePanel.Margin.Left,
+				ScorePanel.Margin.Top);
+            LaneRect = new RectangleF(HitRect.X + Margin.Left, HitRect.Y, scoreWidth, HitRect.Height);
 		}
 
         /// <summary>
@@ -68,8 +71,8 @@ namespace NE4S.Scores
 			foreach (ScoreMaterial sMaterial in scoreMaterialList)
 			{
 				sMaterial.HitRect = new RectangleF(
-					HitRect.X,
-					ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + normalizeDeltaHeight,
+					HitRect.X + Margin.Left,
+					ScorePanel.Margin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + normalizeDeltaHeight,
 					sMaterial.Width,
 					sMaterial.Height);
 				sumHeight += sMaterial.Height;
@@ -118,13 +121,13 @@ namespace NE4S.Scores
             }
         }
 
-        class Margin
+        public static class Margin
         {
-            public static int 
-                Top = ScoreInfo.LaneMargin.Top,
-                Bottom = ScoreInfo.LaneMargin.Bottom,
-                Left = ScoreInfo.LaneMargin.Left,
-                Right = ScoreInfo.LaneMargin.Right;
+            public static readonly int
+                Top = 5,
+                Bottom = 5,
+                Left = 60,
+                Right = 60;
         }
 
         public ScoreLane()
@@ -132,6 +135,7 @@ namespace NE4S.Scores
             scoreMaterialList = new List<ScoreMaterial>();
             CurrentBarSize = 0;
             HitRect = new RectangleF();
+            LaneRect = new RectangleF();
 			drawRegion = new RectangleF();
             index = -1;
         }
@@ -199,8 +203,8 @@ namespace NE4S.Scores
 				int normalizeDeltaHeight = 1;
 				//Scoreの当たり判定矩形を作成
 				RectangleF newScoreHitRect = new RectangleF(
-					HitRect.X,
-                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
+					HitRect.X + Margin.Left,
+                    ScorePanel.Margin.Top + Height - Margin.Bottom - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
 					newScore.Width,
 					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
@@ -310,10 +314,18 @@ namespace NE4S.Scores
         }
 
 		/// <summary>
-		/// 試作
+		/// グリッド座標からそれに対応する相対座標を取得します
 		/// </summary>
-		public Position GetPos(PointF location)
+		public Position GetLocalPosition(PointF location)
 		{
+            if (location.X < HitRect.X + Margin.Left)
+            {
+                location.X = HitRect.X + Margin.Left;
+            }
+            else if (location.X > HitRect.Right - Margin.Right - 1)
+            {
+                location.X = HitRect.Right - Margin.Right - 1;
+            }
             ScoreMaterial selectedScoreMaterial =
                 scoreMaterialList.Find(x => x.HitRect.Contains(location));
 			if (selectedScoreMaterial != null)

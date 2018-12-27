@@ -40,6 +40,8 @@ namespace NE4S.Notes
 			noteRect = new RectangleF();
 		}
 
+        public Note(Note note) : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
+
         public Note(int size, Position pos, PointF location, int laneIndex)
         {
 			Size = size;
@@ -143,7 +145,7 @@ namespace NE4S.Notes
             ScoreLane lane = laneBook.Find(x => x.StartTick <= Position.Tick && Position.Tick <= x.EndTick);
             if (lane == null) return;
             PointF location = new PointF(
-                lane.HitRect.Left + Position.Lane * ScoreInfo.MinLaneWidth,
+                lane.LaneRect.Left + Position.Lane * ScoreInfo.MinLaneWidth,
                 //HACK: Y座標が微妙にずれるので-1して調節する
                 lane.HitRect.Bottom - (Position.Tick - lane.StartTick) * ScoreInfo.MaxBeatHeight - 1);
             RelocateOnly(location, lane.Index);

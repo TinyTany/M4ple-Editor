@@ -13,17 +13,13 @@ namespace NE4S.Notes
     [Serializable()]
     public class AirableNote : Note
     {
-        protected Air air = null;
-        protected AirHold airHold = null;
+        public Air Air { get; private set; } = null;
+        public AirHold AirHold { get; private set; } = null;
         private AirHoldBegin airHoldBegin = null;
 
         public AirableNote() { }
 
         public AirableNote(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
-
-        public Air GetAirForDelete() => air;
-
-        public AirHold GetAirHoldForDelete() => airHold;
 
         /// <summary>
         /// Airが取り付けられているか判定します
@@ -33,7 +29,7 @@ namespace NE4S.Notes
         {
             get
             {
-                return air != null;
+                return Air != null;
             }
         }
 
@@ -45,19 +41,19 @@ namespace NE4S.Notes
         {
             get
             {
-                return airHold != null;
+                return AirHold != null;
             }
         }
 
         public void AttachAir(Air air)
         {
-            this.air = air;
+            Air = air;
             air.DetachAir += DetachAir;
         }
 
         public void AttachAirHold(AirHold airHold)
         {
-            this.airHold = airHold;
+            AirHold = airHold;
             airHold.DetachAirHold += DetachAirHold;
             airHoldBegin = airHold.AirHoldBegin;
             System.Diagnostics.Debug.Assert(airHoldBegin != null, "だめです");
@@ -66,13 +62,13 @@ namespace NE4S.Notes
 
         public void DetachAir()
         {
-            air = null;
+            Air = null;
             return;
         }
 
         public void DetachAirHold()
         {
-            airHold = null;
+            AirHold = null;
             airHoldBegin = null;
             return;
         }
@@ -80,7 +76,7 @@ namespace NE4S.Notes
         public override void ReSize(int size)
         {
             base.ReSize(size);
-            air?.ReSize(size);
+            Air?.ReSize(size);
             airHoldBegin?.ReSize(size);
             return;
         }
@@ -94,7 +90,7 @@ namespace NE4S.Notes
         public new void RelocateOnly(Position pos, PointF location, int laneIndex)
         {
             base.RelocateOnly(pos, location, laneIndex);
-            air?.RelocateOnly(pos, location, laneIndex);
+            Air?.RelocateOnly(pos, location, laneIndex);
             //AirHold全体に変更を反映させるためRelocateを使う
             airHoldBegin?.Relocate(pos, location, laneIndex);
         }
@@ -108,7 +104,7 @@ namespace NE4S.Notes
         public override void Relocate(PointF location, int laneIndex)
         {
             base.Relocate(location, laneIndex);
-            air?.Relocate(location, laneIndex);
+            Air?.Relocate(location, laneIndex);
             airHoldBegin?.Relocate(location, laneIndex);
             return;
         }
@@ -116,7 +112,7 @@ namespace NE4S.Notes
         public override void Relocate(Position pos)
         {
             base.Relocate(pos);
-            air?.Relocate(pos);
+            Air?.Relocate(pos);
             airHoldBegin?.Relocate(pos);
             return;
         }
@@ -124,7 +120,7 @@ namespace NE4S.Notes
         public override void RelocateOnlyAndUpdate(Position position, LaneBook laneBook)
         {
             base.RelocateOnlyAndUpdate(position, laneBook);
-            air?.RelocateOnlyAndUpdate(position, laneBook);
+            Air?.RelocateOnlyAndUpdate(position, laneBook);
             airHoldBegin?.Relocate(position);
             airHoldBegin?.UpdateLocation(laneBook);
         }

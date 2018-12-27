@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("M4pleEditor")]
+[assembly: AssemblyTitle("M4ple Editor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("M4ple")]
-[assembly: AssemblyCopyright("Copyright © 2018 TinyTany")]
+[assembly: AssemblyProduct("M4ple Editor")]
+[assembly: AssemblyCopyright("Copyright © 2018 t4nishi")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

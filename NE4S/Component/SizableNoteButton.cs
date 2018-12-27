@@ -72,11 +72,8 @@ namespace NE4S.Component
         {
             isMousePressed = true;
             pressedLocation = e.Location;
-            if (!isSelected)
-            {
-                base.PreviewBox_MouseDown(sender, e);
-            }
-            else
+            base.PreviewBox_MouseDown(sender, e);
+            if (isSelected)
             {
                 RefreshButtonArea(e.Location);
                 ChangeValueByButton();
@@ -202,6 +199,28 @@ namespace NE4S.Component
                         e.Graphics.FillRectangle(brush, VirtualButtonRect.Bottom);
                     }
                 }
+                /*
+                using (SolidBrush brush = new SolidBrush(guideColor))
+                using (Font myFont = new Font("Yu Gothic UI", 12, FontStyle.Regular))
+                {
+                    if (buttonArea == ButtonArea.Top)
+                    {
+                        e.Graphics.DrawString(
+                        "Size +",
+                        myFont,
+                        brush,
+                        new PointF(previewBox.Width / 2, 0));
+                    }
+                    else if (buttonArea == ButtonArea.Bottom)
+                    {
+                        e.Graphics.DrawString(
+                        "Size -",
+                        myFont,
+                        brush,
+                        new PointF(previewBox.Width / 2, previewBox.Height - virtualButtonWeight));
+                    }
+                }
+                //*/
             }
             DrawValue(e);
         }
@@ -210,7 +229,6 @@ namespace NE4S.Component
         {
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {
-                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                 e.Graphics.DrawString(
                 "NoteSize: " + (noteSize + sizeDelta),
                 myFont,

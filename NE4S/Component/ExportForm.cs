@@ -60,6 +60,7 @@ namespace NE4S.Component
                 SaveMusicInfo(false);
                 Close();
             };
+            FormClosing += (s, e) => SaveMusicInfo(false);
             exportPathButton.Click += (s, e)  => 
             {
                 if(saveFileDialog.ShowDialog() == DialogResult.OK)

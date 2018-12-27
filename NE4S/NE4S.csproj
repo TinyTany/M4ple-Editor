@@ -125,6 +125,12 @@
     <Compile Include="Component\ValueNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Component\VersionInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\VersionInfoForm.Designer.cs">
+      <DependentUpon>VersionInfoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Define.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -201,6 +207,9 @@
     <EmbeddedResource Include="Component\SetValueCustomForm.resx">
       <DependentUpon>SetValueCustomForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Component\VersionInfoForm.resx">
+      <DependentUpon>VersionInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -262,6 +271,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="m4logo.ico" />
+    <None Include="Resources\m4logo.png" />
+    <None Include="Resources\Cancel_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

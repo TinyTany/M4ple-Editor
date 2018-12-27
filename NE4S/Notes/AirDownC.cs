@@ -16,10 +16,9 @@ namespace NE4S.Notes
 
         protected static readonly float downOffsetY = 15;
 
-        public AirDownC()
-        {
+        public AirDownC() { }
 
-        }
+        public AirDownC(Note note) : base(note) { }
 
         public AirDownC(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
