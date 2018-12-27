@@ -426,11 +426,15 @@ namespace NE4S.Scores
                                 if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
                                 {
                                     Status.SelectedNote = null;
+                                    Status.SelectedNoteArea = NoteArea.NONE;
                                 }
                                 if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
                                 {
                                     Status.SelectedNote = null;
+                                    Status.SelectedNoteArea = NoteArea.NONE;
                                 }
+                                //カーソルの設定
+                                SetCursor(selectedNote, noteArea);
                             }
                             else
                             {
@@ -455,6 +459,38 @@ namespace NE4S.Scores
 			}
             if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 		}
+
+        private void SetCursor(Note selectedNote, int noteArea)
+        {
+            if (selectedNote == null)
+            {
+                pBox.Cursor = Cursors.Default;
+                return;
+            }
+            if (selectedNote is AirHoldEnd || selectedNote is AirAction || selectedNote is AttributeNote)
+            {
+                pBox.Cursor = Cursors.SizeNS;
+            }
+            else if (noteArea == NoteArea.LEFT || noteArea == NoteArea.RIGHT)
+            {
+                pBox.Cursor = Cursors.SizeWE;
+            }
+            else if (noteArea == NoteArea.CENTER)
+            {
+                if (selectedNote is HoldEnd)
+                {
+                    pBox.Cursor = Cursors.SizeNS;
+                }
+                else
+                {
+                    pBox.Cursor = Cursors.SizeAll;
+                }
+            }
+            else
+            {
+                pBox.Cursor = Cursors.Default;
+            }
+        }
 
         public void MouseMove(MouseEventArgs e)
         {
@@ -548,12 +584,10 @@ namespace NE4S.Scores
                         }
                         else
                         {
-                            pBox.Cursor = Cursors.Default;
+                            int noteArea = NoteArea.NONE;
+                            var note = model.NoteBook.SelectedNote(e.Location.AddX(currentPositionX), ref noteArea);
+                            SetCursor(note, noteArea);
                         }
-                    }
-                    else
-                    {
-                        pBox.Cursor = Cursors.Default;
                     }
                     break;
 				case Mode.DELETE:
@@ -578,6 +612,7 @@ namespace NE4S.Scores
             {
                 selectionArea.SetContainsNotes(model.NoteBook);
             }
+            pBox.Cursor = Cursors.Default;
         }
 
         public void MouseEnter(EventArgs e) { }
