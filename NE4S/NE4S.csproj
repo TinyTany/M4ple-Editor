@@ -271,6 +271,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="m4logo.ico" />
+    <None Include="Resources\m4logo.png" />
     <None Include="Resources\Cancel_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

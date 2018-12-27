@@ -15,6 +15,9 @@ namespace NE4S.Component
         public VersionInfoForm()
         {
             InitializeComponent();
+            logo.SizeMode = PictureBoxSizeMode.Zoom;
+            ((Bitmap)logo.Image).MakeTransparent();
+            button1.Click += (s, e) => Close();
         }
     }
 }
