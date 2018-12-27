@@ -94,10 +94,9 @@ namespace NE4S.Notes
         /// Slideクラスのやつコピペしたので各所省略できるかも
         /// </summary>
         /// <param name="locationVirtual"></param>
-        /// <param name="scoreBook"></param>
         /// <param name="laneBook"></param>
         /// <returns></returns>
-        public bool Contains(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
+        public bool Contains(PointF locationVirtual, LaneBook laneBook)
         {
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)

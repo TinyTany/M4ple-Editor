@@ -138,12 +138,12 @@ namespace NE4S
 
         public Slide SelectedSlide(PointF location)
         {
-            return NoteBook.SelectedSlide(location, ScoreBook, LaneBook);
+            return NoteBook.SelectedSlide(location, LaneBook);
         }
 
         public AirHold SelectedAirHold(PointF location)
         {
-            return NoteBook.SelectedAirHold(location, ScoreBook, LaneBook);
+            return NoteBook.SelectedAirHold(location, LaneBook);
         }
     }
 }

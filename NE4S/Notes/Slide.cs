@@ -152,17 +152,21 @@ namespace NE4S.Notes
         /// ただしベジェスライド上では判定されません
         /// </summary>
         /// <param name="locationVirtual"></param>
-        /// <param name="scoreBook"></param>
         /// <param name="laneBook"></param>
         /// <returns></returns>
-        public bool Contains(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
+        public bool Contains(PointF locationVirtual, LaneBook laneBook)
         {
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach(Note note in list)
             {
                 if (list.IndexOf(note) >= list.Count - 1) break;
                 Note next = list.ElementAt(list.IndexOf(note) + 1);
-                if (note is SlideCurve || next is SlideCurve) continue;
+                if (note is SlideCurve) continue;
+                else if (next is SlideCurve)
+                {
+                    var ret = ContainsInCurve(note, next, list.ElementAt(list.IndexOf(next) + 1), laneBook, locationVirtual);
+                    if (ret) return true;
+                }
                 //
                 int passingLanes = next.LaneIndex - note.LaneIndex;
                 if(passingLanes == 0)
@@ -213,6 +217,36 @@ namespace NE4S.Notes
                         }
                     }
                     #endregion
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// SlideCurveの当たり判定（未完成）
+        /// </summary>
+        /// <param name="past"></param>
+        /// <param name="curve"></param>
+        /// <param name="future"></param>
+        /// <param name="laneBook"></param>
+        /// <param name="locationVirtual"></param>
+        /// <returns></returns>
+        private bool ContainsInCurve(Note past, Note curve, Note future, LaneBook laneBook, PointF locationVirtual)
+        {
+            int passingLanes = future.LaneIndex - past.LaneIndex;
+            using (GraphicsPath graphicsPath = MyUtil.CreateSlideCurvePath(past, curve, future, drawOffset))
+            {
+                ScoreLane lane = laneBook.Find(x => x.Contains(past));
+                for (int i = 0; i <= passingLanes && lane != null; ++i)
+                {
+                    if (graphicsPath.IsVisible(locationVirtual)) return true;
+                    else
+                    {
+                        lane = laneBook.Next(lane);
+                        graphicsPath.PathPoints.ToList().ForEach(x => x.Add(
+                            ScoreLane.scoreWidth + ScoreLane.Margin.Left + ScorePanel.Margin.Right + ScorePanel.Margin.Left + ScoreLane.Margin.Right,
+                            lane.HitRect.Height));
+                    }
                 }
             }
             return false;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using NE4S.Notes;
+using NE4S.Scores;
 
 namespace NE4S
 {
@@ -122,6 +123,46 @@ namespace NE4S
         public static Point Sub(this Point pointF, Point other)
         {
             return new Point(pointF.X - other.X, pointF.Y - other.Y);
+        }
+
+        /// <summary>
+        /// いまのところSlideカーブでの当たり判定用パスを作るためのみに使う
+        /// 汎用性を高めればDrawSlideCurveメソッドとかをスッキリできそう
+        /// </summary>
+        /// <param name="past"></param>
+        /// <param name="curve"></param>
+        /// <param name="future"></param>
+        /// <param name="drawOffset"></param>
+        /// <returns></returns>
+        public static GraphicsPath CreateSlideCurvePath(Note past, Note curve, Note future, PointF drawOffset)
+        {
+            GraphicsPath graphicsPath = new GraphicsPath();
+            PointF pastRerativeLocation = new PointF(past.Location.X, past.Location.Y);
+            float positionDistanceFuture = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
+            float positionDistanceCurve = (curve.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
+            float diffXFuture = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
+            float diffXCurve = (curve.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
+            //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
+            PointF topLeft = pastRerativeLocation.Add(diffXFuture, -positionDistanceFuture).Add(drawOffset);
+            PointF topRight = pastRerativeLocation.Add(diffXFuture, -positionDistanceFuture).Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);
+            //以下の2つはレーンをまたがないときと同じ
+            PointF bottomLeft = pastRerativeLocation.Add(drawOffset);
+            PointF bottomRight = pastRerativeLocation.Add(-drawOffset.X, drawOffset.Y).AddX(past.Width);
+            //3つのそれぞれのノーツの中心の座標
+            PointF topCenter = topLeft.AddX(future.Width / 2f - drawOffset.X);
+            PointF bottomCenter = bottomLeft.AddX(past.Width / 2f - drawOffset.X);
+            PointF curveCenter = pastRerativeLocation.Add(diffXCurve, -positionDistanceCurve).AddX(curve.Width / 2f);
+            //
+            //下からアンカーまでの比率
+            float ratio = (curveCenter.Y - bottomCenter.Y) / (topCenter.Y - bottomCenter.Y);
+            //カーブノーツのY座標で水平にスライドを切ったときのスライド幅
+            float widthAnchor = (topRight.X - topLeft.X) * ratio + (bottomRight.X - bottomLeft.X) * (1 - ratio);
+            //
+            graphicsPath.AddBezier(bottomLeft, curveCenter.AddX(-widthAnchor / 2f), topLeft);
+            graphicsPath.AddLine(topLeft, topRight);
+            graphicsPath.AddBezier(topRight, curveCenter.AddX(widthAnchor / 2f), bottomRight);
+            graphicsPath.AddLine(bottomLeft, bottomRight);
+            return graphicsPath;
         }
 
         /// <summary>

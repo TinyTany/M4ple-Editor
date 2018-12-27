@@ -196,14 +196,14 @@ namespace NE4S.Notes
             return SelectedNote(location, ref noteArea);
         }
 
-        public Slide SelectedSlide(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
+        public Slide SelectedSlide(PointF locationVirtual, LaneBook laneBook)
         {
-            return SlideNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
+            return SlideNotes.FindLast(x => x.Contains(locationVirtual, laneBook));
         }
 
-        public AirHold SelectedAirHold(PointF locationVirtual, ScoreBook scoreBook, LaneBook laneBook)
+        public AirHold SelectedAirHold(PointF locationVirtual, LaneBook laneBook)
         {
-            return AirHoldNotes.FindLast(x => x.Contains(locationVirtual, scoreBook, laneBook));
+            return AirHoldNotes.FindLast(x => x.Contains(locationVirtual, laneBook));
         }
 
         public void UpdateNoteLocation(LaneBook laneBook)

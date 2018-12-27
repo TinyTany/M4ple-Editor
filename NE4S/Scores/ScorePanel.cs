@@ -159,7 +159,7 @@ namespace NE4S.Scores
         public void PasteNotes()
         {
             var scoreLane = model.LaneBook.Find(x => x.HitRect.Left >= currentPositionX);
-            Position position = new Position(0, scoreLane.EndTick - ScoreInfo.MaxBeatDiv / Status.Beat);
+            Position position = new Position(0, scoreLane.EndTick - ScoreInfo.MaxBeatDiv / Status.Beat + 1);
             PasteNotes(position);
         }
 
@@ -445,7 +445,10 @@ namespace NE4S.Scores
                                 };
                             }
                         }
-                        
+                        else
+                        {
+                            selectionArea = new SelectionArea();
+                        }
                         break;
 					case Mode.DELETE:
                         if (selectedNote != null)
@@ -548,7 +551,7 @@ namespace NE4S.Scores
                             case NoteArea.RIGHT:
                                 {
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
-                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX);
+                                    Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 1).AddX(currentPositionX);
                                     int newSize = (int)((virtualGridPoint.X - Status.SelectedNote.Location.X) / ScoreInfo.MinLaneWidth);
                                     ++newSize;
                                     if (newSize <= 0) newSize = 1;

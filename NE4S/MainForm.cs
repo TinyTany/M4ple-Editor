@@ -168,16 +168,19 @@ namespace NE4S
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 selectedPanel.PasteNotes();
                 selectedPanel.ReverseNotes();
+                Refresh();
             };
             tsmiDelete.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 selectedPanel.ClearAreaNotes();
+                Refresh();
             };
             tsmiReverse.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 selectedPanel.ReverseNotes();
+                Refresh();
             };
             #endregion
             #region ToolStripMenuItem(ヘルプ)
