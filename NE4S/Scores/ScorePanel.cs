@@ -792,13 +792,25 @@ namespace NE4S.Scores
         {
             Point gridP = new Point();
             //HACK: 当たり判定のピクセル座標を調節のためlane.HitRect.Yに-1をする
-            Point relativeP = new Point(location.X + currentPositionX - (int)lane.HitRect.X, location.Y - (int)(lane.HitRect.Y - 1 + lane.HitRect.Height));
+            Point relativeP = new Point(
+                location.X + currentPositionX - (int)lane.LaneRect.X, 
+                location.Y - (int)(lane.HitRect.Y - 1 + lane.HitRect.Height));
             Point deltaP = new Point();
             float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
             float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             float maxGridX = (ScoreInfo.Lanes - noteSize) * ScoreInfo.MinLaneWidth;
             //現在の自由座標とそこから計算したグリッド座標の差分
-            deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
+            //deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
+            deltaP.X = (int)(Math.Floor(relativeP.X / gridWidth) * gridWidth);
+            if (deltaP.X < 0)
+            {
+                deltaP.X = 0;
+            }
+            else if (deltaP.X > (int)maxGridX)
+            {
+                deltaP.X = (int)maxGridX;
+            }
+            deltaP.X -= relativeP.X;
             deltaP.Y = (int)(Math.Ceiling(relativeP.Y / gridHeight) * gridHeight) - relativeP.Y;
             gridP.X = location.X + deltaP.X;
             gridP.Y = location.Y + deltaP.Y;

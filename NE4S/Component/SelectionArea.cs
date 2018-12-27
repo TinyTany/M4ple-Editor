@@ -229,17 +229,17 @@ namespace NE4S.Component
                 x => x.StartTick <= BottomRightPosition.Tick && BottomRightPosition.Tick <= x.EndTick);
             int passingLanes = futureLane != null ? futureLane.Index - pastLane.Index : laneBook.Count - pastLane.Index - 1;
             PointF topLeft = new PointF(
-                pastLane.HitRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
+                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
             PointF topRight = new PointF(
-                pastLane.HitRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
+                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
             PointF bottomLeft = new PointF(
-                pastLane.HitRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
+                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
             PointF bottomRight = new PointF(
-                pastLane.HitRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.HitRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
+                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
             using (GraphicsPath graphicsPath = new GraphicsPath())
             {
                 e.Graphics.SmoothingMode = SmoothingMode.Default;
@@ -254,11 +254,11 @@ namespace NE4S.Component
                         {
                             pen.DashPattern = new float[] { 4f, 4f };
                             RectangleF clipRect = new RectangleF(
-                                itrLane.HitRect.X - originLocation.X,
-                                itrLane.HitRect.Y - originLocation.Y,
+                                itrLane.LaneRect.X - originLocation.X,
+                                itrLane.LaneRect.Y - originLocation.Y,
                                 //HACK: 選択領域矩形が少し大きいので見切れないようにする
-                                itrLane.HitRect.Width + 1,
-                                itrLane.HitRect.Height + 5);
+                                itrLane.LaneRect.Width + 1,
+                                itrLane.LaneRect.Height + 5);
                             e.Graphics.Clip = new Region(clipRect);
                             e.Graphics.DrawPath(pen, graphicsPath);
                         }
