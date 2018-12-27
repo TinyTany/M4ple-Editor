@@ -20,6 +20,7 @@ namespace NE4S.Notes
             noteRect.Location = location;
             LaneIndex = laneIndex;
             NoteValue = Status.CurrentValue;
+            Size = 1;
         }
 
         public override void Draw(PaintEventArgs e, int originPosX, int originPosY) { }
