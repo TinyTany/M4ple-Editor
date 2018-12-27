@@ -355,7 +355,7 @@ namespace NE4S.Scores
             if (selectedLane != null && selectedLane.SelectedScore(e.Location.AddX(currentPositionX)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
             {
                 //クリックされたグリッド座標を特定
-                Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                 if (selectionArea.Contains(currentPosition))
                 {
                     new NoteEditCMenu(this, currentPosition).Show(pBox, e.Location);
@@ -380,7 +380,7 @@ namespace NE4S.Scores
 			{
                 System.Diagnostics.Debug.WriteLine(selectedLane.Index);
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
-                Position position = selectedLane.GetPos(gridPoint.AddX(currentPositionX));
+                Position position = selectedLane.GetLocalPosition(gridPoint.AddX(currentPositionX));
 				if(position != null)
 				{
                     position.PrintPosition();
@@ -412,7 +412,7 @@ namespace NE4S.Scores
                         }
                         if (selectedLane != null)
                         {
-                            Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                            Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                             if (selectionArea.Contains(currentPosition))
                             {
                                 selectionArea.MovePositionDelta = new Position(
@@ -472,10 +472,6 @@ namespace NE4S.Scores
 					{
 						pNote.Visible = false;
 					}
-					if (selectedLane != null && Status.IsMousePressed)
-					{
-						
-					}
                     //ロングノーツを置いたときに終点をそのまま移動できるようにとりあえずほぼそのままコピペ
                     //PointToGridのオーバーロードが違うだけ
                     //動いた
@@ -483,12 +479,13 @@ namespace NE4S.Scores
                     {
                         Point physicalGridPoint = PointToGrid(e.Location, selectedLane);
                         Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
-                        Position newPos = selectedLane.GetPos(virtualGridPoint);
+                        Position newPos = selectedLane.GetLocalPosition(virtualGridPoint);
                         Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                     }
                     break;
 				case Mode.EDIT:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.AddX(currentPositionX)));
+                    //選択されているノーツに対するサイズ変更、位置変更を行う
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
                         switch (Status.SelectedNoteArea)
@@ -508,7 +505,7 @@ namespace NE4S.Scores
                                     //ノーツのサイズを考慮したほうのメソッドを使う
                                     Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote.Size);
                                     Point virtualGridPoint = physicalGridPoint.AddX(currentPositionX);
-                                    Position newPos = selectedLane.GetPos(virtualGridPoint);
+                                    Position newPos = selectedLane.GetLocalPosition(virtualGridPoint);
                                     Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                                 }
                                 break;
@@ -527,10 +524,10 @@ namespace NE4S.Scores
                                 break;
                         }
                     }
-                    //
+                    //選択矩形のいち変更を行う
                     if (Status.IsMousePressed && selectedLane != null && Status.SelectedNote == null && e.Button == MouseButtons.Left)
                     {
-                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                         if (selectionArea.MovePositionDelta != null)
                         {
                             pBox.Cursor = Cursors.SizeAll;
@@ -541,9 +538,10 @@ namespace NE4S.Scores
                             selectionArea.EndPosition = currentPosition;
                         }
                     }
+                    //選択矩形上にカーソルが乗ったときのカーソルのタイプを変更する
                     else if (!Status.IsMousePressed && selectedLane != null)
                     {
-                        Position currentPosition = selectedLane.GetPos(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
+                        Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).AddX(currentPositionX));
                         if (selectionArea.Contains(currentPosition))
                         {
                             pBox.Cursor = Cursors.SizeAll;
@@ -604,7 +602,7 @@ namespace NE4S.Scores
         {
             //与えられた自由物理座標からグリッド仮想座標とポジション座標を作成
             Point gridPoint = PointToGrid(location, lane);
-            Position position = lane.GetPos(gridPoint.AddX(currentPositionX));
+            Position position = lane.GetLocalPosition(gridPoint.AddX(currentPositionX));
             PointF locationVirtual = gridPoint.AddX(currentPositionX);
 
             Note newNote = null;

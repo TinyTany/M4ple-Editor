@@ -63,7 +63,11 @@ namespace NE4S
 
         private void ModelEdited(object sender, EventArgs e)
         {
-            IsEditedWithoutSave = true;
+            //NOTE: IsEditedWithoutSaveを変更するだけで18ミリ秒も時間食うので無駄な変更はif文で弾く
+            if (!IsEditedWithoutSave)
+            {
+                IsEditedWithoutSave = true;
+            }
         }
 
 		public void SetScore(int beatNumer, int beatDenom, int barCount)

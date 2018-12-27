@@ -52,6 +52,7 @@ namespace NE4S.Notes
                     drawPoint.Y);
             }
 #if DEBUG
+            /*
             using (Pen myPen = new Pen(Color.White))
             {
                 RectangleF hitRect = new RectangleF(
@@ -61,6 +62,7 @@ namespace NE4S.Notes
                 9);
                 e.Graphics.DrawRectangles(myPen, new RectangleF[] { hitRect });
             }
+            //*/
 #endif
         }
     }
