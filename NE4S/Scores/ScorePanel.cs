@@ -25,13 +25,13 @@ namespace NE4S.Scores
         private DataIO dataIO;
         private SelectionArea selectionArea;
 
-        static class Margin
+        public static class Margin
         {
-            public static int
-                Top = ScoreInfo.PanelMargin.Top,
-                Bottom = ScoreInfo.PanelMargin.Bottom,
-                Left = ScoreInfo.PanelMargin.Left,
-                Right = ScoreInfo.PanelMargin.Right;
+            public static readonly int
+                Top = 10,
+                Bottom = 10,
+                Left = 3,
+                Right = 3;
         }
 
         public ScorePanel(PictureBox pBox, HScrollBar hSBar)
@@ -820,8 +820,8 @@ namespace NE4S.Scores
 			int originPosY = 0;
             var drawLaneBook = model.LaneBook.Where(
                 x =>
-                x.HitRect.Right >= currentPositionX - ScoreInfo.LaneMargin.Right &&
-                x.HitRect.Left <= currentPositionX + pBox.Width + ScoreInfo.LaneMargin.Left)
+                x.LaneRect.Right >= currentPositionX - ScoreLane.Margin.Right &&
+                x.LaneRect.Left <= currentPositionX + pBox.Width + ScoreLane.Margin.Left)
                 .ToList();
             drawLaneBook.ForEach(x => x.PaintLane(e, originPosX, originPosY));
             if (drawLaneBook.Any())

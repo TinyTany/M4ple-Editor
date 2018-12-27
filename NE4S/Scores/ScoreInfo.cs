@@ -41,27 +41,5 @@ namespace NE4S.Scores
         /// ノーツの縦幅
         /// </summary>
         public static float NoteHeight { get; } = 5;
-
-        /// <summary>
-        /// ScoreLaneのMargin
-        /// </summary>
-        public class LaneMargin
-        {
-            public static int Top { get; } = 5;
-            public static int Bottom { get; } = 5;
-            public static int Left { get; } = 60;
-            public static int Right { get; } = 60;
-        }
-
-        /// <summary>
-        /// ScorePanelのMargin
-        /// </summary>
-        public class PanelMargin
-        {
-            public static int Top { get; } = 10;
-            public static int Bottom { get; } = 10;
-            public static int Left { get; } = 3;
-            public static int Right { get; } = 3;
-        }
     }
 }

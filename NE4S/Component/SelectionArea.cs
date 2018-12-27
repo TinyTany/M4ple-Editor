@@ -263,10 +263,10 @@ namespace NE4S.Component
                             e.Graphics.DrawPath(pen, graphicsPath);
                         }
                     }
-                    topLeft = topLeft.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
-                    topRight = topRight.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
-                    bottomLeft = bottomLeft.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
-                    bottomRight = bottomRight.Add(ScoreLane.Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right, itrLane.HitRect.Height);
+                    topLeft = topLeft.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
+                    topRight = topRight.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
+                    bottomLeft = bottomLeft.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
+                    bottomRight = bottomRight.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
                     graphicsPath.ClearMarkers();
                 }
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;

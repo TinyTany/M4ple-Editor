@@ -31,8 +31,8 @@ namespace NE4S.Notes
             AttributeNotes.Add(new BPM(
                 new Position(0, 0),
                 new PointF(
-                    ScoreInfo.PanelMargin.Left + ScoreInfo.LaneMargin.Left,
-                    ScoreInfo.PanelMargin.Top + ScoreLane.Height - ScoreInfo.LaneMargin.Bottom),
+                    ScorePanel.Margin.Left + ScoreLane.Margin.Left,
+                    ScorePanel.Margin.Top + ScoreLane.Height - ScoreLane.Margin.Bottom),
                 0));
         }
 

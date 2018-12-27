@@ -44,16 +44,16 @@ namespace NE4S.Scores
 				scoreWidth,
 				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * CurrentBarSize);
 			PointF hitRectLocation = new PointF(
-				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left + Margin.Left,
+				index * (Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right) + ScorePanel.Margin.Left,
 				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（1ピクセル下げる）
-				ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - hitRectSize.Height + 1);
+				ScorePanel.Margin.Top + Height - Margin.Bottom - hitRectSize.Height + 1);
             HitRect = new RectangleF(hitRectLocation, hitRectSize);
 			drawRegion.Size = new SizeF(
 				Margin.Left + scoreWidth + Margin.Right,
 				Margin.Top + maxScoreHeight + Margin.Bottom);
 			drawRegion.Location = new PointF(
-				index * (Width + ScoreInfo.PanelMargin.Left + ScoreInfo.PanelMargin.Right) + ScoreInfo.PanelMargin.Left,
-				ScoreInfo.PanelMargin.Top);
+				index * (Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right) + ScorePanel.Margin.Left,
+				ScorePanel.Margin.Top);
 		}
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace NE4S.Scores
 			foreach (ScoreMaterial sMaterial in scoreMaterialList)
 			{
 				sMaterial.HitRect = new RectangleF(
-					HitRect.X,
-					ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + normalizeDeltaHeight,
+					HitRect.X + Margin.Left,
+					ScorePanel.Margin.Top + Height - Margin.Bottom - sumHeight - sMaterial.Height + normalizeDeltaHeight,
 					sMaterial.Width,
 					sMaterial.Height);
 				sumHeight += sMaterial.Height;
@@ -118,13 +118,13 @@ namespace NE4S.Scores
             }
         }
 
-        class Margin
+        public static class Margin
         {
-            public static int 
-                Top = ScoreInfo.LaneMargin.Top,
-                Bottom = ScoreInfo.LaneMargin.Bottom,
-                Left = ScoreInfo.LaneMargin.Left,
-                Right = ScoreInfo.LaneMargin.Right;
+            public static readonly int
+                Top = 5,
+                Bottom = 5,
+                Left = 60,
+                Right = 60;
         }
 
         public ScoreLane()
@@ -200,7 +200,7 @@ namespace NE4S.Scores
 				//Scoreの当たり判定矩形を作成
 				RectangleF newScoreHitRect = new RectangleF(
 					HitRect.X,
-                    ScoreInfo.PanelMargin.Top + Height - Margin.Bottom - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
+                    ScorePanel.Margin.Top + Height - Margin.Bottom - currentSumScoreHeight - physicalHeight + normalizeDeltaHeight,
 					newScore.Width,
 					physicalHeight);
                 //各リストに新たなScoreとその範囲と当たり判定を格納
