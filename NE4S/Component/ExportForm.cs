@@ -55,12 +55,7 @@ namespace NE4S.Component
                 RestoreDirectory = true
             };
             exportButton.Click += ExportButton_Click;
-            exportCancelButton.Click += (s, e) =>
-            {
-                SaveMusicInfo(false);
-                Close();
-            };
-            FormClosing += (s, e) => SaveMusicInfo(false);
+            exportCancelButton.Click += (s, e) => Close();
             exportPathButton.Click += (s, e)  => 
             {
                 if(saveFileDialog.ShowDialog() == DialogResult.OK)

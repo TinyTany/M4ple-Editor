@@ -23,7 +23,7 @@ namespace NE4S.Component
                     Text = "BPM指定",
                     LabelMainText = "BPM",
                     LabelSubText = ""
-                }.Show();
+                }.ShowDialog();
             }
         }
 

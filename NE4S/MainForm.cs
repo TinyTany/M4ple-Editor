@@ -289,10 +289,10 @@ namespace NE4S
             if (!(tabScore.SelectedTab.Controls[0] is PictureBox pBox)) return;
             if (!(pBox.Controls[0] is HScrollBar hScrollBar)) return;
             ScorePanel newPanel = new ScorePanel(pBox, hScrollBar);
-            newPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
             if (new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
             {
                 (tabScore.SelectedTab as TabPageEx).ScorePanel = newPanel;
+                newPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
                 //タブ名をデフォルトにする
                 int tabIndex = tabScore.SelectedIndex;
                 tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);

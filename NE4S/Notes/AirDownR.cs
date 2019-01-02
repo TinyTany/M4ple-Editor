@@ -12,7 +12,7 @@ namespace NE4S.Notes
     [Serializable()]
     public class AirDownR : AirDownC
     {
-        public override int NoteID => 6;
+        public override int NoteID => 5;
 
         public AirDownR() { }
 

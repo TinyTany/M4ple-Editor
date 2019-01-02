@@ -23,7 +23,7 @@ namespace NE4S.Component
                     Text = "HighSpeed指定",
                     LabelMainText = "HighSpeed",
                     LabelSubText = "x"
-                }.Show();
+                }.ShowDialog();
             }
         }
 

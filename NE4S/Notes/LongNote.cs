@@ -75,7 +75,7 @@ namespace NE4S.Notes
                     ScoreLane lane = laneBook.Find(x => x.StartTick <= future.Position.Tick && future.Position.Tick <= x.EndTick);
                     if (lane == null) break;
                     PointF location = new PointF(
-                        lane.HitRect.Left + future.Position.Lane * ScoreInfo.MinLaneWidth,
+                        lane.LaneRect.Left + future.Position.Lane * ScoreInfo.MinLaneWidth,
                         //HACK: Y座標が微妙にずれるので-1して調節する
                         lane.HitRect.Bottom - (future.Position.Tick - lane.StartTick) * ScoreInfo.MaxBeatHeight - 1);
                     future.RelocateOnly(location, lane.Index);
