@@ -12,7 +12,7 @@ namespace NE4S.Component
 {
     public class DataSaver
     {
-        private readonly SaveFileDialog saveFileDialog;
+        private SaveFileDialog saveFileDialog;
         public string Path { get; set; } = null;
 
         public DataSaver()
@@ -20,7 +20,7 @@ namespace NE4S.Component
             saveFileDialog = new SaveFileDialog()
             {
                 FileName = "NewScore.m4s",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Filter = "M4ple譜面ファイル(*.m4s)|*.m4s",
                 FilterIndex = 0,
                 Title = "名前をつけて保存",
@@ -30,6 +30,11 @@ namespace NE4S.Component
 
         public bool ShowDialog(Model model)
         {
+            if (Path != null)
+            {
+                saveFileDialog.FileName = System.IO.Path.GetFileName(Path);
+                saveFileDialog.InitialDirectory = Directory.GetParent(Path).ToString();
+            }
             if(saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 Path = saveFileDialog.FileName;

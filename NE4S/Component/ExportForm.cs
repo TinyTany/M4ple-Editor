@@ -58,23 +58,29 @@ namespace NE4S.Component
             exportCancelButton.Click += (s, e) => Close();
             exportPathButton.Click += (s, e)  => 
             {
+                saveFileDialog.InitialDirectory = Status.ExportDialogDirectory;
                 if(saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     exportPathText.Text = saveFileDialog.FileName;
+                    Status.ExportDialogDirectory = Directory.GetParent(saveFileDialog.FileName).ToString();
                 }
             };
             musicPathButton.Click += (s, e) =>
             {
+                musicSelectDialog.InitialDirectory = Status.MusicDialogDirectory;
                 if(musicSelectDialog.ShowDialog() == DialogResult.OK)
                 {
                     musicPathText.Text = Path.GetFileName(musicSelectDialog.FileName);
+                    Status.MusicDialogDirectory = Directory.GetParent(musicSelectDialog.FileName).ToString();
                 }
             };
             jacketPathButton.Click += (s, e) =>
             {
+                jacketSelectDialog.InitialDirectory = Status.JacketDialogDirectory;
                 if(jacketSelectDialog.ShowDialog() == DialogResult.OK)
                 {
                     JacketPathText.Text = Path.GetFileName(jacketSelectDialog.FileName);
+                    Status.JacketDialogDirectory = Directory.GetParent(jacketSelectDialog.FileName).ToString();
                 }
             };
             pathClearButton.Click += (s, e) => exportPathText.Text = "";

@@ -19,8 +19,8 @@ namespace NE4S.Component
         {
             openFileDialog = new OpenFileDialog()
             {
-                FileName = "Score.m4s",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                FileName = "",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Filter = "M4ple譜面ファイル(*.m4s)|*.m4s",
                 FilterIndex = 0,
                 Title = "開く",
@@ -31,6 +31,11 @@ namespace NE4S.Component
         public Model ShowDialog()
         {
             Model model = null;
+            if (Path != null)
+            {
+                openFileDialog.FileName = "";
+                openFileDialog.InitialDirectory = Status.OpenDialogDirectory;
+            }
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 model = DeserializeData();
@@ -45,6 +50,7 @@ namespace NE4S.Component
         private Model DeserializeData()
         {
             Path = openFileDialog.FileName;
+            Status.OpenDialogDirectory = Directory.GetParent(Path).ToString();
             FileStream fileStream = new FileStream(Path, FileMode.Open, FileAccess.Read);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             Model model;

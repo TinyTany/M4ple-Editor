@@ -19,7 +19,7 @@ namespace NE4S
         public static int NoteSize { get; set; } = 4;
         public static float CurrentValue { get; set; } = 0;
         public static bool InvisibleSlideTap { get; set; } = true;
-		public static bool IsMousePressed { get; set; } = true;
+		public static bool IsMousePressed { get; set; } = false;
 		public static Note SelectedNote { get; set; } = null;
         public static int SelectedNoteArea { get; set; } = Define.NoteArea.NONE;
 
@@ -34,5 +34,11 @@ namespace NE4S
 
         public static int DrawTickFirst { get; set; }
         public static int DrawTickLast { get; set; }
+
+        public static string ExportDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        public static string OpenDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        public static string MusicDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        public static string JacketDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+
     }
 }
