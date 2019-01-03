@@ -193,6 +193,11 @@ namespace NE4S.Component
             {
                 return false;
             }
+            if (!Directory.GetParent(path).Exists)
+            {
+                MessageBox.Show("出力先が不正です");
+                return false;
+            }
             using (StreamWriter streamWriter = new StreamWriter(path, false))
             {
                 streamWriter.WriteLine("This score was created by M4ple Editor.");
@@ -405,7 +410,7 @@ namespace NE4S.Component
         private void WriteLongNotes(in List<LongNote> longNoteList, in int laneType, in StreamWriter streamWriter)
         {
             LongLaneSignProvider signProvider = new LongLaneSignProvider();
-            foreach (LongNote longNote in longNoteList)
+            foreach (LongNote longNote in longNoteList.OrderBy(x => x.StartTick))
             {
                 string sign = signProvider.GetAvailableSign(longNote.StartTick, longNote.EndTick);
                 foreach(Score score in scoreBook.Where(x => x.EndTick >= longNote.StartTick && x.StartTick <= longNote.EndTick))
