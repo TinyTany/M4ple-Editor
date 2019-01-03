@@ -113,6 +113,19 @@ namespace NE4S.Notes
 			if (longNote is Hold) HoldNotes.Remove(longNote as Hold);
 			else if (longNote is Slide) SlideNotes.Remove(longNote as Slide);
 			else if (longNote is AirHold) AirHoldNotes.Remove(longNote as AirHold);
+            //終点にくっついてるかもしれないAir系ノーツの破棄
+            var airable = longNote.Find(x => x is AirableNote) as AirableNote;
+            if (airable != null)
+            {
+                if (airable.IsAirAttached)
+                {
+                    AirNotes.Remove(airable.Air);
+                }
+                if (airable.IsAirHoldAttached)
+                {
+                    AirHoldNotes.Remove(airable.AirHold);
+                }
+            }
             DataChanged?.Invoke(this, null);
         }
 
