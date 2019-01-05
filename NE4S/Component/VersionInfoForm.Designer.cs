@@ -51,7 +51,7 @@
             this.appTitle.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.appTitle.Location = new System.Drawing.Point(83, 12);
             this.appTitle.Name = "appTitle";
-            this.appTitle.Size = new System.Drawing.Size(126, 28);
+            this.appTitle.Size = new System.Drawing.Size(99, 21);
             this.appTitle.TabIndex = 1;
             this.appTitle.Text = "M4ple Editor";
             // 
@@ -71,22 +71,22 @@
             this.appVersion.AutoSize = true;
             this.appVersion.Location = new System.Drawing.Point(188, 18);
             this.appVersion.Name = "appVersion";
-            this.appVersion.Size = new System.Drawing.Size(102, 20);
+            this.appVersion.Size = new System.Drawing.Size(81, 15);
             this.appVersion.TabIndex = 3;
-            this.appVersion.Text = "Version 1.0.1.0";
+            this.appVersion.Text = "Version 1.0.2.0";
             // 
             // copyright
             // 
             this.copyright.AutoSize = true;
             this.copyright.Location = new System.Drawing.Point(84, 47);
             this.copyright.Name = "copyright";
-            this.copyright.Size = new System.Drawing.Size(143, 20);
+            this.copyright.Size = new System.Drawing.Size(112, 15);
             this.copyright.TabIndex = 4;
             this.copyright.Text = "t4nishi © 2018-2019";
             // 
             // VersionInfoForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 111);
             this.Controls.Add(this.copyright);

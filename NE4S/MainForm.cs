@@ -217,11 +217,17 @@ namespace NE4S
             //ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
             noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.ADD);
+            flpNotePanel.Size = tabNoteButton.TabPages[0].Size;
+            flpNotePanel.Location = new Point();
             foreach (NoteButton noteButton in noteButtonManager)
             {
                 flpNotePanel.Controls.Add(noteButton);
             }
-            
+            //
+            Resize += (s, e) =>
+            {
+
+            };
         }
 
         private bool IsExit()
