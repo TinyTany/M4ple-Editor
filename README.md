@@ -1,7 +1,7 @@
 # M4ple Editor
 某シミュ用の例の譜面エディタ（新製品）
 # ダウンロード
-[ここ](https://github.com/TinyTany/M4ple/releases)からダウンロードしてください。現在の最新版はVersion 1.0.1.0です。
+[ここ](https://github.com/TinyTany/M4ple/releases)からダウンロードしてください。
 # 使い方
 [Wiki](https://github.com/TinyTany/M4ple/wiki)参照。随時更新します（予定）
 # バグ報告・要望など
