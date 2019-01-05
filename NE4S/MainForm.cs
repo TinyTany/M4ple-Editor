@@ -194,6 +194,26 @@ namespace NE4S
             };
             #endregion
             #endregion
+            #region ショートカットキー
+            KeyDown += (s, e) =>
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.A:
+                        tsbAdd.PerformClick();
+                        break;
+                    case Keys.E:
+                        tsbEdit.PerformClick();
+                        break;
+                    case Keys.D:
+                        tsbDelete.PerformClick();
+                        break;
+                    case Keys.S:
+                        tsbInvisibleSlideTap.PerformClick();
+                        break;
+                }
+            };
+            #endregion
             //ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
             noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.ADD);
