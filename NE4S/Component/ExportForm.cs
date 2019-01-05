@@ -373,37 +373,42 @@ namespace NE4S.Component
             for (int lane = 0; lane < ScoreInfo.Lanes; ++lane)
             {
                 List<Note> currentLaneNotes = currentScoreNotes.Where(x => x.Position.Lane == lane).ToList();
-                if (!currentLaneNotes.Any()) continue;
-                int lcm = 1;
-                currentLaneNotes.ForEach(x =>
+                int noteCount = currentLaneNotes.Count;
+                for (int count = 0; currentLaneNotes.Any() && count < noteCount; ++count)
                 {
-                    int tick = x.Position.Tick - score.StartTick;
-                    int gcd = MyUtil.Gcd(tick, score.TickSize);
-                    lcm = MyUtil.Lcm(lcm, score.TickSize / gcd);
-                });
-                //
-                streamWriter.Write("#" + score.Index.ToString("D3") + laneType + lane.ToString("x") + longLaneSign + ": ");
-                for (int i = 0; i < lcm; ++i)
-                {
-                    Note writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick == i * score.TickSize / lcm);
-                    if (writeNote != null)
+                    //ノーツリスト内のノーツの分数の最小公倍数を求める
+                    int lcm = 1;
+                    currentLaneNotes.ForEach(x =>
                     {
-                        streamWriter.Write(writeNote.NoteID);
-                        if (writeNote.Size == 16)
+                        int tick = x.Position.Tick - score.StartTick;
+                        int gcd = MyUtil.Gcd(tick, score.TickSize);
+                        lcm = MyUtil.Lcm(lcm, score.TickSize / gcd);
+                    });
+                    //
+                    streamWriter.Write("#" + score.Index.ToString("D3") + laneType + lane.ToString("x") + longLaneSign + ": ");
+                    for (int itrTick = 0; itrTick < lcm; ++itrTick)
+                    {
+                        Note writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick == itrTick * score.TickSize / lcm);
+                        if (writeNote != null)
                         {
-                            streamWriter.Write("g");
+                            streamWriter.Write(writeNote.NoteID);
+                            if (writeNote.Size == 16)
+                            {
+                                streamWriter.Write("g");
+                            }
+                            else
+                            {
+                                streamWriter.Write(writeNote.Size.ToString("x"));
+                            }
+                            currentLaneNotes.Remove(writeNote);
                         }
                         else
                         {
-                            streamWriter.Write(writeNote.Size.ToString("x"));
+                            streamWriter.Write("00");
                         }
                     }
-                    else
-                    {
-                        streamWriter.Write("00");
-                    }
+                    streamWriter.Write("\r\n");
                 }
-                streamWriter.Write("\r\n");
             }
         }
 
