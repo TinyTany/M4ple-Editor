@@ -279,7 +279,7 @@ namespace NE4S.Component
                         streamWriter.Write(score.Index + "'" + (measureConstant * (speed.Position.Tick - score.StartTick)) + ":" + speed.NoteValue + ", ");
                     }
                     streamWriter.WriteLine("\"");
-                    streamWriter.WriteLine("#HIGHSPEED 00\r\n#MEASUREHS 00");
+                    streamWriter.WriteLine("#HISPEED 00\r\n#MEASUREHS 00");
                 }
                 streamWriter.WriteLine("\r\nShortNote");
                 foreach (Score score in scoreBook)
