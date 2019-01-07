@@ -84,6 +84,18 @@ namespace NE4S
             tsbCopy.Click += Copy_Click;
             tsbCut.Click += Cut_Click;
             tsbPaste.Click += Paste_Click;
+            tsbUndo.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.Undo();
+                selectedPanel.Refresh();
+            };
+            tsbRedo.Click += (s, e) =>
+            {
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.Redo();
+                selectedPanel.Refresh();
+            };
             #endregion
             #region ToolStripMenuItem(表示)
             tsmiIsShortNote.Click += (s, e) =>

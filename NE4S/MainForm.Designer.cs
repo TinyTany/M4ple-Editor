@@ -91,6 +91,9 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
+            this.tsbRedo = new System.Windows.Forms.ToolStripButton();
+            this.tsbUndo = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -438,6 +441,9 @@
             this.tsbOpen,
             this.tsbSave,
             this.tsbExport,
+            this.toolStripSeparator11,
+            this.tsbUndo,
+            this.tsbRedo,
             this.toolStripSeparator1,
             this.tsbCut,
             this.tsbCopy,
@@ -649,6 +655,29 @@
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
             this.tslRealNotes.Visible = false;
             // 
+            // tsbRedo
+            // 
+            this.tsbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbRedo.Image = global::NE4S.Properties.Resources.Redo_16x;
+            this.tsbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbRedo.Name = "tsbRedo";
+            this.tsbRedo.Size = new System.Drawing.Size(23, 22);
+            this.tsbRedo.Text = "やり直し";
+            // 
+            // tsbUndo
+            // 
+            this.tsbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbUndo.Image = global::NE4S.Properties.Resources.Undo_16x;
+            this.tsbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbUndo.Name = "tsbUndo";
+            this.tsbUndo.Size = new System.Drawing.Size(23, 22);
+            this.tsbUndo.Text = "元に戻す";
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 25);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -741,6 +770,9 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiPasteReverse;
         private System.Windows.Forms.ToolStripMenuItem tsmiDelete;
         private System.Windows.Forms.ToolStripMenuItem tsmiReverse;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+        private System.Windows.Forms.ToolStripButton tsbUndo;
+        private System.Windows.Forms.ToolStripButton tsbRedo;
     }
 }
 

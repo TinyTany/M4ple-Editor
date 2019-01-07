@@ -8,6 +8,7 @@ using System.Drawing;
 using NE4S.Component;
 using NE4S.Notes;
 using NE4S.Define;
+using NE4S.Operation;
 
 namespace NE4S.Scores
 {
@@ -24,6 +25,7 @@ namespace NE4S.Scores
         private PreviewNote pNote;
         private DataIO dataIO;
         private SelectionArea selectionArea;
+        private OperationManager operationManager;
 
         public static class Margin
         {
@@ -47,6 +49,7 @@ namespace NE4S.Scores
 			pNote = new PreviewNote();
             dataIO = new DataIO();
             selectionArea = new SelectionArea();
+            operationManager = new OperationManager();
 		}
 
         #region 譜面のセーブとロード、エクスポートに関わるもの
@@ -225,6 +228,19 @@ namespace NE4S.Scores
         }
 
         #endregion
+
+        #region Undo, Redo
+
+        public void Undo()
+        {
+            operationManager.Undo();
+        }
+
+        public void Redo()
+        {
+            operationManager.Redo();
+        }
+
         #endregion
 
         #region laneBookを触る用メソッド群
@@ -457,6 +473,7 @@ namespace NE4S.Scores
                         if (selectedNote != null)
                         {
                             model.NoteBook.Delete(selectedNote);
+                            //operationManager.AddOperationAndInvoke(new DeleteNoteOperation(model, selectedNote));
                         }
                         break;
 					default:
@@ -804,7 +821,8 @@ namespace NE4S.Scores
                 default:
                     break;
             }
-            if (newNote != null) model.AddNote(newNote);
+            //if (newNote != null) model.NoteBook.Add(newNote);
+            if (newNote != null) operationManager.AddOperationAndInvoke(new AddNoteOperation(model, newNote));
             return;
         }
 
