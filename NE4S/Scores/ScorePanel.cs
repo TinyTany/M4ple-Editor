@@ -51,7 +51,7 @@ namespace NE4S.Scores
 
         #region 譜面のセーブとロード、エクスポートに関わるもの
 
-        public void SetEventForEditedWithoutSave(EditedStatusHandler handler)
+        public void SetEventForEditedWithoutSave(Action<bool> handler)
         {
             model.IsEditedWithoutSaveChanged += handler;
             model.IsEditedWithoutSave = false;
@@ -135,6 +135,7 @@ namespace NE4S.Scores
                 model.MusicInfo = exportForm.MusicInfo;
             }
         }
+
         #endregion
 
         #region コピペなど
@@ -222,6 +223,8 @@ namespace NE4S.Scores
         {
             selectionArea.ReverseNotes(model.NoteBook, model.LaneBook);
         }
+
+        #endregion
         #endregion
 
         #region laneBookを触る用メソッド群
@@ -672,7 +675,7 @@ namespace NE4S.Scores
                     break;
                 case NoteType.HOLD:
                     if (!Status.IsHoldVisible) break;
-                    model.AddLongNote(new Hold(Status.NoteSize, position, locationVirtual, lane.Index));
+                    model.NoteBook.Add(new Hold(Status.NoteSize, position, locationVirtual, lane.Index));
                     break;
                 case NoteType.SLIDE:
                     if (!Status.IsSlideVisible) break;
@@ -697,7 +700,7 @@ namespace NE4S.Scores
                     }
                     else
                     {
-                        model.AddLongNote(new Slide(Status.NoteSize, position, locationVirtual, lane.Index));
+                        model.NoteBook.Add(new Slide(Status.NoteSize, position, locationVirtual, lane.Index));
                     }
                     break;
                 case NoteType.SLIDECURVE:
@@ -723,12 +726,12 @@ namespace NE4S.Scores
                     if (selectedNote != null && !selectedNote.IsAirHoldAttached)
                     {
                         AirHold airHold = new AirHold(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddLongNote(airHold);
+                        model.NoteBook.Add(airHold);
                         selectedNote.AttachAirHold(airHold);
                     }
                     if (selectedNote != null && !selectedNote.IsAirAttached) { 
                         AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddNote(air);
+                        model.NoteBook.Add(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
@@ -738,7 +741,7 @@ namespace NE4S.Scores
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddNote(air);
+                        model.NoteBook.Add(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
@@ -748,7 +751,7 @@ namespace NE4S.Scores
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpL air = new AirUpL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddNote(air);
+                        model.NoteBook.Add(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
@@ -758,7 +761,7 @@ namespace NE4S.Scores
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpR air = new AirUpR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddNote(air);
+                        model.NoteBook.Add(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
@@ -768,7 +771,7 @@ namespace NE4S.Scores
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownC air = new AirDownC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddNote(air);
+                        model.NoteBook.Add(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
@@ -778,7 +781,7 @@ namespace NE4S.Scores
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownL air = new AirDownL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddNote(air);
+                        model.NoteBook.Add(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
@@ -788,7 +791,7 @@ namespace NE4S.Scores
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownR air = new AirDownR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
-                        model.AddNote(air);
+                        model.NoteBook.Add(air);
                         selectedNote.AttachAir(air);
                     }
                     break;
@@ -888,5 +891,10 @@ namespace NE4S.Scores
                 selectionArea.Draw(e, model.LaneBook, new Point(originPosX, originPosY));
             }
 		}
+
+        public void Refresh()
+        {
+            pBox.Refresh();
+        }
     }
 }

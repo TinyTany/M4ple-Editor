@@ -10,8 +10,6 @@ using System.Drawing;
 
 namespace NE4S
 {
-    public delegate void EditedStatusHandler(bool isEditedWithoutSave);
-
     [Serializable()]
     public class Model
     {
@@ -46,7 +44,7 @@ namespace NE4S
             }
         }
         [field: NonSerialized]
-        public event EditedStatusHandler IsEditedWithoutSaveChanged;
+        public event Action<bool> IsEditedWithoutSaveChanged;
 
         public Model()
         {
@@ -119,16 +117,6 @@ namespace NE4S
 		public void FillLane(ScoreLane begin)
 		{
 			LaneBook.FillLane(begin);
-        }
-
-		public void AddNote(Note newNote)
-		{
-			NoteBook.Add(newNote);
-        }
-
-		public void AddLongNote(LongNote newLongNote)
-		{
-			NoteBook.Add(newLongNote);
         }
 
         public void PaintNote(PaintEventArgs e, int originPosX, int originPosY, int currentPositionX)

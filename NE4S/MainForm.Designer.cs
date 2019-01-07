@@ -544,6 +544,7 @@
             this.tsbAdd.Name = "tsbAdd";
             this.tsbAdd.Size = new System.Drawing.Size(33, 22);
             this.tsbAdd.Text = "Add";
+            this.tsbAdd.ToolTipText = "ノーツ配置モード";
             // 
             // tsbEdit
             // 
@@ -553,6 +554,7 @@
             this.tsbEdit.Name = "tsbEdit";
             this.tsbEdit.Size = new System.Drawing.Size(31, 22);
             this.tsbEdit.Text = "Edit";
+            this.tsbEdit.ToolTipText = "ノーツ編集モード";
             // 
             // tsbDelete
             // 
@@ -562,6 +564,7 @@
             this.tsbDelete.Name = "tsbDelete";
             this.tsbDelete.Size = new System.Drawing.Size(44, 22);
             this.tsbDelete.Text = "Delete";
+            this.tsbDelete.ToolTipText = "ノーツ削除モード";
             // 
             // toolStripSeparator3
             // 

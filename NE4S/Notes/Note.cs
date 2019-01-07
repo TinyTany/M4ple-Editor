@@ -26,11 +26,22 @@ namespace NE4S.Notes
         protected PointF adjustNoteRect = new PointF(0, -2);
         public virtual int LaneIndex { get; protected set; } = -1;
         /// <summary>
-        /// ノーツを渡すイベントハンドラです（知らんけど）
+        /// Hold, AirHoldの始点サイズを変更した時にロングノーツ全体のサイズを更新する際に使用
         /// </summary>
         /// <param name="note"></param>
         public delegate void NoteEventHandler(Note note);
+        /// <summary>
+        /// Hold, AirHoldの位置変更をした際に、ロングノーツの長さを変えずに位置変更を全体に反映する際に使用
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="deltaTick"></param>
         public delegate void NoteEventHandlerEx(Note note, int deltaTick);
+        /// <summary>
+        /// ロングノーツのノーツの位置が変更されようとする際にその位置が有効化を返す際に使用
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public delegate bool PositionCheckHandler(Note note, Position position);
 
 		public Note()

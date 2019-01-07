@@ -226,7 +226,7 @@ namespace NE4S
             //
             Resize += (s, e) =>
             {
-
+                //UNDONE
             };
         }
 
@@ -352,21 +352,21 @@ namespace NE4S
         {
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
             selectedPanel.CopyNotes();
-            Refresh();
+            selectedPanel.Refresh();
         }
 
         private void Cut_Click(object sender, EventArgs e)
         {
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
             selectedPanel.CutNotes();
-            Refresh();
+            selectedPanel.Refresh();
         }
 
         private void Paste_Click(object sender, EventArgs e)
         {
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
             selectedPanel.PasteNotes();
-            Refresh();
+            selectedPanel.Refresh();
         }
 
         #region イベント渡し
