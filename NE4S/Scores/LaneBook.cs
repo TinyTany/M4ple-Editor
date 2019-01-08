@@ -8,10 +8,12 @@ using System.Windows.Forms;
 
 namespace NE4S.Scores
 {
+    public delegate void LaneEventHandler(LaneBook laneBook);
+
     [Serializable()]
     public class LaneBook : List<ScoreLane>
     {
-        public event Action<LaneBook> UpdateNoteLocation;
+        public event LaneEventHandler UpdateNoteLocation;
         public event EventHandler DataChanged;
 
         public LaneBook() { }
