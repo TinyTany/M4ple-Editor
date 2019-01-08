@@ -94,6 +94,9 @@
             this.tsbRedo = new System.Windows.Forms.ToolStripButton();
             this.tsbUndo = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiUndo = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRedo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -182,6 +185,9 @@
             // tsmiEdit
             // 
             this.tsmiEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiUndo,
+            this.tsmiRedo,
+            this.toolStripSeparator12,
             this.tsmiCut,
             this.tsmiCopy,
             this.tsmiPaste,
@@ -678,6 +684,25 @@
             this.toolStripSeparator11.Name = "toolStripSeparator11";
             this.toolStripSeparator11.Size = new System.Drawing.Size(6, 25);
             // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(249, 6);
+            // 
+            // tsmiUndo
+            // 
+            this.tsmiUndo.Name = "tsmiUndo";
+            this.tsmiUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.tsmiUndo.Size = new System.Drawing.Size(252, 22);
+            this.tsmiUndo.Text = "元に戻す";
+            // 
+            // tsmiRedo
+            // 
+            this.tsmiRedo.Name = "tsmiRedo";
+            this.tsmiRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.tsmiRedo.Size = new System.Drawing.Size(252, 22);
+            this.tsmiRedo.Text = "やり直し";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -773,6 +798,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripButton tsbUndo;
         private System.Windows.Forms.ToolStripButton tsbRedo;
+        private System.Windows.Forms.ToolStripMenuItem tsmiUndo;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRedo;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
     }
 }
 

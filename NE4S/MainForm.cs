@@ -45,6 +45,11 @@ namespace NE4S
                 hScroll.Dock = DockStyle.Bottom;
                 //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
                 ScorePanel sPanel = new ScorePanel(pBox, hScroll);
+                sPanel.OperationManager.StatusChanged += (undo, redo) =>
+                {
+                    tsbUndo.Enabled = tsmiUndo.Enabled = undo;
+                    tsbRedo.Enabled = tsmiRedo.Enabled = redo;
+                };
                 sPanel.SetScore(4, 4, 200);
                 tabPageEx.ScorePanel = sPanel;
                 //PictureBoxとHScrollBarの各種デリゲートの設定
@@ -65,6 +70,8 @@ namespace NE4S
             {
                 Text = tabScore.SelectedTab.Text;
                 Text += " - M4ple Editor";
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.OperationManager.OnStatusChanged();
             };
             #region ToolStripButton
             tsbAdd.Click += (s, e) => SetMode(Mode.ADD);
@@ -84,18 +91,9 @@ namespace NE4S
             tsbCopy.Click += Copy_Click;
             tsbCut.Click += Cut_Click;
             tsbPaste.Click += Paste_Click;
-            tsbUndo.Click += (s, e) =>
-            {
-                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
-                selectedPanel.Undo();
-                selectedPanel.Refresh();
-            };
-            tsbRedo.Click += (s, e) =>
-            {
-                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
-                selectedPanel.Redo();
-                selectedPanel.Refresh();
-            };
+            tsbUndo.Click += Undo_Click;
+            tsbRedo.Click += Redo_Click;
+            tsbUndo.Enabled = tsbRedo.Enabled = false;
             #endregion
             #region ToolStripMenuItem(表示)
             tsmiIsShortNote.Click += (s, e) =>
@@ -172,6 +170,9 @@ namespace NE4S
             };
             #endregion
             #region ToolStripMenuItem(編集)
+            tsmiUndo.Click += Undo_Click;
+            tsmiRedo.Click += Redo_Click;
+            tsmiUndo.Enabled = tsmiRedo.Enabled = false;
             tsmiCopy.Click += Copy_Click;
             tsmiCut.Click += Cut_Click;
             tsmiPaste.Click += Paste_Click;
@@ -331,6 +332,13 @@ namespace NE4S
             {
                 (tabScore.SelectedTab as TabPageEx).ScorePanel = newPanel;
                 newPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
+                newPanel.OperationManager.StatusChanged += (undo, redo) =>
+                {
+                    tsbUndo.Enabled = tsmiUndo.Enabled = undo;
+                    tsbRedo.Enabled = tsmiRedo.Enabled = redo;
+                };
+                tsbUndo.Enabled = tsbRedo.Enabled = false;
+                tsmiUndo.Enabled = tsmiRedo.Enabled = false;
                 //タブ名をデフォルトにする
                 int tabIndex = tabScore.SelectedIndex;
                 tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
@@ -378,6 +386,20 @@ namespace NE4S
         {
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
             selectedPanel.PasteNotes();
+            selectedPanel.Refresh();
+        }
+
+        private void Undo_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            selectedPanel.Undo();
+            selectedPanel.Refresh();
+        }
+
+        private void Redo_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            selectedPanel.Redo();
             selectedPanel.Refresh();
         }
 

@@ -25,7 +25,7 @@ namespace NE4S.Scores
         private PreviewNote pNote;
         private DataIO dataIO;
         private SelectionArea selectionArea;
-        private OperationManager operationManager;
+        public OperationManager OperationManager { get; private set; }
 
         public static class Margin
         {
@@ -49,7 +49,7 @@ namespace NE4S.Scores
 			pNote = new PreviewNote();
             dataIO = new DataIO();
             selectionArea = new SelectionArea();
-            operationManager = new OperationManager();
+            OperationManager = new OperationManager();
 		}
 
         #region 譜面のセーブとロード、エクスポートに関わるもの
@@ -233,12 +233,12 @@ namespace NE4S.Scores
 
         public void Undo()
         {
-            operationManager.Undo();
+            OperationManager.Undo();
         }
 
         public void Redo()
         {
-            operationManager.Redo();
+            OperationManager.Redo();
         }
 
         #endregion
@@ -472,8 +472,8 @@ namespace NE4S.Scores
 					case Mode.DELETE:
                         if (selectedNote != null)
                         {
-                            model.NoteBook.Delete(selectedNote);
-                            //operationManager.AddOperationAndInvoke(new DeleteNoteOperation(model, selectedNote));
+                            //model.NoteBook.Delete(selectedNote);
+                            OperationManager.AddOperationAndInvoke(new DeleteNoteOperation(model, selectedNote));
                         }
                         break;
 					default:
@@ -822,7 +822,7 @@ namespace NE4S.Scores
                     break;
             }
             //if (newNote != null) model.NoteBook.Add(newNote);
-            if (newNote != null) operationManager.AddOperationAndInvoke(new AddNoteOperation(model, newNote));
+            if (newNote != null) OperationManager.AddOperationAndInvoke(new AddNoteOperation(model, newNote));
             return;
         }
 

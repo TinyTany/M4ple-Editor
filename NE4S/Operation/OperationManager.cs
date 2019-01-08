@@ -9,6 +9,7 @@ namespace NE4S.Operation
     public class OperationManager
     {
         private Stack<Operation> stackUndo, stackRedo;
+        public event Action<bool, bool> StatusChanged;
 
         public OperationManager()
         {
@@ -21,6 +22,7 @@ namespace NE4S.Operation
             stackUndo.Push(operation);
             operation.Invoke();
             stackRedo.Clear();
+            StatusChanged?.Invoke(stackUndo.Any(), stackRedo.Any());
         }
 
         public void Undo()
@@ -31,6 +33,7 @@ namespace NE4S.Operation
                 op.Undo();
                 stackRedo.Push(op);
             }
+            StatusChanged?.Invoke(stackUndo.Any(), stackRedo.Any());
         }
 
         public void Redo()
@@ -41,6 +44,9 @@ namespace NE4S.Operation
                 op.Invoke();
                 stackUndo.Push(op);
             }
+            StatusChanged?.Invoke(stackUndo.Any(), stackRedo.Any());
         }
+
+        public void OnStatusChanged() => StatusChanged?.Invoke(stackUndo.Any(), stackRedo.Any());
     }
 }
