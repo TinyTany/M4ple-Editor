@@ -176,6 +176,7 @@
     <Compile Include="Notes\SlideTap.cs" />
     <Compile Include="Notes\HighSpeed.cs" />
     <Compile Include="Operation\AddNoteOperation.cs" />
+    <Compile Include="Operation\DeleteLongNoteOperation.cs" />
     <Compile Include="Operation\DeleteNoteOperation.cs" />
     <Compile Include="Operation\Operation.cs" />
     <Compile Include="Operation\OperationManager.cs" />
