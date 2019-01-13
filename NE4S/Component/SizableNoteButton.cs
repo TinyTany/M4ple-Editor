@@ -72,12 +72,12 @@ namespace NE4S.Component
         {
             isMousePressed = true;
             pressedLocation = e.Location;
-            base.PreviewBox_MouseDown(sender, e);
             if (isSelected)
             {
                 RefreshButtonArea(e.Location);
                 ChangeValueByButton();
             }
+            base.PreviewBox_MouseDown(sender, e);
         }
 
         protected virtual void ChangeValueByButton()
