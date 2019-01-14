@@ -208,6 +208,11 @@ namespace NE4S
                 Refresh();
             };
             #endregion
+            #region ToolStripMenuItem(ウィンドウ)
+            tsmiSizeSmall.Click += (s, e) => SetPanelSize(PanelSize.SMALL);
+            tsmiSizeMiddle.Click += (s, e) => SetPanelSize(PanelSize.MIDDLE);
+            tsmiSizeBig.Click += (s, e) => SetPanelSize(PanelSize.BIG);
+            #endregion
             #region ToolStripMenuItem(ヘルプ)
             tsmiShowHelp.Click += (s, e) =>
             {
@@ -262,6 +267,7 @@ namespace NE4S
                 tabNoteButton.Height = tabScore.Height;
                 flpNotePanel.Height = tabNoteButton.TabPages[0].Height;
             };
+            SetPanelSize(PanelSize.BIG);
         }
 
         private bool IsExit()
@@ -534,6 +540,32 @@ namespace NE4S
                     break;
             }
             Refresh();
+        }
+
+        public void SetPanelSize(int panelSize)
+        {
+            switch (panelSize)
+            {
+                case PanelSize.SMALL:
+                    ScoreInfo.LaneMaxBar = 1;
+                    tsmiSizeSmall.Checked = true;
+                    tsmiSizeMiddle.Checked = false;
+                    tsmiSizeBig.Checked = false;
+                    break;
+                case PanelSize.MIDDLE:
+                    ScoreInfo.LaneMaxBar = 1.5f;
+                    tsmiSizeSmall.Checked = false;
+                    tsmiSizeMiddle.Checked = true;
+                    tsmiSizeBig.Checked = false;
+                    break;
+                case PanelSize.BIG:
+                    ScoreInfo.LaneMaxBar = 2;
+                    tsmiSizeSmall.Checked = false;
+                    tsmiSizeMiddle.Checked = false;
+                    tsmiSizeBig.Checked = true;
+                    break;
+            }
+
         }
 
         private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)

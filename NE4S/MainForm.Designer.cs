@@ -97,6 +97,11 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
+            this.tsmiWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPanelSize = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSizeSmall = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSizeMiddle = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSizeBig = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -111,6 +116,7 @@
             this.tsmiFile,
             this.tsmiEdit,
             this.tsmiView,
+            this.tsmiWindow,
             this.tsmiHelp});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -703,6 +709,42 @@
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
             this.tslRealNotes.Visible = false;
             // 
+            // tsmiWindow
+            // 
+            this.tsmiWindow.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiPanelSize});
+            this.tsmiWindow.Name = "tsmiWindow";
+            this.tsmiWindow.Size = new System.Drawing.Size(80, 20);
+            this.tsmiWindow.Text = "ウィンドウ(&W)";
+            // 
+            // tsmiPanelSize
+            // 
+            this.tsmiPanelSize.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSizeSmall,
+            this.tsmiSizeMiddle,
+            this.tsmiSizeBig});
+            this.tsmiPanelSize.Name = "tsmiPanelSize";
+            this.tsmiPanelSize.Size = new System.Drawing.Size(180, 22);
+            this.tsmiPanelSize.Text = "譜面レーンのサイズ";
+            // 
+            // tsmiSizeSmall
+            // 
+            this.tsmiSizeSmall.Name = "tsmiSizeSmall";
+            this.tsmiSizeSmall.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeSmall.Text = "小";
+            // 
+            // tsmiSizeMiddle
+            // 
+            this.tsmiSizeMiddle.Name = "tsmiSizeMiddle";
+            this.tsmiSizeMiddle.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeMiddle.Text = "中";
+            // 
+            // tsmiSizeBig
+            // 
+            this.tsmiSizeBig.Name = "tsmiSizeBig";
+            this.tsmiSizeBig.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeBig.Text = "大";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -799,6 +841,11 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiUndo;
         private System.Windows.Forms.ToolStripMenuItem tsmiRedo;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripMenuItem tsmiWindow;
+        private System.Windows.Forms.ToolStripMenuItem tsmiPanelSize;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSizeSmall;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSizeMiddle;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSizeBig;
     }
 }
 

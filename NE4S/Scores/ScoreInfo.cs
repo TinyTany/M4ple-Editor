@@ -28,7 +28,7 @@ namespace NE4S.Scores
         /// <summary>
         /// 各レーンでの4/4拍子が最大何小節分入るか
         /// </summary>
-        public static float LaneMaxBar { get; } = 2;
+        public static float LaneMaxBar { get; set; } = 2;
         /// <summary>
         /// レーン数（不変）
         /// </summary>
