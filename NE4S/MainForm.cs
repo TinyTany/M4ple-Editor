@@ -227,6 +227,7 @@ namespace NE4S
             #region ショートカットキー
             KeyDown += (s, e) =>
             {
+                if (ModifierKeys == Keys.Alt) return;
                 switch (e.KeyCode)
                 {
                     case Keys.A:
@@ -240,6 +241,34 @@ namespace NE4S
                         break;
                     case Keys.S:
                         tsbInvisibleSlideTap.PerformClick();
+                        break;
+                    case Keys.B:
+                        if (ModifierKeys == Keys.Shift)
+                        {
+                            tscbBeat.SelectedIndex = 
+                                tscbBeat.SelectedIndex == 0 ? tscbBeat.Items.Count - 1 : --tscbBeat.SelectedIndex;
+                        }
+                        else
+                        {
+                            tscbBeat.SelectedIndex = (tscbBeat.SelectedIndex + 1) % tscbBeat.Items.Count;
+                        }
+                        break;
+                    case Keys.G:
+                        if (ModifierKeys == Keys.Shift)
+                        {
+                            tscbGrid.SelectedIndex =
+                                tscbGrid.SelectedIndex == 0 ? tscbGrid.Items.Count - 1 : --tscbGrid.SelectedIndex;
+                        }
+                        else
+                        {
+                            tscbGrid.SelectedIndex = (tscbGrid.SelectedIndex + 1) % tscbGrid.Items.Count;
+                        }
+                        break;
+                    case Keys.OemPeriod:
+                        // UNDONE
+                        break;
+                    case Keys.Oemcomma:
+                        // UNDONE
                         break;
                 }
             };
