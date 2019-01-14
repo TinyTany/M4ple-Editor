@@ -27,24 +27,35 @@ namespace NE4S
             {
                 TabPageEx tabPageEx = new TabPageEx("NewScore" + (i+1));
                 tabScore.TabPages.Add(tabPageEx);
-                //PictureBoxの追加と初期化
+                // PictureBoxの追加と初期化
                 PictureBox pBox = new PictureBox
                 {
                     Size = tabScore.TabPages[i].Size
                 };
-                //TabPageに初期化したPictureBoxを入れる
+                // TabPageに初期化したPictureBoxを入れる
                 tabScore.TabPages[i].Controls.Add(pBox);
-                //HScrollBarの追加と初期化
+                // ScrollBarの追加と初期化
                 HScrollBar hScroll = new HScrollBar
                 {
-                    Size = new Size(pBox.Width, 17)
+                    Size = new Size(pBox.Width, 17),
+                    Value = 0,
+                    Minimum = 0,
+                    Dock = DockStyle.Bottom
                 };
-                //HScrollBarをPictureBoxに入れる
+                VScrollBar vScroll = new VScrollBar
+                {
+                    Size = new Size(17, pBox.Height),
+                    Value = 0,
+                    Minimum = 0,
+                    Maximum = 0,
+                    Dock = DockStyle.Right,
+                    Visible = false
+                };
+                // HScrollBarをPictureBoxに入れる
                 pBox.Controls.Add(hScroll);
-                //HScrollBarの親コントロール内での位置を設定
-                hScroll.Dock = DockStyle.Bottom;
-                //初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
-                ScorePanel sPanel = new ScorePanel(pBox, hScroll);
+                pBox.Controls.Add(vScroll);
+                // 初期化したPictureBoxとHScrollBarを使用してScorePanelを追加
+                ScorePanel sPanel = new ScorePanel(pBox, hScroll, vScroll);
                 sPanel.OperationManager.StatusChanged += (undo, redo) =>
                 {
                     tsbUndo.Enabled = tsmiUndo.Enabled = undo;
@@ -52,7 +63,7 @@ namespace NE4S
                 };
                 sPanel.SetScore(4, 4, 200);
                 tabPageEx.ScorePanel = sPanel;
-                //PictureBoxとHScrollBarの各種デリゲートの設定
+                // PictureBoxとHScrollBarの各種デリゲートの設定
                 pBox.MouseWheel += Score_MouseWheel;
                 pBox.Paint += Score_Paint;
                 pBox.MouseClick += Score_MouseClick;
@@ -61,6 +72,7 @@ namespace NE4S
                 pBox.MouseMove += Score_MouseMove;
                 pBox.MouseUp += Score_MouseUp;
                 hScroll.Scroll += Score_Scroll;
+                vScroll.Scroll += Score_Scroll;
                 //
                 sPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
             }
@@ -227,7 +239,7 @@ namespace NE4S
                 }
             };
             #endregion
-            //ノーツボタンを追加
+            // ノーツボタンを追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
             noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.ADD);
             flpNotePanel.Size = tabNoteButton.TabPages[0].Size;
@@ -239,7 +251,16 @@ namespace NE4S
             //
             Resize += (s, e) =>
             {
-                //UNDONE
+                // HACK: 16と42はマジックナンバー的なもの（なぜかこの値で調整しないと大きさが合わない）
+                tabScore.Size = new Size(
+                    Width - tabScore.Location.X - tabScore.Margin.Right - 16, 
+                    Height - tabScore.Location.Y - tabScore.Margin.Bottom - 42);
+                foreach(TabPageEx tabPageEx in tabScore.TabPages)
+                {
+                    tabPageEx.ScorePanel.RefreshPanelSize(tabScore.SelectedTab.Size);
+                }
+                tabNoteButton.Height = tabScore.Height;
+                flpNotePanel.Height = tabNoteButton.TabPages[0].Height;
             };
         }
 
@@ -324,10 +345,11 @@ namespace NE4S
 
         private void SetNewPanel()
         {
-            //新規パネル生成処理
+            // 新規パネル生成処理
             if (!(tabScore.SelectedTab.Controls[0] is PictureBox pBox)) return;
             if (!(pBox.Controls[0] is HScrollBar hScrollBar)) return;
-            ScorePanel newPanel = new ScorePanel(pBox, hScrollBar);
+            if (!(pBox.Controls[1] is VScrollBar vScrollBar)) return;
+            ScorePanel newPanel = new ScorePanel(pBox, hScrollBar, vScrollBar);
             if (new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
             {
                 (tabScore.SelectedTab as TabPageEx).ScorePanel = newPanel;
@@ -339,7 +361,7 @@ namespace NE4S
                 };
                 tsbUndo.Enabled = tsbRedo.Enabled = false;
                 tsmiUndo.Enabled = tsmiRedo.Enabled = false;
-                //タブ名をデフォルトにする
+                // タブ名をデフォルトにする
                 int tabIndex = tabScore.SelectedIndex;
                 tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
                 //
@@ -404,7 +426,7 @@ namespace NE4S
         }
 
         #region イベント渡し
-        //現在開かれているタブに対して行う
+        // 現在開かれているタブに対して行う
 
         private void Score_MouseUp(object sender, MouseEventArgs e)
         {
@@ -450,7 +472,15 @@ namespace NE4S
 
         private void Score_Scroll(object sender, ScrollEventArgs e)
         {
-            (tabScore.SelectedTab as TabPageEx).ScorePanel.HSBarScroll(e);
+            ScorePanel selected = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            if (sender is HScrollBar)
+            {
+                selected.HSBarScroll(e);
+            }
+            else if (sender is VScrollBar)
+            {
+                selected.VSBarScroll(e);
+            }
             tabScore.SelectedTab.Controls[0].Refresh();
         }
         #endregion
