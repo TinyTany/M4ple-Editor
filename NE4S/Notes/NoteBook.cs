@@ -256,49 +256,49 @@ namespace NE4S.Notes
             return notes.ToList();
         }
 
-        public void Paint(PaintEventArgs e, int originPosX, int originPosY, ScoreBook scoreBook, LaneBook laneBook, int currentPositionX)
+        public void Paint(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
 		{
             //AttributeNote
             if (AttributeNotes != null)
             {
                 AttributeNotes.
                     Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().
-                    ForEach(x => x.Draw(e, originPosX, originPosY));
+                    ForEach(x => x.Draw(e, drawLocation));
             }
             //Hold
             if (HoldNotes != null && Status.IsHoldVisible)
             {
                 HoldNotes.
                     Where(x => x.IsDrawable()).ToList().
-                    ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
+                    ForEach(x => x.Draw(e, drawLocation, laneBook));
             }
             //Slide
             if (SlideNotes != null && Status.IsSlideVisible)
             {
                 SlideNotes.
                     Where(x => x.IsDrawable()).ToList().
-                    ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
+                    ForEach(x => x.Draw(e, drawLocation, laneBook));
             }
             //ShortNote
             if (ShortNotes != null && Status.IsShortNoteVisible)
             {
                 ShortNotes.
                     Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().
-                    ForEach(x => x.Draw(e, originPosX, originPosY));
+                    ForEach(x => x.Draw(e, drawLocation));
             }
             //Air
             if (AirNotes != null && Status.IsAirVisible)
             {
                 AirNotes.
                     Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast).ToList().
-                    ForEach(x => x.Draw(e, originPosX, originPosY));
+                    ForEach(x => x.Draw(e, drawLocation));
             }
             //AirHold
             if (AirHoldNotes != null && Status.IsAirHoldVisible)
             {
                 AirHoldNotes.
                     Where(x => x.IsDrawable()).ToList().
-                    ForEach(x => x.Draw(e, originPosX, originPosY, laneBook, currentPositionX));
+                    ForEach(x => x.Draw(e, drawLocation, laneBook));
             }
         }
 	}

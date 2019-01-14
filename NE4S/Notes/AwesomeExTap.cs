@@ -24,11 +24,11 @@ namespace NE4S.Notes
 
 		}
 
-		public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
+		public override void Draw(PaintEventArgs e, Point drawLocation)
 		{
             RectangleF drawRect = new RectangleF(
-                noteRect.X - originPosX + adjustNoteRect.X,
-                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.X - drawLocation.X + adjustNoteRect.X,
+                noteRect.Y - drawLocation.Y + adjustNoteRect.Y,
                 noteRect.Width,
                 noteRect.Height);
             if (Status.IsExTapDistinct)

@@ -125,11 +125,11 @@ namespace NE4S.Notes
             airHoldBegin?.UpdateLocation(laneBook);
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        public override void Draw(PaintEventArgs e, Point drawLocation)
         {
             RectangleF drawRect = new RectangleF(
-                noteRect.X - originPosX + adjustNoteRect.X,
-                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.X - drawLocation.X + adjustNoteRect.X,
+                noteRect.Y - drawLocation.Y + adjustNoteRect.Y,
                 noteRect.Width,
                 noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.LightGreen, Color.GreenYellow))

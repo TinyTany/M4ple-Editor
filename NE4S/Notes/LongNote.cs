@@ -57,12 +57,7 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ位置のチェックのみ行う
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="originPosX"></param>
-        /// <param name="originPosY"></param>
-        /// <param name="laneBook"></param>
-        /// <param name="currentPositionX"></param>
-        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
+        public virtual void Draw(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
         {
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             //ノーツ位置のチェック

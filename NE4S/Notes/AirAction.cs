@@ -65,11 +65,11 @@ namespace NE4S.Notes
             return hitRect.Contains(location);
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        public override void Draw(PaintEventArgs e, Point drawLocation)
         {
             RectangleF drawRect = new RectangleF(
-                noteRect.X - originPosX + adjustNoteRect.X + locationOffset.X,
-                noteRect.Y - originPosY + adjustNoteRect.Y + locationOffset.Y,
+                noteRect.X - drawLocation.X + adjustNoteRect.X + locationOffset.X,
+                noteRect.Y - drawLocation.Y + adjustNoteRect.Y + locationOffset.Y,
                 noteRect.Width + sizeOffset.Width,
                 noteRect.Height + sizeOffset.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Pink, Color.DeepPink))

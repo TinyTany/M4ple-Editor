@@ -51,17 +51,17 @@ namespace NE4S.Notes
 
         public override bool Contains(PointF location)
         {
-            return GetAirPath(0, 0).IsVisible(location);
+            return GetAirPath(new Point()).IsVisible(location);
         }
 
         /// <summary>
         /// 真上向きAirのGraphicsPathを返します
         /// </summary>
         /// <returns></returns>
-        protected virtual GraphicsPath GetAirPath(int originPosX, int originPosY)
+        protected virtual GraphicsPath GetAirPath(Point drawLocation)
         {
             GraphicsPath graphicsPath = new GraphicsPath();
-            PointF baseLocation = Location.Add(-originPosX, -originPosY);
+            PointF baseLocation = Location.Add(-drawLocation.X, -drawLocation.Y);
             PointF topCenter = baseLocation.AddX(Width / 2f).AddY(borderWidth).Add(drawOffset);
             PointF topRight = topCenter.AddX(Width / 2f - (Size - 1) * widthRatio).AddY(airHeight - airLineHeight - borderWidth);
             PointF topLeft = topCenter.AddX(-(Width / 2f - (Size - 1) * widthRatio)).AddY(airHeight - airLineHeight - borderWidth);
@@ -74,7 +74,7 @@ namespace NE4S.Notes
             return graphicsPath;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY) { }
+        public override void Draw(PaintEventArgs e, Point drawLocation) { }
 
     }
 }

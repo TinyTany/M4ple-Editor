@@ -162,11 +162,11 @@ namespace NE4S.Notes
             RelocateOnly(location, lane.Index);
         }
 
-        public virtual void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        public virtual void Draw(PaintEventArgs e, Point drawLocation)
 		{
 			RectangleF drawRect = new RectangleF(
-				noteRect.X - originPosX + adjustNoteRect.X,
-				noteRect.Y - originPosY + adjustNoteRect.Y,
+				noteRect.X - drawLocation.X + adjustNoteRect.X,
+				noteRect.Y - drawLocation.Y + adjustNoteRect.Y,
 				noteRect.Width,
 				noteRect.Height);
 			using (SolidBrush myBrush = new SolidBrush(Color.White))

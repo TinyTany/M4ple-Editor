@@ -96,32 +96,32 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
+        public override void Draw(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
         {
-            base.Draw(e, originPosX, originPosY, laneBook, currentPositionX);
+            base.Draw(e, drawLocation, laneBook);
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 if(list.IndexOf(note) < list.Count - 1)
                 {
                     Note next = list.Next(note);
-                    DrawHoldLine(e, note, next, originPosX, originPosY, laneBook, currentPositionX);
+                    DrawHoldLine(e, note, next, drawLocation, laneBook);
                 }
                 //クリッピングの解除を忘れないこと
                 e.Graphics.ResetClip();
-                note.Draw(e, originPosX, originPosY);
+                note.Draw(e, drawLocation);
             }
         }
 
-        private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, int originPosX, int originPosY, LaneBook laneBook, int currentPositionX)
+        private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, Point drawLocation, LaneBook laneBook)
         {
             float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
             //グラデーション矩形
             //x座標と幅は適当だけど動いてるはず。重要なのはy座標と高さ
-            RectangleF gradientRect = new RectangleF(0, past.Location.Y - distance + drawOffset.Y, 10, distance <= 0 ? 1 : distance);
+            RectangleF gradientRect = new RectangleF(0, past.Location.Y - distance + drawOffset.Y - drawLocation.Y, 10, distance <= 0 ? 1 : distance);
             //相対位置
-            PointF pastRerativeLocation = new PointF(past.Location.X - originPosX, past.Location.Y - originPosY);
-            PointF futureRerativeLocation = new PointF(future.Location.X - originPosX, future.Location.Y - originPosY);
+            PointF pastRerativeLocation = new PointF(past.Location.X - drawLocation.X, past.Location.Y - drawLocation.Y);
+            PointF futureRerativeLocation = new PointF(future.Location.X - drawLocation.X, future.Location.Y - drawLocation.Y);
 
             int passingLanes = future.LaneIndex - past.LaneIndex;
             //スライドのノーツとノーツがレーンをまたがないとき
@@ -159,7 +159,11 @@ namespace NE4S.Notes
                     ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
                     if (scoreLane != null)
                     {
-                        RectangleF clipRect = new RectangleF(scoreLane.LaneRect.X - currentPositionX, scoreLane.LaneRect.Y, scoreLane.LaneRect.Width, scoreLane.LaneRect.Height);
+                        RectangleF clipRect = new RectangleF(
+                            scoreLane.LaneRect.X - drawLocation.X, 
+                            scoreLane.LaneRect.Y - drawLocation.Y, 
+                            scoreLane.LaneRect.Width, 
+                            scoreLane.LaneRect.Height);
                         e.Graphics.Clip = new Region(clipRect);
                     }
                     using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
@@ -176,11 +180,11 @@ namespace NE4S.Notes
                     curLane != null && laneBook.IndexOf(curLane) <= future.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
-                        topLeft.X = curLane.LaneRect.X + future.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        topLeft.X = curLane.LaneRect.X + future.Position.Lane * ScoreInfo.MinLaneWidth - drawLocation.X + drawOffset.X;
                         topLeft.Y += prevLane.LaneRect.Height;
                         topRight.X = topLeft.X + future.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.LaneRect.Height;
-                        bottomLeft.X = curLane.LaneRect.X + past.Position.Lane * ScoreInfo.MinLaneWidth - currentPositionX + drawOffset.X;
+                        bottomLeft.X = curLane.LaneRect.X + past.Position.Lane * ScoreInfo.MinLaneWidth - drawLocation.X + drawOffset.X;
                         bottomLeft.Y += prevLane.LaneRect.Height;
                         bottomRight.X = bottomLeft.X + past.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.LaneRect.Height;
@@ -189,7 +193,7 @@ namespace NE4S.Notes
                         using (GraphicsPath graphicsPath = new GraphicsPath())
                         {
                             graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
-                            RectangleF clipRect = new RectangleF(curLane.LaneRect.Location.AddX(-currentPositionX), curLane.LaneRect.Size);
+                            RectangleF clipRect = new RectangleF(curLane.LaneRect.Location.Sub(drawLocation), curLane.LaneRect.Size);
                             e.Graphics.Clip = new Region(clipRect);
                             using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                             {

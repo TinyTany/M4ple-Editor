@@ -22,12 +22,12 @@ namespace NE4S.Notes
 
         public override bool Contains(PointF location)
         {
-            return GetAirPath(0, 0).IsVisible(location);
+            return GetAirPath(new Point()).IsVisible(location);
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        public override void Draw(PaintEventArgs e, Point drawLocation)
         {
-            using (GraphicsPath graphicsPath = GetAirPath(originPosX, originPosY))
+            using (GraphicsPath graphicsPath = GetAirPath(drawLocation))
             using (SolidBrush brush = new SolidBrush(airUpColor))
             using (Pen pen = new Pen(Color.White, borderWidth))
             { 

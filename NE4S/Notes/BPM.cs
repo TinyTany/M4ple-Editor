@@ -26,11 +26,11 @@ namespace NE4S.Notes
             return hitRect.Contains(location);
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        public override void Draw(PaintEventArgs e, Point drawLocation)
         {
             PointF drawPoint = new PointF(
-                noteRect.X - Position.Lane * ScoreInfo.MinLaneWidth - originPosX + ScoreLane.scoreWidth, 
-                Location.Y);
+                noteRect.X - Position.Lane * ScoreInfo.MinLaneWidth - drawLocation.X + ScoreLane.scoreWidth, 
+                Location.Y - drawLocation.Y);
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {

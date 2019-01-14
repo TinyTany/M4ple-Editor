@@ -345,10 +345,10 @@ namespace NE4S.Scores
 		/// <param name="e"></param>
 		/// <param name="originPosX"></param>
 		/// <param name="originPosY"></param>
-		public void PaintLane(PaintEventArgs e, int originPosX, int originPosY)
+		public void PaintLane(PaintEventArgs e, Point originLocation)
         {
-			float drawPosX = drawRegion.X - originPosX;
-			float drawPosY = drawRegion.Y - originPosY;
+			float drawPosX = drawRegion.X - originLocation.X;
+			float drawPosY = drawRegion.Y - originLocation.Y;
             //レーン背景を黒塗り
             e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, Width, Height));
             //Score描画用のY座標の初期座標を画面最下に設定

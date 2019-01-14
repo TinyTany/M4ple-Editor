@@ -38,16 +38,16 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY)
+        public override void Draw(PaintEventArgs e, Point drawLocation)
         {
             if (Air != null || AirHold != null)
             {
-                base.Draw(e, originPosX, originPosY);
+                base.Draw(e, drawLocation);
                 return;
             }
             RectangleF drawRect = new RectangleF(
-                noteRect.X - originPosX + adjustNoteRect.X,
-                noteRect.Y - originPosY + adjustNoteRect.Y,
+                noteRect.X - drawLocation.X + adjustNoteRect.X,
+                noteRect.Y - drawLocation.Y + adjustNoteRect.Y,
                 noteRect.Width,
                 noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Blue, Color.DarkBlue))

@@ -23,6 +23,6 @@ namespace NE4S.Notes
             Size = 1;
         }
 
-        public override void Draw(PaintEventArgs e, int originPosX, int originPosY) { }
+        public override void Draw(PaintEventArgs e, Point drawLocation) { }
     }
 }
