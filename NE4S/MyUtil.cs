@@ -115,14 +115,19 @@ namespace NE4S
             return new Point(point.X + x, point.Y);
         }
 
-        public static Point Add(this Point pointF, Point other)
+        public static Point AddY(this Point point, int y)
         {
-            return new Point(pointF.X + other.X, pointF.Y + other.Y);
+            return new Point(point.X, point.Y + y);
         }
 
-        public static Point Sub(this Point pointF, Point other)
+        public static Point Add(this Point point, Point other)
         {
-            return new Point(pointF.X - other.X, pointF.Y - other.Y);
+            return new Point(point.X + other.X, point.Y + other.Y);
+        }
+
+        public static Point Sub(this Point point, Point other)
+        {
+            return new Point(point.X - other.X, point.Y - other.Y);
         }
 
         /// <summary>
