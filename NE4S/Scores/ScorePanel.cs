@@ -60,6 +60,7 @@ namespace NE4S.Scores
             OperationManager = new OperationManager();
 		}
 
+        #region 画面やレーンのサイズ関連
         public void ReSizePanel(Size newSize)
         {
             pBox.Size = displayRect.Size = newSize;
@@ -77,6 +78,7 @@ namespace NE4S.Scores
             model.LaneBook.SetScore(model.ScoreBook);
             pBox.Refresh();
         }
+        #endregion
 
         #region 譜面のセーブとロード、エクスポートに関わるもの
 
@@ -127,6 +129,7 @@ namespace NE4S.Scores
             if(loadData != null)
             {
                 model = loadData;
+                RefreshLaneSize();
                 model.IsEditedWithoutSave = false;
                 return true;
             }
