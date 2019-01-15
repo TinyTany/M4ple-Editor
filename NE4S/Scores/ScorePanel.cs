@@ -70,6 +70,14 @@ namespace NE4S.Scores
             vScrollBar.Visible = virtualPanelSize.Height > displayRect.Height;
         }
 
+        public void RefreshLaneSize()
+        {
+            virtualPanelSize.Height = (int)(ScoreLane.Height + Margin.Top + Margin.Bottom + 17);
+            model.LaneBook.Clear();
+            model.LaneBook.SetScore(model.ScoreBook);
+            pBox.Refresh();
+        }
+
         #region 譜面のセーブとロード、エクスポートに関わるもの
 
         public void SetEventForEditedWithoutSave(Action<bool> handler)

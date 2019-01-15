@@ -65,6 +65,46 @@ namespace NE4S.Scores
             UpdateNoteLocation?.Invoke(this);
         }
 
+        public void SetScore(ScoreBook scoreBook)
+        {
+            if (!this.Any())
+            {
+                Add(new ScoreLane());
+            }
+            foreach (Score score in scoreBook)
+            {
+                //newScoreが1つのレーンの最大サイズで収まるか判定
+                if (score.BarSize <= ScoreInfo.LaneMaxBar)
+                {
+                    //現在のリストにあるレーンの末尾にまだnewScoreを入れる余裕があるか判定
+                    if (this.Last().CurrentBarSize + score.BarSize > ScoreInfo.LaneMaxBar)
+                    {
+                        //余裕がないときは新たな空レーンを追加
+                        Add(new ScoreLane());
+                    }
+                    //レーン末尾にnewScoreを格納
+                    this.Last().AddScore(score);
+                }
+                //収まらなかった場合
+                else
+                {
+                    //なんやかんやで分割して複数レーンに格納する
+                    for (int i = 0; i < score.BarSize / ScoreInfo.LaneMaxBar; ++i)
+                    {
+                        //新たにレーンを追加
+                        if (this.Last().CurrentBarSize > 0) Add(new ScoreLane());
+                        //末尾のレーンに新たなScoreを範囲を指定して格納
+                        this.Last().AddScore(
+                            score,
+                            new Range(
+                                (int)(i * score.BeatDenom * ScoreInfo.LaneMaxBar + 1),
+                                Math.Min(score.BeatNumer, (int)((i + 1) * score.BeatDenom * ScoreInfo.LaneMaxBar))));
+                    }
+                }
+            }
+            UpdateNoteLocation?.Invoke(this);
+        }
+
         public void InsetScoreForward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
             if (scoreBook.Next(score) == null)

@@ -16,7 +16,7 @@ namespace NE4S.Scores
     public class ScoreLane
     {
 		public static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
-		private static readonly float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
+		private static float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
         public static float Width { get; set; } = scoreWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
         private int index;
@@ -36,6 +36,12 @@ namespace NE4S.Scores
         public RectangleF HitRect { get; private set; }
 
         public RectangleF LaneRect { get; private set; }
+
+        public static void RefreshLaneSize()
+        {
+            maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
+            Height = maxScoreHeight + Margin.Top + Margin.Bottom;
+        }
 
         /// <summary>
         /// レーンの当たり判定矩形と描画領域矩形を更新

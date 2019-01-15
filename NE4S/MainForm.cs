@@ -594,7 +594,11 @@ namespace NE4S
                     tsmiSizeBig.Checked = true;
                     break;
             }
-
+            ScoreLane.RefreshLaneSize();
+            foreach (TabPageEx tabPageEx in tabScore.TabPages)
+            {
+                tabPageEx.ScorePanel.RefreshLaneSize();
+            }
         }
 
         private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)
