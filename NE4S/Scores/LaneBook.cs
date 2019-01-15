@@ -20,12 +20,12 @@ namespace NE4S.Scores
 
         public void SetScore(ScoreBook scoreBook, int beatNumer, int beatDenom, int barCount)
         {
-			//新たに追加する譜面たちをリストでまとめる
-			//これはLaneBookではないのでRefreshIndex()が行われない
-			List<Score> newScores = new List<Score>();
+            //新たに追加する譜面たちをリストでまとめる
+            //これはLaneBookではないのでRefreshIndex()が行われない
+            List<Score> newScores = new List<Score>();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
-			//まとめた譜面たちをscoreBookに入れる
-			scoreBook.Append(newScores);
+            //まとめた譜面たちをscoreBookに入れる
+            scoreBook?.Append(newScores);
             //新譜面たちをレーンに割り当て
             if (!this.Any())
             {

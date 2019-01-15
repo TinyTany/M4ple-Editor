@@ -60,7 +60,7 @@ namespace NE4S.Scores
             OperationManager = new OperationManager();
 		}
 
-        public void RefreshPanelSize(Size newSize)
+        public void ReSizePanel(Size newSize)
         {
             pBox.Size = displayRect.Size = newSize;
             hScrollBar.Maximum = 

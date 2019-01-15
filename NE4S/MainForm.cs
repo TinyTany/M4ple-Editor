@@ -291,7 +291,7 @@ namespace NE4S
                     Height - tabScore.Location.Y - tabScore.Margin.Bottom - 42);
                 foreach(TabPageEx tabPageEx in tabScore.TabPages)
                 {
-                    tabPageEx.ScorePanel.RefreshPanelSize(tabScore.SelectedTab.Size);
+                    tabPageEx.ScorePanel.ReSizePanel(tabScore.SelectedTab.Size);
                 }
                 tabNoteButton.Height = tabScore.Height;
                 flpNotePanel.Height = tabNoteButton.TabPages[0].Height;
