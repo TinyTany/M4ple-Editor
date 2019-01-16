@@ -64,11 +64,17 @@ namespace NE4S.Scores
         public void ReSizePanel(Size newSize)
         {
             pBox.Size = displayRect.Size = newSize;
-            hScrollBar.Maximum = 
+            UpdateSizeComponent();
+        }
+
+        private void UpdateSizeComponent()
+        {
+            hScrollBar.Maximum =
                 virtualPanelSize.Width < displayRect.Width ? 0 : virtualPanelSize.Width - displayRect.Width;
             vScrollBar.Maximum =
                 virtualPanelSize.Height < displayRect.Height ? 0 : virtualPanelSize.Height - displayRect.Height;
             vScrollBar.Visible = virtualPanelSize.Height > displayRect.Height;
+            displayRect.Y = vScrollBar.Value = 0;
         }
 
         public void RefreshLaneSize()
@@ -76,6 +82,7 @@ namespace NE4S.Scores
             virtualPanelSize.Height = (int)(ScoreLane.Height + Margin.Top + Margin.Bottom + 17);
             model.LaneBook.Clear();
             model.LaneBook.SetScore(model.ScoreBook);
+            UpdateSizeComponent();
             pBox.Refresh();
         }
         #endregion
