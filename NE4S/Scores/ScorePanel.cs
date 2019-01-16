@@ -935,6 +935,9 @@ namespace NE4S.Scores
         /// <param name="e"></param>
         public void PaintPanel(PaintEventArgs e)
 		{
+#if DEBUG
+            int pastTick = Environment.TickCount;
+#endif
             var drawLaneBook = model.LaneBook.Where(
                 x =>
                 x.LaneRect.Right >= displayRect.X - ScoreLane.Margin.Right &&
@@ -956,7 +959,11 @@ namespace NE4S.Scores
             {
                 selectionArea.Draw(e, model.LaneBook, displayRect.Location);
             }
-		}
+#if DEBUG
+            float fps = 1000 / (float)(Environment.TickCount - pastTick);
+            System.Diagnostics.Debug.WriteLine(fps);
+#endif
+        }
 
         public void Refresh()
         {
