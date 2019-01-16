@@ -60,6 +60,11 @@
             this.tsmiIsAir = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiIsExTapDistinct = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPanelSize = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSizeSmall = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSizeMiddle = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSizeBig = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiShowHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -97,11 +102,8 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
-            this.tsmiWindow = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiPanelSize = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSizeSmall = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSizeMiddle = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSizeBig = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiIsEconomyMode = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -280,7 +282,9 @@
             this.tsmiIsAirHold,
             this.tsmiIsAir,
             this.toolStripSeparator10,
-            this.tsmiIsExTapDistinct});
+            this.tsmiIsExTapDistinct,
+            this.toolStripSeparator13,
+            this.tsmiIsEconomyMode});
             this.tsmiView.Name = "tsmiView";
             this.tsmiView.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.V)));
             this.tsmiView.Size = new System.Drawing.Size(58, 20);
@@ -364,6 +368,42 @@
             this.tsmiIsExTapDistinct.Name = "tsmiIsExTapDistinct";
             this.tsmiIsExTapDistinct.Size = new System.Drawing.Size(215, 22);
             this.tsmiIsExTapDistinct.Text = "ExTap系ノーツの色を区別する";
+            // 
+            // tsmiWindow
+            // 
+            this.tsmiWindow.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiPanelSize});
+            this.tsmiWindow.Name = "tsmiWindow";
+            this.tsmiWindow.Size = new System.Drawing.Size(80, 20);
+            this.tsmiWindow.Text = "ウィンドウ(&W)";
+            // 
+            // tsmiPanelSize
+            // 
+            this.tsmiPanelSize.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSizeSmall,
+            this.tsmiSizeMiddle,
+            this.tsmiSizeBig});
+            this.tsmiPanelSize.Name = "tsmiPanelSize";
+            this.tsmiPanelSize.Size = new System.Drawing.Size(180, 22);
+            this.tsmiPanelSize.Text = "譜面レーンのサイズ";
+            // 
+            // tsmiSizeSmall
+            // 
+            this.tsmiSizeSmall.Name = "tsmiSizeSmall";
+            this.tsmiSizeSmall.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeSmall.Text = "小";
+            // 
+            // tsmiSizeMiddle
+            // 
+            this.tsmiSizeMiddle.Name = "tsmiSizeMiddle";
+            this.tsmiSizeMiddle.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeMiddle.Text = "中";
+            // 
+            // tsmiSizeBig
+            // 
+            this.tsmiSizeBig.Name = "tsmiSizeBig";
+            this.tsmiSizeBig.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeBig.Text = "大";
             // 
             // tsmiHelp
             // 
@@ -709,41 +749,16 @@
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
             this.tslRealNotes.Visible = false;
             // 
-            // tsmiWindow
+            // toolStripSeparator13
             // 
-            this.tsmiWindow.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiPanelSize});
-            this.tsmiWindow.Name = "tsmiWindow";
-            this.tsmiWindow.Size = new System.Drawing.Size(80, 20);
-            this.tsmiWindow.Text = "ウィンドウ(&W)";
+            this.toolStripSeparator13.Name = "toolStripSeparator13";
+            this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
             // 
-            // tsmiPanelSize
+            // tsmiIsEconomyMode
             // 
-            this.tsmiPanelSize.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiSizeSmall,
-            this.tsmiSizeMiddle,
-            this.tsmiSizeBig});
-            this.tsmiPanelSize.Name = "tsmiPanelSize";
-            this.tsmiPanelSize.Size = new System.Drawing.Size(180, 22);
-            this.tsmiPanelSize.Text = "譜面レーンのサイズ";
-            // 
-            // tsmiSizeSmall
-            // 
-            this.tsmiSizeSmall.Name = "tsmiSizeSmall";
-            this.tsmiSizeSmall.Size = new System.Drawing.Size(86, 22);
-            this.tsmiSizeSmall.Text = "小";
-            // 
-            // tsmiSizeMiddle
-            // 
-            this.tsmiSizeMiddle.Name = "tsmiSizeMiddle";
-            this.tsmiSizeMiddle.Size = new System.Drawing.Size(86, 22);
-            this.tsmiSizeMiddle.Text = "中";
-            // 
-            // tsmiSizeBig
-            // 
-            this.tsmiSizeBig.Name = "tsmiSizeBig";
-            this.tsmiSizeBig.Size = new System.Drawing.Size(86, 22);
-            this.tsmiSizeBig.Text = "大";
+            this.tsmiIsEconomyMode.Name = "tsmiIsEconomyMode";
+            this.tsmiIsEconomyMode.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsEconomyMode.Text = "描画処理を軽量化する";
             // 
             // MainForm
             // 
@@ -846,6 +861,8 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSizeSmall;
         private System.Windows.Forms.ToolStripMenuItem tsmiSizeMiddle;
         private System.Windows.Forms.ToolStripMenuItem tsmiSizeBig;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
+        private System.Windows.Forms.ToolStripMenuItem tsmiIsEconomyMode;
     }
 }
 

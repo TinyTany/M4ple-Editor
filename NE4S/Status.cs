@@ -31,6 +31,7 @@ namespace NE4S
         public static bool IsAirHoldVisible { get; set; } = true;
         public static bool IsAirVisible { get; set; } = true;
         public static bool IsExTapDistinct { get; set; } = true;
+        public static bool IsEconomyMode { get; set; } = false;
 
         public static int DrawTickFirst { get; set; }
         public static int DrawTickLast { get; set; }
@@ -39,6 +40,5 @@ namespace NE4S
         public static string OpenDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         public static string MusicDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
         public static string JacketDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-
     }
 }

@@ -156,6 +156,12 @@ namespace NE4S
                 Status.IsExTapDistinct = menuItem.Checked = !menuItem.Checked;
                 Refresh();
             };
+            tsmiIsEconomyMode.Click += (s, e) =>
+            {
+                ToolStripMenuItem menuItem = (ToolStripMenuItem)s;
+                Status.IsEconomyMode = menuItem.Checked = !menuItem.Checked;
+                Refresh();
+            };
             #endregion
             #region ToolStlipMenuItem(ファイル)
             tsmiNew.Click += New_Click;
@@ -501,7 +507,10 @@ namespace NE4S
 
         private void Score_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            if (!Status.IsEconomyMode)
+            {
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            }
             (tabScore.SelectedTab as TabPageEx).ScorePanel.PaintPanel(e);
         }
 
