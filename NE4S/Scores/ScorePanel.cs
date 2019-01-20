@@ -88,17 +88,10 @@ namespace NE4S.Scores
         #endregion
 
         #region 譜面のセーブとロード、エクスポートに関わるもの
-
-        public void SetEventForEditedWithoutSave(Action<bool> handler)
-        {
-            model.IsEditedWithoutSaveChanged += handler;
-            model.IsEditedWithoutSave = false;
-        }
-
-        public bool IsEditedWithoutSave
-        {
-            get { return model.IsEditedWithoutSave; }
-        }
+        /// <summary>
+        /// 保存されていない変更があるかどうかを返します
+        /// </summary>
+        public bool IsEdited { get; set; } = false;
 
         public string FileName
         {
@@ -109,7 +102,7 @@ namespace NE4S.Scores
         {
             Model loadData = null;
             //ファイルが保存されていない場合はメッセージボックスを出す
-            if (model.IsEditedWithoutSave)
+            if (IsEdited)
             {
                 DialogResult dialogResult = 
                     MessageBox.Show(
@@ -137,7 +130,7 @@ namespace NE4S.Scores
             {
                 model = loadData;
                 RefreshLaneSize();
-                model.IsEditedWithoutSave = false;
+                IsEdited = false;
                 return true;
             }
             return false;
@@ -146,14 +139,14 @@ namespace NE4S.Scores
         public bool Save()
         {
             bool isSaved = dataIO.Save(model);
-            model.IsEditedWithoutSave = !isSaved;
+            IsEdited = !isSaved;
             return isSaved;
         }
 
         public bool SaveAs()
         {
             bool isSaved =  dataIO.SaveAs(model);
-            model.IsEditedWithoutSave = !isSaved;
+            IsEdited = !isSaved;
             return isSaved;
         }
 

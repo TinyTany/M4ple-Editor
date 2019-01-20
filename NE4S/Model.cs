@@ -16,19 +16,8 @@ namespace NE4S
         public NoteBook NoteBook { get; }
         public ScoreBook ScoreBook { get; }
         public LaneBook LaneBook { get; }
-        /// <summary>
-        /// この変数は使用しない
-        /// プロパティを常に使う
-        /// </summary>
-        private MusicInfo musicInfo;
-        public MusicInfo MusicInfo {
-            get { return musicInfo; }
-            set
-            {
-                musicInfo = value;
-                IsEditedWithoutSave = true;
-            }
-        }
+        public MusicInfo MusicInfo { get; set; }
+        #region 使わなくなったメンバ
         /// <summary>
         /// この変数は使用しない
         /// プロパティを常に使う
@@ -40,24 +29,11 @@ namespace NE4S
             set
             {
                 isEditedWithoutSave = value;
-                IsEditedWithoutSaveChanged?.Invoke(isEditedWithoutSave);
+                //IsEditedWithoutSaveChanged?.Invoke(isEditedWithoutSave);
             }
         }
         [field: NonSerialized]
         public event Action<bool> IsEditedWithoutSaveChanged;
-
-        public Model()
-        {
-            NoteBook = new NoteBook();
-            NoteBook.DataChanged += ModelEdited;
-            ScoreBook = new ScoreBook();
-            ScoreBook.DataChanged += ModelEdited;
-			LaneBook = new LaneBook();
-            LaneBook.DataChanged += ModelEdited;
-            LaneBook.UpdateNoteLocation += NoteBook.UpdateNoteLocation;
-            MusicInfo = new MusicInfo();
-            IsEditedWithoutSave = false;
-        }
 
         private void ModelEdited(object sender, EventArgs e)
         {
@@ -66,6 +42,16 @@ namespace NE4S
             {
                 IsEditedWithoutSave = true;
             }
+        }
+        #endregion
+
+        public Model()
+        {
+            NoteBook = new NoteBook();
+            ScoreBook = new ScoreBook();
+			LaneBook = new LaneBook();
+            LaneBook.UpdateNoteLocation += NoteBook.UpdateNoteLocation;
+            MusicInfo = new MusicInfo();
         }
 
 		public void SetScore(int beatNumer, int beatDenom, int barCount)

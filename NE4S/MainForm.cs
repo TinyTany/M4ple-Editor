@@ -61,6 +61,11 @@ namespace NE4S
                     tsbUndo.Enabled = tsmiUndo.Enabled = undo;
                     tsbRedo.Enabled = tsmiRedo.Enabled = redo;
                 };
+                sPanel.OperationManager.Edited += () =>
+                {
+                    UpdateTextOfTabAndForm(true);
+                    sPanel.IsEdited = true;
+                };
                 sPanel.SetScore(4, 4, 200);
                 tabPageEx.ScorePanel = sPanel;
                 // PictureBoxとHScrollBarの各種デリゲートの設定
@@ -73,8 +78,6 @@ namespace NE4S
                 pBox.MouseUp += Score_MouseUp;
                 hScroll.Scroll += Score_Scroll;
                 vScroll.Scroll += Score_Scroll;
-                //
-                sPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
             }
 			InitializeToolStrip();
             #region 各種ボタンに対するイベント紐づけ
@@ -309,7 +312,7 @@ namespace NE4S
         {
             foreach(TabPageEx tabPageEx in tabScore.TabPages)
             {
-                if (tabPageEx.ScorePanel.IsEditedWithoutSave)
+                if (tabPageEx.ScorePanel.IsEdited)
                 {
                     DialogResult dialogResult =
                     MessageBox.Show(
@@ -358,7 +361,7 @@ namespace NE4S
         private void New_Click(object sender, EventArgs e)
         {
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
-            if (selectedPanel.IsEditedWithoutSave)
+            if (selectedPanel.IsEdited)
             {
                 DialogResult dialogResult =
                     MessageBox.Show(
@@ -393,7 +396,6 @@ namespace NE4S
             if (new NewScoreForm(newPanel).ShowDialog() == DialogResult.OK)
             {
                 (tabScore.SelectedTab as TabPageEx).ScorePanel = newPanel;
-                newPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
                 newPanel.OperationManager.StatusChanged += (undo, redo) =>
                 {
                     tsbUndo.Enabled = tsmiUndo.Enabled = undo;
@@ -401,6 +403,11 @@ namespace NE4S
                 };
                 tsbUndo.Enabled = tsbRedo.Enabled = false;
                 tsmiUndo.Enabled = tsmiRedo.Enabled = false;
+                newPanel.OperationManager.Edited += () =>
+                {
+                    UpdateTextOfTabAndForm(true);
+                    newPanel.IsEdited = true;
+                };
                 // タブ名をデフォルトにする
                 int tabIndex = tabScore.SelectedIndex;
                 tabScore.SelectedTab.Text = "NewScore" + (tabIndex + 1);
@@ -416,7 +423,6 @@ namespace NE4S
             if (selectedPanel.Load())
             {
                 UpdateTextOfTabAndForm(false);
-                selectedPanel.SetEventForEditedWithoutSave(UpdateTextOfTabAndForm);
                 tabScore.SelectedTab.Controls[0].Refresh();
             }
             return;

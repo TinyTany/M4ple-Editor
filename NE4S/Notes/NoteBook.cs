@@ -22,7 +22,9 @@ namespace NE4S.Notes
         public List<Air> AirNotes { get; private set; } = new List<Air>();
         public List<AttributeNote> AttributeNotes { get; private set; } = new List<AttributeNote>();
 
+        #region 使わなくなったメンバ
         public event EventHandler DataChanged;
+        #endregion
 
         public NoteBook()
         {
@@ -42,7 +44,6 @@ namespace NE4S.Notes
             if (newNote is Air) AirNotes.Add(newNote as Air);
             else if (newNote is AttributeNote) AttributeNotes.Add(newNote as AttributeNote);
             else ShortNotes.Add(newNote);
-            DataChanged?.Invoke(this, null);
         }
 
 		public void Add(LongNote newLongNote)
@@ -51,7 +52,6 @@ namespace NE4S.Notes
 			if (newLongNote is Hold) HoldNotes.Add(newLongNote as Hold);
 			else if (newLongNote is Slide) SlideNotes.Add(newLongNote as Slide);
 			else if (newLongNote is AirHold) AirHoldNotes.Add(newLongNote as AirHold);
-            DataChanged?.Invoke(this, null);
         }
 
 		public void Delete(Note note)
@@ -108,7 +108,6 @@ namespace NE4S.Notes
                 AttributeNotes.Remove(note as AttributeNote);
             }
             else ShortNotes.Remove(note);
-            DataChanged?.Invoke(this, null);
         }
 
 		public void Delete(LongNote longNote)
@@ -130,7 +129,6 @@ namespace NE4S.Notes
                     AirHoldNotes.Remove(airable.AirHold);
                 }
             }
-            DataChanged?.Invoke(this, null);
         }
 
         /// <summary>

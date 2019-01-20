@@ -12,7 +12,9 @@ namespace NE4S.Scores
     [Serializable()]
     public class ScoreBook : List<Score>
     {
+        #region 使わなくなったメンバ
         public event EventHandler DataChanged;
+        #endregion
 
         public ScoreBook() { }
 
@@ -20,21 +22,18 @@ namespace NE4S.Scores
         {
 			Add(new Score(beatNumer, beatDenom));
             SetScoreIndex();
-            DataChanged?.Invoke(this, null);
         }
 
         public void Append(List<Score> newScores)
         {
             AddRange(newScores);
             SetScoreIndex();
-            DataChanged?.Invoke(this, null);
         }
 
         public void InsertRange(int index, List<Score> newScores)
         {
             base.InsertRange(index, newScores);
             SetScoreIndex();
-            DataChanged?.Invoke(this, null);
         }
 
         public void Delete(int begin, int count)
@@ -42,7 +41,6 @@ namespace NE4S.Scores
             if (Count < begin + count) count = Count - begin;
             RemoveRange(begin, count);
             SetScoreIndex();
-            DataChanged?.Invoke(this, null);
         }
 
 		public void Resize(int index, int beatNumer, int beatDenom)
@@ -51,7 +49,6 @@ namespace NE4S.Scores
 			{
 				At(index).BeatNumer = beatNumer;
 				At(index).BeatDenom = beatDenom;
-                DataChanged?.Invoke(this, null);
             }
 		}
 

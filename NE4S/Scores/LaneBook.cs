@@ -14,7 +14,10 @@ namespace NE4S.Scores
     public class LaneBook : List<ScoreLane>
     {
         public event LaneEventHandler UpdateNoteLocation;
+
+        #region 使わなくなったメンバ
         public event EventHandler DataChanged;
+        #endregion
 
         public LaneBook() { }
 
@@ -115,7 +118,6 @@ namespace NE4S.Scores
             {
                 InsertScoreBackward(scoreBook, scoreBook.Next(score), beatNumer, beatDenom, barCount);
             }
-            DataChanged?.Invoke(this, null);
         }
 
         public void InsetScoreForwardWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
@@ -128,7 +130,6 @@ namespace NE4S.Scores
             {
                 InsertScoreBackwardWithNote(noteBook, scoreBook, scoreBook.Next(score), beatNumer, beatDenom, barCount);
             }
-            DataChanged?.Invoke(this, null);
         }
 
         public void InsertScoreBackward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
@@ -194,7 +195,6 @@ namespace NE4S.Scores
             int deltaTick = barCount * ScoreInfo.MaxBeatDiv * beatNumer / beatDenom;
             noteBook.RelocateNoteTickAfterScoreTick(initialScoreTick, deltaTick);
             UpdateNoteLocation?.Invoke(this);
-            DataChanged?.Invoke(this, null);
         }
 
         /// <summary>
@@ -245,7 +245,6 @@ namespace NE4S.Scores
                 }
             }
             UpdateNoteLocation?.Invoke(this);
-            DataChanged?.Invoke(this, null);
         }
 
         /// <summary>
@@ -347,7 +346,6 @@ namespace NE4S.Scores
             noteBook.RelocateNoteTickAfterScoreTick(score.StartTick, -deleteScoreTickSize);
             DeleteScore(scoreBook, score, count);
             UpdateNoteLocation?.Invoke(this);
-            DataChanged?.Invoke(this, null);
         }
 
         /// <summary>
