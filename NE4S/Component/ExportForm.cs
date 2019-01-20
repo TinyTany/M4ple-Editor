@@ -276,7 +276,7 @@ namespace NE4S.Component
                             System.Diagnostics.Debug.Assert(false, "ハイスピノーツが属するスコアが見つかりませんでした");
                             continue;
                         }
-                        streamWriter.Write(score.Index + "'" + (measureConstant * (speed.Position.Tick - score.StartTick)) + ":" + speed.NoteValue + ", ");
+                        streamWriter.Write((score.Index + (int)measureOffsetUpDown.Value) + "'" + (measureConstant * (speed.Position.Tick - score.StartTick)) + ":" + speed.NoteValue + ", ");
                     }
                     streamWriter.WriteLine("\"");
                     streamWriter.WriteLine("#HISPEED 00\r\n#MEASUREHS 00");
