@@ -83,7 +83,7 @@ namespace NE4S.Scores
             model.LaneBook.Clear();
             model.LaneBook.SetScore(model.ScoreBook);
             UpdateSizeComponent();
-            pBox.Refresh();
+            Update();
         }
         #endregion
 
@@ -395,7 +395,8 @@ namespace NE4S.Scores
         {
 			var laneBook = model.LaneBook;
             virtualPanelSize.Width = (int)(ScoreLane.Width + Margin.Left + Margin.Right) * laneBook.Count;
-            hScrollBar.Maximum = virtualPanelSize.Width < displayRect.Width ? 0 : virtualPanelSize.Width - displayRect.Width;
+            hScrollBar.Maximum = 
+                virtualPanelSize.Width < displayRect.Width ? 0 : virtualPanelSize.Width - displayRect.Width;
             //pBoxを更新
             pBox.Refresh();
         }
@@ -717,6 +718,7 @@ namespace NE4S.Scores
             Note newNote = null;
             switch (Status.Note)
             {
+                #region ShortNote
                 case NoteType.TAP:
                     if (!Status.IsShortNoteVisible) break;
                     newNote = new Tap(Status.NoteSize, position, locationVirtual, lane.Index);
@@ -741,6 +743,8 @@ namespace NE4S.Scores
                     if (!Status.IsShortNoteVisible) break;
                     newNote = new Flick(Status.NoteSize, position, locationVirtual, lane.Index);
                     break;
+                #endregion
+                #region LongNote
                 case NoteType.HOLD:
                     if (!Status.IsHoldVisible) break;
                     OperationManager.AddOperationAndInvoke(
@@ -829,6 +833,8 @@ namespace NE4S.Scores
                                 selectedNote));
                     }
                     break;
+                #endregion
+                #region Air
                 case NoteType.AIRUPC:
                     if (!Status.IsAirVisible) break;
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
@@ -883,17 +889,22 @@ namespace NE4S.Scores
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
                     break;
+                #endregion
+                #region AttributeNote
                 case NoteType.BPM:
                     newNote = new BPM(position, locationVirtual, lane.Index);
                     break;
                 case NoteType.HIGHSPEED:
                     newNote = new HighSpeed(position, locationVirtual, lane.Index);
                     break;
+                #endregion
                 default:
                     break;
             }
-            //if (newNote != null) model.NoteBook.Add(newNote);
-            if (newNote != null) OperationManager.AddOperationAndInvoke(new AddNoteOperation(model, newNote));
+            if (newNote != null)
+            {
+                OperationManager.AddOperationAndInvoke(new AddNoteOperation(model, newNote));
+            }
             return;
         }
 

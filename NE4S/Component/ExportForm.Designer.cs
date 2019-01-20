@@ -41,7 +41,7 @@
             this.jacketPathButton = new System.Windows.Forms.Button();
             this.jacketPathClearButton = new System.Windows.Forms.Button();
             this.offsetUpDown = new System.Windows.Forms.NumericUpDown();
-            this.measureOffserUpDown = new System.Windows.Forms.NumericUpDown();
+            this.measureOffsetUpDown = new System.Windows.Forms.NumericUpDown();
             this.titleText = new System.Windows.Forms.TextBox();
             this.songIdText = new System.Windows.Forms.TextBox();
             this.designerText = new System.Windows.Forms.TextBox();
@@ -67,7 +67,7 @@
             this.curveSlideUpDown = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.measureOffserUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.measureOffsetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.weStarUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveSlideUpDown)).BeginInit();
             this.SuspendLayout();
@@ -203,13 +203,13 @@
             this.offsetUpDown.Size = new System.Drawing.Size(140, 23);
             this.offsetUpDown.TabIndex = 10;
             // 
-            // measureOffserUpDown
+            // measureOffsetUpDown
             // 
-            this.measureOffserUpDown.Location = new System.Drawing.Point(294, 332);
-            this.measureOffserUpDown.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.measureOffserUpDown.Name = "measureOffserUpDown";
-            this.measureOffserUpDown.Size = new System.Drawing.Size(140, 23);
-            this.measureOffserUpDown.TabIndex = 13;
+            this.measureOffsetUpDown.Location = new System.Drawing.Point(294, 332);
+            this.measureOffsetUpDown.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.measureOffsetUpDown.Name = "measureOffsetUpDown";
+            this.measureOffsetUpDown.Size = new System.Drawing.Size(140, 23);
+            this.measureOffsetUpDown.TabIndex = 13;
             // 
             // titleText
             // 
@@ -507,7 +507,7 @@
             this.Controls.Add(this.designerText);
             this.Controls.Add(this.songIdText);
             this.Controls.Add(this.titleText);
-            this.Controls.Add(this.measureOffserUpDown);
+            this.Controls.Add(this.measureOffsetUpDown);
             this.Controls.Add(this.offsetUpDown);
             this.Controls.Add(this.jacketPathClearButton);
             this.Controls.Add(this.jacketPathButton);
@@ -529,7 +529,7 @@
             this.Name = "ExportForm";
             this.Text = "エクスポート";
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.measureOffserUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.measureOffsetUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.weStarUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.curveSlideUpDown)).EndInit();
             this.ResumeLayout(false);
@@ -551,7 +551,7 @@
         private System.Windows.Forms.Button jacketPathButton;
         private System.Windows.Forms.Button jacketPathClearButton;
         private System.Windows.Forms.NumericUpDown offsetUpDown;
-        private System.Windows.Forms.NumericUpDown measureOffserUpDown;
+        private System.Windows.Forms.NumericUpDown measureOffsetUpDown;
         private System.Windows.Forms.TextBox titleText;
         private System.Windows.Forms.TextBox songIdText;
         private System.Windows.Forms.TextBox designerText;

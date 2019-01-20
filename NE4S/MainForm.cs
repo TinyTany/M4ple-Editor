@@ -353,7 +353,6 @@ namespace NE4S
             }
             Text = tabScore.SelectedTab.Text;
             Text += " - M4ple Editor";
-            tabScore.SelectedTab.Refresh();
         }
 
         private void New_Click(object sender, EventArgs e)

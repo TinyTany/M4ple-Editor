@@ -38,6 +38,7 @@ namespace NE4S.Notes
 
 		public void Add(Note newNote)
 		{
+            if (newNote == null) return;
             if (newNote is Air) AirNotes.Add(newNote as Air);
             else if (newNote is AttributeNote) AttributeNotes.Add(newNote as AttributeNote);
             else ShortNotes.Add(newNote);
@@ -46,6 +47,7 @@ namespace NE4S.Notes
 
 		public void Add(LongNote newLongNote)
 		{
+            if (newLongNote == null) return;
 			if (newLongNote is Hold) HoldNotes.Add(newLongNote as Hold);
 			else if (newLongNote is Slide) SlideNotes.Add(newLongNote as Slide);
 			else if (newLongNote is AirHold) AirHoldNotes.Add(newLongNote as AirHold);
@@ -54,6 +56,7 @@ namespace NE4S.Notes
 
 		public void Delete(Note note)
 		{
+            if (note == null) return;
             if (note is Air)
             {
                 Air air = note as Air;
@@ -110,6 +113,7 @@ namespace NE4S.Notes
 
 		public void Delete(LongNote longNote)
 		{
+            if (longNote == null) return;
 			if (longNote is Hold) HoldNotes.Remove(longNote as Hold);
 			else if (longNote is Slide) SlideNotes.Remove(longNote as Slide);
 			else if (longNote is AirHold) AirHoldNotes.Remove(longNote as AirHold);

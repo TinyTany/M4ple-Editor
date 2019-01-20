@@ -122,7 +122,7 @@ namespace NE4S.Component
             offsetUpDown.Value = musicInfo.MusicOffset;
             JacketPathText.Text = musicInfo.JacketFileName;
             exportPathText.Text = musicInfo.ExportPath;
-            measureOffserUpDown.Value = musicInfo.MeasureOffset;
+            measureOffsetUpDown.Value = musicInfo.MeasureOffset;
             metoronomeBox.SelectedIndex = musicInfo.Metronome;
             curveSlideUpDown.Value = musicInfo.SlideCurveSegment;
             MusicInfo.HasExported = musicInfo.HasExported;
@@ -144,7 +144,7 @@ namespace NE4S.Component
                 MusicOffset = offsetUpDown.Value,
                 JacketFileName = JacketPathText.Text,
                 ExportPath = exportPathText.Text,
-                MeasureOffset = measureOffserUpDown.Value,
+                MeasureOffset = measureOffsetUpDown.Value,
                 Metronome = metoronomeBox.SelectedIndex,
                 SlideCurveSegment = curveSlideUpDown.Value,
                 HasExported = hasExported
@@ -237,7 +237,7 @@ namespace NE4S.Component
                     streamWriter.WriteLine("#REQUEST \"mertonome disabled\"");
                 }
                 streamWriter.WriteLine("#REQUEST \"segments_per_second " + (int)curveSlideUpDown.Value + "\"");
-                if (measureOffserUpDown.Value != 0)
+                if (measureOffsetUpDown.Value != 0)
                 {
                     streamWriter.WriteLine("\r\nInitial state");
                     var bpmList = noteBook.AttributeNotes.OrderBy(x => x.Position.Tick).Where(x => x is BPM);
@@ -252,7 +252,7 @@ namespace NE4S.Component
                     streamWriter.WriteLine("#00008: 01");
                     streamWriter.WriteLine("#00002: " + scoreBook.First().BarSize * measureConstant);
                     streamWriter.WriteLine("\r\nCommand");
-                    streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffserUpDown.Value).ToString("D3"));
+                    streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffsetUpDown.Value).ToString("D3"));
                 }
                 streamWriter.WriteLine("\r\nBPM");
                 WriteBPMNotes(streamWriter);
