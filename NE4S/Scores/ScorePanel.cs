@@ -464,12 +464,14 @@ namespace NE4S.Scores
                             Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                             if (selectionArea.Contains(currentPosition))
                             {
+                                // TODO: 現在のPosition情報を控え、矩形選択移動が行われることを覚えておく
                                 selectionArea.MovePositionDelta = new Position(
                                     currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
                                     currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
                             }
                             else if (selectedNote != null)
                             {
+                                // TODO: 現在のPosition情報を控え、ノーツ移動かサイズ変更が行われることを覚えておく
                                 Status.SelectedNote = selectedNote;
                                 Status.SelectedNoteArea = noteArea;
                                 if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
@@ -502,7 +504,6 @@ namespace NE4S.Scores
 					case Mode.DELETE:
                         if (selectedNote != null)
                         {
-                            //model.NoteBook.Delete(selectedNote);
                             OperationManager.AddOperationAndInvoke(new DeleteNoteOperation(model, selectedNote));
                         }
                         break;
@@ -616,7 +617,8 @@ namespace NE4S.Scores
                     //選択矩形のいち変更を行う
                     if (Status.IsMousePressed && selectedLane != null && Status.SelectedNote == null && e.Button == MouseButtons.Left)
                     {
-                        Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
+                        Position currentPosition = 
+                            selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                         if (selectionArea.MovePositionDelta != null)
                         {
                             pBox.Cursor = Cursors.SizeAll;
@@ -630,7 +632,8 @@ namespace NE4S.Scores
                     //選択矩形上にカーソルが乗ったときのカーソルのタイプを変更する
                     else if (!Status.IsMousePressed && selectedLane != null)
                     {
-                        Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
+                        Position currentPosition = 
+                            selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                         if (selectionArea.Contains(currentPosition))
                         {
                             pBox.Cursor = Cursors.SizeAll;
@@ -647,7 +650,7 @@ namespace NE4S.Scores
                     var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
                     if(Status.IsMousePressed && selectedNote != null)
                     {
-                        model.NoteBook.Delete(selectedNote);
+                        OperationManager.AddOperationAndInvoke(new DeleteNoteOperation(model, selectedNote));
                     }
                     break;
 				default:
@@ -657,6 +660,7 @@ namespace NE4S.Scores
 
         public void MouseUp(MouseEventArgs e)
         { 
+            // TODO: MouseDownで控えた情報からここでOperationをOperationManagerに追加
 			Status.IsMousePressed = false;
             Status.SelectedNote = null;
             Status.SelectedNoteArea = NoteArea.NONE;
