@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NE4S.Scores;
+using NE4S.Operation;
 
 namespace NE4S.Component
 {

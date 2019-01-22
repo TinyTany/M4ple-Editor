@@ -21,6 +21,8 @@ namespace NE4S.Scores
 
         public LaneBook() { }
 
+        public void OnUpdateNoteLocation() => UpdateNoteLocation?.Invoke(this);
+
         public void SetScore(ScoreBook scoreBook, int beatNumer, int beatDenom, int barCount)
         {
             //新たに追加する譜面たちをリストでまとめる

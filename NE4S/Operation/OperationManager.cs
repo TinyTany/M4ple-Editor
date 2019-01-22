@@ -20,8 +20,13 @@ namespace NE4S.Operation
 
         public void AddOperationAndInvoke(Operation operation)
         {
-            stackUndo.Push(operation);
+            AddOperation(operation);
             operation.Invoke();
+        }
+
+        public void AddOperation(Operation operation)
+        {
+            stackUndo.Push(operation);
             stackRedo.Clear();
             StatusChanged?.Invoke(stackUndo.Any(), stackRedo.Any());
             Edited.Invoke();

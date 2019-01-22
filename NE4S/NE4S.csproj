@@ -175,14 +175,12 @@
     <Compile Include="Notes\SlideRelay.cs" />
     <Compile Include="Notes\SlideTap.cs" />
     <Compile Include="Notes\HighSpeed.cs" />
-    <Compile Include="Operation\AddAirNoteOperation.cs" />
-    <Compile Include="Operation\AddLongNoteOperation.cs" />
     <Compile Include="Operation\AddNoteOperation.cs" />
-    <Compile Include="Operation\AddStepNoteOperation.cs" />
     <Compile Include="Operation\DeleteLongNoteOperation.cs" />
     <Compile Include="Operation\DeleteNoteOperation.cs" />
     <Compile Include="Operation\Operation.cs" />
     <Compile Include="Operation\OperationManager.cs" />
+    <Compile Include="Operation\ScoreOperation.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

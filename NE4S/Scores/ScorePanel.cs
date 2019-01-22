@@ -295,13 +295,27 @@ namespace NE4S.Scores
         /// <param name="barCount"></param>
         public void InsertScoreForward(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            model.InsertScoreForward(score, beatNumer, beatDenom, barCount);
+            OperationManager.AddOperationAndInvoke(
+                new InsertScoreForwardOperation(
+                    model,
+                    score,
+                    beatNumer,
+                    beatDenom,
+                    barCount));
+            //model.InsertScoreForward(score, beatNumer, beatDenom, barCount);
 			Update();
         }
 
         public void InsertScoreForwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            model.InsertScoreForwardWithNote(score, beatNumer, beatDenom, barCount);
+            OperationManager.AddOperationAndInvoke(
+                new InsertScoreForwardWithNoteOperation(
+                    model,
+                    score,
+                    beatNumer,
+                    beatDenom,
+                    barCount));
+            //model.InsertScoreForwardWithNote(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -314,13 +328,27 @@ namespace NE4S.Scores
         /// <param name="barCount"></param>
         public void InsertScoreBackward(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            model.InsertScoreBackward(score, beatNumer, beatDenom, barCount);
+            OperationManager.AddOperationAndInvoke(
+                new InsertScoreBackwardOperation(
+                    model,
+                    score,
+                    beatNumer,
+                    beatDenom,
+                    barCount));
+            //model.InsertScoreBackward(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
         public void InsertScoreBackwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            model.InsertScoreBackwardWithNote(score, beatNumer, beatDenom, barCount);
+            OperationManager.AddOperationAndInvoke(
+                new InsertScoreBackwardWithNoteOperation(
+                    model,
+                    score,
+                    beatNumer,
+                    beatDenom,
+                    barCount));
+            //model.InsertScoreBackwardWithNote(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -355,7 +383,9 @@ namespace NE4S.Scores
         /// <param name="count">削除する個数</param>
         public void DeleteScore(Score score, int count)
         {
-            model.DeleteScore(score, count);
+            OperationManager.AddOperationAndInvoke(
+                new DeleteScoreOperation(model, score, count));
+            //model.DeleteScore(score, count);
             Update();
         }
 
@@ -900,7 +930,7 @@ namespace NE4S.Scores
             }
             if (newNote != null)
             {
-                OperationManager.AddOperationAndInvoke(new AddNoteOperation(model, newNote));
+                OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
             }
             return;
         }
