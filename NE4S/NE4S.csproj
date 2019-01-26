@@ -178,9 +178,11 @@
     <Compile Include="Operation\AddNoteOperation.cs" />
     <Compile Include="Operation\DeleteLongNoteOperation.cs" />
     <Compile Include="Operation\DeleteNoteOperation.cs" />
+    <Compile Include="Operation\EditNoteOperation.cs" />
     <Compile Include="Operation\Operation.cs" />
     <Compile Include="Operation\OperationManager.cs" />
     <Compile Include="Operation\ScoreOperation.cs" />
+    <Compile Include="Operation\SelectionAreaOperation.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -34,6 +34,8 @@ namespace NE4S.Scores
         private DataIO dataIO;
         private SelectionArea selectionArea;
         public OperationManager OperationManager { get; private set; }
+        private Note selectedNotePrev = null;
+        private SelectionArea selectionAreaPrev = null;
 
         public static class Margin
         {
@@ -174,16 +176,13 @@ namespace NE4S.Scores
 
         public void CopyNotes()
         {
-            Clipboard.SetDataObject(selectionArea);
-            //NOTE: どっちにするか（コピー後矩形を保持or破棄）迷う...
-            //selectionArea = new SelectionArea();
+            new CopyNotesOperation(selectionArea).Invoke();
         }
 
         public void CutNotes()
         {
-            CopyNotes();
-            selectionArea.ClearNotes(model.NoteBook);
-            selectionArea = new SelectionArea();
+            OperationManager.AddOperationAndInvoke(
+                new CutNotesOperation(model, selectionArea));
         }
 
         /// <summary>
@@ -202,58 +201,25 @@ namespace NE4S.Scores
         /// <param name="position"></param>
         public void PasteNotes(Position position)
         {
-            if (Clipboard.GetDataObject().GetData(typeof(SelectionArea)) is SelectionArea data)
-            {
-                selectionArea = data;
-                selectionArea.MovePositionDelta = new Position();
-                foreach (Note note in selectionArea.SelectedNoteList)
-                {
-                    model.NoteBook.Add(note);
-                    if (note is AirableNote)
-                    {
-                        AirableNote airable = note as AirableNote;
-                        if (airable.IsAirAttached)
-                        {
-                            model.NoteBook.Add(airable.Air);
-                        }
-                        if (airable.IsAirHoldAttached)
-                        {
-                            model.NoteBook.Add(airable.AirHold);
-                        }
-                    }
-                }
-                foreach (LongNote longNote in selectionArea.SelectedLongNoteList)
-                {
-                    model.NoteBook.Add(longNote);
-                    longNote.ForEach(x =>
-                    {
-                        if (x is AirableNote)
-                        {
-                            AirableNote airable = x as AirableNote;
-                            if (airable.IsAirAttached)
-                            {
-                                model.NoteBook.Add(airable.Air);
-                            }
-                            if (airable.IsAirHoldAttached)
-                            {
-                                model.NoteBook.Add(airable.AirHold);
-                            }
-                        }
-                    });
-                }
-                selectionArea.Relocate(position, model.LaneBook);
-            }
+            OperationManager.AddOperationAndInvoke(
+                new PasteNotesOperation(
+                    model,
+                    selectionArea,
+                    position));
         }
 
         public void ClearAreaNotes()
         {
-            selectionArea.ClearAllNotes(model.NoteBook);
-            selectionArea = new SelectionArea();
+            OperationManager.AddOperationAndInvoke(
+                new ClearAreaNotesOperation(
+                    model,
+                    selectionArea));
         }
 
         public void ReverseNotes()
         {
-            selectionArea.ReverseNotes(model.NoteBook, model.LaneBook);
+            OperationManager.AddOperationAndInvoke(
+                new ReverseNotesOperation(model, selectionArea));
         }
 
         #endregion
@@ -302,7 +268,6 @@ namespace NE4S.Scores
                     beatNumer,
                     beatDenom,
                     barCount));
-            //model.InsertScoreForward(score, beatNumer, beatDenom, barCount);
 			Update();
         }
 
@@ -315,7 +280,6 @@ namespace NE4S.Scores
                     beatNumer,
                     beatDenom,
                     barCount));
-            //model.InsertScoreForwardWithNote(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -335,7 +299,6 @@ namespace NE4S.Scores
                     beatNumer,
                     beatDenom,
                     barCount));
-            //model.InsertScoreBackward(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -348,7 +311,6 @@ namespace NE4S.Scores
                     beatNumer,
                     beatDenom,
                     barCount));
-            //model.InsertScoreBackwardWithNote(score, beatNumer, beatDenom, barCount);
             Update();
         }
 
@@ -385,7 +347,6 @@ namespace NE4S.Scores
         {
             OperationManager.AddOperationAndInvoke(
                 new DeleteScoreOperation(model, score, count));
-            //model.DeleteScore(score, count);
             Update();
         }
 
@@ -495,13 +456,15 @@ namespace NE4S.Scores
                             if (selectionArea.Contains(currentPosition))
                             {
                                 // TODO: 現在のPosition情報を控え、矩形選択移動が行われることを覚えておく
+                                selectionAreaPrev = new SelectionArea(selectionArea);
                                 selectionArea.MovePositionDelta = new Position(
                                     currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
                                     currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
                             }
                             else if (selectedNote != null)
                             {
-                                // TODO: 現在のPosition情報を控え、ノーツ移動かサイズ変更が行われることを覚えておく
+                                // 現在のPosition情報を控え、ノーツ移動かサイズ変更が行われることを覚えておく
+                                selectedNotePrev = new Note(selectedNote);
                                 Status.SelectedNote = selectedNote;
                                 Status.SelectedNoteArea = noteArea;
                                 if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
@@ -689,9 +652,38 @@ namespace NE4S.Scores
         }
 
         public void MouseUp(MouseEventArgs e)
-        { 
-            // TODO: MouseDownで控えた情報からここでOperationをOperationManagerに追加
-			Status.IsMousePressed = false;
+        {
+            // MouseDownで控えた情報からここでOperationをOperationManagerに追加
+            if (selectedNotePrev != null && Status.SelectedNote != null)
+            {
+                // NOTE: ノーツの左からサイズ変更を行うとノーツの位置も変更されるので、
+                // 条件分岐に気をつける（そもそも1回の操作で位置とサイズ変更は行えないしね）
+                if (selectedNotePrev.Size != Status.SelectedNote.Size)
+                {
+                    OperationManager.AddOperation(
+                        new ReSizeNoteOperation(
+                            Status.SelectedNote,
+                            selectedNotePrev.Size,
+                            Status.SelectedNote.Size,
+                            Status.SelectedNoteArea));
+                }
+                else if (!selectedNotePrev.Position.Equals(Status.SelectedNote))
+                {
+                    OperationManager.AddOperation(
+                        new RelocateNoteOperation(
+                            Status.SelectedNote,
+                            selectedNotePrev.Position,
+                            Status.SelectedNote.Position,
+                            model.LaneBook));
+                }
+            }
+            else if (selectionAreaPrev != null && selectionArea != null)
+            {
+                // UNDONE
+            }
+            selectedNotePrev = null;
+            selectionAreaPrev = null;
+            Status.IsMousePressed = false;
             Status.SelectedNote = null;
             Status.SelectedNoteArea = NoteArea.NONE;
             selectionArea.MovePositionDelta = null;
