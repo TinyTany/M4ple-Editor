@@ -38,6 +38,12 @@ namespace NE4S
             Tick = tick;
         }
 
+        public bool Equals(Position position)
+        {
+            if(position == null) { return false; }
+            return (Tick == position.Tick) && (Lane == position.Lane);
+        }
+
 		public void PrintPosition()
 		{
             System.Diagnostics.Debug.WriteLine("(Lane, Tick) = (" + Lane + ", " + Tick + ")");

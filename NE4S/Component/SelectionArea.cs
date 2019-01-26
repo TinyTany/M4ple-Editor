@@ -49,6 +49,27 @@ namespace NE4S.Component
 
         public SelectionArea() { }
 
+        public SelectionArea(SelectionArea selectionArea)
+        {
+            Reset(selectionArea);
+        }
+
+        public void Reset()
+        {
+            StartPosition = null;
+            EndPosition = null;
+            SelectedNoteList.Clear();
+            SelectedLongNoteList.Clear();
+        }
+
+        public void Reset(SelectionArea selectionArea)
+        {
+            StartPosition = selectionArea.StartPosition;
+            EndPosition = selectionArea.EndPosition;
+            SelectedNoteList = new List<Note>(selectionArea.SelectedNoteList);
+            SelectedLongNoteList = new List<LongNote>(selectionArea.SelectedLongNoteList);
+        }
+
         public bool Contains(Position position)
         {
             if (StartPosition == null || EndPosition == null || position == null) return false;
