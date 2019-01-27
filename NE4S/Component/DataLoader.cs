@@ -31,7 +31,7 @@ namespace NE4S.Component
         public Model ShowDialog()
         {
             Model model = null;
-            if (Path != null)
+            if (Directory.Exists(Status.OpenDialogDirectory))
             {
                 openFileDialog.FileName = "";
                 openFileDialog.InitialDirectory = Status.OpenDialogDirectory;

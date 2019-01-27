@@ -58,6 +58,7 @@ namespace NE4S.Component
         {
             StartPosition = null;
             EndPosition = null;
+            MovePositionDelta = null;
             SelectedNoteList.Clear();
             SelectedLongNoteList.Clear();
         }
@@ -66,6 +67,7 @@ namespace NE4S.Component
         {
             StartPosition = selectionArea.StartPosition;
             EndPosition = selectionArea.EndPosition;
+            MovePositionDelta = selectionArea.MovePositionDelta;
             SelectedNoteList = new List<Note>(selectionArea.SelectedNoteList);
             SelectedLongNoteList = new List<LongNote>(selectionArea.SelectedLongNoteList);
         }

@@ -66,20 +66,26 @@ namespace NE4S.Notes
             else if (note is HoldBegin || note is HoldEnd)
             {
                 Hold hold = HoldNotes.Find(x => x.Contains(note));
-                if (hold != null) HoldNotes.Remove(hold);
-                //終点にAirやAirHoldがくっついていたときの処理
-                HoldEnd holdEnd = hold.Find(x => x is HoldEnd) as HoldEnd;
-                AirNotes.Remove(holdEnd.Air);
-                AirHoldNotes.Remove(holdEnd.AirHold);
+                if (hold != null)
+                {
+                    HoldNotes.Remove(hold);
+                    //終点にAirやAirHoldがくっついていたときの処理
+                    HoldEnd holdEnd = hold.Find(x => x is HoldEnd) as HoldEnd;
+                    AirNotes.Remove(holdEnd.Air);
+                    AirHoldNotes.Remove(holdEnd.AirHold);
+                }
             }
             else if (note is SlideBegin || note is SlideEnd)
             {
                 Slide slide = SlideNotes.Find(x => x.Contains(note));
-                if (slide != null) SlideNotes.Remove(slide);
-                //終点にAirやAirHoldがくっついていたときの処理
-                SlideEnd slideEnd = slide.Find(x => x is SlideEnd) as SlideEnd;
-                AirNotes.Remove(slideEnd.Air);
-                AirHoldNotes.Remove(slideEnd.AirHold);
+                if (slide != null)
+                {
+                    SlideNotes.Remove(slide);
+                    //終点にAirやAirHoldがくっついていたときの処理
+                    SlideEnd slideEnd = slide.Find(x => x is SlideEnd) as SlideEnd;
+                    AirNotes.Remove(slideEnd.Air);
+                    AirHoldNotes.Remove(slideEnd.AirHold);
+                }
             }
             else if (note is SlideTap || note is SlideRelay || note is SlideCurve)
             {

@@ -60,12 +60,14 @@ namespace NE4S.Scores
 
 		public Score Prev(Score score)
 		{
+            if (score == null) return this.Last();
 			if (score.Index <= 0) return null;
 			return this.ElementAt(score.Index - 1);
 		}
 
 		public Score Next(Score score)
 		{
+            if (score == null) return this.First();
 			if (score.Index >= Count - 1) return null;
 			return this.ElementAt(score.Index + 1);
 		}

@@ -66,7 +66,7 @@ namespace NE4S
 
         public void InsertScoreForwardWithNote(Score score, int beatNumer, int beatDenom, int barCount)
         {
-            LaneBook.InsetScoreForwardWithNote(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
+            LaneBook.InsertScoreForwardWithNote(NoteBook, ScoreBook, score, beatNumer, beatDenom, barCount);
         }
 
 

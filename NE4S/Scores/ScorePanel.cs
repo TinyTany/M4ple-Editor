@@ -455,11 +455,11 @@ namespace NE4S.Scores
                             Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                             if (selectionArea.Contains(currentPosition))
                             {
-                                // TODO: 現在のPosition情報を控え、矩形選択移動が行われることを覚えておく
-                                selectionAreaPrev = new SelectionArea(selectionArea);
                                 selectionArea.MovePositionDelta = new Position(
                                     currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
                                     currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
+                                // 現在のPosition情報を控え、矩形選択移動が行われることを覚えておく
+                                selectionAreaPrev = new SelectionArea(selectionArea);
                             }
                             else if (selectedNote != null)
                             {
@@ -1011,7 +1011,7 @@ namespace NE4S.Scores
             }
 #if DEBUG
             float fps = 1000 / (float)(Environment.TickCount - pastTick);
-            System.Diagnostics.Debug.WriteLine(fps);
+            //System.Diagnostics.Debug.WriteLine(fps);
 #endif
         }
 
