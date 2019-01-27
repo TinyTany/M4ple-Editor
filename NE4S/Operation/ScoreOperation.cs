@@ -157,9 +157,20 @@ namespace NE4S.Operation
                 scoreList.Add(itrScore);
                 itrScore = model.ScoreBook.Next(itrScore);
             }
+            var notesForDelete = model.NoteBook.GetNotesFromTickRange(
+                scoreList.First().StartTick,
+                scoreList.Last().EndTick);
+            List<Operation> operations = new List<Operation>();
+            notesForDelete.ForEach(x =>
+            {
+                operations.Add(new DeleteNoteOperation(
+                    model,
+                    x));
+            });
             Invoke += () =>
             {
                 model.DeleteScoreWithNote(scoreList.First(), count);
+                operations.ForEach(x => x.Invoke());
             };
             Undo += () =>
             {
@@ -168,6 +179,7 @@ namespace NE4S.Operation
                     model.ScoreBook,
                     prev,
                     scoreList);
+                operations.ForEach(x => x.Undo());
             };
         }
     }

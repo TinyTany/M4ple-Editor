@@ -308,7 +308,6 @@ namespace NE4S.Scores
         /// <param name="count"></param>
         public void DeleteScore(ScoreBook scoreBook, Score score, int count)
         {
-            //イテレータ
             Score itrScore;
             int itrCount;
             //scoreからcount個Scoreを削除
@@ -373,7 +372,7 @@ namespace NE4S.Scores
             }
             foreach(Note note in notesForDelete.ToArray())
             {
-                noteBook.Delete(note);
+                //noteBook.Delete(note);
             }
             noteBook.RelocateNoteTickAfterScoreTick(score.StartTick, -deleteScoreTickSize);
             DeleteScore(scoreBook, score, count);
