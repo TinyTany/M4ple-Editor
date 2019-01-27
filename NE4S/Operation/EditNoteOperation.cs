@@ -37,15 +37,47 @@ namespace NE4S.Operation
         }
 
         public RelocateNoteOperation(
-            SelectionArea selectionArea, Position before, Position after, LaneBook laneBook)
+            List<Note> noteList, List<LongNote> longNoteList, Position diff, LaneBook laneBook)
         {
             Invoke += () =>
             {
-                // UNDONE
+                noteList.ForEach(x =>
+                {
+                    Position positionAfter = new Position(
+                        x.Position.Lane + diff.Lane,
+                        x.Position.Tick + diff.Tick);
+                    x.RelocateOnlyAndUpdate(positionAfter, laneBook);
+                });
+                longNoteList.ForEach(x =>
+                {
+                    x.ForEach(y =>
+                    {
+                        Position positionAfter = new Position(
+                            y.Position.Lane + diff.Lane,
+                            y.Position.Tick + diff.Tick);
+                        y.RelocateOnlyAndUpdate(positionAfter, laneBook);
+                    });
+                });
             };
             Undo += () =>
             {
-                // UNDONE
+                noteList.ForEach(x =>
+                {
+                    Position positionAfter = new Position(
+                        x.Position.Lane - diff.Lane,
+                        x.Position.Tick - diff.Tick);
+                    x.RelocateOnlyAndUpdate(positionAfter, laneBook);
+                });
+                longNoteList.ForEach(x =>
+                {
+                    x.ForEach(y =>
+                    {
+                        Position positionAfter = new Position(
+                            y.Position.Lane - diff.Lane,
+                            y.Position.Tick - diff.Tick);
+                        y.RelocateOnlyAndUpdate(positionAfter, laneBook);
+                    });
+                });
             };
         }
     }

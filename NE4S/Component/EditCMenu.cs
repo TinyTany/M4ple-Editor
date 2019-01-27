@@ -83,8 +83,7 @@ namespace NE4S.Component
                 new ToolStripMenuItem("貼り付け", null, (s, e) => sPanel.PasteNotes(clickPosition)),
                 new ToolStripMenuItem("左右反転して貼り付け", null, (s, e) => 
                 {
-                    sPanel.PasteNotes(clickPosition);
-                    sPanel.ReverseNotes();
+                    sPanel.PasteAndReverseNotes(clickPosition);
                 })
             };
             Items.AddRange(stripItems);

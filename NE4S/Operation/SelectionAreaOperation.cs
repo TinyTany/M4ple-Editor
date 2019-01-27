@@ -101,6 +101,23 @@ namespace NE4S.Operation
         }
     }
 
+    public class PasteAndReverseNotesOperation : Operation
+    {
+        public PasteAndReverseNotesOperation(Model model, SelectionArea selectionArea, Position position)
+        {
+            Invoke += () =>
+            {
+                new ReverseNotesOperation(model, selectionArea).Invoke();
+                new PasteNotesOperation(model, selectionArea, position).Invoke();
+            };
+            Undo += () =>
+            {
+                new ReverseNotesOperation(model, selectionArea).Undo();
+                new PasteNotesOperation(model, selectionArea, position).Undo();
+            };
+        }
+    }
+
     public class ClearAreaNotesOperation : Operation
     {
         SelectionArea selectionArea = new SelectionArea();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NE4S.Scores;
+using NE4S.Notes;
 
 namespace NE4S.Operation
 {
@@ -120,39 +121,53 @@ namespace NE4S.Operation
         public DeleteScoreOperation(
             Model model, Score score, int count)
         {
-            List<Score> scoreList = new List<Score>();
             Score prev = model.ScoreBook.Prev(score);
+            ScoreBook scoreList = new ScoreBook();
+            Score itrScore = score;
+            for (int i = 0; i < count; ++i)
+            {
+                scoreList.Add(itrScore);
+                itrScore = model.ScoreBook.Next(itrScore);
+            }
             Invoke += () =>
             {
-                Score itrScore = score;
-                for(int i = 0; i < count; ++i)
-                {
-                    scoreList.Add(itrScore);
-                    itrScore = model.ScoreBook.Next(itrScore);
-                }
-                model.DeleteScore(score, count);
+                model.DeleteScore(scoreList.First(), count);
             };
             Undo += () =>
             {
-                scoreList.ForEach(
-                    x => model.InsertScoreForward(
-                        prev, x.BeatNumer, x.BeatDenom, 1));
+                model.LaneBook.InsertScoreForward(
+                    model.ScoreBook,
+                    prev,
+                    scoreList);
             };
         }
     }
 
     public class DeleteScoreWithNoteOperation : Operation
     {
+        // UNDONE
         public DeleteScoreWithNoteOperation(
             Model model, Score score, int count)
         {
+            Score prev = model.ScoreBook.Prev(score);
+            ScoreBook scoreList = new ScoreBook();
+            Score itrScore = score;
+            for (int i = 0; i < count; ++i)
+            {
+                scoreList.Add(itrScore);
+                itrScore = model.ScoreBook.Next(itrScore);
+            }
             Invoke += () =>
             {
-                model.DeleteScoreWithNote(score, count);
+                model.DeleteScoreWithNote(scoreList.First(), count);
             };
             Undo += () =>
             {
-                //UNDONE
+                model.LaneBook.InsertScoreForwardWithNote(
+                    model.NoteBook,
+                    model.ScoreBook,
+                    prev,
+                    scoreList);
             };
         }
     }

@@ -208,6 +208,15 @@ namespace NE4S.Scores
                     position));
         }
 
+        public void PasteAndReverseNotes(Position position)
+        {
+            OperationManager.AddOperationAndInvoke(
+                new PasteAndReverseNotesOperation(
+                    model,
+                    selectionArea,
+                    position));
+        }
+
         public void ClearAreaNotes()
         {
             OperationManager.AddOperationAndInvoke(
@@ -352,7 +361,11 @@ namespace NE4S.Scores
 
         public void DeleteScoreWithNote(Score score, int count)
         {
-            model.DeleteScoreWithNote(score, count);
+            OperationManager.AddOperationAndInvoke(
+                new DeleteScoreWithNoteOperation(
+                    model,
+                    score,
+                    count));
             Update();
         }
 
@@ -679,7 +692,18 @@ namespace NE4S.Scores
             }
             else if (selectionAreaPrev != null && selectionArea != null)
             {
-                // UNDONE
+                Position diff = new Position(
+                    selectionArea.TopLeftPosition.Lane - selectionAreaPrev.TopLeftPosition.Lane,
+                    selectionArea.TopLeftPosition.Tick - selectionAreaPrev.TopLeftPosition.Tick);
+                if (diff.Tick != 0 || diff.Lane != 0)
+                {
+                    OperationManager.AddOperation(
+                    new RelocateNoteOperation(
+                        selectionArea.SelectedNoteList,
+                        selectionArea.SelectedLongNoteList,
+                        diff,
+                        model.LaneBook));
+                }
             }
             selectedNotePrev = null;
             selectionAreaPrev = null;
