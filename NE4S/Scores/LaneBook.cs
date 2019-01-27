@@ -23,54 +23,34 @@ namespace NE4S.Scores
 
         public void OnUpdateNoteLocation() => UpdateNoteLocation?.Invoke(this);
 
+        /// <summary>
+        /// LaneBookとScoreBookにScoreを追加します
+        /// </summary>
+        /// <param name="scoreBook"></param>
+        /// <param name="beatNumer"></param>
+        /// <param name="beatDenom"></param>
+        /// <param name="barCount"></param>
         public void SetScore(ScoreBook scoreBook, int beatNumer, int beatDenom, int barCount)
         {
             //新たに追加する譜面たちをリストでまとめる
             //これはLaneBookではないのでRefreshIndex()が行われない
-            List<Score> newScores = new List<Score>();
+            ScoreBook newScores = new ScoreBook();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
             //まとめた譜面たちをscoreBookに入れる
-            scoreBook?.Append(newScores);
-            //新譜面たちをレーンに割り当て
-            if (!this.Any())
-            {
-                Add(new ScoreLane());
-            }
-            foreach (Score newScore in newScores)
-            {
-                //newScoreが1つのレーンの最大サイズで収まるか判定
-                if (newScore.BarSize <= ScoreInfo.LaneMaxBar)
-                {
-                    //現在のリストにあるレーンの末尾にまだnewScoreを入れる余裕があるか判定
-                    if (this.Last().CurrentBarSize + newScore.BarSize > ScoreInfo.LaneMaxBar)
-                    {
-                        //余裕がないときは新たな空レーンを追加
-                        Add(new ScoreLane());
-                    }
-                    //レーン末尾にnewScoreを格納
-                    this.Last().AddScore(newScore);
-                }
-                //収まらなかった場合
-                else
-                {
-                    //なんやかんやで分割して複数レーンに格納する
-                    for (int i = 0; i < newScore.BarSize / ScoreInfo.LaneMaxBar; ++i)
-                    {
-                        //新たにレーンを追加
-                        if(this.Last().CurrentBarSize > 0) Add(new ScoreLane());
-                        //末尾のレーンに新たなScoreを範囲を指定して格納
-                        this.Last().AddScore(
-                            newScore,
-                            new Range(
-                                (int)(i * newScore.BeatDenom * ScoreInfo.LaneMaxBar + 1),
-                                Math.Min(newScore.BeatNumer, (int)((i + 1) * newScore.BeatDenom * ScoreInfo.LaneMaxBar))));
-                    }
-                }
-            }
-            UpdateNoteLocation?.Invoke(this);
+            SetScore(scoreBook, newScores);
         }
 
-        public void SetScore(ScoreBook scoreBook)
+        public void SetScore(ScoreBook database, ScoreBook newScores)
+        {
+            database?.Append(newScores);
+            SetScoreToLane(newScores);
+        }
+
+        /// <summary>
+        /// LaneBookにScoreBookのScoreを追加します
+        /// </summary>
+        /// <param name="scoreBook"></param>
+        public void SetScoreToLane(ScoreBook scoreBook)
         {
             if (!this.Any())
             {
@@ -110,6 +90,14 @@ namespace NE4S.Scores
             UpdateNoteLocation?.Invoke(this);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scoreBook"></param>
+        /// <param name="score"></param>
+        /// <param name="beatNumer"></param>
+        /// <param name="beatDenom"></param>
+        /// <param name="barCount"></param>
         public void InsetScoreForward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
             if (scoreBook.Next(score) == null)
@@ -122,7 +110,20 @@ namespace NE4S.Scores
             }
         }
 
-        public void InsetScoreForwardWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
+        public void InsertScoreForward(ScoreBook database, Score baseScore, ScoreBook newScores)
+        {
+            if (database.Next(baseScore) == null)
+            {
+                
+                SetScore(database, newScores);
+            }
+            else
+            {
+                InsertScoreBackward(database, database.Next(baseScore), newScores);
+            }
+        }
+
+        public void InsertScoreForwardWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
             if (scoreBook.Next(score) == null)
             {
@@ -134,17 +135,34 @@ namespace NE4S.Scores
             }
         }
 
+        public void InsertScoreForwardWithNote(NoteBook noteBook, ScoreBook database, Score baseScore, ScoreBook newScores)
+        {
+            if (database.Next(baseScore) == null)
+            {
+                SetScore(database, newScores);
+            }
+            else
+            {
+                InsertScoreBackwardWithNote(noteBook, database, database.Next(baseScore), newScores);
+            }
+        }
+
         public void InsertScoreBackward(ScoreBook scoreBook, Score score, int beatNumer, int beatDenom, int barCount)
         {
-            //scoreを初めて含むレーンを取得
-            ScoreLane lane = Find(x => x.Contains(score));
+            
             //新たに追加する譜面たちをリストでまとめる
 			//これはLaneBookではないのでRefreshIndex()が行われない
-            List<Score> newScores = new List<Score>();
+            ScoreBook newScores = new ScoreBook();
             for (int i = 0; i < barCount; ++i) newScores.Add(new Score(beatNumer, beatDenom));
-            scoreBook.InsertRange(score.Index, newScores);
+            InsertScoreBackward(scoreBook, score, newScores);
+        }
+
+        public void InsertScoreBackward(ScoreBook database, Score baseScore, ScoreBook newScores)
+        {
+            database?.InsertRange(baseScore.Index, newScores);
+            //scoreを初めて含むレーンを取得
+            ScoreLane lane = Find(x => x.Contains(baseScore));
             List<ScoreLane> newLanes = new List<ScoreLane>();
-            //新譜面たちをnewLanesに割り当て
             foreach (Score newScore in newScores)
             {
                 //newScoreが1つのレーンの最大サイズで収まるか判定
@@ -182,7 +200,7 @@ namespace NE4S.Scores
                 }
             }
             //scoreとその1つ前のScoreでレーンを分割
-            DivideLane(score);
+            DivideLane(baseScore);
             //
             InsertRange(lane.Index, newLanes);
             //
@@ -195,6 +213,17 @@ namespace NE4S.Scores
             InsertScoreBackward(scoreBook, score, beatNumer, beatDenom, barCount);
             //score以降に含まれるすべてのノーツに対して位置をずらす
             int deltaTick = barCount * ScoreInfo.MaxBeatDiv * beatNumer / beatDenom;
+            noteBook.RelocateNoteTickAfterScoreTick(initialScoreTick, deltaTick);
+            UpdateNoteLocation?.Invoke(this);
+        }
+
+        public void InsertScoreBackwardWithNote(NoteBook noteBook, ScoreBook database, Score baseScore, ScoreBook newScores)
+        {
+            int initialScoreTick = baseScore.StartTick;
+            InsertScoreBackward(database, baseScore, newScores);
+            //score以降に含まれるすべてのノーツに対して位置をずらす
+            int deltaTick = 0;
+            newScores.ForEach(x => deltaTick += ScoreInfo.MaxBeatDiv * x.BeatNumer / x.BeatDenom);
             noteBook.RelocateNoteTickAfterScoreTick(initialScoreTick, deltaTick);
             UpdateNoteLocation?.Invoke(this);
         }
@@ -288,6 +317,7 @@ namespace NE4S.Scores
                 //選択されたScoreが初めて含まれるレーンを特定
                 ScoreLane laneBegin = Find(x => x.Contains(itrScore));
                 int linkCount = itrScore.LinkCount;
+                System.Diagnostics.Debug.Assert(linkCount > 0, "linkCount is zero");
                 for (int i = 0; i < linkCount; ++i)
                 {
                     laneBegin.DeleteScore(itrScore);
@@ -380,6 +410,12 @@ namespace NE4S.Scores
         {
             base.InsertRange(index, collection);
             RefreshIndex();
+        }
+
+        public void Clear(ScoreBook scoreBook)
+        {
+            Clear();
+            scoreBook.ForEach(x => x.LinkCount--);
         }
     }
 }

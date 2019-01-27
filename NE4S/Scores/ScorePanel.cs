@@ -82,8 +82,8 @@ namespace NE4S.Scores
         public void RefreshLaneSize()
         {
             virtualPanelSize.Height = (int)(ScoreLane.Height + Margin.Top + Margin.Bottom + 17);
-            model.LaneBook.Clear();
-            model.LaneBook.SetScore(model.ScoreBook);
+            model.LaneBook.Clear(model.ScoreBook);
+            model.LaneBook.SetScoreToLane(model.ScoreBook);
             UpdateSizeComponent();
             Update();
         }
