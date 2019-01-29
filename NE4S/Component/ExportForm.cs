@@ -55,11 +55,7 @@ namespace NE4S.Component
                 RestoreDirectory = true
             };
             exportButton.Click += ExportButton_Click;
-            exportCancelButton.Click += (s, e) =>
-            {
-                SaveMusicInfo(false);
-                Close();
-            };
+            exportCancelButton.Click += (s, e) => Close();
             exportPathButton.Click += (s, e)  => 
             {
                 saveFileDialog.InitialDirectory = Status.ExportDialogDirectory;
@@ -212,14 +208,18 @@ namespace NE4S.Component
                 streamWriter.Write("#DIFFICULTY ");
                 if (DifficultyBox.SelectedIndex == 4)
                 {
-                    streamWriter.WriteLine("\"" + (int)weStarUpDown.Value + ":" + weText.Text + "\"");
+                    streamWriter.WriteLine("\"4:" + weText.Text + "\"");
                 }
                 else
                 {
                     streamWriter.WriteLine(DifficultyBox.SelectedIndex);
                 }
                 streamWriter.Write("#PLAYLEVEL ");
-                if (DifficultyBox.SelectedIndex < 4)
+                if (DifficultyBox.SelectedIndex == 4)
+                {
+                    streamWriter.WriteLine((int)weStarUpDown.Value);
+                }
+                else
                 {
                     streamWriter.WriteLine(playLevelBox.Text);
                 }
