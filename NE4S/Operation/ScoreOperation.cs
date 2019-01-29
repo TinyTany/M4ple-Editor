@@ -145,14 +145,19 @@ namespace NE4S.Operation
 
     public class DeleteScoreWithNoteOperation : Operation
     {
-        // UNDONE
+        /// <summary>
+        /// 小節を除去し、除去した小節の後ろの小節とノーツを詰める
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="score">削除対象の1番目のScore</param>
+        /// <param name="count">削除する小節の数</param>
         public DeleteScoreWithNoteOperation(
             Model model, Score score, int count)
         {
             Score prev = model.ScoreBook.Prev(score);
             ScoreBook scoreList = new ScoreBook();
             Score itrScore = score;
-            for (int i = 0; i < count; ++i)
+            for (int i = 0; i < count && itrScore != null; ++i)
             {
                 scoreList.Add(itrScore);
                 itrScore = model.ScoreBook.Next(itrScore);
@@ -160,6 +165,11 @@ namespace NE4S.Operation
             var notesForDelete = model.NoteBook.GetNotesFromTickRange(
                 scoreList.First().StartTick,
                 scoreList.Last().EndTick);
+            var longNotesForDelete = model.NoteBook.GetLongNotesFromTickRange(
+                scoreList.First().StartTick,
+                scoreList.Last().EndTick);
+            int deleteScoreTickSize =
+                scoreList.Last().EndTick - scoreList.First().StartTick + 1;
             List<Operation> operations = new List<Operation>();
             notesForDelete.ForEach(x =>
             {
@@ -167,10 +177,19 @@ namespace NE4S.Operation
                     model,
                     x));
             });
+            longNotesForDelete.ForEach(x =>
+            {
+                operations.Add(new DeleteLongNoteOperation(
+                    model,
+                    x));
+            });
             Invoke += () =>
             {
-                model.DeleteScoreWithNote(scoreList.First(), count);
+                model.LaneBook.DeleteScore(model.ScoreBook, scoreList.First(), count);
                 operations.ForEach(x => x.Invoke());
+                model.NoteBook.RelocateNoteTickAfterScoreTick(
+                    scoreList.Last().EndTick + 1, -deleteScoreTickSize);
+                model.LaneBook.OnUpdateNoteLocation();
             };
             Undo += () =>
             {

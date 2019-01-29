@@ -256,12 +256,57 @@ namespace NE4S.Notes
         public List<Note> GetNotesFromTickRange(int startTick, int endTick)
         {
             var notes = ShortNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick);
-            HoldNotes.ForEach(x => notes = notes.Union(x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick)));
-            SlideNotes.ForEach(x => notes = notes.Union(x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick)));
-            AirHoldNotes.ForEach(x => notes = notes.Union(x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick)));
+            SlideNotes.ForEach(
+                x =>
+                {
+                    var list = x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick);
+                    if(!(list.Where(y => y is SlideBegin || y is SlideEnd).Any()))
+                    {
+                        notes = notes.Union(list);
+                    }
+                });
+            AirHoldNotes.ForEach(
+                x =>
+                {
+                    var list = x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick);
+                    if (!(list.Where(y => y is AirHoldBegin || y is AirHoldEnd).Any()))
+                    {
+                        notes = notes.Union(list);
+                    }
+                });
             notes = notes.Union(AirNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
             notes = notes.Union(AttributeNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
             return notes.ToList();
+        }
+
+        public List<LongNote> GetLongNotesFromTickRange(int startTick, int endTick)
+        {
+            var longNotes = new List<LongNote>();
+            HoldNotes.ForEach(
+                x =>
+                {
+                    if ((startTick <= x.StartTick && x.StartTick <= endTick) || (startTick <= x.EndTick && x.EndTick <= endTick))
+                    {
+                        longNotes.Add(x);
+                    }
+                });
+            SlideNotes.ForEach(
+                x =>
+                {
+                    if ((startTick <= x.StartTick && x.StartTick <= endTick) || (startTick <= x.EndTick && x.EndTick <= endTick))
+                    {
+                        longNotes.Add(x);
+                    }
+                });
+            AirHoldNotes.ForEach(
+                x =>
+                {
+                    if ((startTick <= x.StartTick && x.StartTick <= endTick) || (startTick <= x.EndTick && x.EndTick <= endTick))
+                    {
+                        longNotes.Add(x);
+                    }
+                });
+            return longNotes;
         }
 
         public void Paint(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
