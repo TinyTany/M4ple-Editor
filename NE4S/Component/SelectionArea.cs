@@ -265,6 +265,7 @@ namespace NE4S.Component
                 pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
             using (GraphicsPath graphicsPath = new GraphicsPath())
             {
+                var smoothingMode = e.Graphics.SmoothingMode;
                 e.Graphics.SmoothingMode = SmoothingMode.Default;
                 var itrLane = pastLane;
                 for (int i = 0; i <= passingLanes; ++i, itrLane = laneBook.Next(itrLane))
@@ -292,7 +293,7 @@ namespace NE4S.Component
                     bottomRight = bottomRight.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
                     graphicsPath.ClearMarkers();
                 }
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                e.Graphics.SmoothingMode = smoothingMode;
             }
             e.Graphics.ResetClip();
         }

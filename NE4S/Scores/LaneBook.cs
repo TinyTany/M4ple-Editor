@@ -346,39 +346,6 @@ namespace NE4S.Scores
             }
         }
 
-        public void DeleteScoreWithNote(NoteBook noteBook, ScoreBook scoreBook, Score score, int count)
-        {
-            int deleteScoreStartTick = score.StartTick, deleteScoreEndTick = score.StartTick;
-            Score itrScore;
-            int itrCount;
-            for (itrScore = score, itrCount = count; itrScore != null && itrCount > 0; itrScore = scoreBook.Next(itrScore), --itrCount)
-            {
-                deleteScoreEndTick = itrScore.EndTick;
-            }
-            int deleteScoreTickSize = deleteScoreEndTick - deleteScoreStartTick + 1;
-            var notesForDelete = noteBook.GetNotesFromTickRange(deleteScoreStartTick, deleteScoreEndTick);
-            if (notesForDelete.Any())
-            {
-                DialogResult dialogResult = MessageBox.Show(
-                "削除対象の小節に配置されているノーツは削除されます。小節を削除しますか？",
-                "小節削除",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Exclamation,
-                MessageBoxDefaultButton.Button2);
-                if (dialogResult == DialogResult.No)
-                {
-                    return;
-                }
-            }
-            foreach(Note note in notesForDelete.ToArray())
-            {
-                //noteBook.Delete(note);
-            }
-            noteBook.RelocateNoteTickAfterScoreTick(score.StartTick, -deleteScoreTickSize);
-            DeleteScore(scoreBook, score, count);
-            UpdateNoteLocation?.Invoke(this);
-        }
-
         /// <summary>
         /// レーンのインデックスを更新
         /// </summary>

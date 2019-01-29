@@ -90,11 +90,6 @@ namespace NE4S
 			LaneBook.DeleteScore(ScoreBook, score, count);
         }
 
-        public void DeleteScoreWithNote(Score score, int count)
-        {
-            LaneBook.DeleteScoreWithNote(NoteBook, ScoreBook, score, count);
-        }
-
         public void FillLane()
 		{
 			if (LaneBook.Any()) FillLane(LaneBook.First());
