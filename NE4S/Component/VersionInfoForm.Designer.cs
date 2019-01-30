@@ -73,7 +73,7 @@
             this.appVersion.Name = "appVersion";
             this.appVersion.Size = new System.Drawing.Size(81, 15);
             this.appVersion.TabIndex = 3;
-            this.appVersion.Text = "Version 1.0.2.0";
+            this.appVersion.Text = "Version 2.0.0.0";
             // 
             // copyright
             // 
