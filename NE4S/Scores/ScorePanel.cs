@@ -465,7 +465,8 @@ namespace NE4S.Scores
                         }
                         if (selectedLane != null)
                         {
-                            Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
+                            Position currentPosition = 
+                                selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                             if (selectionArea.Contains(currentPosition))
                             {
                                 selectionArea.MovePositionDelta = new Position(
@@ -590,7 +591,8 @@ namespace NE4S.Scores
                                 {
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
                                     Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location);
-                                    int newSize = (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
+                                    int newSize = 
+                                        (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
                                     if (newSize <= 0) newSize = 1;
                                     else if (newSize > 16) newSize = 16;
                                     Status.SelectedNote.ReSize(newSize);
@@ -680,7 +682,7 @@ namespace NE4S.Scores
                             Status.SelectedNote.Size,
                             Status.SelectedNoteArea));
                 }
-                else if (!selectedNotePrev.Position.Equals(Status.SelectedNote))
+                else if (!selectedNotePrev.Position.Equals(Status.SelectedNote.Position))
                 {
                     OperationManager.AddOperation(
                         new RelocateNoteOperation(
