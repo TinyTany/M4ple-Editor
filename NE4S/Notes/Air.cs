@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Runtime.Serialization;
 
 namespace NE4S.Notes
 {
@@ -40,6 +41,8 @@ namespace NE4S.Notes
 
         public delegate void VoidHandler();
         public event VoidHandler DetachAir;
+        [OptionalField]
+        public Func<AirableNote> GetAirable;
 
         public Air() { }
 

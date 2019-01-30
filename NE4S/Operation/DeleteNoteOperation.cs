@@ -20,6 +20,7 @@ namespace NE4S.Operation
             Slide baseSlide = null;
             AirHold baseAirHold = null;
             Air attachedAir = null;
+            AirableNote baseAirable = null;
             AirHold attachedAirHold = null;
             DeleteLongNoteOperation deleteLongNote = null;
 
@@ -27,9 +28,10 @@ namespace NE4S.Operation
             {
                 if (note is Air)
                 {
-                    Air air = note as Air;
-                    airNotes.Remove(air);
-                    air.DetachNote();
+                    attachedAir = note as Air;
+                    baseAirable = attachedAir.GetAirable?.Invoke();
+                    airNotes.Remove(attachedAir);
+                    attachedAir.DetachNote();
                 }
                 else if (note is HoldBegin || note is HoldEnd)
                 {
@@ -115,6 +117,11 @@ namespace NE4S.Operation
                         airable.AttachAirHold(attachedAirHold);
                         airHoldNotes.Add(attachedAirHold);
                     }
+                }
+                else if (note is Air)
+                {
+                    baseAirable?.AttachAir(attachedAir);
+                    airNotes.Add(attachedAir);
                 }
                 else
                 {

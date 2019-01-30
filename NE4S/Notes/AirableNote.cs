@@ -49,6 +49,7 @@ namespace NE4S.Notes
         {
             Air = air;
             air.DetachAir += DetachAir;
+            air.GetAirable += () => this;
         }
 
         public void AttachAirHold(AirHold airHold)
