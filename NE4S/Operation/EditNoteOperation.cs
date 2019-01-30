@@ -102,4 +102,21 @@ namespace NE4S.Operation
             };
         }
     }
+
+    public class DivideSlideOperation : Operation
+    {
+        public DivideSlideOperation(Slide slide, Note stepPast, Note stepFuture)
+        {
+            int stepAddCount = 
+                (stepFuture.Position.Tick - stepPast.Position.Tick) * Status.Beat / 192;
+            Invoke += () =>
+            {
+                // UNDONE
+            };
+            Undo += () =>
+            {
+                // UNDONE
+            };
+        }
+    }
 }
