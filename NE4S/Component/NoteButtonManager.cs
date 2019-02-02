@@ -10,6 +10,7 @@ namespace NE4S.Component
     public class NoteButtonManager : List<NoteButton>
     {
         public event EventHandler ButtonClicked;
+        public NoteButton SelectedButton { get { return Find(x => x.IsSelected); } }
 
         public NoteButtonManager()
         {
@@ -39,6 +40,78 @@ namespace NE4S.Component
             });
             //
             this.First().SetSelected();
+        }
+
+        public void SelectedButtonIncrease()
+        {
+            if(SelectedButton is BPMNoteButton bpmButton)
+            {
+                if(bpmButton.CurrentValue + 1 <= bpmButton.ValueMax)
+                {
+                    Status.CurrentValue++;
+                    bpmButton.CurrentValue++;
+                    bpmButton.Refresh();
+                }
+            }
+            else if(SelectedButton is SpeedNoteButton speedButton)
+            {
+                if(speedButton.CurrentValue + 1 <= speedButton.ValueMax)
+                {
+                    Status.CurrentValue++;
+                    speedButton.CurrentValue++;
+                    speedButton.Refresh();
+                }
+            }
+            else if(SelectedButton is SizableNoteButton sizableButton)
+            {
+                if(sizableButton.NoteSize + 1 <= Scores.ScoreInfo.Lanes)
+                {
+                    Status.NoteSize++;
+                    sizableButton.NoteSize++;
+                    sizableButton.Refresh();
+                }
+            }
+            else if(SelectedButton is AirNoteButton airButton)
+            {
+                airButton.ChangeNoteDirection(NoteArea.RIGHT);
+                airButton.Refresh();
+            }
+        }
+
+        public void SelectedButtonDecrease()
+        {
+            if (SelectedButton is BPMNoteButton bpmButton)
+            {
+                if (bpmButton.CurrentValue - 1 >= bpmButton.ValueMin)
+                {
+                    Status.CurrentValue--;
+                    bpmButton.CurrentValue--;
+                    bpmButton.Refresh();
+                }
+            }
+            else if (SelectedButton is SpeedNoteButton speedButton)
+            {
+                if (speedButton.CurrentValue - 1 >= speedButton.ValueMin)
+                {
+                    Status.CurrentValue--;
+                    speedButton.CurrentValue--;
+                    speedButton.Refresh();
+                }
+            }
+            else if (SelectedButton is SizableNoteButton sizableButton)
+            {
+                if (sizableButton.NoteSize - 1 >= 1)
+                {
+                    Status.NoteSize--;
+                    sizableButton.NoteSize--;
+                    sizableButton.Refresh();
+                }
+            }
+            else if (SelectedButton is AirNoteButton airButton)
+            {
+                airButton.ChangeNoteDirection(NoteArea.LEFT);
+                airButton.Refresh();
+            }
         }
 
         public void UpdateSelectedButton(NoteButton noteButton)

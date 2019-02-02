@@ -80,6 +80,16 @@ namespace NE4S
                 vScroll.Scroll += Score_Scroll;
             }
 			InitializeToolStrip();
+            #region ノーツボタン追加
+            NoteButtonManager noteButtonManager = new NoteButtonManager();
+            noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.ADD);
+            flpNotePanel.Size = tabNoteButton.TabPages[0].Size;
+            flpNotePanel.Location = new Point();
+            foreach (NoteButton noteButton in noteButtonManager)
+            {
+                flpNotePanel.Controls.Add(noteButton);
+            }
+            #endregion
             #region 各種ボタンに対するイベント紐づけ
             tabScore.SelectedIndexChanged += (s, e) =>
             {
@@ -274,24 +284,14 @@ namespace NE4S
                         }
                         break;
                     case Keys.OemPeriod:
-                        // UNDONE
+                        noteButtonManager.SelectedButtonIncrease();
                         break;
                     case Keys.Oemcomma:
-                        // UNDONE
+                        noteButtonManager.SelectedButtonDecrease();
                         break;
                 }
             };
             #endregion
-            // ノーツボタンを追加
-            NoteButtonManager noteButtonManager = new NoteButtonManager();
-            noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.ADD);
-            flpNotePanel.Size = tabNoteButton.TabPages[0].Size;
-            flpNotePanel.Location = new Point();
-            foreach (NoteButton noteButton in noteButtonManager)
-            {
-                flpNotePanel.Controls.Add(noteButton);
-            }
-            //
             Resize += (s, e) =>
             {
                 // HACK: 16と42はマジックナンバー的なもの（なぜかこの値で調整しないと大きさが合わない）

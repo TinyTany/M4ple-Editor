@@ -40,8 +40,29 @@ namespace NE4S.Component
             previewBox.MouseMove += PreviewBox_MouseMove;
             //
             VirtualButtonRect.Left = new RectangleF(0, 0, virtualButtonWeight, previewBox.Height);
-            VirtualButtonRect.Center = new RectangleF(virtualButtonWeight, 0, previewBox.Width - virtualButtonWeight * 2, previewBox.Height);
-            VirtualButtonRect.Right = new RectangleF(previewBox.Width - virtualButtonWeight, 0, virtualButtonWeight, previewBox.Height);
+            VirtualButtonRect.Center = new RectangleF(
+                virtualButtonWeight, 0, previewBox.Width - virtualButtonWeight * 2, previewBox.Height);
+            VirtualButtonRect.Right = new RectangleF(
+                previewBox.Width - virtualButtonWeight, 0, virtualButtonWeight, previewBox.Height);
+        }
+
+        public void ChangeNoteDirection(int direction)
+        {
+            if(direction == NoteArea.LEFT)
+            {
+                if (noteType == NoteType.AIRDOWNC) { noteType = NoteType.AIRDOWNL; }
+                else if(noteType == NoteType.AIRUPC) { noteType = NoteType.AIRUPL; }
+                else if(noteType == NoteType.AIRDOWNR) { noteType = NoteType.AIRDOWNC; }
+                else if(noteType == NoteType.AIRUPR) { noteType = NoteType.AIRUPC; }
+            }
+            else if(direction == NoteArea.RIGHT)
+            {
+                if (noteType == NoteType.AIRDOWNC) { noteType = NoteType.AIRDOWNR; }
+                else if (noteType == NoteType.AIRUPC) { noteType = NoteType.AIRUPR; }
+                else if (noteType == NoteType.AIRDOWNL) { noteType = NoteType.AIRDOWNC; }
+                else if (noteType == NoteType.AIRUPL) { noteType = NoteType.AIRUPC; }
+            }
+            Status.Note = noteType;
         }
 
         protected override void PreviewBox_MouseDown(object sender, MouseEventArgs e)
