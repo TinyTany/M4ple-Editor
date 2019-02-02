@@ -14,7 +14,6 @@ namespace NE4S.Component
     /// </summary>
     public class AirNoteButton : NoteButton
     {
-        private int noteSize;
         private static readonly int virtualButtonWeight = 30;
         private enum ButtonArea : int
         {
@@ -27,13 +26,11 @@ namespace NE4S.Component
             public static RectangleF Right { get; set; }
         }
         private ButtonArea buttonArea;
-        private bool isMouseEnter, isSelected;
+        private bool isMouseEnter;
 
         public AirNoteButton(int noteType, NoteButtonEventHandler handler) : base(noteType, handler)
         {
-            noteSize = Status.NoteSize;
             isMouseEnter = false;
-            isSelected = false;
             buttonArea = ButtonArea.None;
             previewBox.MouseEnter += PreviewBox_MouseEnter;
             previewBox.MouseLeave += PreviewBox_MouseLeave;
@@ -67,7 +64,7 @@ namespace NE4S.Component
 
         protected override void PreviewBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (isSelected)
+            if (IsSelected)
             {
                 RefreshButtonArea(e.Location);
                 if (buttonArea == ButtonArea.Left)
@@ -106,7 +103,6 @@ namespace NE4S.Component
                 }
             }
             base.PreviewBox_MouseDown(sender, e);
-            return;
         }
 
         private void PreviewBox_MouseEnter(object sender, EventArgs e)
@@ -119,7 +115,6 @@ namespace NE4S.Component
         {
             isMouseEnter = false;
             previewBox.Refresh();
-            return;
         }
 
         private void PreviewBox_MouseMove(object sender, MouseEventArgs e)
@@ -146,27 +141,12 @@ namespace NE4S.Component
             {
                 buttonArea = ButtonArea.None;
             }
-            return;
-        }
-
-        public override void SetSelected()
-        {
-            base.SetSelected();
-            Status.NoteSize = noteSize;
-            isSelected = true;
-            return;
-        }
-
-        public override void SetUnSelected()
-        {
-            base.SetUnSelected();
-            isSelected = false;
         }
 
         protected override void PreviewBox_Paint(object sender, PaintEventArgs e)
         {
             base.PreviewBox_Paint(sender, e);
-            if (isMouseEnter && isSelected)
+            if (isMouseEnter && IsSelected)
             {
                 Color guideColor = Color.FromArgb(150, 255, 255, 255);
                 using (Pen pen = new Pen(guideColor))

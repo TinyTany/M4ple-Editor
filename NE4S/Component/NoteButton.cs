@@ -24,6 +24,7 @@ namespace NE4S.Component
         private static readonly Color selected = Color.FromArgb(255, 56, 135, 245);
         private static readonly Color unSelected = SystemColors.Control;
         private static readonly int margin = 5;
+        public bool IsSelected { get; private set; } = false;
 
         public NoteButton(int noteType, NoteButtonEventHandler handler)
         {
@@ -112,12 +113,14 @@ namespace NE4S.Component
         {
             Status.Note = noteType;
             BackColor = selected;
+            IsSelected = true;
             return;
         }
 
         public virtual void SetUnSelected()
         {
             BackColor = unSelected;
+            IsSelected = false;
             return;
         }
 

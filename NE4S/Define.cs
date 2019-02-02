@@ -13,27 +13,30 @@ namespace NE4S.Define
 
     public struct NoteType
     {
-        //NOTE: これの値の順番を利用してAir系ノーツを判別してるコードがNoteButtonクラスにあるのでうかつに数字を変えないほうがいい
         public const int
             NONE = -1,
+            SHORTNOTE_FIRST = 0,
             TAP = 0,
             EXTAP = 1,
             AWEXTAP = 2,
-            FLICK = 3,
-            HELL = 4,
-            HOLD = 5,
-            SLIDE = 6,
+            EXTAPDOWN = 3,
+            FLICK = 4,
+            HELL = 5,
+            SHORTNOTE_LAST = 5,
+            HOLD = 6,
+            SLIDE = 7,
             SLIDECURVE = 9,
+            AIRNOTE_FIRST = 10,
             AIRUPC = 10,
             AIRUPL = 11,
             AIRUPR = 12,
             AIRDOWNC = 13,
             AIRDOWNL = 14,
             AIRDOWNR = 15,
+            AIRNOTE_LAST = 15,
             AIRHOLD = 16,
             BPM = 17,
-            HIGHSPEED = 20,
-            EXTAPDOWN = 21;
+            HIGHSPEED = 20;
     }
 
     public struct NoteArea

@@ -15,7 +15,7 @@ namespace NE4S.Component
     /// </summary>
     public class SizableNoteButton : NoteButton
     {
-        private int noteSize;
+        public int NoteSize { get; set; }
         private static readonly int virtualButtonWeight = 20;
         protected enum ButtonArea : int
         {
@@ -33,10 +33,6 @@ namespace NE4S.Component
         /// </summary>
         protected bool isMouseEnter;
         /// <summary>
-        /// このボタンが現在選択されているか判定
-        /// </summary>
-        protected bool isSelected;
-        /// <summary>
         /// このボタンが現在押されっぱなしになっているか判定
         /// </summary>
         protected bool isMousePressed;
@@ -51,9 +47,8 @@ namespace NE4S.Component
 
         public SizableNoteButton(int noteType, NoteButtonEventHandler handler) : base(noteType, handler)
         {
-            noteSize = Status.NoteSize;
+            NoteSize = Status.NoteSize;
             isMouseEnter = false;
-            isSelected = false;
             isMousePressed = false;
             pressedLocation = new Point();
             sizeDelta = 0;
@@ -72,7 +67,7 @@ namespace NE4S.Component
         {
             isMousePressed = true;
             pressedLocation = e.Location;
-            if (isSelected)
+            if (IsSelected)
             {
                 RefreshButtonArea(e.Location);
                 ChangeValueByButton();
@@ -84,11 +79,11 @@ namespace NE4S.Component
         {
             if (buttonArea == ButtonArea.Top)
             {
-                Status.NoteSize = noteSize < 16 ? ++noteSize : noteSize;
+                Status.NoteSize = NoteSize < 16 ? ++NoteSize : NoteSize;
             }
             else if (buttonArea == ButtonArea.Bottom)
             {
-                Status.NoteSize = noteSize > 1 ? --noteSize : noteSize;
+                Status.NoteSize = NoteSize > 1 ? --NoteSize : NoteSize;
             }
         }
 
@@ -107,7 +102,7 @@ namespace NE4S.Component
         protected void PreviewBox_MouseMove(object sender, MouseEventArgs e)
         {
             RefreshButtonArea(e.Location);
-            if (isSelected && buttonArea == ButtonArea.Center)
+            if (IsSelected && buttonArea == ButtonArea.Center)
             {
                 Cursor = Cursors.SizeNS;
             }
@@ -126,20 +121,20 @@ namespace NE4S.Component
         {
             int pixelPerSize = 15;
             sizeDelta = -(location.Y - pressedLocation.Y) / pixelPerSize;
-            if (noteSize + sizeDelta < 1)
+            if (NoteSize + sizeDelta < 1)
             {
-                sizeDelta = 1 - noteSize;
+                sizeDelta = 1 - NoteSize;
             }
-            else if (noteSize + sizeDelta > 16)
+            else if (NoteSize + sizeDelta > 16)
             {
-                sizeDelta = 16 - noteSize;
+                sizeDelta = 16 - NoteSize;
             }
         }
 
         protected virtual void PreviewBox_MouseUp(object sender, MouseEventArgs e)
         {
             isMousePressed = false;
-            Status.NoteSize = noteSize += sizeDelta;
+            Status.NoteSize = NoteSize += sizeDelta;
             sizeDelta = 0;
         }
 
@@ -167,20 +162,13 @@ namespace NE4S.Component
         public override void SetSelected()
         {
             base.SetSelected();
-            Status.NoteSize = noteSize;
-            isSelected = true;
-        }
-
-        public override void SetUnSelected()
-        {
-            base.SetUnSelected();
-            isSelected = false;
+            Status.NoteSize = NoteSize;
         }
 
         protected override void PreviewBox_Paint(object sender, PaintEventArgs e)
         {
             base.PreviewBox_Paint(sender, e);
-            if (isMouseEnter && isSelected)
+            if (isMouseEnter && IsSelected)
             {
                 Color guideColor = Color.FromArgb(150, 255, 255, 255);
                 using (Pen pen = new Pen(guideColor))
@@ -199,28 +187,6 @@ namespace NE4S.Component
                         e.Graphics.FillRectangle(brush, VirtualButtonRect.Bottom);
                     }
                 }
-                /*
-                using (SolidBrush brush = new SolidBrush(guideColor))
-                using (Font myFont = new Font("Yu Gothic UI", 12, FontStyle.Regular))
-                {
-                    if (buttonArea == ButtonArea.Top)
-                    {
-                        e.Graphics.DrawString(
-                        "Size +",
-                        myFont,
-                        brush,
-                        new PointF(previewBox.Width / 2, 0));
-                    }
-                    else if (buttonArea == ButtonArea.Bottom)
-                    {
-                        e.Graphics.DrawString(
-                        "Size -",
-                        myFont,
-                        brush,
-                        new PointF(previewBox.Width / 2, previewBox.Height - virtualButtonWeight));
-                    }
-                }
-                //*/
             }
             DrawValue(e);
         }
@@ -230,7 +196,7 @@ namespace NE4S.Component
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {
                 e.Graphics.DrawString(
-                "NoteSize: " + (noteSize + sizeDelta),
+                "NoteSize: " + (NoteSize + sizeDelta),
                 myFont,
                 Brushes.White,
                 new PointF(1, 78));

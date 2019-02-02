@@ -306,6 +306,14 @@ namespace NE4S
                 flpNotePanel.Height = tabNoteButton.TabPages[0].Height;
             };
             SetPanelSize(PanelSize.BIG);
+            //
+            /*
+            var data = AppDomain.CurrentDomain?.SetupInformation?.ActivationArguments?.ActivationData?[0];
+            if(data != null)
+            {
+
+            }
+            //*/
         }
 
         private bool IsExit()
