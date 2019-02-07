@@ -595,6 +595,8 @@ namespace NE4S
 
         public void SetPanelSize(int panelSize)
         {
+            // HACK: とりあえず決めうちにした
+            int[] formHeight = { 558, 750, 940 };
             switch (panelSize)
             {
                 case PanelSize.SMALL:
@@ -602,18 +604,21 @@ namespace NE4S
                     tsmiSizeSmall.Checked = true;
                     tsmiSizeMiddle.Checked = false;
                     tsmiSizeBig.Checked = false;
+                    Height = formHeight[0];
                     break;
                 case PanelSize.MIDDLE:
                     ScoreInfo.LaneMaxBar = 1.5f;
                     tsmiSizeSmall.Checked = false;
                     tsmiSizeMiddle.Checked = true;
                     tsmiSizeBig.Checked = false;
+                    Height = formHeight[1];
                     break;
                 case PanelSize.BIG:
                     ScoreInfo.LaneMaxBar = 2;
                     tsmiSizeSmall.Checked = false;
                     tsmiSizeMiddle.Checked = false;
                     tsmiSizeBig.Checked = true;
+                    Height = formHeight[2];
                     break;
             }
             ScoreLane.RefreshLaneSize();
