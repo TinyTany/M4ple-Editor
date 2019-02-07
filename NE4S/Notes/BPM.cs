@@ -14,7 +14,7 @@ namespace NE4S.Notes
     {
         private static readonly PointF adjustPoint = new PointF(2, -9);
 
-        public BPM(Position position, PointF location, int laneIndex) : base(position, location, laneIndex) { }
+        public BPM(Position position, PointF location, float noteValue, int laneIndex) : base(position, location, noteValue, laneIndex) { }
 
         public override bool Contains(PointF location)
         {

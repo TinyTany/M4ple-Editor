@@ -35,6 +35,7 @@ namespace NE4S.Notes
                 new PointF(
                     ScorePanel.Margin.Left + ScoreLane.Margin.Left,
                     ScorePanel.Margin.Top + ScoreLane.Height - ScoreLane.Margin.Bottom),
+                Status.CurrentValue,
                 0));
         }
 

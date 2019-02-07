@@ -937,10 +937,10 @@ namespace NE4S.Scores
                 #endregion
                 #region AttributeNote
                 case NoteType.BPM:
-                    newNote = new BPM(position, locationVirtual, lane.Index);
+                    newNote = new BPM(position, locationVirtual, Status.CurrentValue, lane.Index);
                     break;
                 case NoteType.HIGHSPEED:
-                    newNote = new HighSpeed(position, locationVirtual, lane.Index);
+                    newNote = new HighSpeed(position, locationVirtual, Status.CurrentValue, lane.Index);
                     break;
                 #endregion
                 default:

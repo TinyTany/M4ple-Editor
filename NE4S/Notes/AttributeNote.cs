@@ -14,12 +14,12 @@ namespace NE4S.Notes
     {
         public float NoteValue { get; protected set; }
 
-        public AttributeNote(Position position, PointF location, int laneIndex)
+        public AttributeNote(Position position, PointF location, float noteValue, int laneIndex)
         {
             Position = position;
             noteRect.Location = location;
             LaneIndex = laneIndex;
-            NoteValue = Status.CurrentValue;
+            NoteValue = noteValue;
             Size = 1;
         }
 
