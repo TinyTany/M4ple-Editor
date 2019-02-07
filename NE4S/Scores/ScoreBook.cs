@@ -78,7 +78,18 @@ namespace NE4S.Scores
         /// </summary>
         private void SetScoreIndex()
         {
-            for (int i = 0; i < Count; ++i) this[i].Index = i;
+            for (int i = 0; i < Count; ++i)
+            {
+                this[i].Index = i;
+                if (i == 0 || this[i].BeatDenom != this[i-1].BeatDenom || this[i].BeatNumer != this[i-1].BeatNumer)
+                {
+                    this[i].IsBeatVisible = true;
+                }
+                else
+                {
+                    this[i].IsBeatVisible = false;
+                }
+            }
             int tick = 0;
             foreach(Score score in this)
             {

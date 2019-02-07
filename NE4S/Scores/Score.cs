@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Runtime.Serialization;
 
 namespace NE4S.Scores
 {
@@ -48,6 +49,11 @@ namespace NE4S.Scores
         {
             get { return endTick - startTick + 1; }
         }
+
+        /// <summary>
+        /// この小節の拍子を描画するかどうかを表す
+        /// </summary>
+        public bool IsBeatVisible { get; set; }
 
         /// <summary>
         /// 小節番号
@@ -126,6 +132,7 @@ namespace NE4S.Scores
                 //小節数を描画
                 using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
                 {
+                    // 小節数を描画
                     float dX = -23.5f, dY = -9;
                     e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                     e.Graphics.DrawString(
@@ -135,6 +142,18 @@ namespace NE4S.Scores
                     new PointF(
                         drawPosX + dX,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer + dY));
+                    // 必要に応じて拍数を描画
+                    if (IsBeatVisible)
+                    {
+                        dX -= 30;
+                        e.Graphics.DrawString(
+                        BeatNumer + "/" + BeatDenom,
+                        myFont,
+                        Brushes.Orange,
+                        new PointF(
+                        drawPosX + dX,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer + dY));
+                    }
                 }
             }
             else
