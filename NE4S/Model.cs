@@ -17,6 +17,12 @@ namespace NE4S
         public ScoreBook ScoreBook { get; }
         public LaneBook LaneBook { get; }
         public MusicInfo MusicInfo { get; set; }
+
+        /* Serializableぶっ壊れるけど、SUSで完全代用できるようになるからいらないよね!!(暴論) */
+        /* と思ったけど、シリアライズ対象から外せば問題ないよね!!(わからん) */
+        [field: NonSerialized]
+        public HighSpeedTimeLineBook TimeLineBook { get; set; }
+
         #region 使わなくなったメンバ
         /// <summary>
         /// この変数は使用しない

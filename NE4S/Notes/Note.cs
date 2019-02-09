@@ -25,6 +25,10 @@ namespace NE4S.Notes
 		protected RectangleF noteRect;
         protected PointF adjustNoteRect = new PointF(0, -2);
         public virtual int LaneIndex { get; protected set; } = -1;
+
+        [field: NonSerialized]
+        public int TimeLineIndex { get; set; } = 0;
+
         /// <summary>
         /// Hold, AirHoldの始点サイズを変更した時にロングノーツ全体のサイズを更新する際に使用
         /// </summary>

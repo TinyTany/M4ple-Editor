@@ -19,13 +19,24 @@ namespace NE4S
         public string SongId { get; set; }
         public string MusicFileName { get; set; }
         public decimal MusicOffset { get; set; }
+        public string MovieFileName { get; set; }
+        public decimal MovieOffset { get; set; }
         public string JacketFileName { get; set; }
+        public string BackgroundFileName { get; set; }
         public string ExportPath { get; set; }
         public decimal MeasureOffset { get; set; }
         public int Metronome { get; set; }
         public decimal SlideCurveSegment { get; set; } = 100;
         [field: NonSerialized]
         public bool HasExported { get; set; } = false;
+        [field: NonSerialized]
+        public string SubTitle { get; set; }
+        [field: NonSerialized]
+        public string Genre { get; set; }
+        [field: NonSerialized]
+        public bool EnablePriority { get; set; } = false;
+        [field: NonSerialized]
+        public int TicksPerBeat { get; set; } = 192;
 
         public MusicInfo() { }
     }

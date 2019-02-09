@@ -14,6 +14,16 @@ namespace NE4S.Notes
     {
         private static readonly PointF adjustPoint = new PointF(22, -9);
 
+        public enum VisibleState
+        {
+            Keep = -1,
+            Visible = 0,
+            Invisible
+        }
+
+        [field: NonSerialized]
+        public VisibleState Visible { get; set; } = VisibleState.Keep;
+
         public HighSpeed(Position position, PointF location, float noteValue, int laneIndex) : base(position, location, noteValue, laneIndex) { }
 
         public override bool Contains(PointF location)

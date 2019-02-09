@@ -60,6 +60,8 @@
             this.tsmiIsAir = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiIsExTapDistinct = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiIsEconomyMode = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiPanelSize = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSizeSmall = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,8 +104,8 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiIsEconomyMode = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiImport = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbImport = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -133,6 +135,7 @@
             this.tsmiOpen,
             this.tsmiSave,
             this.tsmiSaveAs,
+            this.tsmiImport,
             this.tsmiExport,
             this.toolStripSeparator4,
             this.tsmiQuit});
@@ -369,6 +372,17 @@
             this.tsmiIsExTapDistinct.Size = new System.Drawing.Size(215, 22);
             this.tsmiIsExTapDistinct.Text = "ExTap系ノーツの色を区別する";
             // 
+            // toolStripSeparator13
+            // 
+            this.toolStripSeparator13.Name = "toolStripSeparator13";
+            this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
+            // 
+            // tsmiIsEconomyMode
+            // 
+            this.tsmiIsEconomyMode.Name = "tsmiIsEconomyMode";
+            this.tsmiIsEconomyMode.Size = new System.Drawing.Size(215, 22);
+            this.tsmiIsEconomyMode.Text = "描画処理を軽量化する";
+            // 
             // tsmiWindow
             // 
             this.tsmiWindow.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -384,7 +398,7 @@
             this.tsmiSizeMiddle,
             this.tsmiSizeBig});
             this.tsmiPanelSize.Name = "tsmiPanelSize";
-            this.tsmiPanelSize.Size = new System.Drawing.Size(180, 22);
+            this.tsmiPanelSize.Size = new System.Drawing.Size(162, 22);
             this.tsmiPanelSize.Text = "譜面レーンのサイズ";
             // 
             // tsmiSizeSmall
@@ -511,6 +525,7 @@
             this.tsbNew,
             this.tsbOpen,
             this.tsbSave,
+            this.tsbImport,
             this.tsbExport,
             this.toolStripSeparator11,
             this.tsbUndo,
@@ -749,16 +764,22 @@
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
             this.tslRealNotes.Visible = false;
             // 
-            // toolStripSeparator13
+            // tsmiImport
             // 
-            this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
+            this.tsmiImport.Name = "tsmiImport";
+            this.tsmiImport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.tsmiImport.Size = new System.Drawing.Size(257, 22);
+            this.tsmiImport.Text = "インポート(&I)...";
             // 
-            // tsmiIsEconomyMode
+            // tsbImport
             // 
-            this.tsmiIsEconomyMode.Name = "tsmiIsEconomyMode";
-            this.tsmiIsEconomyMode.Size = new System.Drawing.Size(215, 22);
-            this.tsmiIsEconomyMode.Text = "描画処理を軽量化する";
+            this.tsbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbImport.Image = global::NE4S.Properties.Resources.ImportFile_16x;
+            this.tsbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbImport.Name = "tsbImport";
+            this.tsbImport.Size = new System.Drawing.Size(23, 22);
+            this.tsbImport.Text = "toolStripButton1";
+            this.tsbImport.ToolTipText = "インポート";
             // 
             // MainForm
             // 
@@ -863,6 +884,8 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSizeBig;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
         private System.Windows.Forms.ToolStripMenuItem tsmiIsEconomyMode;
+        private System.Windows.Forms.ToolStripMenuItem tsmiImport;
+        private System.Windows.Forms.ToolStripButton tsbImport;
     }
 }
 

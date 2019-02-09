@@ -217,5 +217,72 @@ namespace NE4S
             graphicsPath.CloseFigure();
             return graphicsPath;
         }
+
+        public static int ChangeZto35(char c)
+        {
+            if ('0' <= c && c <= '9') return (int)(c - '0');
+            if ('A' <= c && c <= 'Z') return (int)(c - 'A') + 10;
+            if ('a' <= c && c <= 'z') return (int)(c - 'a') + 10;
+            return 0;
+        }
+
+        public static char Change35toZ(int num)
+        {
+            if (0 <= num && num <= 9) return (char)('0' + num);
+            if (10 <= num && num <= 35) return (char)(num - 10 + 'A');
+            return '0';
+        }
+
+        public static int ToIntAs36(string str)
+        {
+            str = "00000000" + str.ToUpper();
+            str = str.Substring(str.Length - 8);
+            int l = 0;
+            for (int i = 0; i < str.Length; ++i)
+            {
+                l = l * 36 + ChangeZto35(str[i]);
+            }
+            return l;
+        }
+
+        public static string ToStringAs36(int num)
+        {
+            if (num < 0) return "0";
+
+            string str = "";
+            do
+            {
+                str = Change35toZ(num % 36) + str;
+                num = num / 36;
+            } while (num > 0);
+            return str;
+        }
+
+        public static int ToInt(string str)
+        {
+            /* 例外対策ちゃんと書かないとまずい */
+            return Convert.ToInt32(str);
+        }
+
+        public static double ToDouble(string str)
+        {
+            /* 例外対策ちゃんと書かないとまずい */
+            return Convert.ToDouble(str);
+        }
+
+        public static string ToString(double num)
+        {
+            /* 例外対策ちゃんと書かないとまずい */
+            return Convert.ToString(num);
+        }
+
+        public static string GetRawString(string str)
+        {
+            if (str.Length == 0) return str;
+
+            if (str[0] == '"' && str[str.Length - 1] == '"') return str.Substring(1, str.Length - 2);
+
+            return str;
+        }
     }
 }

@@ -116,6 +116,7 @@
     <Compile Include="Component\SpeedNoteButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Component\SusLoader.cs" />
     <Compile Include="Component\TabPageEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -158,6 +159,8 @@
     <Compile Include="Notes\AttributeNote.cs" />
     <Compile Include="Notes\BPM.cs" />
     <Compile Include="Notes\ExTapDown.cs" />
+    <Compile Include="Notes\HighSpeedTimeLine.cs" />
+    <Compile Include="Notes\HighSpeedTimeLineBook.cs" />
     <Compile Include="Notes\NoteBook.cs" />
     <Compile Include="Notes\ExTap.cs" />
     <Compile Include="Notes\Flick.cs" />
@@ -168,6 +171,7 @@
     <Compile Include="Notes\LongNote.cs" />
     <Compile Include="Notes\Note.cs" />
     <Compile Include="Notes\PreviewNote.cs" />
+    <Compile Include="Notes\RawNote.cs" />
     <Compile Include="Notes\Slide.cs" />
     <Compile Include="Notes\SlideBegin.cs" />
     <Compile Include="Notes\SlideCurve.cs" />

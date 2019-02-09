@@ -32,6 +32,7 @@ namespace NE4S.Scores
         private PictureBox pBox;
         private PreviewNote pNote;
         private DataIO dataIO;
+        private SusLoader susLoader;
         private SelectionArea selectionArea;
         public OperationManager OperationManager { get; private set; }
         private Note selectedNotePrev = null;
@@ -58,6 +59,7 @@ namespace NE4S.Scores
             vScrollBar = vScroll;
 			pNote = new PreviewNote();
             dataIO = new DataIO();
+            susLoader = new SusLoader();
             selectionArea = new SelectionArea();
             OperationManager = new OperationManager();
 		}
@@ -150,6 +152,65 @@ namespace NE4S.Scores
             bool isSaved =  dataIO.SaveAs(model);
             IsEdited = !isSaved;
             return isSaved;
+        }
+
+        public bool Import()
+        {
+            Model importData = null;
+
+            //ファイルが保存されていない場合はメッセージボックスを出す
+            if (IsEdited)
+            {
+                DialogResult dialogResult =
+                    MessageBox.Show(
+                        "ファイルは変更されています。保存しますか？",
+                        "インポート",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Save();
+                }
+                else if (dialogResult == DialogResult.No) { }
+                else if (dialogResult == DialogResult.Cancel)
+                {
+                    return true;
+                }
+            }
+
+            List<string> message = new List<string>();
+            importData = susLoader.ShowDialog(message);
+            if (importData == null)
+            {
+                return false;
+            }
+
+            if (message.Count > 0)
+            {
+                int maxCount = 8;
+                string m = (message.Count > maxCount) ?
+                    (string.Join("\r\n", message.GetRange(0, maxCount)) + "\r\n\r\n他" + (message.Count - maxCount) + "件の警告")
+                    : string.Join("\r\n", message);
+                DialogResult dialogResult =
+                    MessageBox.Show(
+                        "読み込んだsusファイルのうち、以下のデータは失われます。続行しますか？\r\n\r\n" + m,
+                        "インポート",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button1);
+                if (dialogResult == DialogResult.Yes) { }
+                else if (dialogResult == DialogResult.No)
+                {
+                    return true;
+                }
+            }
+
+            //読み込みの処理
+            model = importData;
+            RefreshLaneSize();
+            IsEdited = false;
+            return true;
         }
 
         public void Export()

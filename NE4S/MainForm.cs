@@ -108,6 +108,12 @@ namespace NE4S
             tsbNew.Click += New_Click;
             tsbOpen.Click += Open_Click;
             tsbSave.Click += Save_Click;
+            tsbImport.Click += (s, e) =>
+            {
+                // NOTE: tsmiImport.Clickも同じ
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.Import();
+            };
             tsbExport.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
@@ -185,6 +191,12 @@ namespace NE4S
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 bool isSaved = selectedPanel.SaveAs();
                 UpdateTextOfTabAndForm(!isSaved);
+            };
+            tsmiImport.Click += (s, e) =>
+            {
+                // NOTE: tsbImportも同じ
+                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+                selectedPanel.Import();
             };
             tsmiExport.Click += (s, e) =>
             {
