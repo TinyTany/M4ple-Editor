@@ -283,6 +283,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="m4logo.ico" />
+    <None Include="Resources\ZoomIn_16x.png" />
+    <None Include="Resources\ZoomOut_16x.png" />
     <None Include="Resources\m4logo.png" />
     <None Include="Resources\Cancel_16x.png" />
   </ItemGroup>
