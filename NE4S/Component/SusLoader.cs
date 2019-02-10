@@ -57,7 +57,7 @@ namespace NE4S.Component
             Status.ExportDialogDirectory = Directory.GetParent(path).ToString();
             return AnalyzeSusData(path, message);
         }
-
+        
         public Model AnalyzeSusData(string path, List<string> message)
         {
             Model model = new Model();
@@ -87,7 +87,7 @@ namespace NE4S.Component
             using (StreamReader reader = File.OpenText(path))
             {
                 model.MusicInfo.ExportPath = (new Uri(path)).LocalPath;
-                model.MusicInfo.HasExported = true;
+                model.MusicInfo.HasExported = false;
 
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -95,6 +95,7 @@ namespace NE4S.Component
 
                     if (line.Length == 0 || line[0] != '#') continue;
 
+                    #region 拍数変更データ抽出
                     Match matchApply = rgxApply.Match(line);
                     if (matchApply.Success)
                     {
@@ -119,7 +120,9 @@ namespace NE4S.Component
                         }
                         continue;
                     }
+                    #endregion
 
+                    #region ノーツデータ抽出
                     Match matchNotes = rgxNotes.Match(line);
                     if (matchNotes.Success)
                     {
@@ -289,7 +292,9 @@ namespace NE4S.Component
 
                         continue;
                     }
+                    #endregion
 
+                    #region BPM,TIL,ATR抽出
                     Match matchDef = rgxDef.Match(line);
                     if (matchDef.Success)
                     {
@@ -316,7 +321,9 @@ namespace NE4S.Component
                         }
                         continue;
                     }
+                    #endregion
 
+                    #region ヘッダ、コマンドなど抽出
                     Match matchCommand = rgxCommand.Match(line);
                     if (matchCommand.Success)
                     {
@@ -529,15 +536,17 @@ namespace NE4S.Component
                         }
                         continue;
                     }
+                    #endregion
 
+                    // どれにも当てはまらないデータの場合はここに到達する
                     message.Add("" + lineCount + "行 : SUS有効行ですが解析できませんでした。");
                     System.Console.WriteLine("Line {0} : SUS有効行ですが解析できませんでした。", lineCount);
                 }
             }
 
+            // 読み込んだ拍数定義データを時間順にソートして...
             tpbApplys = tpbApplys.OrderBy((x) => x.Key).ToDictionary((x) => x.Key, (x) => x.Value);
-
-            // 小節を追加
+            // それをもとに小節を追加
             {
                 int currentBeatNum = 4;
                 int currentBeatDen = 4;
@@ -556,7 +565,13 @@ namespace NE4S.Component
                         currentBeatNum = (int)(beatDen * tpb);
                         currentBeatDen = beatDen * 4;
                     }
-
+                    System.Diagnostics.Debug.Assert(currentBeatDen != 0, "currentBeatDenomIsZero");
+                    System.Diagnostics.Debug.Assert(currentBeatNum != 0, "currentBeatNumerIsZero");
+                    if (currentBeatDen == 0 || currentBeatNum == 0)
+                    {
+                        message.Add("" + lineCount + "行 : 無効な小節です。");
+                        continue;
+                    }
                     model.ScoreBook.Add(currentBeatNum, currentBeatDen);
                 }
             }
@@ -626,7 +641,7 @@ namespace NE4S.Component
                                 if (rawNotes[j].Size != rawNotes[i].Size) continue;
                                 if (rawNotes[j].Position.Lane != rawNotes[i].Position.Lane) continue;
                                 if (rawNotes[j].NoteType != RawNote.RawNoteType.HoldEnd) continue;
-                                if (rawNotes[j].Identifire != rawNotes[i].Identifire) continue;
+                                if (rawNotes[j].Identifier != rawNotes[i].Identifier) continue;
 
                                 hold[1].Relocate(rawNotes[j].Position);
                                 break;
@@ -647,7 +662,7 @@ namespace NE4S.Component
                             {
                                 if (rawNotes[j].Position.Tick < rawNotes[i].Position.Tick) continue;
                                 if (rawNotes[j].NoteType < RawNote.RawNoteType.SlideTap || RawNote.RawNoteType.SlideEnd < rawNotes[j].NoteType) continue;
-                                if (rawNotes[j].Identifire != rawNotes[i].Identifire) continue;
+                                if (rawNotes[j].Identifier != rawNotes[i].Identifier) continue;
 
                                 Position stepPos = rawNotes[j].Position;
                                 if (rawNotes[j].NoteType == RawNote.RawNoteType.SlideTap)
@@ -747,6 +762,7 @@ namespace NE4S.Component
                             }
                             if (j >= 0) break; /* Attach完了 */
 
+                            // 設置のためのAirableNoteがないときは新しくTap作ってそれにくっつける
                             {
                                 Tap t = new Tap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
                                 t.AttachAir(airNote);
@@ -766,7 +782,7 @@ namespace NE4S.Component
                             {
                                 if (rawNotes[j].Measure < rawNotes[i].Measure) continue;
                                 if (rawNotes[j].NoteType != RawNote.RawNoteType.AirAction && rawNotes[j].NoteType != RawNote.RawNoteType.AirHoldEnd) continue;
-                                if (rawNotes[j].Identifire != rawNotes[i].Identifire) continue;
+                                if (rawNotes[j].Identifier != rawNotes[i].Identifier) continue;
 
                                 if (rawNotes[j].Size != rawNotes[i].Size)
                                 {
@@ -800,12 +816,6 @@ namespace NE4S.Component
                                         if (model.NoteBook.ShortNotes[j] is AirableNote && !((AirableNote)model.NoteBook.ShortNotes[j]).IsAirHoldAttached)
                                         {
                                             ((AirableNote)model.NoteBook.ShortNotes[j]).AttachAirHold(ah);
-                                            if (((AirableNote)model.NoteBook.ShortNotes[j]).IsAirAttached)
-                                            {
-                                                AirUpC airNote = new AirUpC(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
-                                                ((AirableNote)model.NoteBook.ShortNotes[j]).AttachAir(airNote);
-                                                model.NoteBook.Add(airNote);
-                                            }
                                             model.NoteBook.Add(ah);
                                             break;
                                         }
@@ -820,12 +830,6 @@ namespace NE4S.Component
                                         if (model.NoteBook.HoldNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.HoldNotes[j][1]).IsAirHoldAttached)
                                         {
                                             ((AirableNote)model.NoteBook.HoldNotes[j][1]).AttachAirHold(ah);
-                                            if (((AirableNote)model.NoteBook.HoldNotes[j][1]).IsAirAttached)
-                                            {
-                                                AirUpC airNote = new AirUpC(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
-                                                ((AirableNote)model.NoteBook.HoldNotes[j][1]).AttachAir(airNote);
-                                                model.NoteBook.Add(airNote);
-                                            }
                                             model.NoteBook.Add(ah);
                                             break;
                                         }
@@ -841,12 +845,6 @@ namespace NE4S.Component
                                         if (model.NoteBook.SlideNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.SlideNotes[j][1]).IsAirHoldAttached)
                                         {
                                             ((AirableNote)model.NoteBook.SlideNotes[j][1]).AttachAirHold(ah);
-                                            if (((AirableNote)model.NoteBook.SlideNotes[j][1]).IsAirAttached)
-                                            {
-                                                AirUpC airNote = new AirUpC(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
-                                                ((AirableNote)model.NoteBook.SlideNotes[j][1]).AttachAir(airNote);
-                                                model.NoteBook.Add(airNote);
-                                            }
                                             model.NoteBook.Add(ah);
                                             break;
                                         }
@@ -854,13 +852,11 @@ namespace NE4S.Component
                                 }
                                 if (j >= 0) break; /* Attach完了 */
 
+                                // 設置のためのAirableNoteがないときは新しくTap作ってそれにくっつける
                                 {
                                     Tap t = new Tap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
-                                    AirUpC airNote = new AirUpC(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
-                                    t.AttachAir(airNote);
                                     t.AttachAirHold(ah);
                                     model.NoteBook.Add(t);
-                                    model.NoteBook.Add(airNote);
                                     model.NoteBook.Add(ah);
                                 }
 
@@ -894,7 +890,7 @@ namespace NE4S.Component
                 }
             }
 
-#if false
+#if true
             {
                 /* ハイスピ指定を譜面に追加 */
                 /* とりあえず譜面全体に一律に適用されているハイスピ指定のみ画面に表示することにする */
@@ -971,6 +967,7 @@ namespace NE4S.Component
                                     scoreList.Add(model.ScoreBook.At(j));
                                 }
                                 /* この辺で死ぬ(エディタ上で小節削除でも死ぬ) */
+                                // 多分死なないようになったはず
                                 model.LaneBook.DeleteScore(model.ScoreBook, scoreList.First(), baseMeasureCount);
                                 model.NoteBook.RelocateNoteTickAfterScoreTick(
                                     scoreList.Last().EndTick + 1, -(scoreList.Last().EndTick - scoreList.First().StartTick + 1));

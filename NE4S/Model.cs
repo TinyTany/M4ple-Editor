@@ -21,7 +21,7 @@ namespace NE4S
         /* Serializableぶっ壊れるけど、SUSで完全代用できるようになるからいらないよね!!(暴論) */
         /* と思ったけど、シリアライズ対象から外せば問題ないよね!!(わからん) */
         [field: NonSerialized]
-        public HighSpeedTimeLineBook TimeLineBook { get; set; }
+        public HighSpeedTimeLineBook TimeLineBook { get; set; } = new HighSpeedTimeLineBook();
 
         #region 使わなくなったメンバ
         /// <summary>

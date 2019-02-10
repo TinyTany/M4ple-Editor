@@ -53,7 +53,7 @@ namespace NE4S.Notes
         {
             get
             {
-                return this.First() as AirHoldBegin;
+                return this.OrderBy(x => x.Position.Tick).First() as AirHoldBegin;
             }
         }
 

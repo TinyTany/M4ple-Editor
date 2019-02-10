@@ -24,7 +24,7 @@ namespace NE4S.Notes
         }
         private int BeatNum = 0;
         private int BeatDen = 1;
-        public int Identifire { get; protected set; } = -1;
+        public int Identifier { get; protected set; } = -1;
 
         public enum RawNoteType
         {
@@ -73,7 +73,7 @@ namespace NE4S.Notes
             Measure = measure;
             BeatNum = beatNum;
             BeatDen = beatDen;
-            Identifire = -1;
+            Identifier = -1;
         }
         public RawNote(RawNoteType type, int lane, int size, int measure, int beatNum, int beatDen, int identifire)
             : base(size, new Position(lane, 0), new PointF(), -1)
@@ -82,7 +82,7 @@ namespace NE4S.Notes
             NoteType = type;
             BeatNum = beatNum;
             BeatDen = beatDen;
-            Identifire = identifire;
+            Identifier = identifire;
         }
 
         // 初期化時にはノーツのPositionを確定できない(その小節の拍子数が確定していない)

@@ -381,7 +381,7 @@ namespace NE4S.Scores
         public void Clear(ScoreBook scoreBook)
         {
             Clear();
-            scoreBook.ForEach(x => x.LinkCount--);
+            scoreBook.ForEach(x => x.LinkCount = 0);
         }
     }
 }

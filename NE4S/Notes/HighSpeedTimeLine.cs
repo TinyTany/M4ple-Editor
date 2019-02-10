@@ -18,7 +18,7 @@ namespace NE4S.Notes
 
         private static Regex rgxTimeLineBase = new Regex(@"(?:(inherit)\s*\:\s*(\w+))|(?:(\d+)\s*'\s*(\d+)(?:\s*\:\s*((?:[\+\-]?\d+(?:\.\d*)?)|i|invisible|v|visible))+)");
         private static string rgxTimeLineBaseTxt = @"(?:(?:inherit)\s*\:\s*(?:\w+))|(?:(?:\d+)\s*'\s*(?:\d+)(?:\s*\:\s*(?:(?:[\+\-]?\d+(?:\.\d*)?)|i|invisible|v|visible))+)";
-        private static Regex rgxTimeLine = new Regex(@"(?:(?:^|\s*,\s*)(" + rgxTimeLineBaseTxt + @"))+$");
+        private static Regex rgxTimeLine = new Regex(@"(?:(?:^|\s*,\s*)(" + rgxTimeLineBaseTxt + @"))+,?$");
 
         public HighSpeedTimeLine() { }
 
