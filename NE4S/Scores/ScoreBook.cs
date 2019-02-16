@@ -76,7 +76,7 @@ namespace NE4S.Scores
         /// ScoreBook内のScoreのインデックスとTick数と拍数の描画の有無を更新
         /// リストscoresの内容が変更された際に必ず呼ぶ
         /// </summary>
-        private void SetScoreIndex()
+        public void SetScoreIndex()
         {
             for (int i = 0; i < Count; ++i)
             {

@@ -205,9 +205,19 @@ namespace NE4S.Notes
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
+                // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
+                if (note.Position.Tick > Status.DrawTickLast)
+                {
+                    continue;
+                }
                 if (list.IndexOf(note) < list.Count - 1)
                 {
                     Note next = list.Next(note);
+                    // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
+                    if (next.Position.Tick < Status.DrawTickFirst)
+                    {
+                        continue;
+                    }
                     DrawAirHoldLine(e, note, next, drawLocation, laneBook);
                 }
                 //クリッピングの解除を忘れないこと

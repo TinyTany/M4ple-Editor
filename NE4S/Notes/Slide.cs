@@ -270,6 +270,11 @@ namespace NE4S.Notes
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
             foreach (Note note in list)
             {
+                // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
+                if (note.Position.Tick > Status.DrawTickLast)
+                {
+                    continue;
+                }
                 if (list.IndexOf(note) < list.Count - 1 && !(note is SlideCurve))
                 {
                     //スライド帯のグラデーション用矩形を設定する
@@ -287,6 +292,11 @@ namespace NE4S.Notes
                     Note next = list.Next(note);
                     if(!(next is SlideCurve))
                     {
+                        // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
+                        if (next.Position.Tick < Status.DrawTickFirst)
+                        {
+                            continue;
+                        }
                         DrawSlideLine(e, note, next, drawLocation, laneBook, ref gradientRect);
                     }
                     else
@@ -297,6 +307,11 @@ namespace NE4S.Notes
                         if (list.IndexOf(curve) < list.Count - 1)
                         {
                             next = list.Next(curve);
+                            // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
+                            if (next.Position.Tick < Status.DrawTickFirst)
+                            {
+                                continue;
+                            }
                             DrawSlideCurve(e, note, curve, next, drawLocation, laneBook, ref gradientRect);
                         }
                     }

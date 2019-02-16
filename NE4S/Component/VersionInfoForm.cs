@@ -18,6 +18,7 @@ namespace NE4S.Component
             logo.SizeMode = PictureBoxSizeMode.Zoom;
             ((Bitmap)logo.Image).MakeTransparent();
             button1.Click += (s, e) => Close();
+            appVersion.Text = "Version " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }
 }

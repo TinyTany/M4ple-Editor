@@ -53,6 +53,8 @@ namespace NE4S.Component
             {
                 DataSaver.Path = DataLoader.Path;
                 FileName = Path.GetFileName(DataSaver.Path);
+                // NOTE: 拍数の描画をするようにしたので、古いバージョンのm4sを読み込んだときでもうまくいくように更新をかける
+                model.ScoreBook.SetScoreIndex();
             }
             return model;
         }
