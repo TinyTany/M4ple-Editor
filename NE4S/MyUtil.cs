@@ -137,12 +137,12 @@ namespace NE4S
         /// <param name="dx"></param>
         /// <param name="dy"></param>
         /// <returns></returns>
-        public static GraphicsPath Translate(this GraphicsPath graphicsPath, float dx, float dy)
+        public static void Translate(this GraphicsPath graphicsPath, float dx, float dy)
         {
             var mat = new Matrix();
             mat.Translate(dx, dy, MatrixOrder.Append);
             graphicsPath.Transform(mat);
-            return graphicsPath;
+            //return graphicsPath;
         }
 
         /// <summary>

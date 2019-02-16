@@ -28,7 +28,7 @@ namespace NE4S.Scores
         /// </summary>
         public float CurrentBarSize { get; private set; }
 
-        // <summary>
+        /// <summary>
         /// ScoreLane当たり判定領域
         /// PictureBoxの左上を原点としたときの座標
         /// index,currentBarSizeが変わると変わる
