@@ -36,7 +36,7 @@ namespace NE4S
         [field: NonSerialized]
         public bool EnablePriority { get; set; } = false;
         [field: NonSerialized]
-        public int TicksPerBeat { get; set; } = 192;
+        public int TicksPerBeat { get; set; } = 192; /* SUSでのデフォルト値 */
 
         public MusicInfo() { }
     }

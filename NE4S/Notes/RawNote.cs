@@ -90,12 +90,12 @@ namespace NE4S.Notes
         // そのノーツ定義が小節を何分割していたかと分割したうちの何番目のノーツ定義だったかを別に保持する
         // 小節の拍子数が確定したならばその定義を持った拍子(Score)を渡してこのメソッドを呼び出すことで
         // Positionのtickを確定させる
-        public Position GetFinallyPosition(NE4S.Scores.Score score)
+        public Position GetFinallyPosition(Scores.Score score)
         {
             int scoreStartTick = score.StartTick;
             int scoreBeatNum = score.BeatNumer;
             int scoreBeatDenom = score.BeatDenom;
-            int newPosTick = scoreStartTick + BeatNum * ((192 / scoreBeatDenom) * scoreBeatNum) / BeatDen;
+            int newPosTick = scoreStartTick + BeatNum * ((Scores.ScoreInfo.MaxBeatDiv / scoreBeatDenom) * scoreBeatNum) / BeatDen;
             return new Position(Position.Lane, newPosTick);
         }
     }

@@ -21,7 +21,13 @@ namespace NE4S.Notes
             book = new Dictionary<int, HighSpeedTimeLine>();
         }
 
-        public bool Add(int defNumber, string define)
+        /// <summary>
+        /// 定義番号と定義内容から新規にHighSpeedTimeLineを作成し、リストに追加します。
+        /// </summary>
+        /// <param name="defNumber"></param>
+        /// <param name="define"></param>
+        /// <returns></returns>
+        public bool Add(int defNumber, string define, int ticksPerBeat)
         {
             HighSpeedTimeLine timeLine = new HighSpeedTimeLine(define, this);
             if (timeLine.Valid)

@@ -83,7 +83,7 @@ namespace NE4S.Component
             Regex rgxWE = new Regex(@"(\d+):([^\n]+)$"); ;
             Regex rgxRequest = new Regex(@"^([^\s]+)(?:\s+([^\s]+))*$");
 
-            // 譜面を行単位で読み込み
+            #region 譜面を行単位で読み込み
             using (StreamReader reader = File.OpenText(path))
             {
                 model.MusicInfo.ExportPath = (new Uri(path)).LocalPath;
@@ -331,6 +331,7 @@ namespace NE4S.Component
                         string commandArg = matchCommand.Groups[2].ToString();
                         string rawCommandArg = MyUtil.GetRawString(commandArg);
 
+                        #region ヘッダ（楽曲情報など）抽出
                         if (command == "TITLE")
                         {
                             model.MusicInfo.Title = rawCommandArg;
@@ -425,6 +426,9 @@ namespace NE4S.Component
                         {
                             model.MusicInfo.BackgroundFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
                         }
+                        #endregion
+
+                        #region コマンド抽出
                         else if (command == "REQUEST")
                         {
                             Match matchRequest = rgxRequest.Match(rawCommandArg);
@@ -529,6 +533,9 @@ namespace NE4S.Component
                                 baseMeasureCount = measureOffset;
                             }
                         }
+                        #endregion
+
+                        // どれにも当てはまらないデータの場合
                         else
                         {
                             message.Add("" + lineCount + "行 : SUSコマンドが無効です。");
@@ -543,10 +550,11 @@ namespace NE4S.Component
                     System.Console.WriteLine("Line {0} : SUS有効行ですが解析できませんでした。", lineCount);
                 }
             }
+            #endregion
 
-            // 読み込んだ拍数定義データを時間順にソートして...
+            // 読み込んだ拍数定義データを時間順にソート
             tpbApplys = tpbApplys.OrderBy((x) => x.Key).ToDictionary((x) => x.Key, (x) => x.Value);
-            // それをもとに小節を追加
+            #region 小節を追加
             {
                 int currentBeatNum = 4;
                 int currentBeatDen = 4;
@@ -575,6 +583,7 @@ namespace NE4S.Component
                     model.ScoreBook.Add(currentBeatNum, currentBeatDen);
                 }
             }
+            #endregion
 
             // ノーツのポジションを更新 これよりrawNotes[i].Position.Tickが使える
             for (int i = 0; i < rawNotes.Count; ++i)
@@ -607,7 +616,7 @@ namespace NE4S.Component
             }
             bpmApplys = bpmApplys.GroupBy((x) => x.Key.Position.Tick).Select((x) => x.First()).OrderBy((x) => x.Key.Position.Tick).ToDictionary((x) => x.Key, (x) => x.Value);
 
-            // ノーツを譜面に追加
+            #region ノーツを譜面に追加
             for (int i = 0; i < rawNotes.Count; ++i)
             {
                 switch (rawNotes[i].NoteType)
@@ -870,9 +879,10 @@ namespace NE4S.Component
                     default: break;
                 }
             }
+            #endregion
 
+            #region BPMを追加
             {
-                // BPM定義を譜面に追加
                 foreach (KeyValuePair<RawNote, int> bpmApply in bpmApplys)
                 {
                     for (int i = 0; i < model.NoteBook.AttributeNotes.Count; ++i)
@@ -889,8 +899,9 @@ namespace NE4S.Component
                     model.NoteBook.Add(bpm);
                 }
             }
+            #endregion
 
-#if true
+            #region ハイスピを追加
             {
                 /* ハイスピ指定を譜面に追加 */
                 /* とりあえず譜面全体に一律に適用されているハイスピ指定のみ画面に表示することにする */
@@ -924,7 +935,7 @@ namespace NE4S.Component
                 /* 0番は譜面全体(小節線込み)に適用されるハイスピ定義ということにする */
                 model.TimeLineBook.Add(0, timeLine);
             }
-#endif
+            #endregion
 
             /* 一応更新しておいた方が良いかな? */
             model.LaneBook.Clear(model.ScoreBook);

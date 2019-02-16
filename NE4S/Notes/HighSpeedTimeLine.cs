@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace NE4S.Notes
 {
+    /// <summary>
+    /// SUS上では1行で表現されるハイスピ定義を解析し、対応するHighSpeedノーツのリストを作成します
+    /// </summary>
     public class HighSpeedTimeLine : List<HighSpeed>
     {
         public bool Valid { get; protected set; } = false;
@@ -145,7 +148,7 @@ namespace NE4S.Notes
             for (int j = 0; j < timeLine.Count; ++j)
             {
                 int i;
-                for (i = 0; i < this.Count; ++i)
+                for (i = 0; i < Count; ++i)
                 {
                     if (this[i].Position.Equals(timeLine[j].Position))
                     {
@@ -153,7 +156,7 @@ namespace NE4S.Notes
                         this[i] = timeLine[j];
                     }
                 }
-                if (i >= this.Count)
+                if (i >= Count)
                 {
                     Add(timeLine[j]);
                 }
@@ -169,7 +172,7 @@ namespace NE4S.Notes
                 return false;
             }
 
-            for (int i = 0; i < this.Count; ++i)
+            for (int i = 0; i < Count; ++i)
             {
                 if (this[i].Position.Lane == -1)
                 {
@@ -177,7 +180,7 @@ namespace NE4S.Notes
                     continue;
                 }
 
-                if (scoreBook.At(this[i].Position.Lane) is null)
+                if (scoreBook.Find(x => x.StartTick <= this[i].Position.Tick && this[i].Position.Tick <= x.EndTick) is null)
                 {
                     /* あなたの属する小節ないみたいですけど…… */
                     return false;
