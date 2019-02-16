@@ -149,7 +149,6 @@ namespace NE4S.Notes
 
         /// <summary>
         /// 与えられた座標がスライド帯の上に乗っているか判定します
-        /// ただしベジェスライド上では判定されません
         /// </summary>
         /// <param name="locationVirtual"></param>
         /// <param name="laneBook"></param>
@@ -223,7 +222,7 @@ namespace NE4S.Notes
         }
 
         /// <summary>
-        /// SlideCurveの当たり判定（未完成）
+        /// SlideCurveの当たり判定
         /// </summary>
         /// <param name="past"></param>
         /// <param name="curve"></param>
@@ -242,10 +241,10 @@ namespace NE4S.Notes
                     if (graphicsPath.IsVisible(locationVirtual)) return true;
                     else
                     {
-                        lane = laneBook.Next(lane);
-                        graphicsPath.PathPoints.ToList().ForEach(x => x.Add(
+                        graphicsPath.Translate(
                             ScoreLane.scoreWidth + ScoreLane.Margin.Left + ScorePanel.Margin.Right + ScorePanel.Margin.Left + ScoreLane.Margin.Right,
-                            lane.HitRect.Height));
+                            lane.HitRect.Height);
+                        lane = laneBook.Next(lane);
                     }
                 }
             }

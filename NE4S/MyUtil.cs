@@ -131,6 +131,21 @@ namespace NE4S
         }
 
         /// <summary>
+        /// GraphicsPathを平行移動します。
+        /// </summary>
+        /// <param name="graphicsPath"></param>
+        /// <param name="dx"></param>
+        /// <param name="dy"></param>
+        /// <returns></returns>
+        public static GraphicsPath Translate(this GraphicsPath graphicsPath, float dx, float dy)
+        {
+            var mat = new Matrix();
+            mat.Translate(dx, dy, MatrixOrder.Append);
+            graphicsPath.Transform(mat);
+            return graphicsPath;
+        }
+
+        /// <summary>
         /// いまのところSlideカーブでの当たり判定用パスを作るためのみに使う
         /// 汎用性を高めればDrawSlideCurveメソッドとかをスッキリできそう
         /// </summary>
