@@ -35,6 +35,7 @@
             this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiImport = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiExport = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiQuit = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,6 +83,7 @@
             this.tsbNew = new System.Windows.Forms.ToolStripButton();
             this.tsbOpen = new System.Windows.Forms.ToolStripButton();
             this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.tsbImport = new System.Windows.Forms.ToolStripButton();
             this.tsbExport = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbUndo = new System.Windows.Forms.ToolStripButton();
@@ -104,8 +106,6 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
-            this.tsmiImport = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsbImport = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.tabNoteButton.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -172,6 +172,13 @@
             | System.Windows.Forms.Keys.S)));
             this.tsmiSaveAs.Size = new System.Drawing.Size(257, 22);
             this.tsmiSaveAs.Text = "名前を付けて保存(&A)...";
+            // 
+            // tsmiImport
+            // 
+            this.tsmiImport.Name = "tsmiImport";
+            this.tsmiImport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.tsmiImport.Size = new System.Drawing.Size(257, 22);
+            this.tsmiImport.Text = "インポート(&I)...";
             // 
             // tsmiExport
             // 
@@ -582,6 +589,16 @@
             this.tsbSave.Size = new System.Drawing.Size(23, 22);
             this.tsbSave.Text = "上書き保存";
             // 
+            // tsbImport
+            // 
+            this.tsbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbImport.Image = global::NE4S.Properties.Resources.ImportFile_16x;
+            this.tsbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbImport.Name = "tsbImport";
+            this.tsbImport.Size = new System.Drawing.Size(23, 22);
+            this.tsbImport.Text = "toolStripButton1";
+            this.tsbImport.ToolTipText = "インポート";
+            // 
             // tsbExport
             // 
             this.tsbExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -706,7 +723,6 @@
             "48",
             "64",
             "96",
-            "128",
             "192"});
             this.tscbBeat.Name = "tscbBeat";
             this.tscbBeat.Size = new System.Drawing.Size(75, 25);
@@ -763,23 +779,6 @@
             this.tslRealNotes.Text = "Total notes (real) : 0";
             this.tslRealNotes.ToolTipText = "エディタ上で配置されているノーツオブジェクトの実際の個数";
             this.tslRealNotes.Visible = false;
-            // 
-            // tsmiImport
-            // 
-            this.tsmiImport.Name = "tsmiImport";
-            this.tsmiImport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.tsmiImport.Size = new System.Drawing.Size(257, 22);
-            this.tsmiImport.Text = "インポート(&I)...";
-            // 
-            // tsbImport
-            // 
-            this.tsbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbImport.Image = global::NE4S.Properties.Resources.ImportFile_16x;
-            this.tsbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbImport.Name = "tsbImport";
-            this.tsbImport.Size = new System.Drawing.Size(23, 22);
-            this.tsbImport.Text = "toolStripButton1";
-            this.tsbImport.ToolTipText = "インポート";
             // 
             // MainForm
             // 

@@ -29,7 +29,7 @@ namespace NE4S.Notes
         /// <returns></returns>
         public bool Add(int defNumber, string define, int ticksPerBeat)
         {
-            HighSpeedTimeLine timeLine = new HighSpeedTimeLine(define, this);
+            HighSpeedTimeLine timeLine = new HighSpeedTimeLine(define, this, ticksPerBeat);
             if (timeLine.Valid)
             {
                 Add(defNumber, timeLine);

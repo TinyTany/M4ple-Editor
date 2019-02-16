@@ -25,12 +25,12 @@ namespace NE4S.Notes
 
         public HighSpeedTimeLine() { }
 
-        public HighSpeedTimeLine(string define, HighSpeedTimeLineBook timeLineBook)
+        public HighSpeedTimeLine(string define, HighSpeedTimeLineBook timeLineBook, int ticksPerBeat)
         {
-            Add(define, timeLineBook);
+            Add(define, timeLineBook, ticksPerBeat);
         }
 
-        public bool Add(string define, HighSpeedTimeLineBook timeLineBook)
+        public bool Add(string define, HighSpeedTimeLineBook timeLineBook, int susTicksPerBeat)
         {
             Valid = false;
             if (define == null || timeLineBook == null)
@@ -73,7 +73,6 @@ namespace NE4S.Notes
 
                         int measure = MyUtil.ToInt(timeLineMatch.Groups[3].ToString());
                         int tick = MyUtil.ToInt(timeLineMatch.Groups[4].ToString());
-                        double susTicksPerBeat = 192.0; /* こいつは本来グローバル変数(SUSから指定できる) */
                         double m4pleTicksPerBeat = 48.0;
 
                         /* measure,tick管理クソみたいになってるけどﾕﾙｼﾃ */

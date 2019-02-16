@@ -113,6 +113,7 @@ namespace NE4S
                 // NOTE: tsmiImport.Clickも同じ
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 selectedPanel.Import();
+                UpdateTextOfTabAndForm(false);
             };
             tsbExport.Click += (s, e) =>
             {
@@ -197,6 +198,7 @@ namespace NE4S
                 // NOTE: tsbImportも同じ
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
                 selectedPanel.Import();
+                UpdateTextOfTabAndForm(false);
             };
             tsmiExport.Click += (s, e) =>
             {

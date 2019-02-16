@@ -180,12 +180,14 @@ namespace NE4S.Scores
             }
 
             List<string> message = new List<string>();
-            importData = susLoader.ShowDialog(message);
+            string susFileName = "";
+            importData = susLoader.ShowDialog(message, ref susFileName);
             if (importData == null)
             {
                 return false;
             }
 
+            dataIO.FileName = susFileName;
             if (message.Count > 0)
             {
                 int maxCount = 8;

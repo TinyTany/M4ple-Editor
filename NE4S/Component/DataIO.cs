@@ -11,7 +11,7 @@ namespace NE4S.Component
     {
         public DataSaver DataSaver { get; private set; }
         public DataLoader DataLoader { get; private set; }
-        public string FileName { get; private set; } = null;
+        public string FileName { get; set; } = null;
 
         /// <summary>
         /// 譜面を新規作成する際にもこのコンストラクタを呼んでください

@@ -32,7 +32,7 @@ namespace NE4S.Component
             };
         }
 
-        public Model ShowDialog(List<string> message)
+        public Model ShowDialog(List<string> message, ref string susFileName)
         {
             Model model = null;
             if (Directory.Exists(Status.ExportDialogDirectory))
@@ -42,6 +42,7 @@ namespace NE4S.Component
             }
             if (susSelectDialog.ShowDialog() == DialogResult.OK)
             {
+                susFileName = Path.GetFileName(susSelectDialog.FileName);
                 model = LoadSusData(message);
                 if (model == null)
                 {
@@ -77,7 +78,7 @@ namespace NE4S.Component
             string dirPath = Path.GetDirectoryName((new Uri(path)).LocalPath);
 
             Regex rgxNotes = new Regex(@"^#(\d{3})(\w)(\w)(\w?)\:\s*(\w\w)+$");
-            Regex rgxDef = new Regex(@"^#(BPM|TIL|ATR)(\w\w)\:\s*([^\n]+)$");
+            Regex rgxDef = new Regex(@"^#(BPM|TIL|ATR)(\w\w)\:?\s*([^\n]+)$");
             Regex rgxApply = new Regex(@"^#(\d{3})0(2)\:\s*([^\n]+)$");
             Regex rgxCommand = new Regex(@"^#(\w+)(?:\s+([^\n]+$))?");
             Regex rgxWE = new Regex(@"(\d+):([^\n]+)$"); ;
@@ -309,7 +310,7 @@ namespace NE4S.Component
                         }
                         else if (type == "TIL")
                         {
-                            if (!model.TimeLineBook.Add(index, MyUtil.GetRawString(arg)))
+                            if (!model.TimeLineBook.Add(index, MyUtil.GetRawString(arg), model.MusicInfo.TicksPerBeat))
                             {
                                 message.Add("" + lineCount + "行 : ハイスピードタイムラインの解析に失敗しました。");
                             }
@@ -895,6 +896,12 @@ namespace NE4S.Component
                         }
                     }
 
+                    // NOTE: BPM定義の書式がミスってたときにこれで弾けるけどこれいる？
+                    if (!bpmDefs.ContainsKey(bpmApply.Value))
+                    {
+                        MessageBox.Show("BPM定義が不正です。\r\nBPMノーツが読み込まれないことがあります。", "インポート", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        continue;
+                    }
                     BPM bpm = new BPM(bpmApply.Key.Position, new PointF(), bpmDefs[bpmApply.Value], - 1);
                     model.NoteBook.Add(bpm);
                 }
