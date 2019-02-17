@@ -65,6 +65,11 @@ namespace NE4S.Component
 
         protected override void PreviewBox_MouseDown(object sender, MouseEventArgs e)
         {
+            // 左クリックのときだけ受け付ける
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
             isMousePressed = true;
             pressedLocation = e.Location;
             if (IsSelected)

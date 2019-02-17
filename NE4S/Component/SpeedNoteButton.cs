@@ -18,12 +18,7 @@ namespace NE4S.Component
             base.PreviewBox_MouseDown(sender, e);
             if (e.Button == MouseButtons.Right)
             {
-                new SetValueCustomForm(this)
-                {
-                    Text = "HighSpeed指定",
-                    LabelMainText = "HighSpeed",
-                    LabelSubText = "x"
-                }.ShowDialog();
+                new SetValueCustomForm(this).ShowDialog();
             }
         }
 

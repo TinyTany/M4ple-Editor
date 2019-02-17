@@ -18,12 +18,7 @@ namespace NE4S.Component
             base.PreviewBox_MouseDown(sender, e);
             if (e.Button == MouseButtons.Right)
             {
-                new SetValueCustomForm(this)
-                {
-                    Text = "BPM指定",
-                    LabelMainText = "BPM",
-                    LabelSubText = ""
-                }.ShowDialog();
+                new SetValueCustomForm(this).ShowDialog();
             }
         }
 

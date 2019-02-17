@@ -32,11 +32,11 @@ namespace NE4S.Component
             //数値の変更だけ
             Add(new BPMNoteButton(NoteType.BPM, UpdateSelectedButton)
             {
-                ValueMin = 1, ValueMax = 99999, CurrentValue = 120
+                ValueMin = NoteValue.BPMMIN, ValueMax = NoteValue.BPMMAX, CurrentValue = 120
             });
             Add(new SpeedNoteButton(NoteType.HIGHSPEED, UpdateSelectedButton)
             {
-                ValueMin = -10000, ValueMax = 10000, CurrentValue = 1
+                ValueMin = NoteValue.HSMIN, ValueMax = NoteValue.HSMAX, CurrentValue = 1
             });
             //
             this.First().SetSelected();

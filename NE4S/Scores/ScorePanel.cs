@@ -508,6 +508,7 @@ namespace NE4S.Scores
 			}
 #endif
             #endregion
+            #region 左クリック
             if (e.Button == MouseButtons.Left)
 			{
                 int noteArea = NoteArea.NONE;
@@ -581,6 +582,27 @@ namespace NE4S.Scores
 						break;
 				}
 			}
+            #endregion
+            #region 右クリック
+            else if (e.Button == MouseButtons.Right)
+            {
+                var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
+                if (Status.Mode == Mode.EDIT && selectedNote is AttributeNote attributeNote)
+                {
+                    float noteValue = attributeNote.NoteValue;
+                    new SetValueCustomForm(attributeNote).ShowDialog();
+                    if (attributeNote.NoteValue != noteValue)
+                    {
+                        OperationManager.AddOperation(new ChangeNoteValueOperation(
+                            attributeNote,
+                            noteValue,
+                            attributeNote.NoteValue));
+                    }
+                    pBox.Cursor = Cursors.Default;
+                    Status.IsMousePressed = false;
+                }
+            }
+            #endregion
             if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 		}
 
@@ -1000,9 +1022,37 @@ namespace NE4S.Scores
                 #endregion
                 #region AttributeNote
                 case NoteType.BPM:
+                    // すでに同一TickにBPMノーツが配置されていた場合は、今置こうとしているBPMノーツの値で上書きをする
+                    var note = model.NoteBook.AttributeNotes.Find(x => x.Position.Tick == position.Tick && x is BPM);
+                    if (note != null)
+                    {
+                        if (note.NoteValue != Status.CurrentValue)
+                        {
+                            OperationManager.AddOperationAndInvoke(new ChangeNoteValueOperation(
+                            note,
+                            note.NoteValue,
+                            Status.CurrentValue));
+                        }
+                        else { }
+                        return;
+                    }
                     newNote = new BPM(position, locationVirtual, Status.CurrentValue, lane.Index);
                     break;
                 case NoteType.HIGHSPEED:
+                    // すでに同一TickにHighSpeedノーツが配置されていた場合は、今置こうとしているBPMノーツの値で上書きをする
+                    note = model.NoteBook.AttributeNotes.Find(x => x.Position.Tick == position.Tick && x is HighSpeed);
+                    if (note != null)
+                    {
+                        if (note.NoteValue != Status.CurrentValue)
+                        {
+                            OperationManager.AddOperationAndInvoke(new ChangeNoteValueOperation(
+                            note,
+                            note.NoteValue,
+                            Status.CurrentValue));
+                        }
+                        else { }
+                        return;
+                    }
                     newNote = new HighSpeed(position, locationVirtual, Status.CurrentValue, lane.Index);
                     break;
                 #endregion
@@ -1013,7 +1063,6 @@ namespace NE4S.Scores
             {
                 OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
             }
-            return;
         }
 
         #region 座標変換

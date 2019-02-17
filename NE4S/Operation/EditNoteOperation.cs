@@ -103,6 +103,21 @@ namespace NE4S.Operation
         }
     }
 
+    public class ChangeNoteValueOperation : Operation
+    {
+        public ChangeNoteValueOperation(AttributeNote note, float valueBefore, float valueAfter)
+        {
+            Invoke += () =>
+            {
+                note.NoteValue = valueAfter;
+            };
+            Undo += () =>
+            {
+                note.NoteValue = valueBefore;
+            };
+        }
+    }
+
     public class DivideSlideOperation : Operation
     {
         public DivideSlideOperation(Slide slide, Note stepPast, Note stepFuture)

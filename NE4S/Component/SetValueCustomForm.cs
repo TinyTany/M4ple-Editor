@@ -7,46 +7,86 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NE4S.Notes;
 
 namespace NE4S.Component
 {
     public partial class SetValueCustomForm : Form
     {
-        private ValueNoteButton valueNoteButton = null;
-
         public SetValueCustomForm(ValueNoteButton valueNoteButton)
         {
             InitializeComponent();
-            buttonOK.Click += ButtonOK_Click;
-            buttonCancel.Click += ButtonCancel_Click;
-            this.valueNoteButton = valueNoteButton;
+            buttonOK.Click += (s, e) =>
+            {
+                Status.CurrentValue = valueNoteButton.CurrentValue = (float)numericUpDown1.Value.MyRound();
+                valueNoteButton.Refresh();
+                Close();
+            };
+            buttonCancel.Click += (s, e) =>
+            {
+                Close();
+            };
             numericUpDown1.Minimum = (decimal)valueNoteButton.ValueMin;
             numericUpDown1.Maximum = (decimal)valueNoteButton.ValueMax;
             numericUpDown1.Value = (decimal)valueNoteButton.CurrentValue;
+            if (valueNoteButton is BPMNoteButton)
+            {
+                SetLabelText(0);
+            }
+            else if (valueNoteButton is SpeedNoteButton)
+            {
+                SetLabelText(1);
+            }
         }
 
-        public string LabelMainText
+        public SetValueCustomForm(AttributeNote attributeNote)
         {
-            set { labelMain.Text = value; }
+            InitializeComponent();
+            buttonOK.Click += (s, e) =>
+            {
+                attributeNote.NoteValue = (float)numericUpDown1.Value.MyRound();
+                Close();
+            };
+            buttonCancel.Click += (s, e) =>
+            {
+                Close();
+            };
+            if (attributeNote is BPM)
+            {
+                numericUpDown1.Minimum = (decimal)Define.NoteValue.BPMMIN;
+                numericUpDown1.Maximum = (decimal)Define.NoteValue.BPMMAX;
+                SetLabelText(0);
+            }
+            else if (attributeNote is HighSpeed)
+            {
+                numericUpDown1.Minimum = (decimal)Define.NoteValue.HSMIN;
+                numericUpDown1.Maximum = (decimal)Define.NoteValue.HSMAX;
+                SetLabelText(1);
+            }
+            numericUpDown1.Value = (decimal)attributeNote.NoteValue;
         }
 
-        public string LabelSubText
+        /// <summary>
+        /// BPM: 0, HISPEED: 1
+        /// </summary>
+        /// <param name="type"></param>
+        private void SetLabelText(int type)
         {
-            set { labelSub.Text = value; }
-        }
-
-        private void ButtonOK_Click(object sender, EventArgs e)
-        {
-            Status.CurrentValue = valueNoteButton.CurrentValue = (float)numericUpDown1.Value.MyRound();
-            valueNoteButton.Refresh();
-            Close();
-            Dispose();
-        }
-
-        private void ButtonCancel_Click(object sender, EventArgs e)
-        {
-            Close();
-            Dispose();
+            switch (type)
+            {
+                // BPM
+                case 0:
+                    Text = "BPM指定";
+                    labelMain.Text = "BPM";
+                    labelSub.Text = "";
+                    break;
+                // HISPEED
+                case 1:
+                    Text = "HighSpeed指定";
+                    labelMain.Text = "HighSpeed";
+                    labelSub.Text = "x";
+                    break;
+            }
         }
     }
 }

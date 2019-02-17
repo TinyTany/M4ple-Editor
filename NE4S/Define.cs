@@ -48,4 +48,10 @@ namespace NE4S.Define
     {
         public const int SMALL = 0, MIDDLE = 1, BIG = 2;
     }
+
+    public struct NoteValue
+    {
+        public const float BPMMIN = 1, BPMMAX = 99999999;
+        public const float HSMIN = -9999999, HSMAX = 9999999;
+    }
 }

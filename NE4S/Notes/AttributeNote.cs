@@ -12,7 +12,7 @@ namespace NE4S.Notes
     [Serializable()]
     public class AttributeNote : Note
     {
-        public float NoteValue { get; protected set; }
+        public float NoteValue { get; set; }
 
         public AttributeNote(Position position, PointF location, float noteValue, int laneIndex)
         {
