@@ -196,6 +196,11 @@ namespace NE4S.Component
             });
         }
 
+        /// <summary>
+        /// 選択矩形の左上の位置が引数のpositionとなるように移動します
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="laneBook"></param>
         public void Relocate(Position position, LaneBook laneBook)
         {
             if (StartPosition == null || EndPosition == null || position == null) return;

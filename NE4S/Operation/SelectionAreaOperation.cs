@@ -61,9 +61,12 @@ namespace NE4S.Operation
         /// <param name="position"></param>
         public PasteNotesOperation(Model model, SelectionArea selectionArea, Position position)
         {
+            Position pastPosition = null;
+
             if (Clipboard.GetDataObject().GetData(typeof(SelectionArea)) is SelectionArea data)
             {
                 this.selectionArea = data;
+                pastPosition = data.TopLeftPosition;
             }
 
             Invoke += () =>
@@ -110,8 +113,8 @@ namespace NE4S.Operation
             };
             Undo += () =>
             {
-                // TODO: Undo後Redoを繰り返すとノーツが再配置される位置がずれていくのでそれを改善する
-                //       多分矩形の位置変更をUndoしてないせい
+                if (selectionArea == null) return;
+                selectionArea.Relocate(pastPosition, model.LaneBook);
                 new ClearAreaNotesOperation(model, selectionArea).Invoke();
             };
         }
