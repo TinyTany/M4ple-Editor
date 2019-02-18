@@ -96,24 +96,24 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
+        public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
-            base.Draw(e, drawLocation, laneBook);
+            base.Draw(g, drawLocation, laneBook);
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 if(list.IndexOf(note) < list.Count - 1)
                 {
                     Note next = list.Next(note);
-                    DrawHoldLine(e, note, next, drawLocation, laneBook);
+                    DrawHoldLine(g, note, next, drawLocation, laneBook);
                 }
                 //クリッピングの解除を忘れないこと
-                e.Graphics.ResetClip();
-                note.Draw(e, drawLocation);
+                g.ResetClip();
+                note.Draw(g, drawLocation);
             }
         }
 
-        private static void DrawHoldLine(PaintEventArgs e, Note past, Note future, Point drawLocation, LaneBook laneBook)
+        private static void DrawHoldLine(Graphics g, Note past, Note future, Point drawLocation, LaneBook laneBook)
         {
             float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
             //グラデーション矩形
@@ -143,11 +143,11 @@ namespace NE4S.Notes
                             scoreLane.LaneRect.Y - drawLocation.Y,
                             scoreLane.LaneRect.Width,
                             scoreLane.LaneRect.Height);
-                        e.Graphics.Clip = new Region(clipRect);
+                        g.Clip = new Region(clipRect);
                         using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                         {
                             myBrush.InterpolationColors = colorBlend;
-                            e.Graphics.FillPath(myBrush, graphicsPath);
+                            g.FillPath(myBrush, graphicsPath);
                         }
                     }
                     // インクリメント

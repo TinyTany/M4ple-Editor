@@ -240,7 +240,7 @@ namespace NE4S.Component
             });
         }
 
-        public void Draw(PaintEventArgs e, LaneBook laneBook, Point originLocation)
+        public void Draw(Graphics g, LaneBook laneBook, Point originLocation)
         {
             if (StartPosition == null || EndPosition == null)
             {
@@ -265,8 +265,8 @@ namespace NE4S.Component
                 pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
             using (GraphicsPath graphicsPath = new GraphicsPath())
             {
-                var smoothingMode = e.Graphics.SmoothingMode;
-                e.Graphics.SmoothingMode = SmoothingMode.Default;
+                var smoothingMode = g.SmoothingMode;
+                g.SmoothingMode = SmoothingMode.Default;
                 var itrLane = pastLane;
                 for (int i = 0; i <= passingLanes; ++i, itrLane = laneBook.Next(itrLane))
                 {
@@ -283,8 +283,8 @@ namespace NE4S.Component
                                 //HACK: 選択領域矩形が少し大きいので見切れないようにする
                                 itrLane.LaneRect.Width + 1,
                                 itrLane.LaneRect.Height + 5);
-                            e.Graphics.Clip = new Region(clipRect);
-                            e.Graphics.DrawPath(pen, graphicsPath);
+                            g.Clip = new Region(clipRect);
+                            g.DrawPath(pen, graphicsPath);
                         }
                     }
                     topLeft = topLeft.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
@@ -293,9 +293,9 @@ namespace NE4S.Component
                     bottomRight = bottomRight.Add(ScoreLane.Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right, itrLane.LaneRect.Height);
                     graphicsPath.ClearMarkers();
                 }
-                e.Graphics.SmoothingMode = smoothingMode;
+                g.SmoothingMode = smoothingMode;
             }
-            e.Graphics.ResetClip();
+            g.ResetClip();
         }
     }
 }

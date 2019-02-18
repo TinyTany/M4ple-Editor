@@ -106,9 +106,9 @@ namespace NE4S
 			LaneBook.FillLane(begin);
         }
 
-        public void PaintNote(PaintEventArgs e, Point drawLocation)
+        public void PaintNote(Graphics g, Point drawLocation)
         {
-            NoteBook.Paint(e, drawLocation, LaneBook);
+            NoteBook.Paint(g, drawLocation, LaneBook);
         }
 
         public Slide SelectedSlide(PointF location)

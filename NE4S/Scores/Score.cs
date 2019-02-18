@@ -81,7 +81,7 @@ namespace NE4S.Scores
         /// <param name="drawPosX">描画位置の右上のX座標</param>
         /// <param name="drawPosY">描画位置の右上のY座標</param>
         /// <param name="range">描画するScoreの範囲</param>
-        public void PaintScore(PaintEventArgs e, float drawPosX, float drawPosY, Range range)
+        public void PaintScore(Graphics g, float drawPosX, float drawPosY, Range range)
         {
             //レーンを区切る縦線を描画
             for (int i = 0; i <= ScoreInfo.Lanes; ++i)
@@ -91,7 +91,7 @@ namespace NE4S.Scores
                     //副線の描画
                     using (Pen myPen = new Pen(laneSub, 1))
                     {
-                        e.Graphics.DrawLine(
+                        g.DrawLine(
                         myPen,
                         drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY,
@@ -105,7 +105,7 @@ namespace NE4S.Scores
                     //主線の描画
                     using(Pen myPen = new Pen(laneMain, 1))
                     {
-                        e.Graphics.DrawLine(
+                        g.DrawLine(
                         myPen,
                         drawPosX + i * ScoreInfo.MinLaneWidth,
                         drawPosY,
@@ -121,7 +121,7 @@ namespace NE4S.Scores
                 //1拍目に小節開始の黄色線を描画
                 using (Pen myPen = new Pen(measureBorder, 1))
                 {
-                    e.Graphics.DrawLine(
+                    g.DrawLine(
                         myPen,
                         drawPosX,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer,
@@ -134,8 +134,8 @@ namespace NE4S.Scores
                 {
                     // 小節数を描画
                     float dX = -23.5f, dY = -9;
-                    e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                    e.Graphics.DrawString(
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+                    g.DrawString(
                     (Index + 1).ToString().PadLeft(3, '0'),
                     myFont,
                     Brushes.White,
@@ -146,7 +146,7 @@ namespace NE4S.Scores
                     if (IsBeatVisible)
                     {
                         dX -= 30;
-                        e.Graphics.DrawString(
+                        g.DrawString(
                         BeatNumer + "/" + BeatDenom,
                         myFont,
                         Brushes.Orange,
@@ -161,7 +161,7 @@ namespace NE4S.Scores
                 //白線を描画
                 using (Pen myPen = new Pen(laneMain, 1))
                 {
-                    e.Graphics.DrawLine(
+                    g.DrawLine(
                         myPen,
                         drawPosX,
                         drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer,
@@ -175,7 +175,7 @@ namespace NE4S.Scores
             {
                 using (Pen myPen = new Pen(laneMain, 1))
                 {
-                    e.Graphics.DrawLine(
+                    g.DrawLine(
                         myPen,
                         drawPosX,
                         drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / BeatDenom,

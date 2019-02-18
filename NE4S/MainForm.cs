@@ -534,11 +534,12 @@ namespace NE4S
 
         private void Score_Paint(object sender, PaintEventArgs e)
         {
+            var selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
             if (!Status.IsEconomyMode)
             {
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             }
-            (tabScore.SelectedTab as TabPageEx).ScorePanel.PaintPanel(e);
+            selectedPanel.PaintPanel(e.Graphics);
         }
 
         private void Score_Scroll(object sender, ScrollEventArgs e)

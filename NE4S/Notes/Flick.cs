@@ -23,7 +23,7 @@ namespace NE4S.Notes
 		{
 		}
 
-		public override void Draw(PaintEventArgs e, Point drawLocation)
+		public override void Draw(Graphics g, Point drawLocation)
 		{
             RectangleF drawRect = new RectangleF(
                 noteRect.X - drawLocation.X + adjustNoteRect.X,
@@ -32,19 +32,19 @@ namespace NE4S.Notes
                 noteRect.Height);
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Gray, Color.DimGray))
             {
-                e.Graphics.FillRectangle(gradientBrush, drawRect);
+                g.FillRectangle(gradientBrush, drawRect);
             }
             using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.SkyBlue, Color.DeepSkyBlue))
             {
-                e.Graphics.FillRectangle(gradientBrush, new RectangleF(drawRect.X + noteRect.Width / 4f, drawRect.Y, noteRect.Width / 2f, noteRect.Height));
+                g.FillRectangle(gradientBrush, new RectangleF(drawRect.X + noteRect.Width / 4f, drawRect.Y, noteRect.Width / 2f, noteRect.Height));
             }
             using (Pen pen = new Pen(Color.White, 1))
             {
-                e.Graphics.DrawLine(pen, new PointF(drawRect.X + noteRect.Width / 4f + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width * 3 / 4f - 4, drawRect.Y + 2));
+                g.DrawLine(pen, new PointF(drawRect.X + noteRect.Width / 4f + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width * 3 / 4f - 4, drawRect.Y + 2));
             }
             using (Pen pen = new Pen(Color.LightGray, 1))
             {
-                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+                g.DrawPath(pen, drawRect.RoundedPath());
             }
         }
 

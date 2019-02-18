@@ -11,7 +11,7 @@ namespace NE4S.Component
     class ManualGraphics : IDisposable
     {
         private readonly BufferedGraphics bufferedGraphics;
-        private readonly Control control;
+        private readonly PictureBox pictureBox;
 
         public Graphics Graphics
         {
@@ -21,17 +21,24 @@ namespace NE4S.Component
             }
         }
 
-        public ManualGraphics(Control control)
+        public ManualGraphics(PictureBox pictureBox)
         {
-            this.control = control;
+            this.pictureBox = pictureBox;
             BufferedGraphicsContext currentContext;
             currentContext = BufferedGraphicsManager.Current;
-            bufferedGraphics = currentContext.Allocate(control.CreateGraphics(), control.DisplayRectangle);
+            pictureBox.Image = new Bitmap(pictureBox.Width, pictureBox.Height);
+            bufferedGraphics = currentContext.Allocate(Graphics.FromImage(pictureBox.Image), pictureBox.DisplayRectangle);
+        }
+
+        public void Clear()
+        {
+            bufferedGraphics.Graphics.Clear(pictureBox.BackColor);
         }
 
         public void Refresh()
         {
             bufferedGraphics?.Render();
+            
         }
 
         #region IDisposable Support

@@ -39,14 +39,14 @@ namespace NE4S.Notes
             return graphicsPath;
         }
 
-        public override void Draw(PaintEventArgs e, Point drawLocation)
+        public override void Draw(Graphics g, Point drawLocation)
         {
             using (GraphicsPath graphicsPath = GetAirPath(drawLocation))
             using (SolidBrush brush = new SolidBrush(airDownColor))
             using (Pen pen = new Pen(Color.White, borderWidth))
             {
-                e.Graphics.DrawPath(pen, graphicsPath);
-                e.Graphics.FillPath(brush, graphicsPath);
+                g.DrawPath(pen, graphicsPath);
+                g.FillPath(brush, graphicsPath);
             }
         }
     }

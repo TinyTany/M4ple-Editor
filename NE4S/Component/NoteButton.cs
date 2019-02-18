@@ -173,22 +173,22 @@ namespace NE4S.Component
                 #region Air系の描画
                 //HACK: いろいろとコードがガバガバなので後で直してもええんやで...
                 case NoteType.AIRUPL:
-                    new AirUpL(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, new Point());
+                    new AirUpL(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e.Graphics, new Point());
                     break;
                 case NoteType.AIRUPC:
-                    new AirUpC(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, new Point());
+                    new AirUpC(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e.Graphics, new Point());
                     break;
                 case NoteType.AIRUPR:
-                    new AirUpR(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, new Point());
+                    new AirUpR(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e.Graphics, new Point());
                     break;
                 case NoteType.AIRDOWNL:
-                    new AirDownL(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, new Point());
+                    new AirDownL(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e.Graphics, new Point());
                     break;
                 case NoteType.AIRDOWNC:
-                    new AirDownC(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, new Point());
+                    new AirDownC(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e.Graphics, new Point());
                     break;
                 case NoteType.AIRDOWNR:
-                    new AirDownR(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e, new Point());
+                    new AirDownR(8, null, new PointF(previewBox.Width / 2f - 4 * 12, previewBox.Height / 2f + 15), -1).Draw(e.Graphics, new Point());
                     break;
                 #endregion
                 case NoteType.AIRHOLD:

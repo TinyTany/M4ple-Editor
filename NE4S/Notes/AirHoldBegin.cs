@@ -58,7 +58,7 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, Point drawLocation)
+        public override void Draw(Graphics g, Point drawLocation)
         {
 #if DEBUG
             RectangleF drawRect = new RectangleF(
@@ -69,7 +69,7 @@ namespace NE4S.Notes
 
             using (Pen pen = new Pen(Color.LightGray, 1))
             {
-                e.Graphics.DrawPath(pen, drawRect.RoundedPath());
+                g.DrawPath(pen, drawRect.RoundedPath());
             }
 #endif
             return;

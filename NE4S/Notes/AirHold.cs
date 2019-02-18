@@ -199,9 +199,9 @@ namespace NE4S.Notes
             return;
         }
 
-        public override void Draw(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
+        public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
-            base.Draw(e, drawLocation, laneBook);
+            base.Draw(g, drawLocation, laneBook);
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
@@ -218,15 +218,15 @@ namespace NE4S.Notes
                     {
                         continue;
                     }
-                    DrawAirHoldLine(e, note, next, drawLocation, laneBook);
+                    DrawAirHoldLine(g, note, next, drawLocation, laneBook);
                 }
                 //クリッピングの解除を忘れないこと
-                e.Graphics.ResetClip();
-                note.Draw(e, drawLocation);
+                g.ResetClip();
+                note.Draw(g, drawLocation);
             }
         }
 
-        private static void DrawAirHoldLine(PaintEventArgs e, Note past, Note future, Point drawLocation, LaneBook laneBook)
+        private static void DrawAirHoldLine(Graphics g, Note past, Note future, Point drawLocation, LaneBook laneBook)
         {
             float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
             PointF drawOffset = new PointF(past.Width / 2f - lineWidth / 2f, LongNote.drawOffset.Y);
@@ -247,7 +247,7 @@ namespace NE4S.Notes
                     graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
                     using (SolidBrush myBrush = new SolidBrush(lineColor))
                     {
-                        e.Graphics.FillPath(myBrush, graphicsPath);
+                        g.FillPath(myBrush, graphicsPath);
                     }
                 }
             }
@@ -274,11 +274,11 @@ namespace NE4S.Notes
                             scoreLane.LaneRect.Y - drawLocation.Y,
                             scoreLane.LaneRect.Width, 
                             scoreLane.LaneRect.Height);
-                        e.Graphics.Clip = new Region(clipRect);
+                        g.Clip = new Region(clipRect);
                     }
                     using (SolidBrush myBrush = new SolidBrush(lineColor))
                     {
-                        e.Graphics.FillPath(myBrush, graphicsPath);
+                        g.FillPath(myBrush, graphicsPath);
                     }
                 }
                 #endregion
@@ -301,10 +301,10 @@ namespace NE4S.Notes
                         {
                             graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
                             RectangleF clipRect = new RectangleF(curLane.LaneRect.Location.Sub(drawLocation), curLane.LaneRect.Size);
-                            e.Graphics.Clip = new Region(clipRect);
+                            g.Clip = new Region(clipRect);
                             using (SolidBrush myBrush = new SolidBrush(lineColor))
                             {
-                                e.Graphics.FillPath(myBrush, graphicsPath);
+                                g.FillPath(myBrush, graphicsPath);
                             }
                         }
                     }

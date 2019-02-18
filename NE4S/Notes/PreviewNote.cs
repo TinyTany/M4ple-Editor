@@ -22,7 +22,7 @@ namespace NE4S.Notes
 			note = new RectangleF();
         }
 
-        public void Paint(PaintEventArgs e)
+        public void Paint(Graphics g)
         {
             if (!Visible || !Enable) return;
             if (Status.Mode != Mode.ADD) return;
@@ -33,7 +33,7 @@ namespace NE4S.Notes
             note.Y += -2;
             using (SolidBrush myBrush = new SolidBrush(Color.FromArgb(200, 255, 255, 255)))
             {
-                e?.Graphics.FillRectangle(myBrush, note);
+                g?.FillRectangle(myBrush, note);
             }
         }
     }

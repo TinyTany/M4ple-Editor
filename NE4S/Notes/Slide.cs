@@ -261,10 +261,10 @@ namespace NE4S.Notes
         /// <param name="scoreBook"></param>
         /// <param name="laneBook"></param>
         /// <param name="currentPositionX"></param>
-        public override void Draw(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
+        public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
-            if (e == null) return;
-            base.Draw(e, drawLocation, laneBook);
+            if (g == null) return;
+            base.Draw(g, drawLocation, laneBook);
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             RectangleF gradientRect = new RectangleF();
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
@@ -297,7 +297,7 @@ namespace NE4S.Notes
                         {
                             continue;
                         }
-                        DrawSlideLine(e, note, next, drawLocation, laneBook, ref gradientRect);
+                        DrawSlideLine(g, note, next, drawLocation, laneBook, ref gradientRect);
                     }
                     else
                     {
@@ -312,23 +312,23 @@ namespace NE4S.Notes
                             {
                                 continue;
                             }
-                            DrawSlideCurve(e, note, curve, next, drawLocation, laneBook, ref gradientRect);
+                            DrawSlideCurve(g, note, curve, next, drawLocation, laneBook, ref gradientRect);
                         }
                     }
                 }
                 //クリッピングの解除を忘れないこと
-                e.Graphics.ResetClip();
+                g.ResetClip();
                 //非表示設定のノーツは描画しないようにする
                 if (note is SlideRelay && !Status.IsSlideRelayVisible) continue;
                 if (note is SlideCurve && !Status.IsSlideCurveVisible) continue;
-                note.Draw(e, drawLocation);
+                note.Draw(g, drawLocation);
             }
         }
 
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（直線）
         /// </summary>
-        private static void DrawSlideLine(PaintEventArgs e, Note past, Note future, Point drawLocation, LaneBook laneBook, ref RectangleF gradientRect)
+        private static void DrawSlideLine(Graphics g, Note past, Note future, Point drawLocation, LaneBook laneBook, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;
@@ -357,15 +357,15 @@ namespace NE4S.Notes
                             scoreLane.LaneRect.Y - drawLocation.Y,
                             scoreLane.LaneRect.Width,
                             scoreLane.LaneRect.Height);
-                        e.Graphics.Clip = new Region(clipRect);
+                        g.Clip = new Region(clipRect);
                         using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                         {
                             myBrush.InterpolationColors = colorBlend;
-                            e.Graphics.FillPath(myBrush, graphicsPath);
+                            g.FillPath(myBrush, graphicsPath);
                         }
                         using (Pen myPen = new Pen(lineColor, 2))
                         {
-                            e.Graphics.DrawLine(
+                            g.DrawLine(
                                 myPen,
                                 (graphicsPath.PathPoints[1].X + graphicsPath.PathPoints[2].X) / 2,
                                 graphicsPath.PathPoints[1].Y,
@@ -387,7 +387,7 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ間を繋ぐ帯の描画（ベジェ）
         /// </summary>
-        private static void DrawSlideCurve(PaintEventArgs e, Note past, Note curve, Note future, Point drawLocation, LaneBook laneBook, ref RectangleF gradientRect)
+        private static void DrawSlideCurve(Graphics g, Note past, Note curve, Note future, Point drawLocation, LaneBook laneBook, ref RectangleF gradientRect)
         {
             if (gradientRect.Width <= 0) gradientRect.Width = 1;
             if (gradientRect.Height <= 0) gradientRect.Height = 1;
@@ -432,15 +432,15 @@ namespace NE4S.Notes
                             scoreLane.LaneRect.Y - drawLocation.Y,
                             scoreLane.LaneRect.Width,
                             scoreLane.LaneRect.Height);
-                        e.Graphics.Clip = new Region(clipRect);
+                        g.Clip = new Region(clipRect);
                         using (LinearGradientBrush myBrush = new LinearGradientBrush(gradientRect, baseColor, baseColor, LinearGradientMode.Vertical))
                         {
                             myBrush.InterpolationColors = colorBlend;
-                            e.Graphics.FillPath(myBrush, graphicsPath);
+                            g.FillPath(myBrush, graphicsPath);
                         }
                         using (Pen myPen = new Pen(lineColor, 2))
                         {
-                            e.Graphics.DrawBezier(myPen, bottomCenter, curveCenter, topCenter);
+                            g.DrawBezier(myPen, bottomCenter, curveCenter, topCenter);
                         }
                     }
                     // インクリメント

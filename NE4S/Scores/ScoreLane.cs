@@ -351,19 +351,19 @@ namespace NE4S.Scores
 		/// <param name="e"></param>
 		/// <param name="originPosX"></param>
 		/// <param name="originPosY"></param>
-		public void PaintLane(PaintEventArgs e, Point originLocation)
+		public void PaintLane(Graphics g, Point originLocation)
         {
 			float drawPosX = drawRegion.X - originLocation.X;
 			float drawPosY = drawRegion.Y - originLocation.Y;
             //レーン背景を黒塗り
-            e.Graphics.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, Width, Height));
+            g.FillRectangle(Brushes.Black, new RectangleF(drawPosX, drawPosY, Width, Height));
             //Score描画用のY座標の初期座標を画面最下に設定
             float currentDrawPosY = drawPosY + Height - Margin.Bottom;
             //リスト内のScoreについてY座標を変更しながら描画
             foreach (ScoreMaterial material in scoreMaterialList)
             {
                 currentDrawPosY -= material.Score.Height * material.Range.Size / material.Score.BeatNumer;
-                material.Score.PaintScore(e, drawPosX + Margin.Left, currentDrawPosY, material.Range);
+                material.Score.PaintScore(g, drawPosX + Margin.Left, currentDrawPosY, material.Range);
 			}
             //tScoresの最後の要素のScoreが閉じているか判定
             if (scoreMaterialList.Any() && scoreMaterialList.Last().Range.Max == scoreMaterialList.Last().Score.BeatNumer)
@@ -372,7 +372,7 @@ namespace NE4S.Scores
                 //最後の小節を黄色線で閉じる
                 using (Pen myPen = new Pen(Score.measureBorder, 1))
                 {
-                    e.Graphics.DrawLine(
+                    g.DrawLine(
                         myPen,
                         drawPosX + Margin.Left, currentDrawPosY,
                         drawPosX + Margin.Left + scoreWidth, currentDrawPosY
@@ -385,7 +385,7 @@ namespace NE4S.Scores
             if(currentDrawPosY > drawPosY)
             {
                 //余ってる部分は塗りつぶす
-                e.Graphics.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
+                g.FillRectangle(Brushes.LightGray, new RectangleF(drawPosX, drawPosY, Width, currentDrawPosY - drawPosY));
             }
 		}
     }

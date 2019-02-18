@@ -29,7 +29,7 @@ namespace NE4S.Scores
         private Model model;
         private HScrollBar hScrollBar;
         private VScrollBar vScrollBar;
-        private PictureBox pBox;
+        public PictureBox PictureBox { get; private set; }
         private PreviewNote pNote;
         private DataIO dataIO;
         private SusLoader susLoader;
@@ -52,7 +52,7 @@ namespace NE4S.Scores
 
         public ScorePanel(PictureBox pBox, HScrollBar hScroll, VScrollBar vScroll)
         {
-            this.pBox = pBox;
+            this.PictureBox = pBox;
             virtualPanelSize = new Size(
                 0,
                 (int)(ScoreLane.Height + Margin.Top + Margin.Bottom + 17));
@@ -70,7 +70,7 @@ namespace NE4S.Scores
         #region 画面やレーンのサイズ関連
         public void ReSizePanel(Size newSize)
         {
-            pBox.Size = displayRect.Size = newSize;
+            PictureBox.Size = displayRect.Size = newSize;
             UpdateSizeComponent();
         }
 
@@ -461,7 +461,7 @@ namespace NE4S.Scores
             hScrollBar.Maximum = 
                 virtualPanelSize.Width < displayRect.Width ? 0 : virtualPanelSize.Width - displayRect.Width;
             //pBoxを更新
-            pBox.Refresh();
+            PictureBox.Refresh();
         }
 
         #region マウス入力とかに反応して処理するメソッドたち
@@ -477,11 +477,11 @@ namespace NE4S.Scores
                 Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                 if (selectionArea.Contains(currentPosition))
                 {
-                    new NoteEditCMenu(this, currentPosition).Show(pBox, e.Location);
+                    new NoteEditCMenu(this, currentPosition).Show(PictureBox, e.Location);
                 }
                 else
                 {
-                    new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(displayRect.Location)), currentPosition).Show(pBox, e.Location);
+                    new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(displayRect.Location)), currentPosition).Show(PictureBox, e.Location);
                 }
             }
         }
@@ -601,7 +601,7 @@ namespace NE4S.Scores
                             noteValue,
                             attributeNote.NoteValue));
                     }
-                    pBox.Cursor = Cursors.Default;
+                    PictureBox.Cursor = Cursors.Default;
                     Status.IsMousePressed = false;
                 }
             }
@@ -613,31 +613,31 @@ namespace NE4S.Scores
         {
             if (selectedNote == null)
             {
-                pBox.Cursor = Cursors.Default;
+                PictureBox.Cursor = Cursors.Default;
                 return;
             }
             if (selectedNote is AirHoldEnd || selectedNote is AirAction || selectedNote is AttributeNote)
             {
-                pBox.Cursor = Cursors.SizeNS;
+                PictureBox.Cursor = Cursors.SizeNS;
             }
             else if (noteArea == NoteArea.LEFT || noteArea == NoteArea.RIGHT)
             {
-                pBox.Cursor = Cursors.SizeWE;
+                PictureBox.Cursor = Cursors.SizeWE;
             }
             else if (noteArea == NoteArea.CENTER)
             {
                 if (selectedNote is HoldEnd)
                 {
-                    pBox.Cursor = Cursors.SizeNS;
+                    PictureBox.Cursor = Cursors.SizeNS;
                 }
                 else
                 {
-                    pBox.Cursor = Cursors.SizeAll;
+                    PictureBox.Cursor = Cursors.SizeAll;
                 }
             }
             else
             {
-                pBox.Cursor = Cursors.Default;
+                PictureBox.Cursor = Cursors.Default;
             }
         }
 
@@ -717,7 +717,7 @@ namespace NE4S.Scores
                             selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                         if (selectionArea.MovePositionDelta != null)
                         {
-                            pBox.Cursor = Cursors.SizeAll;
+                            PictureBox.Cursor = Cursors.SizeAll;
                             selectionArea.Relocate(currentPosition, model.LaneBook);
                         }
                         else
@@ -732,7 +732,7 @@ namespace NE4S.Scores
                             selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                         if (selectionArea.Contains(currentPosition))
                         {
-                            pBox.Cursor = Cursors.SizeAll;
+                            PictureBox.Cursor = Cursors.SizeAll;
                         }
                         else
                         {
@@ -805,7 +805,7 @@ namespace NE4S.Scores
             {
                 selectionArea.SetContainsNotes(model.NoteBook);
             }
-            pBox.Cursor = Cursors.Default;
+            PictureBox.Cursor = Cursors.Default;
         }
 
         public void MouseEnter(EventArgs e) { }
@@ -1123,7 +1123,7 @@ namespace NE4S.Scores
         /// レーン、譜面、ノーツなどをすべて描画します
         /// </summary>
         /// <param name="e"></param>
-        public void PaintPanel(PaintEventArgs e)
+        public void PaintPanel(Graphics g)
 		{
 #if DEBUG
             sw.Start();
@@ -1131,9 +1131,9 @@ namespace NE4S.Scores
             var drawLaneBook = model.LaneBook.Where(
                 x =>
                 x.LaneRect.Right >= displayRect.X - ScoreLane.Margin.Right &&
-                x.LaneRect.Left <= displayRect.X + pBox.Width + ScoreLane.Margin.Left)
+                x.LaneRect.Left <= displayRect.X + PictureBox.Width + ScoreLane.Margin.Left)
                 .ToList();
-            drawLaneBook.ForEach(x => x.PaintLane(e, displayRect.Location));
+            drawLaneBook.ForEach(x => x.PaintLane(g, displayRect.Location));
             if (drawLaneBook.Any())
             {
                 //現在の描画範囲にあるレーンの小節数の範囲を設定
@@ -1141,13 +1141,13 @@ namespace NE4S.Scores
                 Status.DrawTickLast = drawLaneBook.Last().LastScore.EndTick;
             }
             //ノーツ描画
-            model.PaintNote(e, displayRect.Location);
+            model.PaintNote(g, displayRect.Location);
             //プレビューノーツ描画
-			pNote.Paint(e);
+			pNote.Paint(g);
             //矩形選択領域描画
             if(Status.Mode == Mode.EDIT)
             {
-                selectionArea.Draw(e, model.LaneBook, displayRect.Location);
+                selectionArea.Draw(g, model.LaneBook, displayRect.Location);
             }
 #if DEBUG
             sw.Stop();
@@ -1159,7 +1159,7 @@ namespace NE4S.Scores
 
         public void Refresh()
         {
-            pBox.Refresh();
+            PictureBox.Refresh();
         }
     }
 }

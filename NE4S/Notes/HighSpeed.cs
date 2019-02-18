@@ -36,15 +36,15 @@ namespace NE4S.Notes
             return hitRect.Contains(location);
         }
 
-        public override void Draw(PaintEventArgs e, Point drawLocation)
+        public override void Draw(Graphics g, Point drawLocation)
         {
             PointF drawPoint = new PointF(
                 noteRect.X - Position.Lane * ScoreInfo.MinLaneWidth - drawLocation.X + ScoreLane.scoreWidth,
                 Location.Y - drawLocation.Y);
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {
-                e.Graphics.DrawString(
+                g.DrawString(
                 "x" + NoteValue.ToString(),
                 myFont,
                 Brushes.Red,
@@ -54,7 +54,7 @@ namespace NE4S.Notes
             }
             using (Pen myPen = new Pen(Color.Red, 1))
             {
-                e.Graphics.DrawLine(
+                g.DrawLine(
                     myPen,
                     drawPoint.X - ScoreLane.scoreWidth,
                     drawPoint.Y,

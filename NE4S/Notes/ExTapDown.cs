@@ -18,7 +18,7 @@ namespace NE4S.Notes
 
         public ExTapDown(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
-        public override void Draw(PaintEventArgs e, Point drawLocation)
+        public override void Draw(Graphics g, Point drawLocation)
         {
             RectangleF drawRect = new RectangleF(
                 noteRect.X - drawLocation.X + adjustNoteRect.X,
@@ -29,23 +29,23 @@ namespace NE4S.Notes
             {
                 using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Yellow, Color.Blue))
                 {
-                    e.Graphics.FillRectangle(gradientBrush, drawRect);
+                    g.FillRectangle(gradientBrush, drawRect);
                 }
             }
             else
             {
                 using (LinearGradientBrush gradientBrush = new LinearGradientBrush(new PointF(0, drawRect.Y), new PointF(0, drawRect.Y + drawRect.Height), Color.Yellow, Color.FromArgb(195, 185, 65)))
                 {
-                    e.Graphics.FillRectangle(gradientBrush, drawRect);
+                    g.FillRectangle(gradientBrush, drawRect);
                 }
             }
             using (Pen pen = new Pen(Color.White, 1))
             {
-                e.Graphics.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
+                g.DrawLine(pen, new PointF(drawRect.X + 4, drawRect.Y + 2), new PointF(drawRect.X + drawRect.Width - 4, drawRect.Y + 2));
             }
             using (Pen grayPen = new Pen(Color.LightGray, 1))
             {
-                e.Graphics.DrawPath(grayPen, drawRect.RoundedPath());
+                g.DrawPath(grayPen, drawRect.RoundedPath());
             }
         }
 

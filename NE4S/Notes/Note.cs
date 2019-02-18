@@ -166,7 +166,7 @@ namespace NE4S.Notes
             RelocateOnly(location, lane.Index);
         }
 
-        public virtual void Draw(PaintEventArgs e, Point drawLocation)
+        public virtual void Draw(Graphics g, Point drawLocation)
 		{
 			RectangleF drawRect = new RectangleF(
 				noteRect.X - drawLocation.X + adjustNoteRect.X,
@@ -175,7 +175,7 @@ namespace NE4S.Notes
 				noteRect.Height);
 			using (SolidBrush myBrush = new SolidBrush(Color.White))
 			{
-				e.Graphics.FillRectangle(myBrush, drawRect);
+				g.FillRectangle(myBrush, drawRect);
 			}
 			return;
 		}

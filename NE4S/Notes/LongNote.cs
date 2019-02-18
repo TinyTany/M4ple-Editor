@@ -57,7 +57,7 @@ namespace NE4S.Notes
         /// <summary>
         /// ノーツ位置のチェックのみ行う
         /// </summary>
-        public virtual void Draw(PaintEventArgs e, Point drawLocation, LaneBook laneBook)
+        public virtual void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             //ノーツ位置のチェック
