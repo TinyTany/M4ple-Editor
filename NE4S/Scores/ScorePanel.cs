@@ -37,6 +37,9 @@ namespace NE4S.Scores
         public OperationManager OperationManager { get; private set; }
         private Note selectedNotePrev = null;
         private SelectionArea selectionAreaPrev = null;
+#if DEBUG
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+#endif
 
         public static class Margin
         {
@@ -889,8 +892,7 @@ namespace NE4S.Scores
                     //Shiftキーを押しながら追加した際はかならず新規Slideノーツを追加する
                     if(selectedSlide != null && Control.ModifierKeys != Keys.Shift)
                     {
-                        if (!Status.IsSlideRelayVisible) break;
-                        if (Status.InvisibleSlideTap)
+                        if (Status.InvisibleSlideTap && Status.IsSlideRelayVisible)
                         {
                             SlideRelay slideRelay = 
                                 new SlideRelay(Status.NoteSize, position, locationVirtual, lane.Index);
@@ -1124,7 +1126,7 @@ namespace NE4S.Scores
         public void PaintPanel(PaintEventArgs e)
 		{
 #if DEBUG
-            int pastTick = Environment.TickCount;
+            sw.Start();
 #endif
             var drawLaneBook = model.LaneBook.Where(
                 x =>
@@ -1148,8 +1150,10 @@ namespace NE4S.Scores
                 selectionArea.Draw(e, model.LaneBook, displayRect.Location);
             }
 #if DEBUG
-            float fps = 1000 / (float)(Environment.TickCount - pastTick);
-            //System.Diagnostics.Debug.WriteLine(fps);
+            sw.Stop();
+            float fps = 1000 / (float)sw.ElapsedMilliseconds;
+            System.Diagnostics.Debug.WriteLine(fps);
+            sw.Reset();
 #endif
         }
 
