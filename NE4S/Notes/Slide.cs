@@ -268,6 +268,7 @@ namespace NE4S.Notes
             var list = this.OrderBy(x => x.Position.Tick).ToList();
             RectangleF gradientRect = new RectangleF();
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
+            Note gradientNote, gradientNext, next, curve;
             foreach (Note note in list)
             {
                 // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
@@ -280,7 +281,8 @@ namespace NE4S.Notes
                     //スライド帯のグラデーション用矩形を設定する
                     if(note is SlideBegin || note is SlideTap || note is SlideEnd)
                     {
-                        Note gradientNote = note, gradientNext = stepList.Next(note);
+                        gradientNote = note;
+                        gradientNext = stepList.Next(note);
                         if(gradientNext != null)
                         {
                             float distance = (gradientNext.Position.Tick - gradientNote.Position.Tick) * ScoreInfo.MaxBeatHeight;
@@ -289,7 +291,7 @@ namespace NE4S.Notes
                         }
                     }
                     //スライド帯を描画する
-                    Note next = list.Next(note);
+                    next = list.Next(note);
                     if(!(next is SlideCurve))
                     {
                         // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
@@ -301,7 +303,7 @@ namespace NE4S.Notes
                     }
                     else
                     {
-                        Note curve = next;
+                        curve = next;
                         //SlideRelayは末尾に来ることはないし，SlideRelayが2つ以上連続に並ぶことはないという確信の元実装
                         //↑実際ノーツの束縛処理でそうなるような実装をしている（した）
                         if (list.IndexOf(curve) < list.Count - 1)
@@ -348,11 +350,12 @@ namespace NE4S.Notes
             {
                 graphicsPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
                 ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
+                RectangleF clipRect;
                 for (int i = 0; i <= passingLanes && scoreLane != null; ++i)
                 {
                     if (Status.DrawTickFirst < scoreLane.EndTick && scoreLane.StartTick < Status.DrawTickLast)
                     {
-                        RectangleF clipRect = new RectangleF(
+                        clipRect = new RectangleF(
                             scoreLane.LaneRect.X - drawLocation.X,
                             scoreLane.LaneRect.Y - drawLocation.Y,
                             scoreLane.LaneRect.Width,
@@ -423,11 +426,12 @@ namespace NE4S.Notes
                 graphicsPath.AddBezier(topRight, curveCenter.AddX(widthAnchor / 2f), bottomRight);
                 graphicsPath.AddLine(bottomLeft, bottomRight);
                 ScoreLane scoreLane = laneBook.Find(x => x.Contains(past));
+                RectangleF clipRect;
                 for (int i = 0; i <= passingLanes && scoreLane != null; ++i)
                 {
                     if (Status.DrawTickFirst < scoreLane.EndTick && scoreLane.StartTick < Status.DrawTickLast)
                     {
-                        RectangleF clipRect = new RectangleF(
+                        clipRect = new RectangleF(
                             scoreLane.LaneRect.X - drawLocation.X,
                             scoreLane.LaneRect.Y - drawLocation.Y,
                             scoreLane.LaneRect.Width,
