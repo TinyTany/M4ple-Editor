@@ -30,7 +30,7 @@ namespace NE4S.Notes
 
         public LongNote() { }
 
-        protected virtual bool IsPositionAvailable(Note note, Position position)
+        protected virtual bool IsPositionTickAvailable(Note note, Position position)
         {
             if (position.Tick < this.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
             foreach (Note itrNote in this.Where(x => x != note))
@@ -70,9 +70,9 @@ namespace NE4S.Notes
                     ScoreLane lane = laneBook.Find(x => x.StartTick <= future.Position.Tick && future.Position.Tick <= x.EndTick);
                     if (lane == null) break;
                     PointF location = new PointF(
-                        lane.LaneRect.Left + future.Position.Lane * ScoreInfo.MinLaneWidth,
+                        lane.LaneRect.Left + future.Position.Lane * ScoreInfo.UnitLaneWidth,
                         //HACK: Y座標が微妙にずれるので-1して調節する
-                        lane.HitRect.Bottom - (future.Position.Tick - lane.StartTick) * ScoreInfo.MaxBeatHeight - 1);
+                        lane.HitRect.Bottom - (future.Position.Tick - lane.StartTick) * ScoreInfo.UnitBeatHeight - 1);
                     future.RelocateOnly(location, lane.Index);
                 }
             }

@@ -158,10 +158,10 @@ namespace NE4S
         {
             GraphicsPath graphicsPath = new GraphicsPath();
             PointF pastRerativeLocation = new PointF(past.Location.X, past.Location.Y);
-            float positionDistanceFuture = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
-            float positionDistanceCurve = (curve.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
-            float diffXFuture = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
-            float diffXCurve = (curve.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
+            float positionDistanceFuture = (future.Position.Tick - past.Position.Tick) * ScoreInfo.UnitBeatHeight;
+            float positionDistanceCurve = (curve.Position.Tick - past.Position.Tick) * ScoreInfo.UnitBeatHeight;
+            float diffXFuture = (future.Position.Lane - past.Position.Lane) * ScoreInfo.UnitLaneWidth;
+            float diffXCurve = (curve.Position.Lane - past.Position.Lane) * ScoreInfo.UnitLaneWidth;
             //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
             PointF topLeft = pastRerativeLocation.Add(diffXFuture, -positionDistanceFuture).Add(drawOffset);
             PointF topRight = pastRerativeLocation.Add(diffXFuture, -positionDistanceFuture).Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);

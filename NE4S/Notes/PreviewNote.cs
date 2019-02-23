@@ -27,7 +27,7 @@ namespace NE4S.Notes
             if (!Visible || !Enable) return;
             if (Status.Mode != Mode.ADD) return;
             if (NoteType.AIRUPC <= Status.Note && Status.Note <= NoteType.AIRHOLD) return;
-            note.Size = new SizeF(ScoreInfo.MinLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
+            note.Size = new SizeF(ScoreInfo.UnitLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
 			note.Location = Location;
             //HACK: 今の設定だとノーツ矩形位置調節用の値が(0, -2)なのでこのようにしてるけど嫌だよねこういうの
             note.Y += -2;

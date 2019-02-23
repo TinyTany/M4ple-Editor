@@ -38,11 +38,11 @@ namespace NE4S.Notes
             holdBegin.CheckNotePosition += CheckNotePosition;
             holdBegin.CheckNoteSize += CheckNoteSize;
             Add(holdBegin);
-            location.Y -= ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
+            location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             HoldEnd holdEnd = new HoldEnd(size, pos.Next(), location, laneIndex);
             holdEnd.CheckNotePosition += CheckNotePosition;
             holdEnd.CheckNoteSize += CheckNoteSize;
-            holdEnd.IsPositionAvailable += IsPositionAvailable;
+            holdEnd.IsPositionAvailable += IsPositionTickAvailable;
             Add(holdEnd);
             Status.SelectedNote = holdEnd;
         }
@@ -58,7 +58,7 @@ namespace NE4S.Notes
                     //貫通する
                     itrNote.Relocate(
                         new Position(note.Position.Lane, itrNote.Position.Tick + deltaTick),
-                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.MinLaneWidth, itrNote.Location.Y - deltaTick * ScoreInfo.MaxBeatHeight),
+                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.UnitLaneWidth, itrNote.Location.Y - deltaTick * ScoreInfo.UnitBeatHeight),
                         itrNote.LaneIndex);
                 }
             }
@@ -68,7 +68,7 @@ namespace NE4S.Notes
                 int diffLane = holdBegin.Position.Lane - note.Position.Lane;
                 (note as AirableNote).RelocateOnly(
                         new Position(holdBegin.Position.Lane, note.Position.Tick),
-                        new PointF(note.Location.X + diffLane * ScoreInfo.MinLaneWidth, note.Location.Y),
+                        new PointF(note.Location.X + diffLane * ScoreInfo.UnitLaneWidth, note.Location.Y),
                         note.LaneIndex);
             }
             else
@@ -115,15 +115,15 @@ namespace NE4S.Notes
 
         private static void DrawHoldLine(Graphics g, Note past, Note future, Point drawLocation, LaneBook laneBook)
         {
-            float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
+            float distance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.UnitBeatHeight;
             //グラデーション矩形
             //x座標と幅は適当だけど動いてるはず。重要なのはy座標と高さ
             RectangleF gradientRect = new RectangleF(0, past.Location.Y - distance + drawOffset.Y - drawLocation.Y, 10, distance <= 0 ? 1 : distance);
             //相対位置
             PointF pastRerativeLocation = new PointF(past.Location.X - drawLocation.X, past.Location.Y - drawLocation.Y);
             int passingLanes = future.LaneIndex - past.LaneIndex;
-            float positionDistance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.MaxBeatHeight;
-            float diffX = (future.Position.Lane - past.Position.Lane) * ScoreInfo.MinLaneWidth;
+            float positionDistance = (future.Position.Tick - past.Position.Tick) * ScoreInfo.UnitBeatHeight;
+            float diffX = (future.Position.Lane - past.Position.Lane) * ScoreInfo.UnitLaneWidth;
             //ノーツfutureの位置はノーツpastの位置に2ノーツの距離を引いて表す。またTopRightの水平位置はfutureのWidthを使うことに注意
             PointF topLeft = pastRerativeLocation.Add(diffX, -positionDistance).Add(drawOffset);
             PointF topRight = pastRerativeLocation.Add(diffX, -positionDistance).Add(-drawOffset.X, drawOffset.Y).AddX(future.Width);

@@ -257,17 +257,17 @@ namespace NE4S.Component
                 x => x.StartTick <= BottomRightPosition.Tick && BottomRightPosition.Tick <= x.EndTick);
             int passingLanes = futureLane != null ? futureLane.Index - pastLane.Index : laneBook.Count - pastLane.Index - 1;
             PointF topLeft = new PointF(
-                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
+                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.UnitLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.UnitBeatHeight - originLocation.Y - minHeight / 2);
             PointF topRight = new PointF(
-                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y - minHeight / 2);
+                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.UnitLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (TopLeftPosition.Tick - pastLane.StartTick) * ScoreInfo.UnitBeatHeight - originLocation.Y - minHeight / 2);
             PointF bottomLeft = new PointF(
-                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
+                pastLane.LaneRect.Left + TopLeftPosition.Lane * ScoreInfo.UnitLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.UnitBeatHeight - originLocation.Y + minHeight / 2);
             PointF bottomRight = new PointF(
-                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.MinLaneWidth - originLocation.X,
-                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.MaxBeatHeight - originLocation.Y + minHeight / 2);
+                pastLane.LaneRect.Left + (BottomRightPosition.Lane + 1) * ScoreInfo.UnitLaneWidth - originLocation.X,
+                pastLane.LaneRect.Bottom - (BottomRightPosition.Tick - pastLane.StartTick) * ScoreInfo.UnitBeatHeight - originLocation.Y + minHeight / 2);
             using (GraphicsPath graphicsPath = new GraphicsPath())
             {
                 var smoothingMode = g.SmoothingMode;

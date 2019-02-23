@@ -61,7 +61,7 @@ namespace NE4S.Notes
         {
 			Size = size;
 			Position = pos;
-			noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+			noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
 			noteRect.Location = location;
             LaneIndex = laneIndex;
         }
@@ -101,10 +101,10 @@ namespace NE4S.Notes
         {
             int diffSize = size - Size;
             Size = size;
-            noteRect.Size = new SizeF(ScoreInfo.MinLaneWidth * size, ScoreInfo.NoteHeight);
+            noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
             if (Status.SelectedNoteArea == NoteArea.LEFT)
             {
-                noteRect.X -= diffSize * ScoreInfo.MinLaneWidth;
+                noteRect.X -= diffSize * ScoreInfo.UnitLaneWidth;
                 Position = new Position(Position.Lane - diffSize, Position.Tick);
             }
             return;
@@ -160,9 +160,9 @@ namespace NE4S.Notes
             ScoreLane lane = laneBook.Find(x => x.StartTick <= Position.Tick && Position.Tick <= x.EndTick);
             if (lane == null) return;
             PointF location = new PointF(
-                lane.LaneRect.Left + Position.Lane * ScoreInfo.MinLaneWidth,
+                lane.LaneRect.Left + Position.Lane * ScoreInfo.UnitLaneWidth,
                 //HACK: Y座標が微妙にずれるので-1して調節する
-                lane.HitRect.Bottom - (Position.Tick - lane.StartTick) * ScoreInfo.MaxBeatHeight - 1);
+                lane.HitRect.Bottom - (Position.Tick - lane.StartTick) * ScoreInfo.UnitBeatHeight - 1);
             RelocateOnly(location, lane.Index);
         }
 

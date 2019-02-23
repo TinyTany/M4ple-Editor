@@ -680,7 +680,7 @@ namespace NE4S.Scores
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
                                     Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location);
                                     int newSize = 
-                                        (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.MinLaneWidth);
+                                        (int)((Status.SelectedNote.Location.X + Status.SelectedNote.Width - virtualGridPoint.X) / ScoreInfo.UnitLaneWidth);
                                     if (newSize <= 0) newSize = 1;
                                     else if (newSize > 16) newSize = 16;
                                     Status.SelectedNote.ReSize(newSize);
@@ -699,7 +699,7 @@ namespace NE4S.Scores
                                 {
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
                                     Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 1).Add(displayRect.Location);
-                                    int newSize = (int)((virtualGridPoint.X - Status.SelectedNote.Location.X) / ScoreInfo.MinLaneWidth);
+                                    int newSize = (int)((virtualGridPoint.X - Status.SelectedNote.Location.X) / ScoreInfo.UnitLaneWidth);
                                     ++newSize;
                                     if (newSize <= 0) newSize = 1;
                                     else if (newSize > 16) newSize = 16;
@@ -1096,9 +1096,9 @@ namespace NE4S.Scores
                 location.X + displayRect.X - (int)lane.LaneRect.X, 
                 location.Y + displayRect.Y - (int)(lane.HitRect.Y - 1 + lane.HitRect.Height));
             Point deltaP = new Point();
-            float gridWidth = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes / Status.Grid;
-            float gridHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            float maxGridX = (ScoreInfo.Lanes - noteSize) * ScoreInfo.MinLaneWidth;
+            float gridWidth = ScoreInfo.UnitLaneWidth * ScoreInfo.Lanes / Status.Grid;
+            float gridHeight = ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
+            float maxGridX = (ScoreInfo.Lanes - noteSize) * ScoreInfo.UnitLaneWidth;
             //現在の自由座標とそこから計算したグリッド座標の差分
             //deltaP.X = Math.Min((int)(Math.Floor(relativeP.X / gridWidth) * gridWidth), (int)maxGridX) - relativeP.X;
             deltaP.X = (int)(Math.Floor(relativeP.X / gridWidth) * gridWidth);

@@ -48,8 +48,8 @@ namespace NE4S.Scores
                 location.X - HitRect.X,
                 location.Y - (HitRect.Y + HitRect.Height));
             Position position = new Position(
-                (int)(normalizedPos.X / ScoreInfo.MinLaneWidth),
-                StartTick + -(int)(normalizedPos.Y / ScoreInfo.MaxBeatHeight));
+                (int)(normalizedPos.X / ScoreInfo.UnitLaneWidth),
+                StartTick + -(int)(normalizedPos.Y / ScoreInfo.UnitBeatHeight));
             return position;
         }
     }

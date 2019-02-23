@@ -15,8 +15,8 @@ namespace NE4S.Scores
     [Serializable()]
     public class ScoreLane
     {
-		public static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.MinLaneWidth;
-		private static float maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
+		public static readonly float scoreWidth = ScoreInfo.Lanes * ScoreInfo.UnitLaneWidth;
+		private static float maxScoreHeight = ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
         public static float Width { get; set; } = scoreWidth + Margin.Left + Margin.Right;
         public static float Height { get; set; } = maxScoreHeight + Margin.Top + Margin.Bottom;
         private int index;
@@ -39,7 +39,7 @@ namespace NE4S.Scores
 
         public static void RefreshLaneSize()
         {
-            maxScoreHeight = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
+            maxScoreHeight = ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv * ScoreInfo.LaneMaxBar;
             Height = maxScoreHeight + Margin.Top + Margin.Bottom;
         }
 
@@ -50,7 +50,7 @@ namespace NE4S.Scores
 		{
 			SizeF hitRectSize = new SizeF(
 				scoreWidth + Margin.Left + Margin.Right,
-				ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * CurrentBarSize);
+				ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv * CurrentBarSize);
 			PointF hitRectLocation = new PointF(
 				index * (Width + ScorePanel.Margin.Left + ScorePanel.Margin.Right) + ScorePanel.Margin.Left,
 				//HACK: 当たり判定の最上部のピクセル座標を調節のため高さに+1をする（1ピクセル下げる）
@@ -203,7 +203,7 @@ namespace NE4S.Scores
         {
 			if (newScore != null && newRange != null)
             {
-                float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * CurrentBarSize;
+                float currentSumScoreHeight = ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight * CurrentBarSize;
 				float physicalHeight = newScore.Height * newRange.Size / newScore.BeatNumer;
 				//当たり判定が縦に1ピクセル分ずれているので調整用の変数を作成
 				int normalizeDeltaHeight = 1;

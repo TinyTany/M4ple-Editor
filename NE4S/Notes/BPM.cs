@@ -19,7 +19,7 @@ namespace NE4S.Notes
         public override bool Contains(PointF location)
         {
             RectangleF hitRect = new RectangleF(
-                noteRect.X - Position.Lane * ScoreInfo.MinLaneWidth + ScoreLane.scoreWidth + adjustPoint.X,
+                noteRect.X - Position.Lane * ScoreInfo.UnitLaneWidth + ScoreLane.scoreWidth + adjustPoint.X,
                 Location.Y + adjustPoint.Y,
                 20,
                 9);
@@ -29,7 +29,7 @@ namespace NE4S.Notes
         public override void Draw(Graphics g, Point drawLocation)
         {
             PointF drawPoint = new PointF(
-                noteRect.X - Position.Lane * ScoreInfo.MinLaneWidth - drawLocation.X + ScoreLane.scoreWidth, 
+                noteRect.X - Position.Lane * ScoreInfo.UnitLaneWidth - drawLocation.X + ScoreLane.scoreWidth, 
                 Location.Y - drawLocation.Y);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))

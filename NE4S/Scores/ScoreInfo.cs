@@ -15,11 +15,11 @@ namespace NE4S.Scores
         /// <summary>
         /// 1最小レーンの横幅
         /// </summary>
-        public static float MinLaneWidth { get; } = 12;
+        public static float UnitLaneWidth { get; } = 12;
         /// <summary>
         /// 最大分数時の縦幅
         /// </summary>
-        public static float MaxBeatHeight { get; } = 2;
+        public static float UnitBeatHeight { get; } = 2;
         /// <summary>
         /// 最大分数
         /// 1tick

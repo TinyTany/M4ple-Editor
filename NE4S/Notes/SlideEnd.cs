@@ -25,17 +25,31 @@ namespace NE4S.Notes
 
         public override void Relocate(Position pos, PointF location, int laneIndex)
         {
-            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
-            base.Relocate(pos);
-            base.Relocate(location, laneIndex);
-            return;
+
+            if (IsPositionAvailable == null) { return; }
+            if (IsPositionAvailable(this, pos))
+            {
+                base.Relocate(pos);
+                base.Relocate(location, laneIndex);
+            }
+            else if (laneIndex == LaneIndex)
+            {
+                base.Relocate(new Position(pos.Lane, Position.Tick));
+                base.Relocate(new PointF(location.X, Location.Y), laneIndex);
+            }
         }
 
         public override void Relocate(Position pos)
         {
-            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
-            base.Relocate(pos);
-            return;
+            if (IsPositionAvailable == null) { return; }
+            if (IsPositionAvailable(this, pos))
+            {
+                base.Relocate(pos);
+            }
+            else
+            {
+                base.Relocate(new Position(pos.Lane, Position.Tick));
+            }
         }
 
         public override void Draw(Graphics g, Point drawLocation)

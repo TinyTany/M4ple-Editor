@@ -68,8 +68,8 @@ namespace NE4S.Scores
             BeatNumer = beatNumer;//非負整数
             BeatDenom = beatDenom;//非負整数かつ2のべき乗のもの
             BarSize = beatNumer / (float)beatDenom;
-            Width = ScoreInfo.MinLaneWidth * ScoreInfo.Lanes;
-            Height = ScoreInfo.MaxBeatHeight * ScoreInfo.MaxBeatDiv * BarSize;
+            Width = ScoreInfo.UnitLaneWidth * ScoreInfo.Lanes;
+            Height = ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv * BarSize;
             Index = -1;
             LinkCount = 0;
         }
@@ -93,9 +93,9 @@ namespace NE4S.Scores
                     {
                         g.DrawLine(
                         myPen,
-                        drawPosX + i * ScoreInfo.MinLaneWidth,
+                        drawPosX + i * ScoreInfo.UnitLaneWidth,
                         drawPosY,
-                        drawPosX + i * ScoreInfo.MinLaneWidth,
+                        drawPosX + i * ScoreInfo.UnitLaneWidth,
                         drawPosY + Height * range.Size / BeatNumer
                         );
                     }
@@ -107,9 +107,9 @@ namespace NE4S.Scores
                     {
                         g.DrawLine(
                         myPen,
-                        drawPosX + i * ScoreInfo.MinLaneWidth,
+                        drawPosX + i * ScoreInfo.UnitLaneWidth,
                         drawPosY,
-                        drawPosX + i * ScoreInfo.MinLaneWidth,
+                        drawPosX + i * ScoreInfo.UnitLaneWidth,
                         drawPosY + Height * range.Size / BeatNumer
                         );
                     }
@@ -124,9 +124,9 @@ namespace NE4S.Scores
                     g.DrawLine(
                         myPen,
                         drawPosX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer,
-                        drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight * BarSize * range.Size / BeatNumer,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.UnitLaneWidth,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight * BarSize * range.Size / BeatNumer
                         );
                 }
                 //小節数を描画
@@ -141,7 +141,7 @@ namespace NE4S.Scores
                     Brushes.White,
                     new PointF(
                         drawPosX + dX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer + dY));
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight * BarSize * range.Size / BeatNumer + dY));
                     // 必要に応じて拍数を描画
                     if (IsBeatVisible)
                     {
@@ -152,7 +152,7 @@ namespace NE4S.Scores
                         Brushes.Orange,
                         new PointF(
                         drawPosX + dX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer + dY));
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight * BarSize * range.Size / BeatNumer + dY));
                     }
                 }
             }
@@ -164,9 +164,9 @@ namespace NE4S.Scores
                     g.DrawLine(
                         myPen,
                         drawPosX,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer,
-                        drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
-                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight * BarSize * range.Size / BeatNumer
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight * BarSize * range.Size / BeatNumer,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.UnitLaneWidth,
+                        drawPosY + ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight * BarSize * range.Size / BeatNumer
                         );
                 }
             }
@@ -178,9 +178,9 @@ namespace NE4S.Scores
                     g.DrawLine(
                         myPen,
                         drawPosX,
-                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / BeatDenom,
-                        drawPosX + ScoreInfo.Lanes * ScoreInfo.MinLaneWidth,
-                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.MaxBeatHeight / BeatDenom
+                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight / BeatDenom,
+                        drawPosX + ScoreInfo.Lanes * ScoreInfo.UnitLaneWidth,
+                        drawPosY + i * ScoreInfo.MaxBeatDiv * ScoreInfo.UnitBeatHeight / BeatDenom
                         );
                 } 
             }
