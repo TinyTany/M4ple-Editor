@@ -143,14 +143,11 @@ namespace NE4S.Operation
         }
     }
 
+    /// <summary>
+    /// 小節を除去し、除去した小節の後ろの小節とノーツを詰める
+    /// </summary>
     public class DeleteScoreWithNoteOperation : Operation
     {
-        /// <summary>
-        /// 小節を除去し、除去した小節の後ろの小節とノーツを詰める
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="score">削除対象の1番目のScore</param>
-        /// <param name="count">削除する小節の数</param>
         public DeleteScoreWithNoteOperation(
             Model model, Score score, int count)
         {

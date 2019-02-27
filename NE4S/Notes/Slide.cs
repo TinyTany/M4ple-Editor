@@ -34,16 +34,17 @@ namespace NE4S.Notes
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
+        /// <summary>
+        /// 空のSlide
+        /// </summary>
         public Slide() { }
 
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
             SlideBegin slideBegin = new SlideBegin(size, pos, location, laneIndex);
-            slideBegin.IsPositionAvailable += IsPositionTickAvailable;
             Add(slideBegin);
             location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             SlideEnd slideEnd = new SlideEnd(size, pos.Next(), location, laneIndex);
-            slideEnd.IsPositionAvailable += IsPositionTickAvailable;
             Add(slideEnd);
             Status.SelectedNote = slideEnd;
         }
@@ -59,6 +60,7 @@ namespace NE4S.Notes
             var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
             var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
             var listOverPosition = list.Where(x => x.Position.Tick > position.Tick);
+            if (!this.Any()) return true;
             if (note is SlideBegin && position.Tick > list.First().Position.Tick) return false;
             if (note is SlideEnd && position.Tick < list.Last().Position.Tick) return false;
             if (note is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
@@ -84,7 +86,40 @@ namespace NE4S.Notes
             return true;
         }
 
-        public void Add(SlideTap slideTap)
+        #region Add系のメソッド（なぜかいっぱいある）
+        // 普段使うのは1番上のやつだけ
+        // それ以外は全部補助的なメソッドなので直には使わない
+
+        /// <summary>
+        /// Slide中継点系のノーツのみAddされます。それ以外はAddせずにアサートを吐きます。
+        /// </summary>
+        /// <param name="note"></param>
+        public new void Add(Note note)
+        {
+            if (note is SlideBegin begin) { Add(begin); }
+            else if (note is SlideEnd end) { Add(end); }
+            else if (note is SlideTap tap) { Add(tap); }
+            else if (note is SlideRelay relay) { Add(relay); }
+            else if (note is SlideCurve curve) { Add(curve); }
+            else
+            {
+                System.Diagnostics.Debug.Assert(false, "Slideに対して不正なノーツ追加です。");
+            }
+        }
+
+        private void Add(SlideBegin slideBegin)
+        {
+            if (!IsPositionTickAvailable(slideBegin, slideBegin.Position))
+            {
+                Status.SelectedNote = null;
+                return;
+            }
+            base.Add(slideBegin);
+            slideBegin.IsPositionAvailable += IsPositionTickAvailable;
+            return;
+        }
+
+        private void Add(SlideTap slideTap)
         {
             if (!IsPositionTickAvailable(slideTap, slideTap.Position))
             {
@@ -96,7 +131,7 @@ namespace NE4S.Notes
             return;
         }
 
-        public void Add(SlideRelay slideRelay)
+        private void Add(SlideRelay slideRelay)
         {
             if (!IsPositionTickAvailable(slideRelay, slideRelay.Position))
             {
@@ -108,7 +143,7 @@ namespace NE4S.Notes
             return;
         }
 
-        public void Add(SlideCurve slideCurve)
+        private void Add(SlideCurve slideCurve)
         {
             if (!IsPositionTickAvailable(slideCurve, slideCurve.Position))
             {
@@ -120,7 +155,7 @@ namespace NE4S.Notes
             return;
         }
 
-        public void Add(SlideEnd slideEnd)
+        private void Add(SlideEnd slideEnd)
         {
             if (!IsPositionTickAvailable(slideEnd, slideEnd.Position))
             {
@@ -131,6 +166,7 @@ namespace NE4S.Notes
             slideEnd.IsPositionAvailable += IsPositionTickAvailable;
             return;
         }
+        #endregion
 
         /// <summary>
         /// 削除後にノーツのチェックも行う
