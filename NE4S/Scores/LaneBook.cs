@@ -15,10 +15,6 @@ namespace NE4S.Scores
     {
         public event LaneEventHandler UpdateNoteLocation;
 
-        #region 使わなくなったメンバ
-        public event EventHandler DataChanged;
-        #endregion
-
         public LaneBook() { }
 
         public void OnUpdateNoteLocation() => UpdateNoteLocation?.Invoke(this);

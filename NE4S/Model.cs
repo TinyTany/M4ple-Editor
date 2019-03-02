@@ -23,34 +23,6 @@ namespace NE4S
         [field: NonSerialized]
         public HighSpeedTimeLineBook TimeLineBook { get; set; } = new HighSpeedTimeLineBook();
 
-        #region 使わなくなったメンバ
-        /// <summary>
-        /// この変数は使用しない
-        /// プロパティを常に使う
-        /// </summary>
-        private bool isEditedWithoutSave;
-        public bool IsEditedWithoutSave
-        {
-            get { return isEditedWithoutSave; }
-            set
-            {
-                isEditedWithoutSave = value;
-                //IsEditedWithoutSaveChanged?.Invoke(isEditedWithoutSave);
-            }
-        }
-        [field: NonSerialized]
-        public event Action<bool> IsEditedWithoutSaveChanged;
-
-        private void ModelEdited(object sender, EventArgs e)
-        {
-            //NOTE: IsEditedWithoutSaveを変更するだけで18ミリ秒も時間食うので無駄な変更はif文で弾く
-            if (!IsEditedWithoutSave)
-            {
-                IsEditedWithoutSave = true;
-            }
-        }
-        #endregion
-
         public Model()
         {
             NoteBook = new NoteBook();

@@ -22,10 +22,6 @@ namespace NE4S.Notes
         public List<Air> AirNotes { get; private set; } = new List<Air>();
         public List<AttributeNote> AttributeNotes { get; private set; } = new List<AttributeNote>();
 
-        #region 使わなくなったメンバ
-        public event EventHandler DataChanged;
-        #endregion
-
         public NoteBook()
         {
             //HACK: 開始時BPMを無理やり設定

@@ -12,9 +12,6 @@ namespace NE4S.Scores
     [Serializable()]
     public class ScoreBook : List<Score>
     {
-        #region 使わなくなったメンバ
-        public event EventHandler DataChanged;
-        #endregion
 
         public ScoreBook() { }
 
