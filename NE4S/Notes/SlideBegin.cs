@@ -25,6 +25,7 @@ namespace NE4S.Notes
         {
             
         }
+        public SlideBegin(Note note) : base(note) { }
 
         public override void Relocate(Position pos, PointF location, int laneIndex)
         {

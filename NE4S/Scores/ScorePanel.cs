@@ -313,6 +313,35 @@ namespace NE4S.Scores
 
         #endregion
 
+        #region ノーツ編集用メニューから
+
+        public void LongNoteToFront(LongNote longNote)
+        {
+            OperationManager.AddOperationAndInvoke(
+                new LongNoteToFrontOperation(model, longNote));
+            Refresh();
+        }
+
+        public void LongNoteToBack(LongNote longNote)
+        {
+            OperationManager.AddOperationAndInvoke(
+                new LongNoteToBackOperation(model, longNote));
+            Refresh();
+        }
+
+        public void CutSlide(Slide slide, int tick)
+        {
+            System.Diagnostics.Debug.Assert(slide != null, "slideがnullです");
+            if (slide == null) { return; }
+            var past = slide.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < tick).Last();
+            var future = slide.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > tick).First();
+            OperationManager.AddOperationAndInvoke(
+                new CutSlideOperation(model, slide, past, future));
+            Refresh();
+        }
+
+        #endregion
+
         #region laneBookを触る用メソッド群
 
         /// <summary>
@@ -475,13 +504,18 @@ namespace NE4S.Scores
             {
                 //クリックされたグリッド座標を特定
                 Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
+                var slide = model.SelectedSlide(e.Location.Add(displayRect.Location));
                 if (selectionArea.Contains(currentPosition))
                 {
-                    new NoteEditCMenu(this, currentPosition).Show(PictureBox, e.Location);
+                    new NoteEditCMenu(this, currentPosition).Show(pictureBox, e.Location);
+                }
+                else if (slide != null)
+                {
+                    new LongNoteEditCMenu(this, slide, currentPosition.Tick).Show(pictureBox, e.Location);
                 }
                 else
                 {
-                    new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(displayRect.Location)), currentPosition).Show(PictureBox, e.Location);
+                    new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(displayRect.Location)), currentPosition).Show(pictureBox, e.Location);
                 }
             }
         }

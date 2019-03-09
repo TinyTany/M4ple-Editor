@@ -151,11 +151,11 @@ namespace NE4S.Operation
             {
                 before.Add(note);
             }
-            before.Add(new Note(past) as SlideEnd);
+            before.Add(new SlideEnd(past));
             #endregion
             #region 分割した奥側のSlideノーツを生成
             Slide after = new Slide();
-            after.Add(new Note(future) as SlideBegin);
+            after.Add(new SlideBegin(future));
             foreach (var note in slide.Where(x => x.Position.Tick > future.Position.Tick))
             {
                 after.Add(note);
@@ -304,6 +304,7 @@ namespace NE4S.Operation
             return true;
         }
 
+        // WARN: 多分これキャストに失敗してうまくいかないと思うよ
         private static List<Note> ReplicatePattern(List<Note> pattern)
         {
             // NOTE: SlideBeginかSlideEndがきたらひとまずSlideTapにすることにする
