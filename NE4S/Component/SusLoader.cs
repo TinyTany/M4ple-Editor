@@ -17,7 +17,6 @@ namespace NE4S.Component
     public partial class SusLoader
     {
         private readonly OpenFileDialog susSelectDialog;
-        private readonly float measureConstant = 4f;
 
         public SusLoader()
         {

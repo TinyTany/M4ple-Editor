@@ -29,7 +29,7 @@ namespace NE4S.Scores
         private Model model;
         private HScrollBar hScrollBar;
         private VScrollBar vScrollBar;
-        public PictureBox PictureBox { get; private set; }
+        private PictureBox pictureBox;
         private PreviewNote pNote;
         private DataIO dataIO;
         private SusLoader susLoader;
@@ -52,7 +52,7 @@ namespace NE4S.Scores
 
         public ScorePanel(PictureBox pBox, HScrollBar hScroll, VScrollBar vScroll)
         {
-            this.PictureBox = pBox;
+            pictureBox = pBox;
             virtualPanelSize = new Size(
                 0,
                 (int)(ScoreLane.Height + Margin.Top + Margin.Bottom + 17));
@@ -70,7 +70,7 @@ namespace NE4S.Scores
         #region 画面やレーンのサイズ関連
         public void ReSizePanel(Size newSize)
         {
-            PictureBox.Size = displayRect.Size = newSize;
+            pictureBox.Size = displayRect.Size = newSize;
             UpdateSizeComponent();
         }
 
@@ -490,7 +490,7 @@ namespace NE4S.Scores
             hScrollBar.Maximum = 
                 virtualPanelSize.Width < displayRect.Width ? 0 : virtualPanelSize.Width - displayRect.Width;
             //pBoxを更新
-            PictureBox.Refresh();
+            pictureBox.Refresh();
         }
 
         #region マウス入力とかに反応して処理するメソッドたち
@@ -635,7 +635,7 @@ namespace NE4S.Scores
                             noteValue,
                             attributeNote.NoteValue));
                     }
-                    PictureBox.Cursor = Cursors.Default;
+                    pictureBox.Cursor = Cursors.Default;
                     Status.IsMousePressed = false;
                 }
             }
@@ -647,31 +647,31 @@ namespace NE4S.Scores
         {
             if (selectedNote == null)
             {
-                PictureBox.Cursor = Cursors.Default;
+                pictureBox.Cursor = Cursors.Default;
                 return;
             }
             if (selectedNote is AirHoldEnd || selectedNote is AirAction || selectedNote is AttributeNote)
             {
-                PictureBox.Cursor = Cursors.SizeNS;
+                pictureBox.Cursor = Cursors.SizeNS;
             }
             else if (noteArea == NoteArea.LEFT || noteArea == NoteArea.RIGHT)
             {
-                PictureBox.Cursor = Cursors.SizeWE;
+                pictureBox.Cursor = Cursors.SizeWE;
             }
             else if (noteArea == NoteArea.CENTER)
             {
                 if (selectedNote is HoldEnd)
                 {
-                    PictureBox.Cursor = Cursors.SizeNS;
+                    pictureBox.Cursor = Cursors.SizeNS;
                 }
                 else
                 {
-                    PictureBox.Cursor = Cursors.SizeAll;
+                    pictureBox.Cursor = Cursors.SizeAll;
                 }
             }
             else
             {
-                PictureBox.Cursor = Cursors.Default;
+                pictureBox.Cursor = Cursors.Default;
             }
         }
 
@@ -751,7 +751,7 @@ namespace NE4S.Scores
                             selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                         if (selectionArea.MovePositionDelta != null)
                         {
-                            PictureBox.Cursor = Cursors.SizeAll;
+                            pictureBox.Cursor = Cursors.SizeAll;
                             selectionArea.Relocate(currentPosition, model.LaneBook);
                         }
                         else
@@ -766,7 +766,7 @@ namespace NE4S.Scores
                             selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                         if (selectionArea.Contains(currentPosition))
                         {
-                            PictureBox.Cursor = Cursors.SizeAll;
+                            pictureBox.Cursor = Cursors.SizeAll;
                         }
                         else
                         {
@@ -839,7 +839,7 @@ namespace NE4S.Scores
             {
                 selectionArea.SetContainsNotes(model.NoteBook);
             }
-            PictureBox.Cursor = Cursors.Default;
+            pictureBox.Cursor = Cursors.Default;
         }
 
         public void MouseEnter(EventArgs e) { }
@@ -1165,7 +1165,7 @@ namespace NE4S.Scores
             var drawLaneBook = model.LaneBook.Where(
                 x =>
                 x.LaneRect.Right >= displayRect.X - ScoreLane.Margin.Right &&
-                x.LaneRect.Left <= displayRect.X + PictureBox.Width + ScoreLane.Margin.Left)
+                x.LaneRect.Left <= displayRect.X + pictureBox.Width + ScoreLane.Margin.Left)
                 .ToList();
             drawLaneBook.ForEach(x => x.PaintLane(g, displayRect.Location));
             if (drawLaneBook.Any())
@@ -1193,7 +1193,7 @@ namespace NE4S.Scores
 
         public void Refresh()
         {
-            PictureBox.Refresh();
+            pictureBox.Refresh();
         }
     }
 }

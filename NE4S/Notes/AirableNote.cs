@@ -19,7 +19,9 @@ namespace NE4S.Notes
 
         public AirableNote() { }
 
-        public AirableNote(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
+        public AirableNote(int size, Position pos, PointF location, int laneIndex) 
+            : base(size, pos, location, laneIndex) { }
+
         public AirableNote(Note note) : base(note) { }
 
         /// <summary>
