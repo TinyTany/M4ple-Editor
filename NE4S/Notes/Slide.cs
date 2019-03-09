@@ -39,6 +39,34 @@ namespace NE4S.Notes
         /// </summary>
         public Slide() { }
 
+        public Slide(Slide slide)
+        {
+            slide.ForEach(x =>
+            {
+                if (x is SlideBegin)
+                {
+                    Add(new Note(x) as SlideBegin);
+                }
+                else if (x is SlideTap)
+                {
+                    Add(new Note(x) as SlideTap);
+                }
+                else if (x is SlideRelay)
+                {
+                    Add(new Note(x) as SlideRelay);
+                }
+                else if (x is SlideCurve)
+                {
+                    Add(new Note(x) as SlideCurve);
+                }
+                else if (x is SlideEnd)
+                {
+                    Add(new Note(x) as SlideEnd);
+                }
+
+            });
+        }
+
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
             SlideBegin slideBegin = new SlideBegin(size, pos, location, laneIndex);
