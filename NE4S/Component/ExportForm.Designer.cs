@@ -464,7 +464,7 @@
             this.curveSlideUpDown.Size = new System.Drawing.Size(139, 23);
             this.curveSlideUpDown.TabIndex = 102;
             this.curveSlideUpDown.Value = new decimal(new int[] {
-            100,
+            20,
             0,
             0,
             0});

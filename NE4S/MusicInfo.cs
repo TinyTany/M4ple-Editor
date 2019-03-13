@@ -26,7 +26,7 @@ namespace NE4S
         public string ExportPath { get; set; }
         public decimal MeasureOffset { get; set; }
         public int Metronome { get; set; }
-        public decimal SlideCurveSegment { get; set; } = 100;
+        public decimal SlideCurveSegment { get; set; } = 20;
         [field: NonSerialized]
         public bool HasExported { get; set; } = false;
         [field: NonSerialized]

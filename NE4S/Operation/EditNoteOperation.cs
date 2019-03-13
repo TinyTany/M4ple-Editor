@@ -304,18 +304,17 @@ namespace NE4S.Operation
             return true;
         }
 
-        // WARN: 多分これキャストに失敗してうまくいかないと思うよ
         private static List<Note> ReplicatePattern(List<Note> pattern)
         {
             // NOTE: SlideBeginかSlideEndがきたらひとまずSlideTapにすることにする
             var replica = new List<Note>();
             foreach(var note in pattern)
             {
-                if(note is SlideBegin) { replica.Add(new Note(note) as SlideTap); }
-                else if (note is SlideTap) { replica.Add(new Note(note) as SlideTap); }
-                else if (note is SlideRelay) { replica.Add(new Note(note) as SlideRelay); }
-                else if (note is SlideCurve) { replica.Add(new Note(note) as SlideCurve); }
-                else if (note is SlideEnd) { replica.Add(new Note(note) as SlideTap); }
+                if(note is SlideBegin) { replica.Add(new SlideTap(note)); }
+                else if (note is SlideTap) { replica.Add(new SlideTap(note)); }
+                else if (note is SlideRelay) { replica.Add(new SlideRelay(note)); }
+                else if (note is SlideCurve) { replica.Add(new SlideCurve(note)); }
+                else if (note is SlideEnd) { replica.Add(new SlideTap(note)); }
             }
             return replica;
         }

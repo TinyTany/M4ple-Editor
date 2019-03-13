@@ -16,15 +16,12 @@ namespace NE4S.Notes
 
         public event PositionCheckHandler IsPositionAvailable;
 
-        public SlideCurve()
-        {
+        public SlideCurve() { }
 
-        }
+        public SlideCurve(int size, Position pos, PointF location, int laneIndex) 
+            : base(size, pos, location, laneIndex) { }
 
-        public SlideCurve(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            
-        }
+        public SlideCurve(Note note) : base(note) { }
 
         public override void Relocate(Position pos, PointF location, int laneIndex)
         {

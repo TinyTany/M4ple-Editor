@@ -17,7 +17,6 @@ namespace NE4S.Component
     {
         private readonly SaveFileDialog saveFileDialog;
         private readonly OpenFileDialog musicSelectDialog, jacketSelectDialog;
-        private readonly float measureConstant = 4f;
         private ScoreBook scoreBook;
         private NoteBook noteBook;
         public MusicInfo MusicInfo { get; private set; } = new MusicInfo();
@@ -232,6 +231,7 @@ namespace NE4S.Component
                 streamWriter.WriteLine("#WAVEOFFSET " + offsetUpDown.Value);
                 streamWriter.WriteLine("#JACKET \"" + JacketPathText.Text + "\"");
                 streamWriter.WriteLine("\r\nRequest");
+                streamWriter.WriteLine("#REQUEST \"ticks_per_beat " + (ScoreInfo.MaxBeatDiv / 4) + "\"");
                 if (metoronomeBox.SelectedIndex == 0)
                 {
                     streamWriter.WriteLine("#REQUEST \"metronome enabled\"");
@@ -254,7 +254,7 @@ namespace NE4S.Component
                         streamWriter.WriteLine("#BPM01: " + bpmList.First().NoteValue);
                     }
                     streamWriter.WriteLine("#00008: 01");
-                    streamWriter.WriteLine("#00002: " + scoreBook.First().BarSize * measureConstant);
+                    streamWriter.WriteLine("#00002: " + scoreBook.First().BarSize);
                     streamWriter.WriteLine("\r\nCommand");
                     streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffsetUpDown.Value).ToString("D3"));
                 }
@@ -265,7 +265,7 @@ namespace NE4S.Component
                 {
                     if(score == scoreBook.First() || (score.BarSize != scoreBook.Prev(score).BarSize))
                     {
-                        streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + (measureConstant * score.BarSize));
+                        streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + score.BarSize);
                     }
                 }
                 if(noteBook.AttributeNotes.Where(x => x is HighSpeed).Any())
@@ -280,7 +280,7 @@ namespace NE4S.Component
                             System.Diagnostics.Debug.Assert(false, "ハイスピノーツが属するスコアが見つかりませんでした");
                             continue;
                         }
-                        streamWriter.Write((score.Index + (int)measureOffsetUpDown.Value) + "'" + (measureConstant * (speed.Position.Tick - score.StartTick)) + ":" + speed.NoteValue + ", ");
+                        streamWriter.Write((score.Index + (int)measureOffsetUpDown.Value) + "'" + (speed.Position.Tick - score.StartTick) + ":" + speed.NoteValue + ", ");
                     }
                     streamWriter.WriteLine("\"");
                     streamWriter.WriteLine("#HISPEED 00\r\n#MEASUREHS 00");

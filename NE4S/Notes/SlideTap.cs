@@ -16,15 +16,12 @@ namespace NE4S.Notes
 
         public event PositionCheckHandler IsPositionAvailable;
 
-        public SlideTap()
-        {
+        public SlideTap() { }
 
-        }
+        public SlideTap(int size, Position pos, PointF location, int laneIndex) 
+            : base(size, pos, location, laneIndex) { }
 
-        public SlideTap(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            
-        }
+        public SlideTap(Note note) : base(note) { }
 
         public override void Relocate(Position pos, PointF location, int laneIndex)
         {

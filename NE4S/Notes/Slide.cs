@@ -45,23 +45,23 @@ namespace NE4S.Notes
             {
                 if (x is SlideBegin)
                 {
-                    Add(new Note(x) as SlideBegin);
+                    Add(new SlideBegin(x));
                 }
                 else if (x is SlideTap)
                 {
-                    Add(new Note(x) as SlideTap);
+                    Add(new SlideTap(x));
                 }
                 else if (x is SlideRelay)
                 {
-                    Add(new Note(x) as SlideRelay);
+                    Add(new SlideRelay(x));
                 }
                 else if (x is SlideCurve)
                 {
-                    Add(new Note(x) as SlideCurve);
+                    Add(new SlideCurve(x));
                 }
                 else if (x is SlideEnd)
                 {
-                    Add(new Note(x) as SlideEnd);
+                    Add(new SlideEnd(x));
                 }
 
             });
