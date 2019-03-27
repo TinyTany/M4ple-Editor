@@ -333,7 +333,7 @@ namespace NE4S.Scores
         {
             System.Diagnostics.Debug.Assert(slide != null, "slideがnullです");
             if (slide == null) { return; }
-            var past = slide.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < tick).Last();
+            var past = slide.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick <= tick).Last();
             var future = slide.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > tick).First();
             OperationManager.AddOperationAndInvoke(
                 new CutSlideOperation(model, slide, past, future));

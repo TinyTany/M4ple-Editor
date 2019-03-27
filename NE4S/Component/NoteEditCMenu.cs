@@ -33,6 +33,20 @@ namespace NE4S.Component
 
         public LongNoteEditCMenu(ScorePanel scorePanel, LongNote longNote, int tick)
         {
+            System.Diagnostics.Debug.Assert(longNote != null, "ヤバイわよ");
+            #region Slide切断操作が有効か判断
+            var notesBeforeTick = longNote.Where(x => x.Position.Tick <= tick).OrderBy(x => x.Position.Tick);
+            var notesAfterTick = longNote.Where(x => x.Position.Tick > tick).OrderBy(x => x.Position.Tick);
+            var slideEditable = longNote is Slide;
+            if (!notesBeforeTick.Any() || !notesAfterTick.Any())
+            {
+                slideEditable = false;
+            }
+            else if (notesBeforeTick.Last() is SlideBegin || notesAfterTick.First() is SlideEnd)
+            {
+                slideEditable = false;
+            }
+            #endregion
             stripItems = new ToolStripItem[]
             {
                 new ToolStripMenuItem(
@@ -49,7 +63,7 @@ namespace NE4S.Component
                     null,
                     (s, e) => scorePanel.CutSlide(longNote as Slide, tick))
                 {
-                    Enabled = longNote is Slide
+                    Enabled = slideEditable
                 }
             };
             Items.AddRange(stripItems);
