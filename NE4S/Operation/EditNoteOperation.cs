@@ -435,4 +435,46 @@ namespace NE4S.Operation
             };
         }
     }
+
+    public class SlideTapToRelayOperation : Operation
+    {
+        public SlideTapToRelayOperation(Slide slide, List<Note> noteList)
+        {
+            Invoke += () =>
+            {
+                foreach(var note in noteList.Where(
+                    x => slide.Contains(x) && x is SlideTap))
+                {
+                    var relay = new SlideRelay(note);
+                    slide.Remove(note);
+                    slide.Add(relay);
+                }
+            };
+            Undo += () =>
+            {
+                new SlideRelayToTapOperation(slide, noteList).Invoke();
+            };
+        }
+    }
+
+    public class SlideRelayToTapOperation : Operation
+    {
+        public SlideRelayToTapOperation(Slide slide, List<Note> noteList)
+        {
+            Invoke += () =>
+            {
+                foreach (var note in noteList.Where(
+                    x => slide.Contains(x) && x is SlideRelay))
+                {
+                    var tap = new SlideTap(note);
+                    slide.Remove(note);
+                    slide.Add(tap);
+                }
+            };
+            Undo += () =>
+            {
+                new SlideTapToRelayOperation(slide, noteList).Invoke();
+            };
+        }
+    }
 }
