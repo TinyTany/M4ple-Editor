@@ -520,6 +520,20 @@ namespace NE4S.Scores
             }
         }
 
+        public void MouseDoubleClick(MouseEventArgs e)
+        {
+            if (Status.Mode != Mode.EDIT) { return; }
+            var slide = model.SelectedSlide(e.Location.Add(displayRect.Location));
+            var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
+            if (slide == null) { return; }
+            if (selectedNote is SlideTap || selectedNote is SlideRelay)
+            {
+                OperationManager.AddOperationAndInvoke(new SlideTapRelayReverseOperation(
+                    slide,
+                    new List<Note>() { selectedNote }));
+            }
+        }
+
         public void MouseDown(MouseEventArgs e)
         {
 			var laneBook = model.LaneBook;

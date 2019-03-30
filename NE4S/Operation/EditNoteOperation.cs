@@ -440,19 +440,18 @@ namespace NE4S.Operation
     {
         public SlideTapToRelayOperation(Slide slide, List<Note> noteList)
         {
+            var tapList = noteList.Where(x => slide.Contains(x) && x is SlideTap).ToList();
+            var relayList = new List<SlideRelay>();
+            tapList.ForEach(x => relayList.Add(new SlideRelay(x)));
             Invoke += () =>
             {
-                foreach(var note in noteList.Where(
-                    x => slide.Contains(x) && x is SlideTap))
-                {
-                    var relay = new SlideRelay(note);
-                    slide.Remove(note);
-                    slide.Add(relay);
-                }
+                tapList.ForEach(x => slide.Remove(x));
+                slide.AddRange(relayList);
             };
             Undo += () =>
             {
-                new SlideRelayToTapOperation(slide, noteList).Invoke();
+                relayList.ForEach(x => slide.Remove(x));
+                slide.AddRange(tapList);
             };
         }
     }
@@ -461,19 +460,39 @@ namespace NE4S.Operation
     {
         public SlideRelayToTapOperation(Slide slide, List<Note> noteList)
         {
+            var tapList = new List<SlideTap>();
+            var relayList = noteList.Where(x => slide.Contains(x) && x is SlideRelay).ToList();
+            relayList.ForEach(x => tapList.Add(new SlideTap(x)));
             Invoke += () =>
             {
-                foreach (var note in noteList.Where(
-                    x => slide.Contains(x) && x is SlideRelay))
-                {
-                    var tap = new SlideTap(note);
-                    slide.Remove(note);
-                    slide.Add(tap);
-                }
+                relayList.ForEach(x => slide.Remove(x));
+                slide.AddRange(tapList);
             };
             Undo += () =>
             {
-                new SlideTapToRelayOperation(slide, noteList).Invoke();
+                tapList.ForEach(x => slide.Remove(x));
+                slide.AddRange(relayList);
+            };
+        }
+    }
+
+    public class SlideTapRelayReverseOperation : Operation
+    {
+        public SlideTapRelayReverseOperation(Slide slide, List<Note> noteList)
+        {
+            var tapList = noteList.Where(x => slide.Contains(x) && x is SlideTap).ToList();
+            var relayList = noteList.Where(x => slide.Contains(x) && x is SlideRelay).ToList();
+            var tapToRelay = new SlideTapToRelayOperation(slide, tapList);
+            var relayToTap = new SlideRelayToTapOperation(slide, relayList);
+            Invoke += () =>
+            {
+                tapToRelay.Invoke();
+                relayToTap.Invoke();
+            };
+            Undo += () =>
+            {
+                relayToTap.Undo();
+                tapToRelay.Undo();
             };
         }
     }

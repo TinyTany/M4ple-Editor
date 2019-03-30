@@ -72,6 +72,7 @@ namespace NE4S
                 pBox.MouseWheel += Score_MouseWheel;
                 pBox.Paint += Score_Paint;
                 pBox.MouseClick += Score_MouseClick;
+                pBox.MouseDoubleClick += Score_MouseDoubleClick;
                 pBox.MouseEnter += Score_MouseEnter;
                 pBox.MouseDown += Score_MouseDown;
                 pBox.MouseMove += Score_MouseMove;
@@ -380,6 +381,8 @@ namespace NE4S
             Text += " - M4ple Editor";
         }
 
+        #region ToolStripButtonが押された時の処理など
+
         private void New_Click(object sender, EventArgs e)
         {
             ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
@@ -493,7 +496,9 @@ namespace NE4S
             selectedPanel.Refresh();
         }
 
-        #region イベント渡し
+        #endregion
+
+        #region クリックイベントなど
         // 現在開かれているタブに対して行う
 
         private void Score_MouseUp(object sender, MouseEventArgs e)
@@ -523,6 +528,12 @@ namespace NE4S
         private void Score_MouseClick(object sender, MouseEventArgs e)
         {
             (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseClick(e);
+            tabScore.SelectedTab.Controls[0].Refresh();
+        }
+
+        private void Score_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            (tabScore.SelectedTab as TabPageEx).ScorePanel.MouseDoubleClick(e);
             tabScore.SelectedTab.Controls[0].Refresh();
         }
 
