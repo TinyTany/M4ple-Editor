@@ -246,6 +246,10 @@ namespace NE4S
             tsmiSizeSmall.Click += (s, e) => SetPanelSize(PanelSize.Small);
             tsmiSizeMiddle.Click += (s, e) => SetPanelSize(PanelSize.Middle);
             tsmiSizeBig.Click += (s, e) => SetPanelSize(PanelSize.Big);
+            tsmiScaleHalf.Click += (s, e) => SetScoreScale(ScoreScale.Half);
+            tsmiScaleDefault.Click += (s, e) => SetScoreScale(ScoreScale.Default);
+            tsmiScaleDouble.Click += (s, e) => SetScoreScale(ScoreScale.Double);
+            tsmiScaleQuad.Click += (s, e) => SetScoreScale(ScoreScale.Quad);
             #endregion
             #region ToolStripMenuItem(ヘルプ)
             tsmiShowHelp.Click += (s, e) =>
@@ -626,31 +630,56 @@ namespace NE4S
             switch (panelSize)
             {
                 case PanelSize.Small:
-                    ScoreInfo.LaneMaxBar = 1;
+                    ScoreInfo.ScaleConstant = .25f;
                     tsmiSizeSmall.Checked = true;
                     tsmiSizeMiddle.Checked = false;
                     tsmiSizeBig.Checked = false;
                     Height = formHeight[0];
                     break;
                 case PanelSize.Middle:
-                    ScoreInfo.LaneMaxBar = 1.5f;
+                    ScoreInfo.ScaleConstant = .375f;
                     tsmiSizeSmall.Checked = false;
                     tsmiSizeMiddle.Checked = true;
                     tsmiSizeBig.Checked = false;
                     Height = formHeight[1];
                     break;
                 case PanelSize.Big:
-                    ScoreInfo.LaneMaxBar = 2;
+                    ScoreInfo.ScaleConstant = .5f;
                     tsmiSizeSmall.Checked = false;
                     tsmiSizeMiddle.Checked = false;
                     tsmiSizeBig.Checked = true;
                     Height = formHeight[2];
                     break;
             }
+            ScoreInfo.LaneMaxBar = ScoreInfo.ScaleConstant / ScoreInfo.UnitBeatHeight;
             ScoreLane.RefreshLaneSize();
             foreach (TabPageEx tabPageEx in tabScore.TabPages)
             {
                 tabPageEx.ScorePanel.RefreshLaneSize();
+            }
+        }
+
+        public void SetScoreScale(ScoreScale scale)
+        {
+            switch (scale)
+            {
+                case ScoreScale.Half:
+                    ScoreInfo.UnitBeatHeight = .125f;
+                    break;
+                case ScoreScale.Default:
+                    ScoreInfo.UnitBeatHeight = .25f;
+                    break;
+                case ScoreScale.Double:
+                    ScoreInfo.UnitBeatHeight = .5f;
+                    break;
+                case ScoreScale.Quad:
+                    ScoreInfo.UnitBeatHeight = 1f;
+                    break;
+            }
+            ScoreInfo.LaneMaxBar = ScoreInfo.ScaleConstant / ScoreInfo.UnitBeatHeight;
+            foreach (TabPageEx tabPageEx in tabScore.TabPages)
+            {
+                tabPageEx.ScorePanel.RefreshScoreScale();
             }
         }
 

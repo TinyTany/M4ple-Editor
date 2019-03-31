@@ -28,7 +28,7 @@ namespace NE4S.Scores
         /// </summary>
         public static readonly Color measureBorder = Color.FromArgb(120, 255, 255, 0);
         public float Width { get; }
-        public float Height { get; }
+        public float Height { get; private set; }
         public int BeatNumer { get; set; }
         public int BeatDenom { get; set; }
         public float BarSize { get; set; }
@@ -72,6 +72,11 @@ namespace NE4S.Scores
             Height = ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv * BarSize;
             Index = -1;
             LinkCount = 0;
+        }
+
+        public void RefreshHeight()
+        {
+            Height = ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv * BarSize;
         }
 
         /// <summary>

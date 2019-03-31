@@ -92,6 +92,14 @@ namespace NE4S.Scores
             UpdateSizeComponent();
             Update();
         }
+
+        public void RefreshScoreScale()
+        {
+            model.LaneBook.Clear(model.ScoreBook);
+            model.ScoreBook.ForEach(x => x.RefreshHeight());
+            model.LaneBook.SetScoreToLane(model.ScoreBook);
+            Update();
+        }
         #endregion
 
         #region 譜面のセーブとロード、エクスポートに関わるもの

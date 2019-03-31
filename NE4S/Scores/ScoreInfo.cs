@@ -13,18 +13,22 @@ namespace NE4S.Scores
     public class ScoreInfo
     {
         /// <summary>
+        /// 譜面パネルの定数
+        /// </summary>
+        public static float ScaleConstant { get; set; } = .5f;
+        /// <summary>
         /// 1最小レーンの横幅
         /// </summary>
         public static float UnitLaneWidth { get; } = 12;
         /// <summary>
         /// 最大分数時の縦幅
         /// </summary>
-        public static float UnitBeatHeight { get; } = 2;
+        public static float UnitBeatHeight { get; set; } = .25f;
         /// <summary>
         /// 最大分数
         /// 1tick
         /// </summary>
-        public static int MaxBeatDiv { get; } = 192;
+        public static int MaxBeatDiv { get; } = 1536;
         /// <summary>
         /// 各レーンでの4/4拍子が最大何小節分入るか
         /// </summary>

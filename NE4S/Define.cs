@@ -49,6 +49,9 @@ namespace NE4S.Define
         Small, Middle, Big
     }
 
+    public enum ScoreScale
+    {
+        Half, Default, Double, Quad
     }
 
     public struct NoteValue
