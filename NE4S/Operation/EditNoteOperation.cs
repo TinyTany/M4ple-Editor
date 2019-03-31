@@ -446,12 +446,12 @@ namespace NE4S.Operation
             Invoke += () =>
             {
                 tapList.ForEach(x => slide.Remove(x));
-                slide.AddRange(relayList);
+                relayList.ForEach(x => slide.Add(x));
             };
             Undo += () =>
             {
                 relayList.ForEach(x => slide.Remove(x));
-                slide.AddRange(tapList);
+                tapList.ForEach(x => slide.Add(x));
             };
         }
     }
@@ -466,12 +466,12 @@ namespace NE4S.Operation
             Invoke += () =>
             {
                 relayList.ForEach(x => slide.Remove(x));
-                slide.AddRange(tapList);
+                tapList.ForEach(x => slide.Add(x));
             };
             Undo += () =>
             {
                 tapList.ForEach(x => slide.Remove(x));
-                slide.AddRange(relayList);
+                relayList.ForEach(x => slide.Add(x));
             };
         }
     }
