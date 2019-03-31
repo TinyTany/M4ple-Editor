@@ -12,7 +12,7 @@ namespace NE4S
     /// </summary>
     public static class Status
     {
-        public static int Mode { get; set; } = Define.Mode.ADD;
+        public static Define.Mode Mode { get; set; } = Define.Mode.Add;
         public static int Beat { get; set; } = 16;
         public static int Grid { get; set; } = 16;
         public static int Note { get; set; } = Define.NoteType.AIRHOLD;
@@ -21,7 +21,7 @@ namespace NE4S
         public static bool InvisibleSlideTap { get; set; } = true;
 		public static bool IsMousePressed { get; set; } = false;
 		public static Note SelectedNote { get; set; } = null;
-        public static int SelectedNoteArea { get; set; } = Define.NoteArea.NONE;
+        public static Define.NoteArea SelectedNoteArea { get; set; } = Define.NoteArea.None;
 
         public static bool IsSlideRelayVisible { get; set; } = true;
         public static bool IsSlideCurveVisible { get; set; } = true;

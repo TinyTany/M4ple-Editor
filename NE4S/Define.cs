@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace NE4S.Define
 {
-    public struct Mode
+    public enum Mode
     {
-        public const int NONE = -1, ADD = 0, EDIT = 1, DELETE = 2;
+        None, Add, Edit, Delete
     }
 
     public struct NoteType
@@ -39,14 +39,16 @@ namespace NE4S.Define
             HIGHSPEED = 20;
     }
 
-    public struct NoteArea
+    public enum NoteArea
     {
-        public const int NONE = -1, LEFT = 0, CENTER = 1, RIGHT = 2;
+        None, Left, Center, Right
     }
 
-    public struct PanelSize
+    public enum PanelSize
     {
-        public const int SMALL = 0, MIDDLE = 1, BIG = 2;
+        Small, Middle, Big
+    }
+
     }
 
     public struct NoteValue

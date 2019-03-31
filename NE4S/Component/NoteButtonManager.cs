@@ -73,7 +73,7 @@ namespace NE4S.Component
             }
             else if(SelectedButton is AirNoteButton airButton)
             {
-                airButton.ChangeNoteDirection(NoteArea.RIGHT);
+                airButton.ChangeNoteDirection(NoteArea.Right);
                 airButton.Refresh();
             }
         }
@@ -109,7 +109,7 @@ namespace NE4S.Component
             }
             else if (SelectedButton is AirNoteButton airButton)
             {
-                airButton.ChangeNoteDirection(NoteArea.LEFT);
+                airButton.ChangeNoteDirection(NoteArea.Left);
                 airButton.Refresh();
             }
         }

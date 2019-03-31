@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Scores;
+using NE4S.Define;
 
 namespace NE4S.Notes
 {
@@ -141,7 +142,7 @@ namespace NE4S.Notes
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public Note SelectedNote(PointF location, ref int noteArea)
+        public Note SelectedNote(PointF location, ref NoteArea noteArea)
         {
             Note selectedNote;
             //AirHold
@@ -195,7 +196,7 @@ namespace NE4S.Notes
             selectedNote = AttributeNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null)
             {
-                noteArea = Define.NoteArea.CENTER;
+                noteArea = NoteArea.Center;
                 return selectedNote;
             }
             return null;
@@ -210,7 +211,7 @@ namespace NE4S.Notes
         public Note SelectedNote(PointF location)
         {
             //この変数は使用しない
-            int noteArea = 0;
+            NoteArea noteArea = NoteArea.None;
             return SelectedNote(location, ref noteArea);
         }
 

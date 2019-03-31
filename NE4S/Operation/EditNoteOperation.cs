@@ -84,18 +84,18 @@ namespace NE4S.Operation
 
     public class ReSizeNoteOperation : Operation
     {
-        public ReSizeNoteOperation(Note note, int sizeBefore, int sizeAfter, int noteArea)
+        public ReSizeNoteOperation(Note note, int sizeBefore, int sizeAfter, NoteArea noteArea)
         {
             Invoke += () =>
             {
-                int tmp = Status.SelectedNoteArea;
+                NoteArea tmp = Status.SelectedNoteArea;
                 Status.SelectedNoteArea = noteArea;
                 note.ReSize(sizeAfter);
                 Status.SelectedNoteArea = tmp;
             };
             Undo += () =>
             {
-                int tmp = Status.SelectedNoteArea;
+                NoteArea tmp = Status.SelectedNoteArea;
                 Status.SelectedNoteArea = noteArea;
                 note.ReSize(sizeBefore);
                 Status.SelectedNoteArea = tmp;

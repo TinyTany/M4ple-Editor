@@ -500,7 +500,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
             //クリックされたレーンを特定
             ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(displayRect.Location)));
-            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(displayRect.Location)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.EDIT)
+            if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(displayRect.Location)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.Edit)
             {
                 //クリックされたグリッド座標を特定
                 Position currentPosition = selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
@@ -522,7 +522,7 @@ namespace NE4S.Scores
 
         public void MouseDoubleClick(MouseEventArgs e)
         {
-            if (Status.Mode != Mode.EDIT) { return; }
+            if (Status.Mode != Mode.Edit) { return; }
             var slide = model.SelectedSlide(e.Location.Add(displayRect.Location));
             var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
             if (slide == null) { return; }
@@ -562,17 +562,17 @@ namespace NE4S.Scores
             #region 左クリック
             if (e.Button == MouseButtons.Left)
 			{
-                int noteArea = NoteArea.NONE;
+                NoteArea noteArea = NoteArea.None;
                 var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location), ref noteArea);
 				switch (Status.Mode)
 				{
-					case Mode.ADD:
+					case Mode.Add:
                         if(selectedLane != null)
                         {
                             AddNote(e.Location, selectedLane);
                         }
                         break;
-					case Mode.EDIT:
+					case Mode.Edit:
                         //Airは単体で動かせないようにする
                         if (selectedNote is Air)
                         {
@@ -599,12 +599,12 @@ namespace NE4S.Scores
                                 if (selectedNote is SlideRelay && !Status.IsSlideRelayVisible)
                                 {
                                     Status.SelectedNote = null;
-                                    Status.SelectedNoteArea = NoteArea.NONE;
+                                    Status.SelectedNoteArea = NoteArea.None;
                                 }
                                 if (selectedNote is SlideCurve && !Status.IsSlideCurveVisible)
                                 {
                                     Status.SelectedNote = null;
-                                    Status.SelectedNoteArea = NoteArea.NONE;
+                                    Status.SelectedNoteArea = NoteArea.None;
                                 }
                                 //カーソルの設定
                                 SetCursor(selectedNote, noteArea);
@@ -623,7 +623,7 @@ namespace NE4S.Scores
                             selectionArea = new SelectionArea();
                         }
                         break;
-					case Mode.DELETE:
+					case Mode.Delete:
                         if (selectedNote != null)
                         {
                             OperationManager.AddOperationAndInvoke(new DeleteNoteOperation(model, selectedNote));
@@ -638,7 +638,7 @@ namespace NE4S.Scores
             else if (e.Button == MouseButtons.Right)
             {
                 var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
-                if (Status.Mode == Mode.EDIT && selectedNote is AttributeNote attributeNote)
+                if (Status.Mode == Mode.Edit && selectedNote is AttributeNote attributeNote)
                 {
                     float noteValue = attributeNote.NoteValue;
                     new SetValueCustomForm(attributeNote).ShowDialog();
@@ -657,7 +657,7 @@ namespace NE4S.Scores
             if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 		}
 
-        private void SetCursor(Note selectedNote, int noteArea)
+        private void SetCursor(Note selectedNote, NoteArea noteArea)
         {
             if (selectedNote == null)
             {
@@ -668,11 +668,11 @@ namespace NE4S.Scores
             {
                 pictureBox.Cursor = Cursors.SizeNS;
             }
-            else if (noteArea == NoteArea.LEFT || noteArea == NoteArea.RIGHT)
+            else if (noteArea == NoteArea.Left || noteArea == NoteArea.Right)
             {
                 pictureBox.Cursor = Cursors.SizeWE;
             }
-            else if (noteArea == NoteArea.CENTER)
+            else if (noteArea == NoteArea.Center)
             {
                 if (selectedNote is HoldEnd)
                 {
@@ -694,7 +694,7 @@ namespace NE4S.Scores
 			var laneBook = model.LaneBook;
 			switch (Status.Mode)
 			{
-				case Mode.ADD:
+				case Mode.Add:
 					ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(displayRect.Location)));
 					if (selectedLane != null)
 					{
@@ -716,14 +716,14 @@ namespace NE4S.Scores
                         Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                     }
                     break;
-				case Mode.EDIT:
+				case Mode.Edit:
 					selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(displayRect.Location)));
                     //選択されているノーツに対するサイズ変更、位置変更を行う
 					if (Status.IsMousePressed && e.Button == MouseButtons.Left && Status.SelectedNote != null && selectedLane != null)
 					{
                         switch (Status.SelectedNoteArea)
                         {
-                            case NoteArea.LEFT:
+                            case NoteArea.Left:
                                 {
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
                                     Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location);
@@ -734,7 +734,7 @@ namespace NE4S.Scores
                                     Status.SelectedNote.ReSize(newSize);
                                 }
                                 break;
-                            case NoteArea.CENTER:
+                            case NoteArea.Center:
                                 {
                                     //ノーツのサイズを考慮したほうのメソッドを使う
                                     Point physicalGridPoint = PointToGrid(e.Location, selectedLane, Status.SelectedNote.Size);
@@ -743,7 +743,7 @@ namespace NE4S.Scores
                                     Status.SelectedNote.Relocate(newPos, virtualGridPoint, selectedLane.Index);
                                 }
                                 break;
-                            case NoteArea.RIGHT:
+                            case NoteArea.Right:
                                 {
                                     if (Status.SelectedNote.LaneIndex != selectedLane.Index) return;
                                     Point virtualGridPoint = PointToGrid(e.Location, selectedLane, 1).Add(displayRect.Location);
@@ -784,13 +784,13 @@ namespace NE4S.Scores
                         }
                         else
                         {
-                            int noteArea = NoteArea.NONE;
+                            NoteArea noteArea = NoteArea.None;
                             var note = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location), ref noteArea);
                             SetCursor(note, noteArea);
                         }
                     }
                     break;
-				case Mode.DELETE:
+				case Mode.Delete:
                     var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
                     if(Status.IsMousePressed && selectedNote != null)
                     {
@@ -847,7 +847,7 @@ namespace NE4S.Scores
             selectionAreaPrev = null;
             Status.IsMousePressed = false;
             Status.SelectedNote = null;
-            Status.SelectedNoteArea = NoteArea.NONE;
+            Status.SelectedNoteArea = NoteArea.None;
             selectionArea.MovePositionDelta = null;
             if (!selectionArea.SelectedNoteList.Any() && !selectionArea.SelectedLongNoteList.Any())
             {
@@ -1193,7 +1193,7 @@ namespace NE4S.Scores
             //プレビューノーツ描画
 			pNote.Paint(g);
             //矩形選択領域描画
-            if(Status.Mode == Mode.EDIT)
+            if(Status.Mode == Mode.Edit)
             {
                 selectionArea.Draw(g, model.LaneBook, displayRect.Location);
             }

@@ -43,16 +43,16 @@ namespace NE4S.Component
                 previewBox.Width - virtualButtonWeight, 0, virtualButtonWeight, previewBox.Height);
         }
 
-        public void ChangeNoteDirection(int direction)
+        public void ChangeNoteDirection(NoteArea direction)
         {
-            if(direction == NoteArea.LEFT)
+            if(direction == NoteArea.Left)
             {
                 if (noteType == NoteType.AIRDOWNC) { noteType = NoteType.AIRDOWNL; }
                 else if(noteType == NoteType.AIRUPC) { noteType = NoteType.AIRUPL; }
                 else if(noteType == NoteType.AIRDOWNR) { noteType = NoteType.AIRDOWNC; }
                 else if(noteType == NoteType.AIRUPR) { noteType = NoteType.AIRUPC; }
             }
-            else if(direction == NoteArea.RIGHT)
+            else if(direction == NoteArea.Right)
             {
                 if (noteType == NoteType.AIRDOWNC) { noteType = NoteType.AIRDOWNR; }
                 else if (noteType == NoteType.AIRUPC) { noteType = NoteType.AIRUPR; }

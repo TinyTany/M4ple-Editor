@@ -32,14 +32,14 @@ namespace NE4S
         /// <param name="note"></param>
         /// <param name="location"></param>
         /// <param name="noteArea"></param>
-        public static void SetNoteArea(Note note, PointF location, ref int noteArea)
+        public static void SetNoteArea(Note note, PointF location, ref Define.NoteArea noteArea)
         {
             //それぞれの領域の割合を設定
             float leftCenter = .33f, centerRight = .66f;
             float locationRatio = (location.X - note.Location.X) / note.Width;
-            if (locationRatio <= leftCenter) noteArea = Define.NoteArea.LEFT;
-            else if (locationRatio <= centerRight) noteArea = Define.NoteArea.CENTER;
-            else noteArea = Define.NoteArea.RIGHT;
+            if (locationRatio <= leftCenter) noteArea = Define.NoteArea.Left;
+            else if (locationRatio <= centerRight) noteArea = Define.NoteArea.Center;
+            else noteArea = Define.NoteArea.Right;
         }
 
         /// <summary>

@@ -83,7 +83,7 @@ namespace NE4S
 			InitializeToolStrip();
             #region ノーツボタン追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
-            noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.ADD);
+            noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.Add);
             flpNotePanel.Size = tabNoteButton.TabPages[0].Size;
             flpNotePanel.Location = new Point();
             foreach (NoteButton noteButton in noteButtonManager)
@@ -100,9 +100,9 @@ namespace NE4S
                 selectedPanel.OperationManager.OnStatusChanged();
             };
             #region ToolStripButton
-            tsbAdd.Click += (s, e) => SetMode(Mode.ADD);
-            tsbEdit.Click += (s, e) => SetMode(Mode.EDIT);
-            tsbDelete.Click += (s, e) => SetMode(Mode.DELETE);
+            tsbAdd.Click += (s, e) => SetMode(Mode.Add);
+            tsbEdit.Click += (s, e) => SetMode(Mode.Edit);
+            tsbDelete.Click += (s, e) => SetMode(Mode.Delete);
 			tsbInvisibleSlideTap.Click += TbsInvisibleSlideTap_Click;
 			tscbBeat.SelectedIndexChanged += (s, e) => { Status.Beat = int.Parse(tscbBeat.Text); };
             tscbGrid.SelectedIndexChanged += (s, e) => { Status.Grid = int.Parse(tscbGrid.Text); };
@@ -243,9 +243,9 @@ namespace NE4S
             };
             #endregion
             #region ToolStripMenuItem(ウィンドウ)
-            tsmiSizeSmall.Click += (s, e) => SetPanelSize(PanelSize.SMALL);
-            tsmiSizeMiddle.Click += (s, e) => SetPanelSize(PanelSize.MIDDLE);
-            tsmiSizeBig.Click += (s, e) => SetPanelSize(PanelSize.BIG);
+            tsmiSizeSmall.Click += (s, e) => SetPanelSize(PanelSize.Small);
+            tsmiSizeMiddle.Click += (s, e) => SetPanelSize(PanelSize.Middle);
+            tsmiSizeBig.Click += (s, e) => SetPanelSize(PanelSize.Big);
             #endregion
             #region ToolStripMenuItem(ヘルプ)
             tsmiShowHelp.Click += (s, e) =>
@@ -320,7 +320,7 @@ namespace NE4S
                 tabNoteButton.Height = tabScore.Height;
                 flpNotePanel.Height = tabNoteButton.TabPages[0].Height;
             };
-            SetPanelSize(PanelSize.BIG);
+            SetPanelSize(PanelSize.Big);
             //
             /*
             var data = AppDomain.CurrentDomain?.SetupInformation?.ActivationArguments?.ActivationData?[0];
@@ -575,13 +575,13 @@ namespace NE4S
 			tsbInvisibleSlideTap.Checked = Status.InvisibleSlideTap;
 			switch (Status.Mode)
 			{
-				case Mode.ADD:
+				case Mode.Add:
 					tsbAdd.Checked = true;
 					break;
-				case Mode.EDIT:
+				case Mode.Edit:
 					tsbEdit.Checked = true;
 					break;
-				case Mode.DELETE:
+				case Mode.Delete:
 					tsbDelete.Checked = true;
 					break;
 				default:
@@ -589,26 +589,26 @@ namespace NE4S
 			}
 		}
 
-        public void SetMode(int mode)
+        public void SetMode(Mode mode)
         {
-            if (mode != Mode.ADD && mode != Mode.EDIT && mode != Mode.DELETE)
+            if (mode != Mode.Add && mode != Mode.Edit && mode != Mode.Delete)
             {
                 return;
             }
             Status.Mode = mode;
             switch (mode)
             {
-                case Mode.ADD:
+                case Mode.Add:
                     tsbAdd.Checked = true;
                     tsbEdit.Checked = false;
                     tsbDelete.Checked = false;
                     break;
-                case Mode.EDIT:
+                case Mode.Edit:
                     tsbAdd.Checked = false;
                     tsbEdit.Checked = true;
                     tsbDelete.Checked = false;
                     break;
-                case Mode.DELETE:
+                case Mode.Delete:
                     tsbAdd.Checked = false;
                     tsbEdit.Checked = false;
                     tsbDelete.Checked = true;
@@ -619,27 +619,27 @@ namespace NE4S
             Refresh();
         }
 
-        public void SetPanelSize(int panelSize)
+        public void SetPanelSize(PanelSize panelSize)
         {
             // HACK: とりあえず決めうちにした
             int[] formHeight = { 558, 750, 940 };
             switch (panelSize)
             {
-                case PanelSize.SMALL:
+                case PanelSize.Small:
                     ScoreInfo.LaneMaxBar = 1;
                     tsmiSizeSmall.Checked = true;
                     tsmiSizeMiddle.Checked = false;
                     tsmiSizeBig.Checked = false;
                     Height = formHeight[0];
                     break;
-                case PanelSize.MIDDLE:
+                case PanelSize.Middle:
                     ScoreInfo.LaneMaxBar = 1.5f;
                     tsmiSizeSmall.Checked = false;
                     tsmiSizeMiddle.Checked = true;
                     tsmiSizeBig.Checked = false;
                     Height = formHeight[1];
                     break;
-                case PanelSize.BIG:
+                case PanelSize.Big:
                     ScoreInfo.LaneMaxBar = 2;
                     tsmiSizeSmall.Checked = false;
                     tsmiSizeMiddle.Checked = false;

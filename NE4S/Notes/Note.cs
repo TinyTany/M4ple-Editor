@@ -102,7 +102,7 @@ namespace NE4S.Notes
             int diffSize = size - Size;
             Size = size;
             noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
-            if (Status.SelectedNoteArea == NoteArea.LEFT)
+            if (Status.SelectedNoteArea == NoteArea.Left)
             {
                 noteRect.X -= diffSize * ScoreInfo.UnitLaneWidth;
                 Position = new Position(Position.Lane - diffSize, Position.Tick);

@@ -25,7 +25,7 @@ namespace NE4S.Notes
         public void Paint(Graphics g)
         {
             if (!Visible || !Enable) return;
-            if (Status.Mode != Mode.ADD) return;
+            if (Status.Mode != Mode.Add) return;
             if (NoteType.AIRUPC <= Status.Note && Status.Note <= NoteType.AIRHOLD) return;
             note.Size = new SizeF(ScoreInfo.UnitLaneWidth * Status.NoteSize, ScoreInfo.NoteHeight);
 			note.Location = Location;
