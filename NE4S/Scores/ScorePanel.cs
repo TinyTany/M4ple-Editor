@@ -508,7 +508,7 @@ namespace NE4S.Scores
 
         public void MouseClick(MouseEventArgs e)
         {
-			var laneBook = model.LaneBook;
+            var laneBook = model.LaneBook;
             //クリックされたレーンを特定
             ScoreLane selectedLane = laneBook.Find(x => x.HitRect.Contains(e.Location.Add(displayRect.Location)));
             if (selectedLane != null && selectedLane.SelectedScore(e.Location.Add(displayRect.Location)) != null && e.Button == MouseButtons.Right && Status.Mode == Mode.Edit)
@@ -529,6 +529,17 @@ namespace NE4S.Scores
                     new EditCMenu(this, selectedLane, selectedLane.SelectedScore(e.Location.Add(displayRect.Location)), currentPosition).Show(pictureBox, e.Location);
                 }
             }
+#if DEBUG
+            if (Status.Mode != Mode.Edit) { return; }
+            var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
+            if (selectedNote == null) { return; }
+            if (e.Button == MouseButtons.Middle)
+            {
+                MessageBox.Show(
+                    selectedNote.ToString() + "\n" +
+                    selectedNote.Position.Lane + ", " + selectedNote.Position.Tick);
+            }
+#endif
         }
 
         public void MouseDoubleClick(MouseEventArgs e)
@@ -558,6 +569,7 @@ namespace NE4S.Scores
 			{
                 System.Diagnostics.Debug.WriteLine(selectedLane.Index);
                 Point gridPoint = PointToGrid(e.Location, selectedLane);
+                System.Diagnostics.Debug.WriteLine(gridPoint);
                 Position position = selectedLane.GetLocalPosition(gridPoint.AddX(displayRect.X));
 				if(position != null)
 				{

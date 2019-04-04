@@ -21,6 +21,7 @@ namespace NE4S
         public MainForm()
         {
             InitializeComponent();
+            #region 譜面パネルの初期化
             tabScore.TabPages.Clear();
             tabScore.Font = new Font("Yu Gothic UI", 9);
             tabNoteButton.Font = tabScore.Font;
@@ -81,7 +82,8 @@ namespace NE4S
                 hScroll.Scroll += Score_Scroll;
                 vScroll.Scroll += Score_Scroll;
             }
-			InitializeToolStrip();
+            #endregion
+            InitializeToolStrip();
             #region ノーツボタン追加
             NoteButtonManager noteButtonManager = new NoteButtonManager();
             noteButtonManager.ButtonClicked += (s, e) => SetMode(Mode.Add);
@@ -110,13 +112,7 @@ namespace NE4S
             tsbNew.Click += New_Click;
             tsbOpen.Click += Open_Click;
             tsbSave.Click += Save_Click;
-            tsbImport.Click += (s, e) =>
-            {
-                // NOTE: tsmiImport.Clickも同じ
-                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
-                selectedPanel.Import();
-                UpdateTextOfTabAndForm(false);
-            };
+            tsbImport.Click += Import_Click;
             tsbExport.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
@@ -197,13 +193,7 @@ namespace NE4S
                 bool isSaved = selectedPanel.SaveAs();
                 UpdateTextOfTabAndForm(!isSaved);
             };
-            tsmiImport.Click += (s, e) =>
-            {
-                // NOTE: tsbImportも同じ
-                ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
-                selectedPanel.Import();
-                UpdateTextOfTabAndForm(false);
-            };
+            tsmiImport.Click += Import_Click;
             tsmiExport.Click += (s, e) =>
             {
                 ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
