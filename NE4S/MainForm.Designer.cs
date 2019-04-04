@@ -107,9 +107,9 @@
             this.tslEstimatedNotes = new System.Windows.Forms.ToolStripLabel();
             this.tslRealNotes = new System.Windows.Forms.ToolStripLabel();
             this.tsbZoomIn = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.tsbZoomOut = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
-            this.stmiScoreScale = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiScoreScale = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiScaleHalf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiScaleDefault = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiScaleDouble = new System.Windows.Forms.ToolStripMenuItem();
@@ -402,7 +402,7 @@
             // 
             this.tsmiWindow.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiPanelSize,
-            this.stmiScoreScale});
+            this.tsmiScoreScale});
             this.tsmiWindow.Name = "tsmiWindow";
             this.tsmiWindow.Size = new System.Drawing.Size(80, 20);
             this.tsmiWindow.Text = "ウィンドウ(&W)";
@@ -414,25 +414,25 @@
             this.tsmiSizeMiddle,
             this.tsmiSizeBig});
             this.tsmiPanelSize.Name = "tsmiPanelSize";
-            this.tsmiPanelSize.Size = new System.Drawing.Size(162, 22);
+            this.tsmiPanelSize.Size = new System.Drawing.Size(180, 22);
             this.tsmiPanelSize.Text = "譜面レーンのサイズ";
             // 
             // tsmiSizeSmall
             // 
             this.tsmiSizeSmall.Name = "tsmiSizeSmall";
-            this.tsmiSizeSmall.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeSmall.Size = new System.Drawing.Size(180, 22);
             this.tsmiSizeSmall.Text = "小";
             // 
             // tsmiSizeMiddle
             // 
             this.tsmiSizeMiddle.Name = "tsmiSizeMiddle";
-            this.tsmiSizeMiddle.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeMiddle.Size = new System.Drawing.Size(180, 22);
             this.tsmiSizeMiddle.Text = "中";
             // 
             // tsmiSizeBig
             // 
             this.tsmiSizeBig.Name = "tsmiSizeBig";
-            this.tsmiSizeBig.Size = new System.Drawing.Size(86, 22);
+            this.tsmiSizeBig.Size = new System.Drawing.Size(180, 22);
             this.tsmiSizeBig.Text = "大";
             // 
             // tsmiHelp
@@ -552,7 +552,7 @@
             this.tsbPaste,
             this.toolStripSeparator2,
             this.tsbZoomIn,
-            this.toolStripButton2,
+            this.tsbZoomOut,
             this.toolStripSeparator14,
             this.tsbAdd,
             this.tsbEdit,
@@ -806,54 +806,54 @@
             this.tsbZoomIn.Size = new System.Drawing.Size(23, 22);
             this.tsbZoomIn.Text = "拡大";
             // 
-            // toolStripButton2
+            // tsbZoomOut
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = global::NE4S.Properties.Resources.ZoomOut_16x;
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton2.Text = "縮小";
-            this.toolStripButton2.ToolTipText = "縮小";
+            this.tsbZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbZoomOut.Image = global::NE4S.Properties.Resources.ZoomOut_16x;
+            this.tsbZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbZoomOut.Name = "tsbZoomOut";
+            this.tsbZoomOut.Size = new System.Drawing.Size(23, 22);
+            this.tsbZoomOut.Text = "縮小";
+            this.tsbZoomOut.ToolTipText = "縮小";
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
             this.toolStripSeparator14.Size = new System.Drawing.Size(6, 25);
             // 
-            // stmiScoreScale
+            // tsmiScoreScale
             // 
-            this.stmiScoreScale.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiScoreScale.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiScaleHalf,
             this.tsmiScaleDefault,
             this.tsmiScaleDouble,
             this.tsmiScaleQuad});
-            this.stmiScoreScale.Name = "stmiScoreScale";
-            this.stmiScoreScale.Size = new System.Drawing.Size(162, 22);
-            this.stmiScoreScale.Text = "譜面倍率";
+            this.tsmiScoreScale.Name = "tsmiScoreScale";
+            this.tsmiScoreScale.Size = new System.Drawing.Size(180, 22);
+            this.tsmiScoreScale.Text = "譜面倍率";
             // 
             // tsmiScaleHalf
             // 
             this.tsmiScaleHalf.Name = "tsmiScaleHalf";
-            this.tsmiScaleHalf.Size = new System.Drawing.Size(153, 22);
+            this.tsmiScaleHalf.Size = new System.Drawing.Size(180, 22);
             this.tsmiScaleHalf.Text = "x0.5";
             // 
             // tsmiScaleDefault
             // 
             this.tsmiScaleDefault.Name = "tsmiScaleDefault";
-            this.tsmiScaleDefault.Size = new System.Drawing.Size(153, 22);
-            this.tsmiScaleDefault.Text = "x1（デフォルト）";
+            this.tsmiScaleDefault.Size = new System.Drawing.Size(180, 22);
+            this.tsmiScaleDefault.Text = "x1";
             // 
             // tsmiScaleDouble
             // 
             this.tsmiScaleDouble.Name = "tsmiScaleDouble";
-            this.tsmiScaleDouble.Size = new System.Drawing.Size(153, 22);
+            this.tsmiScaleDouble.Size = new System.Drawing.Size(180, 22);
             this.tsmiScaleDouble.Text = "x2";
             // 
             // tsmiScaleQuad
             // 
             this.tsmiScaleQuad.Name = "tsmiScaleQuad";
-            this.tsmiScaleQuad.Size = new System.Drawing.Size(153, 22);
+            this.tsmiScaleQuad.Size = new System.Drawing.Size(180, 22);
             this.tsmiScaleQuad.Text = "x4";
             // 
             // MainForm
@@ -962,9 +962,9 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiImport;
         private System.Windows.Forms.ToolStripButton tsbImport;
         private System.Windows.Forms.ToolStripButton tsbZoomIn;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton tsbZoomOut;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
-        private System.Windows.Forms.ToolStripMenuItem stmiScoreScale;
+        private System.Windows.Forms.ToolStripMenuItem tsmiScoreScale;
         private System.Windows.Forms.ToolStripMenuItem tsmiScaleHalf;
         private System.Windows.Forms.ToolStripMenuItem tsmiScaleDefault;
         private System.Windows.Forms.ToolStripMenuItem tsmiScaleDouble;
