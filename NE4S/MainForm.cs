@@ -16,6 +16,7 @@ namespace NE4S
     public partial class MainForm : Form
     {
         private readonly int tabPageCount = 3;
+        private ScoreScale currentScoreScale;
 
         public MainForm()
         {
@@ -127,6 +128,8 @@ namespace NE4S
             tsbUndo.Click += Undo_Click;
             tsbRedo.Click += Redo_Click;
             tsbUndo.Enabled = tsbRedo.Enabled = false;
+            tsbZoomIn.Click += ZoomIn_Click;
+            tsbZoomOut.Click += ZoomOut_Click;
             #endregion
             #region ToolStripMenuItem(表示)
             tsmiIsShortNote.Click += (s, e) =>
@@ -325,6 +328,7 @@ namespace NE4S
                 flpNotePanel.Height = tabNoteButton.TabPages[0].Height;
             };
             SetPanelSize(PanelSize.Big);
+            SetScoreScale(ScoreScale.Default);
             //
             /*
             var data = AppDomain.CurrentDomain?.SetupInformation?.ActivationArguments?.ActivationData?[0];
@@ -500,6 +504,33 @@ namespace NE4S
             selectedPanel.Refresh();
         }
 
+        private void Import_Click(object sender, EventArgs e)
+        {
+            ScorePanel selectedPanel = (tabScore.SelectedTab as TabPageEx).ScorePanel;
+            selectedPanel.Import();
+            UpdateTextOfTabAndForm(false);
+        }
+
+        private void ZoomIn_Click(object sender, EventArgs e)
+        {
+            switch (currentScoreScale)
+            {
+                case ScoreScale.Half: SetScoreScale(ScoreScale.Default); break;
+                case ScoreScale.Default: SetScoreScale(ScoreScale.Double); break;
+                case ScoreScale.Double: SetScoreScale(ScoreScale.Quad); break;
+            }
+        }
+
+        private void ZoomOut_Click(object sender, EventArgs e)
+        {
+            switch (currentScoreScale)
+            {
+                case ScoreScale.Default: SetScoreScale(ScoreScale.Half); break;
+                case ScoreScale.Double: SetScoreScale(ScoreScale.Default); break;
+                case ScoreScale.Quad: SetScoreScale(ScoreScale.Double); break;
+            }
+        }
+
         #endregion
 
         #region クリックイベントなど
@@ -661,26 +692,61 @@ namespace NE4S
 
         public void SetScoreScale(ScoreScale scale)
         {
+            currentScoreScale = scale;
+            foreach(ToolStripMenuItem item in tsmiScoreScale.DropDownItems)
+            {
+                item.Checked = false;
+            }
+            var prevUnitBeatHeight = ScoreInfo.UnitBeatHeight;
             switch (scale)
             {
                 case ScoreScale.Half:
                     ScoreInfo.UnitBeatHeight = .125f;
+                    tsmiScaleHalf.Checked = true;
                     break;
                 case ScoreScale.Default:
                     ScoreInfo.UnitBeatHeight = .25f;
+                    tsmiScaleDefault.Checked = true;
                     break;
                 case ScoreScale.Double:
                     ScoreInfo.UnitBeatHeight = .5f;
+                    tsmiScaleDouble.Checked = true;
                     break;
                 case ScoreScale.Quad:
                     ScoreInfo.UnitBeatHeight = 1f;
+                    tsmiScaleQuad.Checked = true;
                     break;
             }
             ScoreInfo.LaneMaxBar = ScoreInfo.ScaleConstant / ScoreInfo.UnitBeatHeight;
             foreach (TabPageEx tabPageEx in tabScore.TabPages)
             {
-                tabPageEx.ScorePanel.RefreshScoreScale();
+                tabPageEx.ScorePanel.RefreshScoreScale(ScoreInfo.UnitBeatHeight / prevUnitBeatHeight);
             }
+
+            #region ボタンの見た目の更新（有効無効）とそのスケールで有効な分数の制限
+            tsbZoomIn.Enabled = tsbZoomOut.Enabled = true;
+            // tscbBeatのItemsで有効範囲内の最大のインデックス
+            // NOTE: 対応分数全種 => {4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768}
+            var enableIndex = 0;
+            switch (currentScoreScale)
+            {
+                case ScoreScale.Half:
+                    tsbZoomOut.Enabled = false;
+                    enableIndex = 8;
+                    break;
+                case ScoreScale.Default:
+                    enableIndex = 10;
+                    break;
+                case ScoreScale.Double:
+                    enableIndex = 12;
+                    break;
+                case ScoreScale.Quad:
+                    enableIndex = 14;
+                    tsbZoomIn.Enabled = false;
+                    break;
+            }
+            // TODO: enableIndexを使ってtscbBeatの分数の有効無効を更新する
+            #endregion
         }
 
         private void TbsInvisibleSlideTap_Click(object sender, EventArgs e)

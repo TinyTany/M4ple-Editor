@@ -93,11 +93,14 @@ namespace NE4S.Scores
             Update();
         }
 
-        public void RefreshScoreScale()
+        public void RefreshScoreScale(float scale)
         {
             model.LaneBook.Clear(model.ScoreBook);
             model.ScoreBook.ForEach(x => x.RefreshHeight());
             model.LaneBook.SetScoreToLane(model.ScoreBook);
+            // NOTE: 拡大縮小したときに小節の表示位置が大きくずれないようにする
+            displayRect.X = (int)(displayRect.X * scale);
+            MouseScroll(0);
             Update();
         }
         #endregion
