@@ -49,7 +49,9 @@ namespace NE4S.Scores
                 location.Y - (HitRect.Y + HitRect.Height));
             Position position = new Position(
                 (int)(normalizedPos.X / ScoreInfo.UnitLaneWidth),
-                StartTick + -(int)(normalizedPos.Y / ScoreInfo.UnitBeatHeight));
+                StartTick + -(int)(normalizedPos.Y / ScoreInfo.UnitBeatHeight 
+                // HACK: よくわからんけどこうしないと相対座標がずれてしまう（TODO: 原因を探る）
+                + 1 / ScoreInfo.UnitBeatHeight));
             return position;
         }
     }
