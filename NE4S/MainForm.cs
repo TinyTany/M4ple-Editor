@@ -15,8 +15,19 @@ namespace NE4S
 {
     public partial class MainForm : Form
     {
+        public class ToolStripValueItem : ToolStripMenuItem
+        {
+            public int Value { get; set; }
+
+            public ToolStripValueItem(int value) : base(value.ToString())
+            {
+                Value = value;
+            }
+        }
+
         private readonly int tabPageCount = 3;
         private ScoreScale currentScoreScale;
+        private List<ToolStripValueItem> beatItemList;
 
         public MainForm()
         {
@@ -317,6 +328,35 @@ namespace NE4S
                 tabNoteButton.Height = tabScore.Height;
                 flpNotePanel.Height = tabNoteButton.TabPages[0].Height;
             };
+
+            #region tscbBeatの初期化
+            beatItemList = new List<ToolStripValueItem>()
+            {
+                new ToolStripValueItem(4),
+                new ToolStripValueItem(8),
+                new ToolStripValueItem(12),
+                new ToolStripValueItem(16),
+                new ToolStripValueItem(24),
+                new ToolStripValueItem(32),
+                new ToolStripValueItem(48),
+                new ToolStripValueItem(64),
+                new ToolStripValueItem(96),
+                new ToolStripValueItem(128),
+                new ToolStripValueItem(192),
+                new ToolStripValueItem(256),
+                new ToolStripValueItem(384),
+                new ToolStripValueItem(512),
+                new ToolStripValueItem(768),
+            };
+
+            tscbBeat.Items.Clear();
+            beatItemList.ForEach(x => tscbBeat.Items.Add(x));
+            // NOTE: StatusでのBeatの初期値が16なのでそれに対応したインデックスにしておく
+            var index = beatItemList.FindIndex(x => x.Value == Status.Beat);
+            System.Diagnostics.Debug.Assert(index >= 0, "tscbBeatの初期インデックスが正しく設定されていません");
+            tscbBeat.SelectedIndex = index;
+            #endregion
+
             SetPanelSize(PanelSize.Big);
             SetScoreScale(ScoreScale.Default);
             //
@@ -713,29 +753,17 @@ namespace NE4S
                 tabPageEx.ScorePanel.RefreshScoreScale(ScoreInfo.UnitBeatHeight / prevUnitBeatHeight);
             }
 
-            #region ボタンの見た目の更新（有効無効）とそのスケールで有効な分数の制限
+            #region ボタンの見た目の更新（有効無効）
             tsbZoomIn.Enabled = tsbZoomOut.Enabled = true;
-            // tscbBeatのItemsで有効範囲内の最大のインデックス
-            // NOTE: 対応分数全種 => {4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768}
-            var enableIndex = 0;
             switch (currentScoreScale)
             {
                 case ScoreScale.Half:
                     tsbZoomOut.Enabled = false;
-                    enableIndex = 8;
-                    break;
-                case ScoreScale.Default:
-                    enableIndex = 10;
-                    break;
-                case ScoreScale.Double:
-                    enableIndex = 12;
                     break;
                 case ScoreScale.Quad:
-                    enableIndex = 14;
                     tsbZoomIn.Enabled = false;
                     break;
             }
-            // TODO: enableIndexを使ってtscbBeatの分数の有効無効を更新する
             #endregion
         }
 
