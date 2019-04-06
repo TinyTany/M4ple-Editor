@@ -404,7 +404,8 @@ namespace NE4S.Component
                         }
                         else if (command == "WAVE")
                         {
-                            model.MusicInfo.MusicFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            //model.MusicInfo.MusicFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            model.MusicInfo.MusicFileName = rawCommandArg;
                         }
                         else if (command == "WAVEOFFSET")
                         {
@@ -412,7 +413,8 @@ namespace NE4S.Component
                         }
                         else if (command == "MOVIE")
                         {
-                            model.MusicInfo.MovieFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            //model.MusicInfo.MovieFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            model.MusicInfo.MovieFileName = rawCommandArg;
                         }
                         else if (command == "MOVIEOFFSET")
                         {
@@ -420,11 +422,13 @@ namespace NE4S.Component
                         }
                         else if (command == "JACKET")
                         {
-                            model.MusicInfo.JacketFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            //model.MusicInfo.JacketFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            model.MusicInfo.JacketFileName = rawCommandArg;
                         }
                         else if (command == "BACKGROUND")
                         {
-                            model.MusicInfo.BackgroundFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            //model.MusicInfo.BackgroundFileName = (new Uri(new Uri(dirPath), rawCommandArg)).LocalPath;
+                            model.MusicInfo.BackgroundFileName = rawCommandArg;
                         }
                         #endregion
 
