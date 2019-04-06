@@ -254,7 +254,7 @@ namespace NE4S.Component
                         streamWriter.WriteLine("#BPM01: " + bpmList.First().NoteValue);
                     }
                     streamWriter.WriteLine("#00008: 01");
-                    streamWriter.WriteLine("#00002: " + scoreBook.First().BarSize);
+                    streamWriter.WriteLine("#00002: " + scoreBook.First().BarSize * 4);
                     streamWriter.WriteLine("\r\nCommand");
                     streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffsetUpDown.Value).ToString("D3"));
                 }
@@ -265,7 +265,7 @@ namespace NE4S.Component
                 {
                     if(score == scoreBook.First() || (score.BarSize != scoreBook.Prev(score).BarSize))
                     {
-                        streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + score.BarSize);
+                        streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + score.BarSize * 4);
                     }
                 }
                 if(noteBook.AttributeNotes.Where(x => x is HighSpeed).Any())

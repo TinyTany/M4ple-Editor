@@ -530,6 +530,10 @@ namespace NE4S.Scores
                 }
             }
 #if DEBUG
+            if (selectedLane != null)
+            {
+                //MessageBox.Show(selectedLane.CurrentBarSize.ToString());
+            }
             if (Status.Mode != Mode.Edit) { return; }
             var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
             if (selectedNote == null) { return; }

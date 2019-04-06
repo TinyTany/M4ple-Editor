@@ -165,8 +165,6 @@
             this.BeatDenom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BeatDenom.FormattingEnabled = true;
             this.BeatDenom.Items.AddRange(new object[] {
-            "1",
-            "2",
             "4",
             "8",
             "16",
