@@ -54,7 +54,7 @@ namespace NE4S.Scores
             }
             foreach (Score score in scoreBook)
             {
-                //newScoreが1つのレーンの最大サイズで収まるか判定
+                // newScore全体が1つのレーンの最大サイズで収まるか判定
                 if (score.BarSize <= ScoreInfo.LaneMaxBar)
                 {
                     //現在のリストにあるレーンの末尾にまだnewScoreを入れる余裕があるか判定
@@ -66,11 +66,11 @@ namespace NE4S.Scores
                     //レーン末尾にnewScoreを格納
                     this.Last().AddScore(score);
                 }
-                //収まらなかった場合
-                else
+                // newScoreの全体は1つのレーンには収まらないけど、1拍分なら収まる場合
+                else if (score.BarSize / score.BeatNumer <= ScoreInfo.LaneMaxBar)
                 {
-                    //なんやかんやで分割して複数レーンに格納する
-                    for (int i = 0; i < score.BarSize / ScoreInfo.LaneMaxBar; ++i)
+                    var numerCountPerLane = (int)(ScoreInfo.LaneMaxBar / (score.BarSize / score.BeatNumer));
+                    for (int i = 0; i < score.BeatNumer / (float)numerCountPerLane; ++i)
                     {
                         //新たにレーンを追加
                         if (this.Last().CurrentBarSize > 0) Add(new ScoreLane());
@@ -78,9 +78,18 @@ namespace NE4S.Scores
                         this.Last().AddScore(
                             score,
                             new Range(
-                                (int)(i * score.BeatDenom * ScoreInfo.LaneMaxBar + 1),
-                                Math.Min(score.BeatNumer, (int)((i + 1) * score.BeatDenom * ScoreInfo.LaneMaxBar))));
+                                i * numerCountPerLane + 1,
+                                Math.Min(score.BeatNumer, (i + 1) * numerCountPerLane)));
                     }
+                }
+                // newScoreの1拍分すら1つのレーンに収まらない場合
+                else
+                {
+                    System.Diagnostics.Debug.Assert(false, "小節の描画がおかしくなるぞ！");
+                    // UNDONE: どうする
+                    // 現段階で設定できる倍率（0.5, 1, 2, 4）だと、n分のm拍子に対してnが4以上の小節であれば
+                    // ここに入ることは無いので、エディタから設定できる拍子をnが4以上に設定することでここの実装をしなくてもよいことにした
+                    // （実装が面倒臭いため）
                 }
             }
             UpdateNoteLocation?.Invoke(this);
