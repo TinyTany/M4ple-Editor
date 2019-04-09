@@ -1,5 +1,8 @@
 # M4ple Editor
 某シミュ用の例の譜面エディタ（新製品）
+
+![Snapshot](https://github.com/TinyTany/M4ple/wiki/img/snapshot_03.png)
+
 ## ダウンロード
 [ここ](https://github.com/TinyTany/M4ple/releases)からダウンロードしてください。
 ## 使い方
