@@ -195,6 +195,24 @@ namespace NE4S.Component
                     AirHold.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f + 25), new SizeF(7, 50));
                     AirAction.Draw(e, new PointF(previewBox.Width / 2f, previewBox.Height / 2f), new SizeF(78, 8));
                     break;
+                // HACK: 色や座標に即値を使っているのでよくない
+                case NoteType.BPM:
+                    e.Graphics.DrawLine(
+                        Pens.LimeGreen, 
+                        (previewBox.Width - 100) / 2f, 
+                        previewBox.Height / 2f, 
+                        (previewBox.Width + 100) / 2f, 
+                        previewBox.Height / 2f);
+                    break;
+                // HACK: 同上
+                case NoteType.HIGHSPEED:
+                    e.Graphics.DrawLine(
+                        Pens.Red,
+                        (previewBox.Width - 100) / 2f,
+                        previewBox.Height / 2f,
+                        (previewBox.Width + 100) / 2f,
+                        previewBox.Height / 2f);
+                    break;
                 default:
                     break;
             }
