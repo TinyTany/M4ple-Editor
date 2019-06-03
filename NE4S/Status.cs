@@ -36,9 +36,65 @@ namespace NE4S
         public static int DrawTickFirst { get; set; }
         public static int DrawTickLast { get; set; }
 
-        public static string ExportDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        public static string OpenDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        public static string MusicDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-        public static string JacketDialogDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+        public static string ExportDialogDirectory
+        {
+            get
+            {
+                if (Properties.Settings.Default.ExportDirectory == "")
+                {
+                    Properties.Settings.Default.ExportDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+                return Properties.Settings.Default.ExportDirectory;
+            }
+            set
+            {
+                Properties.Settings.Default.ExportDirectory = value;
+            }
+        }
+        public static string OpenDialogDirectory
+        {
+            get
+            {
+                if (Properties.Settings.Default.OpenDirectory == "")
+                {
+                    Properties.Settings.Default.OpenDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+                return Properties.Settings.Default.OpenDirectory;
+            }
+            set
+            {
+                Properties.Settings.Default.OpenDirectory = value;
+            }
+        }
+        public static string MusicDialogDirectory
+        {
+            get
+            {
+                if (Properties.Settings.Default.MusicDirectory == "")
+                {
+                    Properties.Settings.Default.MusicDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+                }
+                return Properties.Settings.Default.MusicDirectory;
+            }
+            set
+            {
+                Properties.Settings.Default.MusicDirectory = value;
+            }
+        }
+        public static string JacketDialogDirectory
+        {
+            get
+            {
+                if (Properties.Settings.Default.JacketDirectory == "")
+                {
+                    Properties.Settings.Default.JacketDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                }
+                return Properties.Settings.Default.JacketDirectory;
+            }
+            set
+            {
+                Properties.Settings.Default.JacketDirectory = value;
+            }
+        }
     }
 }

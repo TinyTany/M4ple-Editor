@@ -217,6 +217,7 @@ namespace NE4S
             FormClosing += (s, e) =>
             {
                 e.Cancel = !IsExit();
+                Properties.Settings.Default.Save();
             };
             #endregion
             #region ToolStripMenuItem(編集)
