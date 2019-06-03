@@ -957,40 +957,46 @@ namespace NE4S.Scores
             {
                 #region ShortNote
                 case NoteType.TAP:
-                    if (!Status.IsShortNoteVisible) break;
+                    if (!Status.IsShortNoteVisible) return;
                     newNote = new Tap(Status.NoteSize, position, locationVirtual, lane.Index);
-                    break;
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
+                    return;
                 case NoteType.EXTAP:
-                    if (!Status.IsShortNoteVisible) break;
+                    if (!Status.IsShortNoteVisible) return;
                     newNote = new ExTap(Status.NoteSize, position, locationVirtual, lane.Index);
-                    break;
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
+                    return;
                 case NoteType.EXTAPDOWN:
-                    if (!Status.IsShortNoteVisible) break;
+                    if (!Status.IsShortNoteVisible) return;
                     newNote = new ExTapDown(Status.NoteSize, position, locationVirtual, lane.Index);
-                    break;
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
+                    return;
                 case NoteType.AWEXTAP:
-                    if (!Status.IsShortNoteVisible) break;
+                    if (!Status.IsShortNoteVisible) return; 
                     newNote = new AwesomeExTap(Status.NoteSize, position, locationVirtual, lane.Index);
-                    break;
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
+                    return;
                 case NoteType.HELL:
-                    if (!Status.IsShortNoteVisible) break;
+                    if (!Status.IsShortNoteVisible) return;
                     newNote = new HellTap(Status.NoteSize, position, locationVirtual, lane.Index);
-                    break;
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
+                    return;
                 case NoteType.FLICK:
-                    if (!Status.IsShortNoteVisible) break;
+                    if (!Status.IsShortNoteVisible) return;
                     newNote = new Flick(Status.NoteSize, position, locationVirtual, lane.Index);
-                    break;
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
+                    return;
                 #endregion
                 #region LongNote
                 case NoteType.HOLD:
-                    if (!Status.IsHoldVisible) break;
+                    if (!Status.IsHoldVisible) return;
                     OperationManager.AddOperationAndInvoke(
                         new AddLongNoteOperation(
                             model,
                             new Hold(Status.NoteSize, position, locationVirtual, lane.Index)));
-                    break;
+                    return;
                 case NoteType.SLIDE:
-                    if (!Status.IsSlideVisible) break;
+                    if (!Status.IsSlideVisible) return;
                     //Slideとの当たり判定は自由仮想座標を使う
                     Slide selectedSlide = model.SelectedSlide(location.Add(displayRect.Location));
                     //Shiftキーを押しながら追加した際はかならず新規Slideノーツを追加する
@@ -1023,9 +1029,9 @@ namespace NE4S.Scores
                             model,
                             new Slide(Status.NoteSize, position, locationVirtual, lane.Index)));
                     }
-                    break;
+                    return;
                 case NoteType.SLIDECURVE:
-                    if (!Status.IsSlideVisible || !Status.IsSlideCurveVisible) break;
+                    if (!Status.IsSlideVisible || !Status.IsSlideCurveVisible) return;
                     selectedSlide = model.SelectedSlide(location.Add(displayRect.Location));
                     if (selectedSlide != null)
                     {
@@ -1037,11 +1043,10 @@ namespace NE4S.Scores
                                     slideCurve));
                         Status.SelectedNote = slideCurve;
                     }
-                    break;
+                    return;
                 case NoteType.AIRHOLD:
-                    if (!Status.IsAirHoldVisible) break;
+                    if (!Status.IsAirHoldVisible) return;
                     AirHold selectedAirHold = model.SelectedAirHold(location.Add(displayRect.Location));
-                    var selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedAirHold != null)
                     {
                         AirAction airAction = 
@@ -1051,7 +1056,9 @@ namespace NE4S.Scores
                                     selectedAirHold,
                                     airAction));
                         Status.SelectedNote = airAction;
+                        return;
                     }
+                    var selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && selectedNote.IsAirHoldAttachable)
                     {
                         OperationManager.AddOperationAndInvoke(
@@ -1068,63 +1075,63 @@ namespace NE4S.Scores
                                     lane.Index),
                                 selectedNote));
                     }
-                    break;
+                    return;
                 #endregion
                 #region Air
                 case NoteType.AIRUPC:
-                    if (!Status.IsAirVisible) break;
+                    if (!Status.IsAirVisible) return;
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
-                    break;
+                    return;
                 case NoteType.AIRUPL:
-                    if (!Status.IsAirVisible) break;
+                    if (!Status.IsAirVisible) return;
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpL air = new AirUpL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
-                    break;
+                    return;
                 case NoteType.AIRUPR:
-                    if (!Status.IsAirVisible) break;
+                    if (!Status.IsAirVisible) return;
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirUpR air = new AirUpR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
-                    break;
+                    return;
                 case NoteType.AIRDOWNC:
-                    if (!Status.IsAirVisible) break;
+                    if (!Status.IsAirVisible) return;
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownC air = new AirDownC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
-                    break;
+                    return;
                 case NoteType.AIRDOWNL:
-                    if (!Status.IsAirVisible) break;
+                    if (!Status.IsAirVisible) return;
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownL air = new AirDownL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
-                    break;
+                    return;
                 case NoteType.AIRDOWNR:
-                    if (!Status.IsAirVisible) break;
+                    if (!Status.IsAirVisible) return;
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
                         AirDownR air = new AirDownR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
-                    break;
+                    return;
                 #endregion
                 #region AttributeNote
                 case NoteType.BPM:
@@ -1143,7 +1150,7 @@ namespace NE4S.Scores
                         return;
                     }
                     newNote = new BPM(position, locationVirtual, Status.CurrentValue, lane.Index);
-                    break;
+                    return;
                 case NoteType.HIGHSPEED:
                     // すでに同一TickにHighSpeedノーツが配置されていた場合は、今置こうとしているBPMノーツの値で上書きをする
                     note = model.NoteBook.AttributeNotes.Find(x => x.Position.Tick == position.Tick && x is HighSpeed);
@@ -1160,14 +1167,10 @@ namespace NE4S.Scores
                         return;
                     }
                     newNote = new HighSpeed(position, locationVirtual, Status.CurrentValue, lane.Index);
-                    break;
+                    return;
                 #endregion
                 default:
-                    break;
-            }
-            if (newNote != null)
-            {
-                OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
+                    return;
             }
         }
 
