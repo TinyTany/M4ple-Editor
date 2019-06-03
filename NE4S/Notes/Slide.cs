@@ -103,6 +103,12 @@ namespace NE4S.Notes
             return true;
         }
 
+        public bool IsPositionTickAvailable(PartialSlide partialSlide, Position delta)
+        {
+            // UNDONE
+            return true;
+        }
+
         private bool IsCurvesValid(List<Note> list)
         {
             foreach(Note note in list)
