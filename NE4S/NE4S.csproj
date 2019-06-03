@@ -186,6 +186,7 @@
     <Compile Include="Notes\HoldEnd.cs" />
     <Compile Include="Notes\LongNote.cs" />
     <Compile Include="Notes\Note.cs" />
+    <Compile Include="Notes\PartialSlide.cs" />
     <Compile Include="Notes\PreviewNote.cs" />
     <Compile Include="Notes\RawNote.cs" />
     <Compile Include="Notes\Slide.cs" />
