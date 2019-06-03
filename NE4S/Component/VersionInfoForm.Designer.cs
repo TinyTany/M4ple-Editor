@@ -82,7 +82,7 @@
             this.copyright.Name = "copyright";
             this.copyright.Size = new System.Drawing.Size(112, 15);
             this.copyright.TabIndex = 4;
-            this.copyright.Text = "t4nishi © 2018-2019";
+            this.copyright.Text = "© 2018-2019 t4nishi";
             // 
             // VersionInfoForm
             // 
