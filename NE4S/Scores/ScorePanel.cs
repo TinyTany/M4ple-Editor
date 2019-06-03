@@ -492,9 +492,27 @@ namespace NE4S.Scores
             model.FillLane(begin);
             Update();
         }
-		#endregion
+        #endregion
 
-		private void Update()
+        #region Slideのパターン複製関連
+
+        public void ReplicateOnce(List<PartialSlide> partialSlides)
+        {
+            OperationManager.AddOperationAndInvoke(new ReplicateSlidePatternOperation(
+                model,
+                partialSlides,
+                ScoreInfo.MaxBeatDiv / Status.Beat));
+            Refresh();
+        }
+
+        public void ReplicateToEnd(List<PartialSlide> partialSlides)
+        {
+
+        }
+
+        #endregion
+
+        private void Update()
         {
 			var laneBook = model.LaneBook;
             virtualPanelSize.Width = (int)(ScoreLane.Width + Margin.Left + Margin.Right) * laneBook.Count;
