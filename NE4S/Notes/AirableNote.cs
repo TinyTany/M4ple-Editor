@@ -24,6 +24,14 @@ namespace NE4S.Notes
 
         public AirableNote(Note note) : base(note) { }
 
+        public bool IsAirHoldAttachable
+        {
+            get
+            {
+                return !IsAirAttached && !IsAirHoldAttached;
+            }
+        }
+
         /// <summary>
         /// Airが取り付けられているか判定します
         /// 取り付けられている場合trueを返します
