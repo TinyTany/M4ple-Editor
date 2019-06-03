@@ -246,6 +246,55 @@ namespace NE4S.Operation
     public class ReplicateSlidePatternOperation : Operation
     {
         public ReplicateSlidePatternOperation(
+            Model model, List<PartialSlide> partialList, int tickInterval)
+        {
+            var slideList = new List<Slide>();
+            var afterList = new List<Slide>();
+            partialList.ForEach(x => slideList.Add(x.Slide));
+            #region パターン複製処理（複製したSlideをafterListに格納）
+            foreach(var x in partialList)
+            {
+                if (x.Slide == null || x.Partial == null || !x.Partial.Any())
+                {
+                    System.Diagnostics.Debug.Assert(false, "パターン複製に失敗しました");
+                    continue;
+                }
+                var after = new Slide(x.Slide);
+                var pattern = ReplicatePattern(x.Partial).OrderBy(y => y.Position.Tick).ToList();
+                var patternLength = pattern.Last().Position.Tick - pattern.First().Position.Tick;
+                pattern.ForEach(y =>
+                {
+                    var newTick = y.Position.Tick + patternLength + tickInterval;
+                    var sameTickNote = after.Find(z => z.Position.Tick == newTick);
+                    if (sameTickNote != null && !(sameTickNote is SlideEnd)) { after.Remove(sameTickNote); }
+                    y.RelocateOnly(new Position(y.Position.Lane, newTick));
+                    after.Add(y);
+                });
+                var end = after.Find(y => y is SlideEnd);
+                System.Diagnostics.Debug.Assert(end != null, "無理");
+                // NOTE: この時点でのafterのLast()は追加されたパターンの一番最後のノーツになるはず
+                var last = after.Last();
+                if (last.Position.Tick >= end.Position.Tick)
+                {
+                    end.RelocateOnly(last.Position);
+                    after.Remove(last);
+                }
+                afterList.Add(after);
+            }
+            #endregion
+            Invoke += () =>
+            {
+                model.NoteBook.SlideNotes.RemoveAll(x => slideList.Contains(x));
+                model.NoteBook.SlideNotes.AddRange(afterList);
+            };
+            Undo += () =>
+            {
+                model.NoteBook.SlideNotes.RemoveAll(x => afterList.Contains(x));
+                model.NoteBook.SlideNotes.AddRange(slideList);
+            };
+        }
+
+        public ReplicateSlidePatternOperation(
             Model model, Slide slide, List<Note> pattern, int times, int tickInterval)
         {
             #region 複製したSlideを新規作成
@@ -304,6 +353,11 @@ namespace NE4S.Operation
             return true;
         }
 
+        /// <summary>
+        /// Slideを構成するノーツのリストを複製しSlide中継点ノーツとしたリストを返します
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
         private static List<Note> ReplicatePattern(List<Note> pattern)
         {
             // NOTE: SlideBeginかSlideEndがきたらひとまずSlideTapにすることにする
