@@ -95,7 +95,7 @@ namespace NE4S.Component
 
         public bool Contains(LongNote longNote)
         {
-            foreach(Note note in longNote)
+            foreach(Note note in longNote.Notes)
             {
                 if (!Contains(note))
                 {
@@ -156,13 +156,13 @@ namespace NE4S.Component
             ReverseShortNotes(SelectedNoteList, laneBook, noteBook);
             SelectedLongNoteList.ForEach(x =>
             {
-                ReverseShortNotes(x, laneBook, noteBook);
+                ReverseShortNotes(x.Notes, laneBook, noteBook);
             });
         }
 
-        private void ReverseShortNotes(List<Note> noteList, LaneBook laneBook, NoteBook noteBook)
+        private void ReverseShortNotes(IReadOnlyList<Note> noteList, LaneBook laneBook, NoteBook noteBook)
         {
-            noteList.ForEach(x =>
+            foreach(var x in noteList)
             {
                 int reverseLane = BottomRightPosition.Lane - (x.Position.Lane - TopLeftPosition.Lane + x.Size) + 1;
                 Position newPosition = new Position(reverseLane, x.Position.Tick);
@@ -170,19 +170,19 @@ namespace NE4S.Component
                 if (x is AirableNote airable && airable.IsAirAttached)
                 {
                     Air newAir = null;
-                    if(airable.Air is AirUpL)
+                    if (airable.Air is AirUpL)
                     {
                         newAir = new AirUpR(x);
                     }
-                    else if(airable.Air is AirUpR)
+                    else if (airable.Air is AirUpR)
                     {
                         newAir = new AirUpL(x);
                     }
-                    else if(airable.Air is AirDownL)
+                    else if (airable.Air is AirDownL)
                     {
                         newAir = new AirDownR(x);
                     }
-                    else if(airable.Air is AirDownR)
+                    else if (airable.Air is AirDownR)
                     {
                         newAir = new AirDownL(x);
                     }
@@ -193,7 +193,7 @@ namespace NE4S.Component
                         airable.AttachAir(newAir);
                     }
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -235,13 +235,13 @@ namespace NE4S.Component
             });
             SelectedLongNoteList.ForEach(x =>
             {
-                x.ForEach(y =>
+                foreach (var y in x.Notes)
                 {
                     Position positionDelta = new Position(
                         y.Position.Lane - prevStartPosition.Lane,
                         y.Position.Tick - prevStartPosition.Tick);
                     y.RelocateOnlyAndUpdate(new Position(newStartLane + positionDelta.Lane, newStartTick + positionDelta.Tick), laneBook);
-                });
+                }
             });
         }
 

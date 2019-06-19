@@ -41,7 +41,7 @@ namespace NE4S.Notes
 
         public Slide(Slide slide)
         {
-            slide.ForEach(x =>
+            foreach(var x in slide.notes)
             {
                 if (x is SlideBegin)
                 {
@@ -63,8 +63,7 @@ namespace NE4S.Notes
                 {
                     Add(new SlideEnd(x));
                 }
-
-            });
+            }
         }
 
         public Slide(int size, Position pos, PointF location, int laneIndex)
@@ -85,10 +84,10 @@ namespace NE4S.Notes
         /// <returns></returns>
         protected override bool IsPositionTickAvailable(Note note, Position position)
         {
-            var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
+            var list = notes.OrderBy(x => x.Position.Tick).Where(x => x != note);
             var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
             var listOverPosition = list.Where(x => x.Position.Tick > position.Tick);
-            if (!this.Any()) return true;
+            if (!notes.Any()) return true;
             if (note is SlideBegin && position.Tick > list.First().Position.Tick) return false;
             if (note is SlideEnd && position.Tick < list.Last().Position.Tick) return false;
             if (note is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
@@ -128,7 +127,7 @@ namespace NE4S.Notes
         /// Slide中継点系のノーツのみAddされます。それ以外はAddせずにアサートを吐きます。
         /// </summary>
         /// <param name="note"></param>
-        public new void Add(Note note)
+        public void Add(Note note)
         {
             if (note is SlideBegin begin) { Add(begin); }
             else if (note is SlideEnd end) { Add(end); }
@@ -148,7 +147,7 @@ namespace NE4S.Notes
                 Status.SelectedNote = null;
                 return;
             }
-            base.Add(slideBegin);
+            notes.Add(slideBegin);
             slideBegin.IsPositionAvailable += IsPositionTickAvailable;
             return;
         }
@@ -160,7 +159,7 @@ namespace NE4S.Notes
                 Status.SelectedNote = null;
                 return;
             }
-            base.Add(slideTap);
+            notes.Add(slideTap);
             slideTap.IsPositionAvailable += IsPositionTickAvailable;
             return;
         }
@@ -172,7 +171,7 @@ namespace NE4S.Notes
                 Status.SelectedNote = null;
                 return;
             }
-            base.Add(slideRelay);
+            notes.Add(slideRelay);
             slideRelay.IsPositionAvailable += IsPositionTickAvailable;
             return;
         }
@@ -184,7 +183,7 @@ namespace NE4S.Notes
                 Status.SelectedNote = null;
                 return;
             }
-            base.Add(slideCurve);
+            notes.Add(slideCurve);
             slideCurve.IsPositionAvailable += IsPositionTickAvailable;
             return;
         }
@@ -196,7 +195,7 @@ namespace NE4S.Notes
                 Status.SelectedNote = null;
                 return;
             }
-            base.Add(slideEnd);
+            notes.Add(slideEnd);
             slideEnd.IsPositionAvailable += IsPositionTickAvailable;
             return;
         }
@@ -206,14 +205,14 @@ namespace NE4S.Notes
         /// 削除後にノーツのチェックも行う
         /// </summary>
         /// <param name="note"></param>
-        public new void Remove(Note note)
+        public void Remove(Note note)
         {
-            base.Remove(note);
-            Note past = this.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < note.Position.Tick).Last();
-            Note future = this.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > note.Position.Tick).First();
+            notes.Remove(note);
+            Note past = notes.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < note.Position.Tick).Last();
+            Note future = notes.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > note.Position.Tick).First();
             if(past is SlideCurve && future is SlideCurve)
             {
-                base.Remove(future);
+                notes.Remove(future);
             }
         }
 
@@ -225,7 +224,7 @@ namespace NE4S.Notes
         /// <returns></returns>
         public bool Contains(PointF locationVirtual, LaneBook laneBook)
         {
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            var list = notes.OrderBy(x => x.Position.Tick).ToList();
             foreach(Note note in list)
             {
                 if (list.IndexOf(note) >= list.Count - 1) break;
@@ -335,7 +334,7 @@ namespace NE4S.Notes
         {
             if (g == null) return;
             base.Draw(g, drawLocation, laneBook);
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            var list = notes.OrderBy(x => x.Position.Tick).ToList();
             RectangleF gradientRect = new RectangleF();
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
             Note gradientNote, gradientNext, next, curve;

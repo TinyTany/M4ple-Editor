@@ -22,13 +22,13 @@ namespace NE4S.Notes
                 return;
             }
             Slide = slide;
-            if (!slide.Contains(start) || !slide.Contains(end))
+            if (!slide.Notes.Contains(start) || !slide.Notes.Contains(end))
             {
                 System.Diagnostics.Debug.Assert(false, "引数のnoteが不正です");
                 return;
             }
             Partial.AddRange(
-                slide.Where(
+                slide.Notes.Where(
                     x => 
                     start.Position.Tick <= x.Position.Tick && x.Position.Tick <= end.Position.Tick));
         }

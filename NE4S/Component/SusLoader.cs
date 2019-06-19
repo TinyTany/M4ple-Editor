@@ -647,6 +647,7 @@ namespace NE4S.Component
                     case RawNote.RawNoteType.HoldBegin:
                         {
                             Hold hold = new Hold(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
+                            var holdNotes = hold.Notes;
                             int j;
                             for (j = i + 1; j < rawNotes.Count; ++j)
                             {
@@ -656,7 +657,7 @@ namespace NE4S.Component
                                 if (rawNotes[j].NoteType != RawNote.RawNoteType.HoldEnd) continue;
                                 if (rawNotes[j].Identifier != rawNotes[i].Identifier) continue;
 
-                                hold[1].Relocate(rawNotes[j].Position);
+                                holdNotes[1].Relocate(rawNotes[j].Position);
                                 break;
                             }
                             if (j != rawNotes.Count)
@@ -670,6 +671,7 @@ namespace NE4S.Component
                     case RawNote.RawNoteType.SlideBegin:
                         {
                             Slide slide = new Slide(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
+                            var slideNotes = slide.Notes;
                             int j;
                             for (j = i + 1; j < rawNotes.Count; ++j)
                             {
@@ -680,26 +682,26 @@ namespace NE4S.Component
                                 Position stepPos = rawNotes[j].Position;
                                 if (rawNotes[j].NoteType == RawNote.RawNoteType.SlideTap)
                                 {
-                                    slide[1].Relocate(stepPos.Next());
+                                    slideNotes[1].Relocate(stepPos.Next());
                                     slide.Add(new SlideTap(rawNotes[j].Size, stepPos, new PointF(), -1));
                                     continue;
                                 }
                                 else if (rawNotes[j].NoteType == RawNote.RawNoteType.SlideRelay)
                                 {
-                                    slide[1].Relocate(stepPos.Next());
+                                    slideNotes[1].Relocate(stepPos.Next());
                                     slide.Add(new SlideRelay(rawNotes[j].Size, stepPos, new PointF(), -1));
                                     continue;
                                 }
                                 else if (rawNotes[j].NoteType == RawNote.RawNoteType.SlideCurve)
                                 {
-                                    slide[1].Relocate(stepPos.Next());
+                                    slideNotes[1].Relocate(stepPos.Next());
                                     slide.Add(new SlideCurve(rawNotes[j].Size, stepPos, new PointF(), -1));
                                     continue;
                                 }
                                 else if (rawNotes[j].NoteType == RawNote.RawNoteType.SlideEnd)
                                 {
-                                    slide[1].ReSize(rawNotes[j].Size);
-                                    slide[1].Relocate(stepPos);
+                                    slideNotes[1].ReSize(rawNotes[j].Size);
+                                    slideNotes[1].Relocate(stepPos);
                                     break;
                                 }
                             }
@@ -749,11 +751,11 @@ namespace NE4S.Component
 
                             for (j = model.NoteBook.HoldNotes.Count - 1; j >= 0; --j)
                             {
-                                if (model.NoteBook.HoldNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.HoldNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
+                                if (model.NoteBook.HoldNotes[j].Notes[1].Size == rawNotes[i].Size && model.NoteBook.HoldNotes[j].Notes[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
                                 {
-                                    if (model.NoteBook.HoldNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.HoldNotes[j][1]).IsAirAttached)
+                                    if (model.NoteBook.HoldNotes[j].Notes[1] is AirableNote && !((AirableNote)model.NoteBook.HoldNotes[j].Notes[1]).IsAirAttached)
                                     {
-                                        ((AirableNote)model.NoteBook.HoldNotes[j][1]).AttachAir(airNote);
+                                        ((AirableNote)model.NoteBook.HoldNotes[j].Notes[1]).AttachAir(airNote);
                                         model.NoteBook.Add(airNote);
                                         break;
                                     }
@@ -763,11 +765,11 @@ namespace NE4S.Component
 
                             for (j = model.NoteBook.SlideNotes.Count - 1; j >= 0; --j)
                             {
-                                if (model.NoteBook.SlideNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.SlideNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
+                                if (model.NoteBook.SlideNotes[j].Notes[1].Size == rawNotes[i].Size && model.NoteBook.SlideNotes[j].Notes[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
                                 {
-                                    if (model.NoteBook.SlideNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.SlideNotes[j][1]).IsAirAttached)
+                                    if (model.NoteBook.SlideNotes[j].Notes[1] is AirableNote && !((AirableNote)model.NoteBook.SlideNotes[j].Notes[1]).IsAirAttached)
                                     {
-                                        ((AirableNote)model.NoteBook.SlideNotes[j][1]).AttachAir(airNote);
+                                        ((AirableNote)model.NoteBook.SlideNotes[j].Notes[1]).AttachAir(airNote);
                                         model.NoteBook.Add(airNote);
                                         break;
                                     }
@@ -789,6 +791,7 @@ namespace NE4S.Component
                     case RawNote.RawNoteType.AirHoldBegin:
                         {
                             AirHold ah = new AirHold(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
+                            var ahNotes = ah.Notes;
                             bool broken = false; /* 表現できない場合はぶっ壊れAirHold判定 */
                             int j;
                             for (j = i + 1; j < rawNotes.Count; ++j)
@@ -810,13 +813,13 @@ namespace NE4S.Component
                                 Position stepPos = rawNotes[j].Position;
                                 if (rawNotes[j].NoteType == RawNote.RawNoteType.AirAction)
                                 {
-                                    ah[1].Relocate(stepPos.Next());
+                                    ahNotes[1].Relocate(stepPos.Next());
                                     ah.Add(new AirAction(rawNotes[j].Size, stepPos, new PointF(), -1));
                                     continue;
                                 }
                                 else if (rawNotes[j].NoteType == RawNote.RawNoteType.AirHoldEnd)
                                 {
-                                    ah[1].Relocate(stepPos);
+                                    ahNotes[1].Relocate(stepPos);
                                     break;
                                 }
                             }
@@ -838,11 +841,11 @@ namespace NE4S.Component
 
                                 for (j = model.NoteBook.HoldNotes.Count - 1; j >= 0; --j)
                                 {
-                                    if (model.NoteBook.HoldNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.HoldNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
+                                    if (model.NoteBook.HoldNotes[j].Notes[1].Size == rawNotes[i].Size && model.NoteBook.HoldNotes[j].Notes[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
                                     {
-                                        if (model.NoteBook.HoldNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.HoldNotes[j][1]).IsAirHoldAttached)
+                                        if (model.NoteBook.HoldNotes[j].Notes[1] is AirableNote && !((AirableNote)model.NoteBook.HoldNotes[j].Notes[1]).IsAirHoldAttached)
                                         {
-                                            ((AirableNote)model.NoteBook.HoldNotes[j][1]).AttachAirHold(ah);
+                                            ((AirableNote)model.NoteBook.HoldNotes[j].Notes[1]).AttachAirHold(ah);
                                             model.NoteBook.Add(ah);
                                             break;
                                         }
@@ -853,11 +856,11 @@ namespace NE4S.Component
 
                                 for (j = model.NoteBook.SlideNotes.Count - 1; j >= 0; --j)
                                 {
-                                    if (model.NoteBook.SlideNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.SlideNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
+                                    if (model.NoteBook.SlideNotes[j].Notes[1].Size == rawNotes[i].Size && model.NoteBook.SlideNotes[j].Notes[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
                                     {
-                                        if (model.NoteBook.SlideNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.SlideNotes[j][1]).IsAirHoldAttached)
+                                        if (model.NoteBook.SlideNotes[j].Notes[1] is AirableNote && !((AirableNote)model.NoteBook.SlideNotes[j].Notes[1]).IsAirHoldAttached)
                                         {
-                                            ((AirableNote)model.NoteBook.SlideNotes[j][1]).AttachAirHold(ah);
+                                            ((AirableNote)model.NoteBook.SlideNotes[j].Notes[1]).AttachAirHold(ah);
                                             model.NoteBook.Add(ah);
                                             break;
                                         }

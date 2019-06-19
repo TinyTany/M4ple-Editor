@@ -16,8 +16,7 @@ namespace NE4S.Notes
         private static readonly float lineWidth = 5f;
         private static readonly Color lineColor = Color.FromArgb(225, 115, 255, 20);
 
-        public delegate void VoidHandler();
-        public event VoidHandler DetachAirHold;
+        public event Action DetachAirHold;
 
         public AirHold() { }
 
@@ -26,7 +25,7 @@ namespace NE4S.Notes
             AirHoldBegin airholdBegin = new AirHoldBegin(size, pos, location, laneIndex);
             airholdBegin.CheckNotePosition += CheckNotePosition;
             airholdBegin.CheckNoteSize += CheckNoteSize;
-            Add(airholdBegin);
+            notes.Add(airholdBegin);
             location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             AirHoldEnd airHoldEnd = new AirHoldEnd(size, pos.Next(), location, laneIndex);
             airHoldEnd.CheckNotePosition += CheckNotePosition;
@@ -37,8 +36,8 @@ namespace NE4S.Notes
 
         protected override bool IsPositionTickAvailable(Note note, Position position)
         {
-            var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
-            if (position.Tick < this.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
+            var list = notes.OrderBy(x => x.Position.Tick).Where(x => x != note);
+            if (position.Tick < notes.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
             if (note is AirHoldEnd && position.Tick < list.Last().Position.Tick) return false;
             foreach (Note itrNote in list)
             {
@@ -53,7 +52,7 @@ namespace NE4S.Notes
         {
             get
             {
-                return this.OrderBy(x => x.Position.Tick).First() as AirHoldBegin;
+                return notes.OrderBy(x => x.Position.Tick).First() as AirHoldBegin;
             }
         }
 
@@ -66,7 +65,7 @@ namespace NE4S.Notes
                 Status.SelectedNote = null;
                 return;
             }
-            base.Add(airAction);
+            notes.Add(airAction);
             airAction.CheckNotePosition += CheckNotePosition;
             airAction.IsPositionAvailable += IsPositionTickAvailable;
             CheckNotePosition(airAction, 0);
@@ -78,9 +77,9 @@ namespace NE4S.Notes
         {
             get
             {
-                if (this.Any())
+                if (notes.Any())
                 {
-                    return this.First().Size;
+                    return notes.First().Size;
                 }
                 else
                 {
@@ -98,7 +97,7 @@ namespace NE4S.Notes
         /// <returns></returns>
         public bool Contains(PointF locationVirtual, LaneBook laneBook)
         {
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            var list = notes.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 PointF drawOffset = new PointF(note.Width / 2f - lineWidth / 2f, LongNote.drawOffset.Y);
@@ -163,7 +162,7 @@ namespace NE4S.Notes
             if (note is AirHoldBegin)
             {
                 int diffLane;
-                foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
+                foreach (Note itrNote in notes.OrderBy(x => x.Position.Tick).Where(x => x != note))
                 {
                     diffLane = itrNote.Position.Lane - note.Position.Lane;
                     itrNote.RelocateOnly(
@@ -174,7 +173,7 @@ namespace NE4S.Notes
             }
             else if (note is AirAction)
             {
-                Note airHoldBegin = this.OrderBy(x => x.Position.Tick).First();
+                Note airHoldBegin = notes.OrderBy(x => x.Position.Tick).First();
                 int diffLane = airHoldBegin.Position.Lane - note.Position.Lane;
                 note.RelocateOnly(
                         new Position(airHoldBegin.Position.Lane, note.Position.Tick),
@@ -191,7 +190,7 @@ namespace NE4S.Notes
 
         private void CheckNoteSize(Note note)
         {
-            foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
+            foreach (Note itrNote in notes.OrderBy(x => x.Position.Tick).Where(x => x != note))
             {
                 //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
                 itrNote.ReSizeOnly(note.Size);
@@ -202,7 +201,7 @@ namespace NE4S.Notes
         public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
             base.Draw(g, drawLocation, laneBook);
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            var list = notes.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい

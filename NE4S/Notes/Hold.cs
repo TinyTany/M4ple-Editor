@@ -37,13 +37,13 @@ namespace NE4S.Notes
             HoldBegin holdBegin = new HoldBegin(size, pos, location, laneIndex);
             holdBegin.CheckNotePosition += CheckNotePosition;
             holdBegin.CheckNoteSize += CheckNoteSize;
-            Add(holdBegin);
+            notes.Add(holdBegin);
             location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             HoldEnd holdEnd = new HoldEnd(size, pos.Next(), location, laneIndex);
             holdEnd.CheckNotePosition += CheckNotePosition;
             holdEnd.CheckNoteSize += CheckNoteSize;
             holdEnd.IsPositionAvailable += IsPositionTickAvailable;
-            Add(holdEnd);
+            notes.Add(holdEnd);
             Status.SelectedNote = holdEnd;
         }
 
@@ -52,7 +52,7 @@ namespace NE4S.Notes
             if(note is HoldBegin)
             {
                 int diffLane;
-                foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
+                foreach (Note itrNote in notes.OrderBy(x => x.Position.Tick).Where(x => x != note))
                 {
                     diffLane = itrNote.Position.Lane - note.Position.Lane;
                     //貫通する
@@ -64,7 +64,7 @@ namespace NE4S.Notes
             }
             else if(note is HoldEnd)
             {
-                Note holdBegin = this.OrderBy(x => x.Position.Tick).First();
+                Note holdBegin = notes.OrderBy(x => x.Position.Tick).First();
                 int diffLane = holdBegin.Position.Lane - note.Position.Lane;
                 (note as AirableNote).RelocateOnly(
                         new Position(holdBegin.Position.Lane, note.Position.Tick),
@@ -81,7 +81,7 @@ namespace NE4S.Notes
 
         private void CheckNoteSize(Note note)
         {
-            foreach(Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
+            foreach(Note itrNote in notes.OrderBy(x => x.Position.Tick).Where(x => x != note))
             {
                 if (itrNote is AirableNote airableNote)
                 {
@@ -99,7 +99,7 @@ namespace NE4S.Notes
         public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
             base.Draw(g, drawLocation, laneBook);
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            var list = notes.OrderBy(x => x.Position.Tick).ToList();
             foreach (Note note in list)
             {
                 if(list.IndexOf(note) < list.Count - 1)
