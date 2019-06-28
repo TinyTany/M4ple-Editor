@@ -17,12 +17,18 @@ namespace NE4S.Operation
             List<Air> airNotes = model.NoteBook.AirNotes;
             Air attachedAir = null;
             AirHold attachedAirHold = null;
+            AirableNote baseAirable = null;
 
             Invoke += () =>
             {
                 if (longNote is Hold) holdNotes.Remove(longNote as Hold);
                 else if (longNote is Slide) slideNotes.Remove(longNote as Slide);
-                else if (longNote is AirHold) airHoldNotes.Remove(longNote as AirHold);
+                else if (longNote is AirHold airHold)
+                {
+                    baseAirable = airHold.GetAirable?.Invoke();
+                    airHoldNotes.Remove(airHold);
+                    airHold.DetachNote();
+                }
                 //終点にくっついてるかもしれないAir系ノーツの破棄
                 if (longNote?.Find(x => x is AirableNote) is AirableNote airable)
                 {
@@ -44,7 +50,11 @@ namespace NE4S.Operation
             {
                 if (longNote is Hold) holdNotes.Add(longNote as Hold);
                 else if (longNote is Slide) slideNotes.Add(longNote as Slide);
-                else if (longNote is AirHold) airHoldNotes.Add(longNote as AirHold);
+                else if (longNote is AirHold ah)
+                {
+                    airHoldNotes.Add(ah);
+                    baseAirable?.AttachAirHold(ah);
+                }
                 var airable = longNote?.Find(x => x is AirableNote) as AirableNote;
                 if (attachedAir != null)
                 {

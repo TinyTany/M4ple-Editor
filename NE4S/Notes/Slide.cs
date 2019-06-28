@@ -39,6 +39,7 @@ namespace NE4S.Notes
         /// </summary>
         public Slide() { }
 
+        // HACK: SlideEndにAirとかAirHoldがついているときとかも考慮したコピーコンストラクタになっている？？？
         public Slide(Slide slide)
         {
             slide.ForEach(x =>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NE4S.Notes;
+using System.Diagnostics;
 
 namespace NE4S.Operation
 {
@@ -11,123 +12,168 @@ namespace NE4S.Operation
     {
         public DeleteNoteOperation(Model model, Note note)
         {
-            List<Note> shortNotes = model.NoteBook.ShortNotes;
-            List<Hold> holdNotes = model.NoteBook.HoldNotes;
-            List<Slide> slideNotes = model.NoteBook.SlideNotes;
-            List<AirHold> airHoldNotes = model.NoteBook.AirHoldNotes;
-            List<Air> airNotes = model.NoteBook.AirNotes;
-            List<AttributeNote> attributeNotes = model.NoteBook.AttributeNotes;
-            Slide baseSlide = null;
-            AirHold baseAirHold = null;
-            Air attachedAir = null;
-            AirableNote baseAirable = null;
-            AirHold attachedAirHold = null;
-            DeleteLongNoteOperation deleteLongNote = null;
+            Debug.Assert(model != null);
+            Debug.Assert(note != null);
 
-            Invoke += () =>
+            // HACK: Assertが入っているだけでnullチェックをやってなさ気なのでなんとかする
+            switch (note)
             {
-                if (note is Air)
-                {
-                    attachedAir = note as Air;
-                    baseAirable = attachedAir.GetAirable?.Invoke();
-                    airNotes.Remove(attachedAir);
-                    attachedAir.DetachNote();
-                }
-                else if (note is HoldBegin || note is HoldEnd)
-                {
-                    Hold hold = holdNotes.Find(x => x.Contains(note));
-                    if (hold != null)
+                case Air air:
                     {
-                        deleteLongNote = new DeleteLongNoteOperation(model, hold);
-                        deleteLongNote.Invoke();
+                        var airNotes = model.NoteBook.AirNotes;
+                        var baseAirable = air.GetAirable?.Invoke();
+                        Debug.Assert(baseAirable != null);
+                        Invoke += () =>
+                        {
+                            airNotes.Remove(air);
+                            air.DetachNote();
+                        };
+                        Undo += () =>
+                        {
+                            airNotes.Add(air);
+                            baseAirable?.AttachAir(air);
+                        };
                     }
-                }
-                else if (note is SlideBegin || note is SlideEnd)
-                {
-                    Slide slide = slideNotes.Find(x => x.Contains(note));
-                    if (slide != null)
+                    break;
+                case HoldBegin _:
+                case HoldEnd _:
                     {
-                        deleteLongNote = new DeleteLongNoteOperation(model, slide);
-                        deleteLongNote.Invoke();
+                        var holdNotes = model.NoteBook.HoldNotes;
+                        var hold = holdNotes.Find(x => x.Contains(note));
+                        Debug.Assert(hold != null);
+                        var deleteHoldOperation = new DeleteLongNoteOperation(model, hold);
+                        Invoke += () =>
+                        {
+                            deleteHoldOperation.Invoke();
+                        };
+                        Undo += () =>
+                        {
+                            deleteHoldOperation.Undo();
+                        };
                     }
-                }
-                else if (note is SlideTap || note is SlideRelay || note is SlideCurve)
-                {
-                    Slide slide = slideNotes.Find(x => x.Contains(note));
-                    slide?.Remove(note);
-                    baseSlide = slide;
-                }
-                else if (note is AirHoldEnd)
-                {
-                    AirHold airHold = airHoldNotes.Find(x => x.Contains(note));
-                    if (airHold != null)
+                    break;
+                case SlideBegin _:
+                case SlideEnd _:
                     {
-                        deleteLongNote = new DeleteLongNoteOperation(model, airHold);
-                        deleteLongNote.Invoke();
+                        var slideNotes = model.NoteBook.SlideNotes;
+                        var slide = slideNotes.Find(x => x.Contains(note));
+                        Debug.Assert(slide != null);
+                        var deleteSlideOperation = new DeleteLongNoteOperation(model, slide);
+                        Invoke += () =>
+                        {
+                            deleteSlideOperation.Invoke();
+                        };
+                        Undo += () =>
+                        {
+                            deleteSlideOperation.Undo();
+                        };
                     }
-                }
-                else if (note is AirAction)
-                {
-                    AirHold airHold = airHoldNotes.Find(x => x.Contains(note));
-                    airHold?.Remove(note);
-                    baseAirHold = airHold;
-                }
-                else if (note is AirableNote)
-                {
-                    AirableNote airable = note as AirableNote;
-                    airNotes.Remove(airable.Air);
-                    attachedAir = airable.Air;
-                    airable.DetachAir();
-                    airHoldNotes.Remove(airable.AirHold);
-                    attachedAirHold = airable.AirHold;
-                    airable.DetachAirHold();
-                    shortNotes.Remove(note);
-                }
-                else if (note is AttributeNote)
-                {
-                    attributeNotes.Remove(note as AttributeNote);
-                }
-                else shortNotes.Remove(note);
-            };
-            Undo += () =>
-            {
-                if (baseSlide != null)
-                {
-                    baseSlide.Add(note);
-                }
-                else if (baseAirHold != null)
-                {
-                    baseAirHold.Add(note);
-                }
-                else if (deleteLongNote != null)
-                {
-                    deleteLongNote.Undo();
-                }
-                else if (note is AirableNote)
-                {
-                    var airable = note as AirableNote;
-                    model.NoteBook.Add(airable);
-                    if (attachedAir != null)
+                    break;
+                case SlideTap _:
+                case SlideRelay _:
+                case SlideCurve _:
                     {
-                        airable.AttachAir(attachedAir);
-                        airNotes.Add(attachedAir);
+                        var slideNotes = model.NoteBook.SlideNotes;
+                        var slide = slideNotes.Find(x => x.Contains(note));
+                        Debug.Assert(slide != null);
+                        // WARN: slideがnull時の処理が必要
+                        var slideCopy = new Slide(slide);
+                        slide.Remove(note);
+                        slideNotes.Remove(slide);
+                        Invoke += () =>
+                        {
+                            slideNotes.Add(slide);
+                            slideNotes.Remove(slideCopy);
+                        };
+                        Undo += () =>
+                        {
+                            slideNotes.Add(slideCopy);
+                            slideNotes.Remove(slide);
+                        };
                     }
-                    if (attachedAirHold != null)
+                    break;
+                case AirHoldEnd _:
                     {
-                        airable.AttachAirHold(attachedAirHold);
-                        airHoldNotes.Add(attachedAirHold);
+                        var airHoldNotes = model.NoteBook.AirHoldNotes;
+                        var airHold = airHoldNotes.Find(x => x.Contains(note));
+                        Debug.Assert(airHold != null);
+                        var deleteAirHoldOperation = new DeleteLongNoteOperation(model, airHold);
+                        Invoke += () =>
+                        {
+                            deleteAirHoldOperation.Invoke();
+                        };
+                        Undo += () =>
+                        {
+                            deleteAirHoldOperation.Undo();
+                        };
                     }
-                }
-                else if (note is Air)
-                {
-                    baseAirable?.AttachAir(attachedAir);
-                    airNotes.Add(attachedAir);
-                }
-                else
-                {
-                    model.NoteBook.Add(note);
-                }
-            };
+                    break;
+                case AirAction _:
+                    {
+                        var airHoldNotes = model.NoteBook.AirHoldNotes;
+                        var airHold = airHoldNotes.Find(x => x.Contains(note));
+                        Debug.Assert(airHold != null);
+                        Invoke += () =>
+                        {
+                            airHold?.Remove(note);
+                        };
+                        Undo += () =>
+                        {
+                            airHold?.Add(note);
+                        };
+                    }
+                    break;
+                // NOTE: ここまで降りてくるAirableNoteはすべてShortNote（HoldEndやSlideEndはここまでこないはず）
+                case AirableNote airable:
+                    {
+                        var shortNotes = model.NoteBook.ShortNotes;
+                        var airNotes = model.NoteBook.AirNotes;
+                        var airHoldNotes = model.NoteBook.AirHoldNotes;
+                        var air = airable.Air;
+                        var airHold = airable.AirHold;
+                        Invoke += () =>
+                        {
+                            shortNotes.Remove(airable);
+                            if (air != null)
+                            {
+                                airNotes.Remove(air);
+                            }
+                            if (airHold != null)
+                            {
+                                airHoldNotes.Remove(airHold);
+                            }
+                        };
+                        Undo += () =>
+                        {
+                            shortNotes.Add(airable);
+                            if (air != null)
+                            {
+                                airNotes.Add(air);
+                            }
+                            if (airHold != null)
+                            {
+                                airHoldNotes.Add(airHold);
+                            }
+                        };
+                    }
+                    break;
+                case AttributeNote attNote:
+                    {
+                        var attributeNotes = model.NoteBook.AttributeNotes;
+                        Invoke += () =>
+                        {
+                            attributeNotes.Remove(attNote);
+                        };
+                        Undo += () =>
+                        {
+                            attributeNotes.Add(attNote);
+                        };
+                    }
+                    break;
+                default:
+                    Debug.Assert(false, "不明なノーツを削除できません");
+                    break;
+            }
         }
     }
 }

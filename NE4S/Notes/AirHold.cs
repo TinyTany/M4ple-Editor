@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +19,8 @@ namespace NE4S.Notes
 
         public delegate void VoidHandler();
         public event VoidHandler DetachAirHold;
+        [OptionalField]
+        public Func<AirableNote> GetAirable;
 
         public AirHold() { }
 
