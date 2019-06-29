@@ -149,6 +149,7 @@
       <DependentUpon>VersionInfoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Define.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

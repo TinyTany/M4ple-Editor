@@ -16,7 +16,9 @@ namespace NE4S
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Logger.Info("アプリケーションを起動します。");
             Application.Run(new MainForm());
+            Logger.Info("アプリケーションを終了します。");
         }
     }
 }
