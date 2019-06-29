@@ -28,6 +28,13 @@ namespace NE4S
 
         public Position(Position position)
         {
+            if (position == null)
+            {
+                Logger.Error("Positionのコピーに失敗しました。引数がnullです。");
+                Lane = 0;
+                Tick = 0;
+                return;
+            }
             Lane = position.Lane;
             Tick = position.Tick;
         }
@@ -38,14 +45,36 @@ namespace NE4S
             Tick = tick;
         }
 
-        public bool Equals(Position position)
+        public static bool operator ==(Position lhs, Position rhs)
         {
-            if(position == null) { return false; }
-            return (Tick == position.Tick) && (Lane == position.Lane);
+            if (object.ReferenceEquals(lhs, rhs)) { return true; }
+            if (lhs is null || rhs is null) { return false; }
+            return (lhs.Lane == rhs.Lane) && (lhs.Tick == rhs.Tick);
         }
 
-		public void PrintPosition()
-		{
+        public static bool operator !=(Position lhs, Position rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+            return this == (Position)obj;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 2076266859;
+            hashCode = hashCode * -1521134295 + Lane.GetHashCode();
+            hashCode = hashCode * -1521134295 + Tick.GetHashCode();
+            return hashCode;
+        }
+        public void PrintPosition()
+        {
             System.Diagnostics.Debug.WriteLine("(Lane, Tick) = (" + Lane + ", " + Tick + ")");
         }
 
