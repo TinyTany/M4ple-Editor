@@ -48,7 +48,7 @@ namespace NE4S.Notes
         /// <returns></returns>
         public delegate bool PositionCheckHandler(Note note, Position position);
 
-		public Note()
+		protected Note()
 		{
 			Size = 0;
 			Position = null;
@@ -60,7 +60,7 @@ namespace NE4S.Notes
         public Note(int size, Position pos, PointF location, int laneIndex)
         {
 			Size = size;
-			Position = pos;
+			Position = new Position(pos);
 			noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
 			noteRect.Location = location;
             LaneIndex = laneIndex;
