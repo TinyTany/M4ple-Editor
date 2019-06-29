@@ -17,15 +17,11 @@ namespace NE4S.Notes
         public event NoteEventHandler CheckNoteSize;
         public event NoteEventHandlerEx CheckNotePosition;
 
-        public AirHoldBegin()
-        {
+        protected AirHoldBegin() { }
 
-        }
+        public AirHoldBegin(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
-        public AirHoldBegin(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)
-        {
-            
-        }
+        public AirHoldBegin(Note note) : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
 
         public override void ReSize(int size)
         {

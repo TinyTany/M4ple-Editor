@@ -19,9 +19,11 @@ namespace NE4S.Notes
         private readonly PointF locationOffset = new PointF(0, 1);
         private readonly SizeF sizeOffset = new SizeF(0, -2);
 
-        public AirAction() { }
+        protected AirAction() { }
 
         public AirAction(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
+
+        public AirAction(Note note) : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
 
         public override void ReSize(int size)
         {

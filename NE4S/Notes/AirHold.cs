@@ -38,6 +38,43 @@ namespace NE4S.Notes
             Status.SelectedNote = airHoldEnd;
         }
 
+        public AirHold(AirHold ah)
+        {
+            ah.ForEach(x =>
+            {
+                switch (x)
+                {
+                    case AirHoldBegin airHoldBegin:
+                        {
+                            var note = new AirHoldBegin(airHoldBegin);
+                            Add(note);
+                            note.CheckNotePosition += CheckNotePosition;
+                            note.CheckNoteSize += CheckNoteSize;
+                        }
+                        break;
+                    case AirHoldEnd airHoldEnd:
+                        {
+                            var note = new AirHoldEnd(airHoldEnd);
+                            Add(note);
+                            note.CheckNotePosition += CheckNotePosition;
+                            note.IsPositionAvailable += IsPositionTickAvailable;
+                        }
+                        break;
+                    case AirAction airAction:
+                        {
+                            var note = new AirAction(airAction);
+                            base.Add(note);
+                            note.CheckNotePosition += CheckNotePosition;
+                            note.IsPositionAvailable += IsPositionTickAvailable;
+                        }
+                        break;
+                    default:
+                        Logger.Warn("AirHoldの要素ではないノーツです");
+                        break;
+                }
+            });
+        }
+
         protected override bool IsPositionTickAvailable(Note note, Position position)
         {
             var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);

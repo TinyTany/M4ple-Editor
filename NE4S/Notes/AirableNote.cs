@@ -22,7 +22,20 @@ namespace NE4S.Notes
         public AirableNote(int size, Position pos, PointF location, int laneIndex) 
             : base(size, pos, location, laneIndex) { }
 
-        public AirableNote(Note note) : base(note) { }
+        public AirableNote(Note note) : base(note)
+        {
+            if (note is AirableNote airable)
+            {
+                if (airable.Air != null)
+                {
+                    Air = new Air(airable.Air);
+                }
+                if (airable.AirHold != null)
+                {
+                    AirHold = new AirHold(airable.AirHold);
+                }
+            }
+        }
 
         public bool IsAirHoldAttachable
         {
