@@ -360,14 +360,6 @@ namespace NE4S
 
             SetPanelSize(PanelSize.Big);
             SetScoreScale(ScoreScale.Default);
-            //
-            /*
-            var data = AppDomain.CurrentDomain?.SetupInformation?.ActivationArguments?.ActivationData?[0];
-            if(data != null)
-            {
-
-            }
-            //*/
         }
 
         private bool IsExit()

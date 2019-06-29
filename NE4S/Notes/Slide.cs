@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NE4S.Scores;
 using System.Drawing.Drawing2D;
+using System.Diagnostics;
 
 namespace NE4S.Notes
 {
@@ -64,7 +65,6 @@ namespace NE4S.Notes
                 {
                     Add(new SlideEnd(x));
                 }
-
             });
         }
 
@@ -131,6 +131,7 @@ namespace NE4S.Notes
         /// <param name="note"></param>
         public new void Add(Note note)
         {
+            //*
             if (note is SlideBegin begin) { Add(begin); }
             else if (note is SlideEnd end) { Add(end); }
             else if (note is SlideTap tap) { Add(tap); }
@@ -138,8 +139,9 @@ namespace NE4S.Notes
             else if (note is SlideCurve curve) { Add(curve); }
             else
             {
-                System.Diagnostics.Debug.Assert(false, "Slideに対して不正なノーツ追加です。");
+                Debug.Assert(false, "Slideに対して不正なノーツ追加です。");
             }
+            //*/
         }
 
         private void Add(SlideBegin slideBegin)
@@ -221,9 +223,6 @@ namespace NE4S.Notes
         /// <summary>
         /// 与えられた座標がスライド帯の上に乗っているか判定します
         /// </summary>
-        /// <param name="locationVirtual"></param>
-        /// <param name="laneBook"></param>
-        /// <returns></returns>
         public bool Contains(PointF locationVirtual, LaneBook laneBook)
         {
             var list = this.OrderBy(x => x.Position.Tick).ToList();
@@ -295,12 +294,6 @@ namespace NE4S.Notes
         /// <summary>
         /// SlideCurveの当たり判定
         /// </summary>
-        /// <param name="past"></param>
-        /// <param name="curve"></param>
-        /// <param name="future"></param>
-        /// <param name="laneBook"></param>
-        /// <param name="locationVirtual"></param>
-        /// <returns></returns>
         private bool ContainsInCurve(Note past, Note curve, Note future, LaneBook laneBook, PointF locationVirtual)
         {
             int passingLanes = future.LaneIndex - past.LaneIndex;
@@ -326,12 +319,6 @@ namespace NE4S.Notes
         /// このスライドを描画します。
         /// </summary>
         /// ノーツのリストに対して前から回して、そのノーツとそれと次のノーツまでの帯を描画し、そのノーツを描画
-        /// <param name="e"></param>
-        /// <param name="originPosX"></param>
-        /// <param name="originPosY"></param>
-        /// <param name="scoreBook"></param>
-        /// <param name="laneBook"></param>
-        /// <param name="currentPositionX"></param>
         public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
             if (g == null) return;

@@ -1259,6 +1259,7 @@ namespace NE4S.Scores
 #if DEBUG
             sw.Stop();
             float fps = 1000 / (float)sw.ElapsedMilliseconds;
+            //Logger.Debug(fps.ToString());
             System.Diagnostics.Debug.WriteLine(fps);
             sw.Reset();
 #endif
