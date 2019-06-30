@@ -55,7 +55,8 @@ namespace NE4S.Notes
 			noteRect = new RectangleF();
 		}
 
-        public Note(Note note) : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
+        public Note(Note note)
+        {
             if (note == null)
             {
                 Logger.Error("Noteのコピーに失敗しました。引数がnullです。");
@@ -64,13 +65,20 @@ namespace NE4S.Notes
                 noteRect = new RectangleF();
                 return;
             }
+            InitializeInstance(note.Size, note.Position, note.Location, note.LaneIndex);
+        }
 
         public Note(int size, Position pos, PointF location, int laneIndex)
         {
-			Size = size;
-			Position = new Position(pos);
-			noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
-			noteRect.Location = location;
+            InitializeInstance(size, pos, location, laneIndex);
+        }
+
+        private void InitializeInstance(int size, Position pos, PointF location, int laneIndex)
+        {
+            Size = size;
+            Position = new Position(pos);
+            noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
+            noteRect.Location = location;
             LaneIndex = laneIndex;
         }
 

@@ -18,7 +18,6 @@ namespace NE4S.Notes
         private static readonly Color lineColor = Color.FromArgb(225, 115, 255, 20);
 
         public delegate void VoidHandler();
-        public event VoidHandler DetachAirHold;
         [OptionalField]
         public Func<AirableNote> GetAirable;
 
@@ -96,8 +95,6 @@ namespace NE4S.Notes
                 return this.OrderBy(x => x.Position.Tick).First() as AirHoldBegin;
             }
         }
-
-        public void DetachNote() => DetachAirHold?.Invoke();
 
         public void Add(AirAction airAction)
         {

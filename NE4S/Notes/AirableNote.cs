@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NE4S.Scores;
+using System.Diagnostics;
 
 namespace NE4S.Notes
 {
@@ -77,7 +78,6 @@ namespace NE4S.Notes
                 return;
             }
             Air = air;
-            air.DetachAir += DetachAir;
             air.GetAirable += () => this;
         }
 
@@ -89,9 +89,9 @@ namespace NE4S.Notes
                 return;
             }
             AirHold = airHold;
-            airHold.DetachAirHold += DetachAirHold;
+            airHold.GetAirable += () => this;
             airHoldBegin = airHold.AirHoldBegin;
-            System.Diagnostics.Debug.Assert(airHoldBegin != null, "だめです");
+            Debug.Assert(airHoldBegin != null);
             return;
         }
 

@@ -59,7 +59,7 @@ namespace NE4S.Notes
             {
                 Air air = note as Air;
                 AirNotes.Remove(air);
-                air.DetachNote();
+                // air.DetachNote();
             }
             else if (note is HoldBegin || note is HoldEnd)
             {
@@ -97,7 +97,7 @@ namespace NE4S.Notes
                 if (airHold != null && !airHold.Where(x => x is AirAction).Any())
                 {
                     AirHoldNotes.Remove(airHold);
-                    airHold.DetachNote();
+                    // airHold.DetachNote();
                 }
             }
             else if (note is AirableNote)
