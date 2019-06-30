@@ -52,7 +52,6 @@ namespace NE4S
             pool = new List<string>();
             stopwatch.Start();
             Log(LogLevel.Info, "ロガーを起動します。");
-
             var assembly = Assembly.GetExecutingAssembly();
             var appName = $"M4ple Editor v{assembly.GetName().Version}";
             Log(LogLevel.Info, $"アプリケーション名 : {appName}");
@@ -63,8 +62,8 @@ namespace NE4S
         ~Logger()
         {
             stopwatch.Stop();
-            Log(LogLevel.Info, $"起動時間 : {stopwatch.ElapsedMilliseconds}[ms]");
-            Log(LogLevel.Info, "ロガーを終了します。");
+            Info($"起動時間 : {stopwatch.ElapsedMilliseconds}[ms]");
+            Info("ロガーを終了します。");
             WriteToFile();
         }
 
@@ -81,6 +80,9 @@ namespace NE4S
                 case LogLevel.Critical: logText += "[Critical] "; break;
                 default: logText += "[Unknown] "; break;
             }
+
+            var stackFrame = new StackTrace(2, true).GetFrame(0);
+            logText += $"[{stackFrame.GetMethod().ReflectedType}.{stackFrame.GetMethod().Name} : Line {stackFrame.GetFileLineNumber()}] ";
             
             logText += message;
             System.Diagnostics.Debug.WriteLine(logText);
