@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NE4S.Notes;
+using System.Diagnostics;
 
 namespace NE4S.Operation
 {
@@ -11,62 +12,123 @@ namespace NE4S.Operation
     {
         public DeleteLongNoteOperation(Model model, LongNote longNote)
         {
-            List<Hold> holdNotes = model.NoteBook.HoldNotes;
-            List<Slide> slideNotes = model.NoteBook.SlideNotes;
-            List<AirHold> airHoldNotes = model.NoteBook.AirHoldNotes;
-            List<Air> airNotes = model.NoteBook.AirNotes;
-            Air attachedAir = null;
-            AirHold attachedAirHold = null;
-            AirableNote baseAirable = null;
+            Debug.Assert(model != null);
+            Debug.Assert(longNote != null);
+            if (model == null || longNote == null)
+            {
+                Logger.Error("引数にnullのものが存在するため削除操作を行えません。");
+                Canceled = true;
+                return;
+            }
 
-            Invoke += () =>
+            switch (longNote)
             {
-                if (longNote is Hold) holdNotes.Remove(longNote as Hold);
-                else if (longNote is Slide) slideNotes.Remove(longNote as Slide);
-                else if (longNote is AirHold airHold)
-                {
-                    baseAirable = airHold.GetAirable?.Invoke();
-                    airHoldNotes.Remove(airHold);
-                    airHold.DetachNote();
-                }
-                //終点にくっついてるかもしれないAir系ノーツの破棄
-                if (longNote?.Find(x => x is AirableNote) is AirableNote airable)
-                {
-                    if (airable.IsAirAttached)
+                case Hold hold:
                     {
-                        airNotes.Remove(airable.Air);
-                        attachedAir = airable.Air;
-                        airable.DetachAir();
+                        var airable = hold.Find(x => x is AirableNote) as AirableNote;
+                        var air = airable?.Air;
+                        var airHold = airable?.AirHold;
+                        var holdNotes = model.NoteBook.HoldNotes;
+                        var airNotes = model.NoteBook.AirNotes;
+                        var airHoldNotes = model.NoteBook.AirHoldNotes;
+                        Invoke += () =>
+                        {
+                            holdNotes.Remove(hold);
+                            if (air != null)
+                            {
+                                airNotes.Remove(air);
+                            }
+                            if (airHold != null)
+                            {
+                                airHoldNotes.Remove(airHold);
+                            }
+                        };
+                        Undo += () =>
+                        {
+                            holdNotes.Add(hold);
+                            if (air != null)
+                            {
+                                airNotes.Add(air);
+                            }
+                            if (airHold != null)
+                            {
+                                airHoldNotes.Add(airHold);
+                            }
+                        };
                     }
-                    if (airable.IsAirHoldAttached)
+                    break;
+                case Slide slide:
                     {
-                        airHoldNotes.Remove(airable.AirHold);
-                        attachedAirHold = airable.AirHold;
-                        airable.DetachAirHold();
+                        var airable = slide.Find(x => x is AirableNote) as AirableNote;
+                        var air = airable?.Air;
+                        var airHold = airable?.AirHold;
+                        var slideNotes = model.NoteBook.SlideNotes;
+                        var airNotes = model.NoteBook.AirNotes;
+                        var airHoldNotes = model.NoteBook.AirHoldNotes;
+                        Invoke += () =>
+                        {
+                            slideNotes.Remove(slide);
+                            if (air != null)
+                            {
+                                airNotes.Remove(air);
+                            }
+                            if (airHold != null)
+                            {
+                                airHoldNotes.Remove(airHold);
+                            }
+                        };
+                        Undo += () =>
+                        {
+                            slideNotes.Add(slide);
+                            if (air != null)
+                            {
+                                airNotes.Add(air);
+                            }
+                            if (airHold != null)
+                            {
+                                airHoldNotes.Add(airHold);
+                            }
+                        };
                     }
-                }
-            };
-            Undo += () =>
-            {
-                if (longNote is Hold) holdNotes.Add(longNote as Hold);
-                else if (longNote is Slide) slideNotes.Add(longNote as Slide);
-                else if (longNote is AirHold ah)
-                {
-                    airHoldNotes.Add(ah);
-                    baseAirable?.AttachAirHold(ah);
-                }
-                var airable = longNote?.Find(x => x is AirableNote) as AirableNote;
-                if (attachedAir != null)
-                {
-                    airable?.AttachAir(attachedAir);
-                    airNotes.Add(attachedAir);
-                }
-                if (attachedAirHold != null)
-                {
-                    airable?.AttachAirHold(attachedAirHold);
-                    airHoldNotes.Add(attachedAirHold);
-                }
-            };
+                    break;
+                case AirHold airHold:
+                    {
+                        var airable = airHold.GetAirable?.Invoke();
+                        var air = airable?.Air;
+                        Debug.Assert(airable != null);
+                        Debug.Assert(air != null);
+                        var airNotes = model.NoteBook.AirNotes;
+                        var airHoldNotes = model.NoteBook.AirHoldNotes;
+                        Invoke += () =>
+                        {
+                            airHoldNotes.Remove(airHold);
+                            if (air != null)
+                            {
+                                airNotes.Remove(air);
+                            }
+                            airable?.DetachAir();
+                            airable?.DetachAirHold();
+                        };
+                        Undo += () =>
+                        {
+                            airHoldNotes.Add(airHold);
+                            airable?.AttachAirHold(airHold);
+                            if (air != null)
+                            {
+                                airNotes.Add(air);
+                                airable?.AttachAir(air);
+                            }
+                        };
+                    }
+                    break;
+                default:
+                    {
+                        Debug.Assert(false, "不明なロングノーツを削除できません。");
+                        Logger.Error("不明なロングノーツを削除できません。");
+                        Canceled = true;
+                    }
+                    break;
+            }
         }
     }
 }
