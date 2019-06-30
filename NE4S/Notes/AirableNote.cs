@@ -71,6 +71,11 @@ namespace NE4S.Notes
 
         public void AttachAir(Air air)
         {
+            if (air == null)
+            {
+                Logger.Error("AirableNoteへのAirの紐づけに失敗しました。引数airがnullです。");
+                return;
+            }
             Air = air;
             air.DetachAir += DetachAir;
             air.GetAirable += () => this;
@@ -78,6 +83,11 @@ namespace NE4S.Notes
 
         public void AttachAirHold(AirHold airHold)
         {
+            if (airHold == null)
+            {
+                Logger.Error("AirableNoteへのAirHoldの紐づけに失敗しました。引数airHoldがnullです。");
+                return;
+            }
             AirHold = airHold;
             airHold.DetachAirHold += DetachAirHold;
             airHoldBegin = airHold.AirHoldBegin;

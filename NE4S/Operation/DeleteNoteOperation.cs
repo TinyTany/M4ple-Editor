@@ -14,8 +14,14 @@ namespace NE4S.Operation
         {
             Debug.Assert(model != null);
             Debug.Assert(note != null);
+            if (model == null || note == null)
+            {
+                Logger.Error("引数にnullのものが存在するため削除操作を行えません。");
+                Canceled = true;
+                return;
+            }
 
-            // HACK: Assertが入っているだけでnullチェックをやってなさ気なのでなんとかする
+            // TODO: Criticalが起こったときの対処どうしよう...
             switch (note)
             {
                 case Air air:
@@ -23,10 +29,14 @@ namespace NE4S.Operation
                         var airNotes = model.NoteBook.AirNotes;
                         var baseAirable = air.GetAirable?.Invoke();
                         Debug.Assert(baseAirable != null);
+                        if (baseAirable == null)
+                        {
+                            Logger.Warn("削除するAirのベースとなるAirableNoteが存在しません。");
+                        }
                         Invoke += () =>
                         {
                             airNotes.Remove(air);
-                            air.DetachNote();
+                            baseAirable?.DetachAir();
                         };
                         Undo += () =>
                         {
@@ -41,6 +51,12 @@ namespace NE4S.Operation
                         var holdNotes = model.NoteBook.HoldNotes;
                         var hold = holdNotes.Find(x => x.Contains(note));
                         Debug.Assert(hold != null);
+                        if (hold == null)
+                        {
+                            Logger.Critical("削除対象のHoldノーツが見つからないため、削除できません。");
+                            Canceled = true;
+                            return;
+                        }
                         var deleteHoldOperation = new DeleteLongNoteOperation(model, hold);
                         Invoke += () =>
                         {
@@ -58,6 +74,12 @@ namespace NE4S.Operation
                         var slideNotes = model.NoteBook.SlideNotes;
                         var slide = slideNotes.Find(x => x.Contains(note));
                         Debug.Assert(slide != null);
+                        if (slide == null)
+                        {
+                            Logger.Critical("削除対象のSlideノーツが見つからないため、削除できません。");
+                            Canceled = true;
+                            return;
+                        }
                         var deleteSlideOperation = new DeleteLongNoteOperation(model, slide);
                         Invoke += () =>
                         {
@@ -76,7 +98,12 @@ namespace NE4S.Operation
                         var slideNotes = model.NoteBook.SlideNotes;
                         var slide = slideNotes.Find(x => x.Contains(note));
                         Debug.Assert(slide != null);
-                        // WARN: slideがnull時の処理が必要
+                        if (slide == null)
+                        {
+                            Logger.Critical("削除対象のSlideノーツが見つからないため、削除できません。");
+                            Canceled = true;
+                            return;
+                        }
                         var slideCopy = new Slide(slide);
                         slide.Remove(note);
                         slideNotes.Remove(slide);
@@ -97,6 +124,12 @@ namespace NE4S.Operation
                         var airHoldNotes = model.NoteBook.AirHoldNotes;
                         var airHold = airHoldNotes.Find(x => x.Contains(note));
                         Debug.Assert(airHold != null);
+                        if (airHold == null)
+                        {
+                            Logger.Critical("削除対象のAirHoldが見つからないため、削除できません。");
+                            Canceled = true;
+                            return;
+                        }
                         var deleteAirHoldOperation = new DeleteLongNoteOperation(model, airHold);
                         Invoke += () =>
                         {
@@ -113,6 +146,12 @@ namespace NE4S.Operation
                         var airHoldNotes = model.NoteBook.AirHoldNotes;
                         var airHold = airHoldNotes.Find(x => x.Contains(note));
                         Debug.Assert(airHold != null);
+                        if (airHold == null)
+                        {
+                            Logger.Critical("削除対象のAirHoldが見つからないため、削除できません。");
+                            Canceled = true;
+                            return;
+                        }
                         Invoke += () =>
                         {
                             airHold?.Remove(note);
@@ -171,7 +210,11 @@ namespace NE4S.Operation
                     }
                     break;
                 default:
-                    Debug.Assert(false, "不明なノーツを削除できません");
+                    {
+                        Debug.Assert(false, "不明なノーツを削除できません");
+                        Logger.Error("不明なノーツを削除できません。");
+                        Canceled = true;
+                    }
                     break;
             }
         }

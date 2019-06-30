@@ -56,6 +56,14 @@ namespace NE4S.Notes
 		}
 
         public Note(Note note) : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
+            if (note == null)
+            {
+                Logger.Error("Noteのコピーに失敗しました。引数がnullです。");
+                Size = 0;
+                Position = new Position();
+                noteRect = new RectangleF();
+                return;
+            }
 
         public Note(int size, Position pos, PointF location, int laneIndex)
         {

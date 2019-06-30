@@ -43,6 +43,11 @@ namespace NE4S.Notes
         // HACK: SlideEndにAirとかAirHoldがついているときとかも考慮したコピーコンストラクタになっている？？？
         public Slide(Slide slide)
         {
+            if (slide == null)
+            {
+                Logger.Error("Slideのコピーに失敗しました。引数がnullです。");
+                return;
+            }
             slide.ForEach(x =>
             {
                 if (x is SlideBegin)
