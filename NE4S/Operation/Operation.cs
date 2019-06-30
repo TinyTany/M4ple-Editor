@@ -9,5 +9,7 @@ namespace NE4S.Operation
     public class Operation
     {
         public Action Invoke, Undo;
+
+        public bool Canceled { get; protected set; } = false;
     }
 }

@@ -20,16 +20,33 @@ namespace NE4S.Operation
 
         public void AddOperationAndInvoke(Operation operation)
         {
+            if (!IsOperationValid(operation)) { return; }
             AddOperation(operation);
             operation.Invoke();
         }
 
         public void AddOperation(Operation operation)
         {
+            if (!IsOperationValid(operation)) { return; }
             stackUndo.Push(operation);
             stackRedo.Clear();
             StatusChanged?.Invoke(stackUndo.Any(), stackRedo.Any());
             Edited.Invoke();
+        }
+
+        private bool IsOperationValid(Operation operation)
+        {
+            if (operation == null)
+            {
+                Logger.Error("操作を追加できません。引数operationがnullです。");
+                return false;
+            }
+            if (operation.Canceled)
+            {
+                Logger.Warn("操作はキャンセルされたため破棄されます。");
+                return false;
+            }
+            return true;
         }
 
         public void Undo()
