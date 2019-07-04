@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Scores;
 using NE4S.Define;
+using System.Diagnostics;
 
 namespace NE4S.Notes
 {
@@ -36,12 +37,62 @@ namespace NE4S.Notes
                 0));
         }
 
-		public void Add(Note newNote)
+		public bool Add(Note note)
 		{
-            if (newNote == null) return;
-            if (newNote is Air) AirNotes.Add(newNote as Air);
-            else if (newNote is AttributeNote) AttributeNotes.Add(newNote as AttributeNote);
-            else ShortNotes.Add(newNote);
+            if (note == null)
+            {
+                Logger.Error("ノーツを追加できません。引数newNoteがnullです。", true);
+                return false;
+            }
+            switch (note)
+            {
+                case Tap _:
+                case ExTap _:
+                case AwesomeExTap _:
+                case Flick _:
+                case HellTap _:
+                    {
+                        ShortNotes.Add(note);
+                    }
+                    break;
+                case AttributeNote att:
+                    {
+                        AttributeNotes.Add(att);
+                    }
+                    break;
+                default:
+                    {
+                        Logger.Warn("不適切なノーツを追加できません。", true);
+                        return false;
+                    }
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// すでに配置されているショートノーツに対してAirノーツを配置し取り付けます。
+        /// </summary>
+        public bool AttachAirToShortNote(AirableNote airable, Air air)
+        {
+            if (airable == null || air == null)
+            {
+                Logger.Error("ノーツを追加できません。引数にnullが含まれます。", true);
+                return false;
+            }
+            var note = ShortNotes.Find(x => x.Equals(airable)) as AirableNote;
+            if (note is null)
+            {
+                Logger.Error("Airノーツ取り付け先のAirableノーツはすでに配置されている必要があります。");
+                return false;
+            }
+            if (note.IsAirAttached)
+            {
+                Logger.Warn("Air取り付け先のAirableノーツにはすでにAirが取り付けられています。");
+                return false;
+            }
+            note.AttachAir(air);
+            AirNotes.Add(air);
+            return true;
         }
 
 		public void Add(LongNote newLongNote)
