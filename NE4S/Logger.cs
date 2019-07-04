@@ -67,7 +67,7 @@ namespace NE4S
             WriteToFile();
         }
 
-        private void Log(LogLevel logLevel, string message)
+        private void Log(LogLevel logLevel, string message, bool assert = false)
         {
             var logText = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffff ");
 
@@ -85,48 +85,50 @@ namespace NE4S
             logText += $"[{stackFrame.GetMethod().ReflectedType}.{stackFrame.GetMethod().Name} : Line {stackFrame.GetFileLineNumber()}] ";
             
             logText += message;
+
             System.Diagnostics.Debug.WriteLine(logText);
+            System.Diagnostics.Debug.Assert(!assert, message);
 
             pool.Add(logText);
             if (pool.Count >= poolSizeMaximum)
             {
-                if (!WriteToFile()) Console.WriteLine("[Critical] ログの保存に失敗しました。");
+                if (!WriteToFile()) { Console.WriteLine("[Critical] ログの保存に失敗しました。"); }
             }
         }
 
-        public static void Debug(string message)
+        public static void Debug(string message, bool assert = false)
         {
             lock (logLockObj)
             {
-                singleInstance.Log(LogLevel.Debug, message);
+                singleInstance.Log(LogLevel.Debug, message, assert);
             }
         }
-        public static void Info(string message)
+        public static void Info(string message, bool assert = false)
         {
             lock (logLockObj)
             {
-                singleInstance.Log(LogLevel.Info, message);
+                singleInstance.Log(LogLevel.Info, message, assert);
             }
         }
-        public static void Warn(string message)
+        public static void Warn(string message, bool assert = false)
         {
             lock (logLockObj)
             {
-                singleInstance.Log(LogLevel.Warn, message);
+                singleInstance.Log(LogLevel.Warn, message, assert);
             }
         }
-        public static void Error(string message)
+        public static void Error(string message, bool assert = false)
         {
             lock (logLockObj)
             {
-                singleInstance.Log(LogLevel.Error, message);
+                singleInstance.Log(LogLevel.Error, message, assert);
             }
         }
-        public static void Critical(string message)
+        public static void Critical(string message, bool assert = false)
         {
             lock (logLockObj)
             {
-                singleInstance.Log(LogLevel.Critical, message);
+                singleInstance.Log(LogLevel.Critical, message, assert);
             }
         }
 
