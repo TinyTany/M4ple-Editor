@@ -211,8 +211,7 @@ namespace NE4S.Operation
                     break;
                 default:
                     {
-                        Debug.Assert(false, "不明なノーツを削除できません");
-                        Logger.Error("不明なノーツを削除できません。");
+                        Logger.Error("不明なノーツを削除できません。", true);
                         Canceled = true;
                     }
                     break;
