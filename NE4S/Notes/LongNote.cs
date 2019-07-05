@@ -15,9 +15,9 @@ namespace NE4S.Notes
     [Serializable()]
     public class LongNote : List<Note>
     {
-        //帯の描画位置がちょっと上にずれてるので調節用の変数を用意
+        // 帯の描画位置がちょっと上にずれてるので調節用の変数を用意
         protected static readonly PointF drawOffset = new PointF(2, 0);
-        //帯の大きさが縦に少し短いので調整
+        // 帯の大きさが縦に少し短いので調整
         protected static readonly float deltaHeight = .2f;
 
         public int StartTick => this.OrderBy(x => x.Position.Tick).First().Position.Tick;
@@ -27,6 +27,8 @@ namespace NE4S.Notes
         public int LaneLeft => this.OrderBy(x => x.Position.Lane).First().Position.Lane;
 
         public int LaneRight => this.OrderBy(x => x.Position.Lane + x.Size).Last().Position.Lane;
+
+        public virtual Note EndNote => null;
 
         public LongNote() { }
 

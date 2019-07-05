@@ -30,6 +30,8 @@ namespace NE4S.Notes
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
+        public override Note EndNote => Find(x => x is HoldEnd);
+
         public Hold() { }
 
         public Hold(int size, Position pos, PointF location, int laneIndex)
