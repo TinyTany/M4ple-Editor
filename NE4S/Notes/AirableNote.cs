@@ -42,7 +42,9 @@ namespace NE4S.Notes
         {
             get
             {
-                return !IsAirAttached && !IsAirHoldAttached;
+                if (IsAirHoldAttached) { return false; }
+                if (IsAirAttached && Air.GetType() != typeof(AirUpC)) { return false; }
+                return true;
             }
         }
 
