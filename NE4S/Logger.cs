@@ -31,6 +31,10 @@ namespace NE4S
         private static readonly object logLockObj = new object();
         private readonly object writeLockObj = new object();
 
+        private static int warnCount = 0;
+        private static int errorCount = 0;
+        private static int criticalCount = 0;
+
         private string LogDirectory
         {
             get
@@ -63,6 +67,7 @@ namespace NE4S
         {
             stopwatch.Stop();
             Info($"起動時間 : {stopwatch.ElapsedMilliseconds}[ms]");
+            Info($"{warnCount}件の警告, {errorCount}件のエラー, {criticalCount}件の致命的エラー");
             Info("ロガーを終了します。");
             WriteToFile();
         }
@@ -115,6 +120,7 @@ namespace NE4S
             lock (logLockObj)
             {
                 singleInstance.Log(LogLevel.Warn, message, assert);
+                warnCount++;
             }
         }
         public static void Error(string message, bool assert = false)
@@ -122,6 +128,7 @@ namespace NE4S
             lock (logLockObj)
             {
                 singleInstance.Log(LogLevel.Error, message, assert);
+                errorCount++;
             }
         }
         public static void Critical(string message, bool assert = false)
@@ -129,6 +136,7 @@ namespace NE4S
             lock (logLockObj)
             {
                 singleInstance.Log(LogLevel.Critical, message, assert);
+                criticalCount++;
             }
         }
 
