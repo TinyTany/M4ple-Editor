@@ -70,37 +70,127 @@ namespace NE4S.Notes
         }
         
         /// <summary>
-        /// すでに配置されているショートノーツに対してAirノーツを配置し取り付けます。
+        /// すでに配置されているショートノーツに対して新規Airノーツを配置し取り付けます。
         /// </summary>
         public bool AttachAirToShortNote(AirableNote airable, Air air)
         {
             if (airable == null || air == null)
             {
-                Logger.Error("ノーツを追加できません。引数にnullが含まれます。", true);
+                Logger.Error("Airを取り付けできません。引数にnullが含まれます。", true);
                 return false;
             }
-            var note = ShortNotes.Find(x => x.Equals(airable)) as AirableNote;
-            if (note is null)
+            if (!ShortNotes.Contains(airable))
             {
                 Logger.Error("Airノーツ取り付け先のAirableノーツはすでに配置されている必要があります。");
                 return false;
             }
-            if (note.IsAirAttached)
+            if (airable.IsAirAttached)
             {
-                Logger.Warn("Air取り付け先のAirableノーツにはすでにAirが取り付けられています。");
+                Logger.Error("Air取り付け先のAirableノーツにはすでにAirが取り付けられています。");
                 return false;
             }
-            note.AttachAir(air);
+            airable.AttachAir(air);
             AirNotes.Add(air);
             return true;
         }
 
-		public void Add(LongNote newLongNote)
+        /// <summary>
+        /// すでに配置されているショートノーツに対して新規AirHoldと新規AirUpCを配置し取り付けます。
+        /// </summary>
+        public bool AttachAirHoldToShortNote(AirableNote airable, AirHold airHold, AirUpC air)
+        {
+            if (airable == null || airHold == null || air == null)
+            {
+                Logger.Error("AirHoldを取り付けできません。引数にnullが含まれます。", true);
+                return false;
+            }
+            if (!ShortNotes.Contains(airable))
+            {
+                Logger.Error("AirHold取り付け先のAirableノーツはすでに配置されている必要があります。", true);
+                return false;
+            }
+            if (!airable.IsAirHoldAttachable)
+            {
+                Logger.Error("AirHold取り付け先のAirableノーツにはすでにAirやAirHoldが取り付けられています。", true);
+                return false;
+            }
+            airable.AttachAirHold(airHold);
+            AirHoldNotes.Add(airHold);
+            if (!airable.IsAirAttached)
+            {
+                airable.AttachAir(air);
+                AirNotes.Add(air);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// すでに配置されているHoldに対して新規Airノーツを配置し取り付けます。
+        /// </summary>
+        public bool AttachAirToHold(Hold hold, Air air)
+        {
+            if (hold == null || air == null)
+            {
+                Logger.Error("Airの取り付けを行えません。引数にnullが含まれます。", true);
+                return false;
+            }
+            if (!HoldNotes.Contains(hold))
+            {
+                Logger.Error("Air取り付け先のHoldノーツはすでに配置されている必要があります。", true);
+                return false;
+            }
+            var end = hold.EndNote as AirableNote;
+            if (end == null)
+            {
+                Logger.Critical("HoldにAirを取り付けられません。HoldEndがありません。", true);
+                return false;
+            }
+            if (end.IsAirAttached)
+            {
+                Logger.Error("HoldにAirを取り付けられません。すでにAirが取り付けられています。", true);
+                return false;
+            }
+            end.AttachAir(air);
+            AirNotes.Add(air);
+            return true;
+        }
+
+        public bool AttachAirHoldToHold(Hold hold, AirHold airHold, AirUpC air)
+        {
+            return true;
+        }
+
+		public bool Add(LongNote longNote)
 		{
-            if (newLongNote == null) return;
-			if (newLongNote is Hold) HoldNotes.Add(newLongNote as Hold);
-			else if (newLongNote is Slide) SlideNotes.Add(newLongNote as Slide);
-			else if (newLongNote is AirHold) AirHoldNotes.Add(newLongNote as AirHold);
+            if (longNote == null)
+            {
+                Logger.Error("ロングノーツを追加できません。引数がnullです。", true);
+                return false;
+            }
+            switch (longNote)
+            {
+                case Hold hold:
+                    {
+                        HoldNotes.Add(hold);
+                    }
+                    break;
+                case Slide slide:
+                    {
+                        SlideNotes.Add(slide);
+                    }
+                    break;
+                case AirHold airHold:
+                    {
+                        AirHoldNotes.Add(airHold);
+                    }
+                    break;
+                default:
+                    {
+                        Logger.Warn("不適切なロングノーツを追加できません。", true);
+                        return false;
+                    }
+            }
+            return true;
         }
 
 		public void Delete(Note note)
