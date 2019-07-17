@@ -10,8 +10,57 @@ using NE4S.Scores;
 
 namespace NE4S
 {
+    public enum NoteCategory
+    {
+        ShortNote,
+        Air,
+        HoldStep,
+        SlideStep,
+        AirHoldStep,
+        Attribute,
+        Unknown
+    }
+
 	public static class MyUtil
 	{
+        /// <summary>
+        /// あるノーツがどのノーツカデゴリに属するかを調べます
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        public static NoteCategory GetNoteCategory(Note note)
+        {
+            switch (note)
+            {
+                case Tap _:
+                case ExTap _:
+                case AwesomeExTap _:
+                case ExTapDown _:
+                case Flick _:
+                case HellTap _:
+                    return NoteCategory.ShortNote;
+                case Air _:
+                    return NoteCategory.Air;
+                case HoldBegin _:
+                case HoldEnd _:
+                    return NoteCategory.HoldStep;
+                case SlideBegin _:
+                case SlideEnd _:
+                case SlideTap _:
+                case SlideRelay _:
+                case SlideCurve _:
+                    return NoteCategory.SlideStep;
+                case AirHoldBegin _:
+                case AirHoldEnd _:
+                case AirAction _:
+                    return NoteCategory.AirHoldStep;
+                case AttributeNote _:
+                    return NoteCategory.Attribute;
+                default:
+                    return NoteCategory.Unknown;
+            }
+        }
+
 		public static int Gcd(int m, int n)
 		{
 			if (m < n) return Gcd(n, m);
