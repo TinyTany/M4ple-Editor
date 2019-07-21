@@ -35,6 +35,23 @@ namespace NE4S.Notes
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
+        public override Note EndNote
+        {
+            get
+            {
+                var ret = Find(x => x is SlideEnd);
+                if (ret == null)
+                {
+                    Logger.Warn("EndNoteがnullです。");
+                }
+                if (!(ret is AirableNote))
+                {
+                    Logger.Warn("EndNoteはAirableNoteであるべきです。");
+                }
+                return ret;
+            }
+        }
+
         /// <summary>
         /// 空のSlide
         /// </summary>
