@@ -17,18 +17,18 @@ namespace NE4S.Notes
     [Serializable()]
     public class NoteBook
     {
-        public List<Note> ShortNotes { get; private set; } = new List<Note>();
-        public List<Hold> HoldNotes { get; private set; } = new List<Hold>();
-        public List<Slide> SlideNotes { get; private set; } = new List<Slide>();
-        public List<AirHold> AirHoldNotes { get; private set; } = new List<AirHold>();
-        public List<Air> AirNotes { get; private set; } = new List<Air>();
-        public List<AttributeNote> AttributeNotes { get; private set; } = new List<AttributeNote>();
+        private readonly List<Note> shortNotes = new List<Note>();
+        private readonly List<Hold> holdNotes = new List<Hold>();
+        private readonly List<Slide> slideNotes = new List<Slide>();
+        private readonly List<AirHold> airHoldNotes = new List<AirHold>();
+        private readonly List<Air> airNotes = new List<Air>();
+        private readonly List<AttributeNote> attributeNotes = new List<AttributeNote>();
 
         public NoteBook()
         {
-            //HACK: 開始時BPMを無理やり設定
+            // HACK: 開始時BPMを無理やり設定
             Status.CurrentValue = 120;
-            AttributeNotes.Add(new BPM(
+            attributeNotes.Add(new BPM(
                 new Position(0, 0),
                 new PointF(
                     ScorePanel.Margin.Left + ScoreLane.Margin.Left,
@@ -37,7 +37,102 @@ namespace NE4S.Notes
                 0));
         }
 
-		public bool Add(Note note)
+        /// <summary>
+        /// あるノーツが配置済みノーツリスト内に存在するかどうかを判断します。
+        /// </summary>
+        public bool Contains(Note note)
+        {
+            if (note == null)
+            {
+                Logger.Error("引数noteがnullです。", true);
+                return false;
+            }
+            switch (note)
+            {
+                case Tap _:
+                case ExTap _:
+                case AwesomeExTap _:
+                case ExTapDown _:
+                case Flick _:
+                case HellTap _:
+                    {
+                        return shortNotes.Contains(note);
+                    }
+                case Air air:
+                    {
+                        return airNotes.Contains(air);
+                    }
+                case HoldBegin _:
+                case HoldEnd _:
+                    {
+                        var hold = holdNotes.Find(x => x.Contains(note));
+                        return hold != null;
+                    }
+                case SlideBegin _:
+                case SlideEnd _:
+                case SlideTap _:
+                case SlideRelay _:
+                case SlideCurve _:
+                    {
+                        var slide = slideNotes.Find(x => x.Contains(note));
+                        return slide != null;
+                    }
+                case AirHoldBegin _:
+                case AirHoldEnd _:
+                case AirAction _:
+                    {
+                        var ah = airHoldNotes.Find(x => x.Contains(note));
+                        return ah != null;
+                    }
+                case AttributeNote att:
+                    {
+                        return attributeNotes.Contains(att);
+                    }
+                default:
+                    {
+                        Logger.Warn("不明なノーツです。");
+                        return false;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// あるロングノーツが配置済みノーツリスト内に存在するかどうかを判断します。
+        /// </summary>
+        public bool Contains(LongNote lnote)
+        {
+            if (lnote == null)
+            {
+                Logger.Error("引数longNoteがnullです。", true);
+                return false;
+            }
+            switch (lnote)
+            {
+                case Hold hold:
+                    {
+                        return holdNotes.Contains(hold);
+                    }
+                case Slide slide:
+                    {
+                        return slideNotes.Contains(slide);
+                    }
+                case AirHold ah:
+                    {
+                        return airHoldNotes.Contains(ah);
+                    }
+                default:
+                    {
+                        Logger.Warn("不明なロングノーツです。");
+                        return false;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// ショートノーツまたはアトリビュートノーツを配置します。
+        /// ショートノーツにAirやAirHoldが付随していた場合、それらも配置します。
+        /// </summary>
+		public bool Put(Note note)
 		{
             if (note == null)
             {
@@ -49,119 +144,40 @@ namespace NE4S.Notes
                 case Tap _:
                 case ExTap _:
                 case AwesomeExTap _:
+                case ExTapDown _:
                 case Flick _:
                 case HellTap _:
                     {
-                        ShortNotes.Add(note);
+                        shortNotes.Add(note);
+                        var airable = note as AirableNote;
+                        if (airable.IsAirAttached)
+                        {
+                            airNotes.Add(airable.Air);
+                        }
+                        if (airable.IsAirHoldAttached)
+                        {
+                            airHoldNotes.Add(airable.AirHold);
+                        }
+                        return true;
                     }
-                    break;
                 case AttributeNote att:
                     {
-                        AttributeNotes.Add(att);
+                        attributeNotes.Add(att);
+                        return true;
                     }
-                    break;
                 default:
                     {
                         Logger.Warn("不適切なノーツを追加できません。", true);
                         return false;
                     }
             }
-            return true;
-        }
-        
-        /// <summary>
-        /// すでに配置されているショートノーツに対して新規Airノーツを配置し取り付けます。
-        /// </summary>
-        public bool AttachAirToShortNote(AirableNote airable, Air air)
-        {
-            if (airable == null || air == null)
-            {
-                Logger.Error("Airを取り付けできません。引数にnullが含まれます。", true);
-                return false;
-            }
-            if (!ShortNotes.Contains(airable))
-            {
-                Logger.Error("Airノーツ取り付け先のAirableノーツはすでに配置されている必要があります。");
-                return false;
-            }
-            if (airable.IsAirAttached)
-            {
-                Logger.Error("Air取り付け先のAirableノーツにはすでにAirが取り付けられています。");
-                return false;
-            }
-            airable.AttachAir(air);
-            AirNotes.Add(air);
-            return true;
         }
 
         /// <summary>
-        /// すでに配置されているショートノーツに対して新規AirHoldと新規AirUpCを配置し取り付けます。
+        /// Hold, Slideを配置します。
         /// </summary>
-        public bool AttachAirHoldToShortNote(AirableNote airable, AirHold airHold, AirUpC air)
+        public bool Put(LongNote longNote)
         {
-            if (airable == null || airHold == null || air == null)
-            {
-                Logger.Error("AirHoldを取り付けできません。引数にnullが含まれます。", true);
-                return false;
-            }
-            if (!ShortNotes.Contains(airable))
-            {
-                Logger.Error("AirHold取り付け先のAirableノーツはすでに配置されている必要があります。", true);
-                return false;
-            }
-            if (!airable.IsAirHoldAttachable)
-            {
-                Logger.Error("AirHold取り付け先のAirableノーツにはすでにAirやAirHoldが取り付けられています。", true);
-                return false;
-            }
-            airable.AttachAirHold(airHold);
-            AirHoldNotes.Add(airHold);
-            if (!airable.IsAirAttached)
-            {
-                airable.AttachAir(air);
-                AirNotes.Add(air);
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// すでに配置されているHoldに対して新規Airノーツを配置し取り付けます。
-        /// </summary>
-        public bool AttachAirToHold(Hold hold, Air air)
-        {
-            if (hold == null || air == null)
-            {
-                Logger.Error("Airの取り付けを行えません。引数にnullが含まれます。", true);
-                return false;
-            }
-            if (!HoldNotes.Contains(hold))
-            {
-                Logger.Error("Air取り付け先のHoldノーツはすでに配置されている必要があります。", true);
-                return false;
-            }
-            var end = hold.EndNote as AirableNote;
-            if (end == null)
-            {
-                Logger.Critical("HoldにAirを取り付けられません。HoldEndがありません。", true);
-                return false;
-            }
-            if (end.IsAirAttached)
-            {
-                Logger.Error("HoldにAirを取り付けられません。すでにAirが取り付けられています。", true);
-                return false;
-            }
-            end.AttachAir(air);
-            AirNotes.Add(air);
-            return true;
-        }
-
-        public bool AttachAirHoldToHold(Hold hold, AirHold airHold, AirUpC air)
-        {
-            return true;
-        }
-
-		public bool Add(LongNote longNote)
-		{
             if (longNote == null)
             {
                 Logger.Error("ロングノーツを追加できません。引数がnullです。", true);
@@ -171,17 +187,12 @@ namespace NE4S.Notes
             {
                 case Hold hold:
                     {
-                        HoldNotes.Add(hold);
+                        holdNotes.Add(hold);
                     }
                     break;
                 case Slide slide:
                     {
-                        SlideNotes.Add(slide);
-                    }
-                    break;
-                case AirHold airHold:
-                    {
-                        AirHoldNotes.Add(airHold);
+                        slideNotes.Add(slide);
                     }
                     break;
                 default:
@@ -193,87 +204,269 @@ namespace NE4S.Notes
             return true;
         }
 
-		public void Delete(Note note)
-		{
-            if (note == null) return;
-            if (note is Air)
+        public static bool _PutStepToSlide(Slide slide, Note step)
+        {
+            if (slide == null || step == null)
             {
-                Air air = note as Air;
-                AirNotes.Remove(air);
-                // air.DetachNote();
+                Logger.Error("引数にnullが含まれるため、操作を行えません。", true);
+                return false;
             }
-            else if (note is HoldBegin || note is HoldEnd)
+            switch (step)
             {
-                Hold hold = HoldNotes.Find(x => x.Contains(note));
-                if (hold != null)
-                {
-                    HoldNotes.Remove(hold);
-                    //終点にAirやAirHoldがくっついていたときの処理
-                    HoldEnd holdEnd = hold.Find(x => x is HoldEnd) as HoldEnd;
-                    AirNotes.Remove(holdEnd.Air);
-                    AirHoldNotes.Remove(holdEnd.AirHold);
-                }
+                case SlideTap _:
+                case SlideRelay _:
+                case SlideCurve _:
+                    {
+                        if (!slide.Add(step))
+                        {
+                            Logger.Warn("スライドへのステップノーツ追加に失敗しました。");
+                            return false;
+                        }
+                        return true;
+                    }
+                default:
+                    {
+                        Logger.Warn("スライドのステップノーツとして不適切なノーツのため操作を行いません。", true);
+                        return false;
+                    }
             }
-            else if (note is SlideBegin || note is SlideEnd)
-            {
-                Slide slide = SlideNotes.Find(x => x.Contains(note));
-                if (slide != null)
-                {
-                    SlideNotes.Remove(slide);
-                    //終点にAirやAirHoldがくっついていたときの処理
-                    SlideEnd slideEnd = slide.Find(x => x is SlideEnd) as SlideEnd;
-                    AirNotes.Remove(slideEnd.Air);
-                    AirHoldNotes.Remove(slideEnd.AirHold);
-                }
-            }
-            else if (note is SlideTap || note is SlideRelay || note is SlideCurve)
-            {
-                Slide slide = SlideNotes.Find(x => x.Contains(note));
-                slide?.Remove(note);
-            }
-            else if (note is AirAction)
-            {
-                AirHold airHold = AirHoldNotes.Find(x => x.Contains(note));
-                airHold?.Remove(note);
-                if (airHold != null && !airHold.Where(x => x is AirAction).Any())
-                {
-                    AirHoldNotes.Remove(airHold);
-                    // airHold.DetachNote();
-                }
-            }
-            else if (note is AirableNote)
-            {
-                AirableNote airable = note as AirableNote;
-                AirNotes.Remove(airable.Air);
-                AirHoldNotes.Remove(airable.AirHold);
-                ShortNotes.Remove(note);
-            }
-            else if (note is AttributeNote)
-            {
-                AttributeNotes.Remove(note as AttributeNote);
-            }
-            else ShortNotes.Remove(note);
         }
 
-		public void Delete(LongNote longNote)
-		{
-            if (longNote == null) return;
-			if (longNote is Hold) HoldNotes.Remove(longNote as Hold);
-			else if (longNote is Slide) SlideNotes.Remove(longNote as Slide);
-			else if (longNote is AirHold) AirHoldNotes.Remove(longNote as AirHold);
-            //終点にくっついてるかもしれないAir系ノーツの破棄
-            var airable = longNote.Find(x => x is AirableNote) as AirableNote;
-            if (airable != null)
+        public bool _PutStepToAirHold(AirHold airHold, Note step)
+        {
+            // UNDONE
+            throw new NotImplementedException();
+            //return true;
+        }
+
+        /// <summary>
+        /// 配置済みAirableノーツに対して新規Airノーツを配置し取り付けます。
+        /// </summary>
+        public bool AttachAirToAirableNote(AirableNote airable, Air air)
+        {
+            if (airable == null || air == null)
             {
-                if (airable.IsAirAttached)
+                Logger.Error("Airを取り付けできません。引数にnullが含まれます。", true);
+                return false;
+            }
+            if (!Contains(airable))
+            {
+                Logger.Error("Airノーツ取り付け先のAirableノーツはすでに配置されている必要があります。");
+                return false;
+            }
+            if (airable.IsAirAttached)
+            {
+                Logger.Error("Air取り付け先のAirableノーツにはすでにAirが取り付けられています。");
+                return false;
+            }
+            airable.AttachAir(air);
+            airNotes.Add(air);
+            return true;
+        }
+
+        /// <summary>
+        /// 配置済みショートノーツに対して新規AirHoldと新規AirUpCを配置し取り付けます。
+        /// </summary>
+        public bool AttachAirHoldToAirableNote(AirableNote airable, AirHold airHold, AirUpC air)
+        {
+            if (airable == null || airHold == null || air == null)
+            {
+                Logger.Error("AirHoldを取り付けできません。引数にnullが含まれます。", true);
+                return false;
+            }
+            if (!Contains(airable))
+            {
+                Logger.Error("AirHold取り付け先のAirableノーツはすでに配置されている必要があります。", true);
+                return false;
+            }
+            if (!airable.IsAirHoldAttachable)
+            {
+                Logger.Error("AirHold取り付け先のAirableノーツにはすでにAirやAirHoldが取り付けられています。", true);
+                return false;
+            }
+            airable.AttachAirHold(airHold);
+            airHoldNotes.Add(airHold);
+            if (!airable.IsAirAttached)
+            {
+                airable.AttachAir(air);
+                airNotes.Add(air);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 配置されているショートノーツまたはアトリビュートノーツを取り除きます。
+        /// ショートノーツにAirやAirHoldが付随していた場合、それらも除去しますが、ショートノーツとの取り外しは行いません。
+        /// </summary>
+        public bool UnPut(Note note)
+        {
+            if (note == null)
+            {
+                Logger.Error("引数noteがnullのため処理を行えません。", true);
+                return false;
+            }
+            switch (note)
+            {
+                case Tap _:
+                case ExTap _:
+                case AwesomeExTap _:
+                case ExTapDown _:
+                case Flick _:
+                case HellTap _:
+                    {
+                        if (!shortNotes.Remove(note))
+                        {
+                            Logger.Warn("ShortNoteの削除に失敗しました。", true);
+                            return false;
+                        }
+                        var airable = note as AirableNote;
+                        airNotes.Remove(airable.Air);
+                        airHoldNotes.Remove(airable.AirHold);
+                        return true;
+                    }
+                case AttributeNote att:
+                    {
+                        if (!attributeNotes.Remove(att))
+                        {
+                            Logger.Warn("AttributeNoteの削除に失敗しました。", true);
+                            return false;
+                        }
+                        return true;
+                    }
+                default:
+                    {
+                        Logger.Error("対象のnoteはこの操作で削除できません。", true);
+                        return false;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// Hold, Slideを取り除きます。
+        /// 終端ノーツにAirやAirHoldが付随していた場合、それらも除去しますが、Hold,Slideとの取り外しはしません。
+        /// </summary>
+        public bool UnPut(LongNote lnote)
+        {
+            if (lnote == null)
+            {
+                Logger.Error("引数lnoteがnullのため処理を行えません。", true);
+                return false;
+            }
+            switch (lnote)
+            {
+                case Hold hold:
+                    {
+                        if (!holdNotes.Remove(hold))
+                        {
+                            Logger.Warn("Holdノーツの削除に失敗しました。");
+                            return false;
+                        }
+                        var end = hold.EndNote as AirableNote;
+                        airNotes.Remove(end?.Air);
+                        airHoldNotes.Remove(end?.AirHold);
+                        return true;
+                    }
+                case Slide slide:
+                    {
+                        if (!slideNotes.Remove(slide))
+                        {
+                            Logger.Warn("Slideノーツの削除に失敗しました。");
+                            return false;
+                        }
+                        var end = slide.EndNote as AirableNote;
+                        airNotes.Remove(end?.Air);
+                        airHoldNotes.Remove(end?.AirHold);
+                        return true;
+                    }
+                case AirHold _:
+                    {
+                        Logger.Error("AirHoldはこの操作では削除できません。", true);
+                        return false;
+                    }
+                default:
+                    {
+                        Logger.Error("不明なロングノーツです。", true);
+                        return false;
+                    }
+            }
+        }
+
+        public bool _UnPutStepFromSlide(Slide slide, out Note step)
+        {
+            step = null;
+            // UNDONE
+            throw new NotImplementedException();
+            //return true;
+        }
+
+        public bool _UnPutStepFromAirHold(AirHold airHold, out Note step)
+        {
+            step = null;
+            // UNDONE
+            throw new NotImplementedException();
+            //return true;
+        }
+
+        /// <summary>
+        /// AirableノーツからAirを取り外します。
+        /// 失敗した場合、出力引数はnullになります。
+        /// </summary>
+        public bool DetachAirFromAirableNote(AirableNote airable, out Air air)
+        {
+            air = null;
+            if (airable == null)
+            {
+                Logger.Error("引数のAirableNoteがnullのため、操作を行えません。");
+                return false;
+            }
+            if (!airable.IsAirAttached)
+            {
+                Logger.Error("Air取り外し対象のAirableNoteにはAirが取り付けられていませんでした。");
+                return false;
+            }
+            air = airable.Air;
+            airable.DetachAir();
+            airNotes.Remove(air);
+            return true;
+        }
+
+        /// <summary>
+        /// AirableノーツからAirHoldおよびAirUpCを取り外します。
+        /// AirHoldを取り外せた場合成功（true）となりますが、その場合AirUpCの出力引数がnullである可能性もあります。
+        /// </summary>
+        public bool DetachAirHoldFromAirableNote(AirableNote airable, out AirHold airHold, out AirUpC air)
+        {
+            airHold = null;
+            air = null;
+            if (airable == null)
+            {
+                Logger.Error("引数のAirableNoteがnullのため、操作を行えません。");
+                return false;
+            }
+            if (!airable.IsAirHoldAttached)
+            {
+                Logger.Error("AirHold取り外し対象のAirableNoteにはAirHoldが取り付けられていませんでした。");
+                return false;
+            }
+            airHold = airable.AirHold;
+            airable.DetachAirHold();
+            airHoldNotes.Remove(airHold);
+            if (airable.IsAirAttached)
+            {
+                // NOTE: 本来AirHoldは単体で配置できず、かならずAirUpCが伴うはずであるが、何らかの原因でそうではない場合のために処理を分岐する。
+                air = airable.Air as AirUpC;
+                if (air != null)
                 {
-                    AirNotes.Remove(airable.Air);
+                    airable.DetachAir();
+                    airNotes.Remove(air);
                 }
-                if (airable.IsAirHoldAttached)
+                else
                 {
-                    AirHoldNotes.Remove(airable.AirHold);
+                    // NOTE: 取り付けられていたAirがAirUpCでないときはAirを取り外さず、出力引数airもnullとなる。
+                    Logger.Warn("取り付けられていたAirはAirUpCではありませんでした。Airを削除しません。");
                 }
             }
+            return true;
         }
 
         /// <summary>
@@ -281,13 +474,11 @@ namespace NE4S.Notes
         /// なかったらnullを投げる
         /// ノーツのどのへんがクリックされたかも特定する
         /// </summary>
-        /// <param name="location"></param>
-        /// <returns></returns>
         public Note SelectedNote(PointF location, ref NoteArea noteArea)
         {
             Note selectedNote;
             //AirHold
-            foreach (AirHold airHold in AirHoldNotes.Reverse<AirHold>())
+            foreach (AirHold airHold in airHoldNotes.Reverse<AirHold>())
             {
                 if (!Status.IsAirHoldVisible) break;
                 selectedNote = airHold.Find(x => x.Contains(location));
@@ -298,21 +489,21 @@ namespace NE4S.Notes
                 }
             }
             //Air
-            selectedNote = AirNotes.FindLast(x => x.Contains(location));
+            selectedNote = airNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null && Status.IsAirVisible)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
             //ShortNote
-            selectedNote = ShortNotes.FindLast(x => x.Contains(location));
+            selectedNote = shortNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null && Status.IsShortNoteVisible)
             {
                 MyUtil.SetNoteArea(selectedNote, location, ref noteArea);
                 return selectedNote;
             }
             //Slide
-            foreach (Slide slide in SlideNotes.Reverse<Slide>())
+            foreach (Slide slide in slideNotes.Reverse<Slide>())
             {
                 if (!Status.IsSlideVisible) break;
                 selectedNote = slide.Find(x => x.Contains(location));
@@ -323,7 +514,7 @@ namespace NE4S.Notes
                 }
             }
             //Hold
-            foreach (Hold hold in HoldNotes.Reverse<Hold>())
+            foreach (Hold hold in holdNotes.Reverse<Hold>())
             {
                 if (!Status.IsHoldVisible) break;
                 selectedNote = hold.Find(x => x.Contains(location));
@@ -334,7 +525,7 @@ namespace NE4S.Notes
                 }
             }
             //AttributeNote
-            selectedNote = AttributeNotes.FindLast(x => x.Contains(location));
+            selectedNote = attributeNotes.FindLast(x => x.Contains(location));
             if (selectedNote != null)
             {
                 noteArea = NoteArea.Center;
@@ -347,55 +538,53 @@ namespace NE4S.Notes
         /// クリックされてるノーツがあったら投げる
         /// なかったらnullを投げる
         /// </summary>
-        /// <param name="location"></param>
-        /// <returns></returns>
-        public Note SelectedNote(PointF location)
+        public Note SelectedNote(in PointF location)
         {
-            //この変数は使用しない
-            NoteArea noteArea = NoteArea.None;
-            return SelectedNote(location, ref noteArea);
+            // NOTE: この変数は使用しない
+            NoteArea _area = NoteArea.None;
+            return SelectedNote(location, ref _area);
         }
 
         public Slide SelectedSlide(PointF locationVirtual, LaneBook laneBook)
         {
-            return SlideNotes.FindLast(x => x.Contains(locationVirtual, laneBook));
+            return slideNotes.FindLast(x => x.Contains(locationVirtual, laneBook));
         }
 
         public AirHold SelectedAirHold(PointF locationVirtual, LaneBook laneBook)
         {
-            return AirHoldNotes.FindLast(x => x.Contains(locationVirtual, laneBook));
+            return airHoldNotes.FindLast(x => x.Contains(locationVirtual, laneBook));
         }
 
         public void UpdateNoteLocation(LaneBook laneBook)
         {
-            ShortNotes.ForEach(x => x.UpdateLocation(laneBook));
-            HoldNotes.ForEach(x => x.UpdateLocation(laneBook));
-            SlideNotes.ForEach(x => x.UpdateLocation(laneBook));
-            AirHoldNotes.ForEach(x => x.UpdateLocation(laneBook));
-            AirNotes.ForEach(x => x.UpdateLocation(laneBook));
-            AttributeNotes.ForEach(x => x.UpdateLocation(laneBook));
+            shortNotes.ForEach(x => x.UpdateLocation(laneBook));
+            holdNotes.ForEach(x => x.UpdateLocation(laneBook));
+            slideNotes.ForEach(x => x.UpdateLocation(laneBook));
+            airHoldNotes.ForEach(x => x.UpdateLocation(laneBook));
+            airNotes.ForEach(x => x.UpdateLocation(laneBook));
+            attributeNotes.ForEach(x => x.UpdateLocation(laneBook));
         }
 
         public void RelocateNoteTickAfterScoreTick(int scoreTick, int deltaTick)
         {
-            ShortNotes.
+            shortNotes.
                 Where(x => x.Position.Tick >= scoreTick).ToList().
                 ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
-            HoldNotes.ForEach(x => x.RelocateNoteTickAfterScoreTick(scoreTick, deltaTick));
-            SlideNotes.ForEach(x => x.RelocateNoteTickAfterScoreTick(scoreTick, deltaTick));
-            AirHoldNotes.ForEach(x => x.RelocateNoteTickAfterScoreTick(scoreTick, deltaTick));
-            AirNotes.
+            holdNotes.ForEach(x => x.RelocateNoteTickAfterScoreTick(scoreTick, deltaTick));
+            slideNotes.ForEach(x => x.RelocateNoteTickAfterScoreTick(scoreTick, deltaTick));
+            airHoldNotes.ForEach(x => x.RelocateNoteTickAfterScoreTick(scoreTick, deltaTick));
+            airNotes.
                 Where(x => x.Position.Tick >= scoreTick).ToList().
                 ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
-            AttributeNotes.
+            attributeNotes.
                 Where(x => x.Position.Tick >= scoreTick).ToList().
                 ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
         }
 
         public List<Note> GetNotesFromTickRange(int startTick, int endTick)
         {
-            var notes = ShortNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick);
-            SlideNotes.ForEach(
+            var notes = shortNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick);
+            slideNotes.ForEach(
                 x =>
                 {
                     var list = x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick);
@@ -404,7 +593,7 @@ namespace NE4S.Notes
                         notes = notes.Union(list);
                     }
                 });
-            AirHoldNotes.ForEach(
+            airHoldNotes.ForEach(
                 x =>
                 {
                     var list = x.Where(y => startTick <= y.Position.Tick && y.Position.Tick <= endTick);
@@ -413,15 +602,15 @@ namespace NE4S.Notes
                         notes = notes.Union(list);
                     }
                 });
-            notes = notes.Union(AirNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
-            notes = notes.Union(AttributeNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
+            notes = notes.Union(airNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
+            notes = notes.Union(attributeNotes.Where(x => startTick <= x.Position.Tick && x.Position.Tick <= endTick));
             return notes.ToList();
         }
 
         public List<LongNote> GetLongNotesFromTickRange(int startTick, int endTick)
         {
             var longNotes = new List<LongNote>();
-            HoldNotes.ForEach(
+            holdNotes.ForEach(
                 x =>
                 {
                     if ((startTick <= x.StartTick && x.StartTick <= endTick) || (startTick <= x.EndTick && x.EndTick <= endTick))
@@ -429,7 +618,7 @@ namespace NE4S.Notes
                         longNotes.Add(x);
                     }
                 });
-            SlideNotes.ForEach(
+            slideNotes.ForEach(
                 x =>
                 {
                     if ((startTick <= x.StartTick && x.StartTick <= endTick) || (startTick <= x.EndTick && x.EndTick <= endTick))
@@ -437,7 +626,7 @@ namespace NE4S.Notes
                         longNotes.Add(x);
                     }
                 });
-            AirHoldNotes.ForEach(
+            airHoldNotes.ForEach(
                 x =>
                 {
                     if ((startTick <= x.StartTick && x.StartTick <= endTick) || (startTick <= x.EndTick && x.EndTick <= endTick))
@@ -450,58 +639,60 @@ namespace NE4S.Notes
 
         public void Paint(Graphics g, Point drawLocation, LaneBook laneBook)
 		{
-            //AttributeNote
-            if (AttributeNotes != null)
+            // NOTE: 先にコードを記述したノーツほど下に描画される
+
+            // AttributeNote
+            if (attributeNotes != null)
             {
-                var drawNotes = AttributeNotes
+                var drawNotes = attributeNotes
                     .Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast);
                 foreach(var note in drawNotes)
                 {
                     note.Draw(g, drawLocation);
                 }
             }
-            //Hold
-            if (HoldNotes != null && Status.IsHoldVisible)
+            // Hold
+            if (holdNotes != null && Status.IsHoldVisible)
             {
-                var drawNotes = HoldNotes.Where(x => x.IsDrawable());
+                var drawNotes = holdNotes.Where(x => x.IsDrawable());
                 foreach(var note in drawNotes)
                 {
                     note.Draw(g, drawLocation, laneBook);
                 }
             }
-            //Slide
-            if (SlideNotes != null && Status.IsSlideVisible)
+            // Slide
+            if (slideNotes != null && Status.IsSlideVisible)
             {
-                var drawNotes = SlideNotes.Where(x => x.IsDrawable());
+                var drawNotes = slideNotes.Where(x => x.IsDrawable());
                 foreach(var note in drawNotes)
                 {
                     note.Draw(g, drawLocation, laneBook);
                 }
             }
-            //ShortNote
-            if (ShortNotes != null && Status.IsShortNoteVisible)
+            // ShortNote
+            if (shortNotes != null && Status.IsShortNoteVisible)
             {
-                var drawNotes = ShortNotes
+                var drawNotes = shortNotes
                     .Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast);
                 foreach(var note in drawNotes)
                 {
                     note.Draw(g, drawLocation);
                 }
             }
-            //Air
-            if (AirNotes != null && Status.IsAirVisible)
+            // Air
+            if (airNotes != null && Status.IsAirVisible)
             {
-                var drawNotes = AirNotes
+                var drawNotes = airNotes
                     .Where(x => x.Position.Tick >= Status.DrawTickFirst && x.Position.Tick <= Status.DrawTickLast);
                 foreach(var note in drawNotes)
                 {
                     note.Draw(g, drawLocation);
                 }
             }
-            //AirHold
-            if (AirHoldNotes != null && Status.IsAirHoldVisible)
+            // AirHold
+            if (airHoldNotes != null && Status.IsAirHoldVisible)
             {
-                var drawNotes = AirHoldNotes.Where(x => x.IsDrawable());
+                var drawNotes = airHoldNotes.Where(x => x.IsDrawable());
                 foreach(var note in drawNotes)
                 {
                     note.Draw(g, drawLocation, laneBook);
