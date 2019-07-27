@@ -24,6 +24,14 @@ namespace NE4S.Notes
         private readonly List<Air> airNotes = new List<Air>();
         private readonly List<AttributeNote> attributeNotes = new List<AttributeNote>();
 
+        // NOTE: ノーツ追加などをリストで直にはできないが読み取り（とノーツの変更）はできるようにしたい
+        public IReadOnlyCollection<Note> ShortNotes => shortNotes;
+        public IReadOnlyCollection<Hold> HoldNotes => holdNotes;
+        public IReadOnlyCollection<Slide> SlideNotes => slideNotes;
+        public IReadOnlyCollection<AirHold> AirHoldNotes => airHoldNotes;
+        public IReadOnlyCollection<Air> AirNotes => airNotes;
+        public IReadOnlyCollection<AttributeNote> AttributeNotes => attributeNotes;
+
         public NoteBook()
         {
             // HACK: 開始時BPMを無理やり設定
