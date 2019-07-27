@@ -277,7 +277,7 @@ namespace NE4S.Notes
         /// </summary>
         public bool AttachAirHoldToAirableNote(AirableNote airable, AirHold airHold, AirUpC air)
         {
-            if (airable == null || airHold == null || air == null)
+            if (airable == null || airHold == null)
             {
                 Logger.Error("AirHoldを取り付けできません。引数にnullが含まれます。", true);
                 return false;
@@ -294,7 +294,11 @@ namespace NE4S.Notes
             }
             airable.AttachAirHold(airHold);
             airHoldNotes.Add(airHold);
-            if (!airable.IsAirAttached)
+            if (air == null)
+            {
+                Logger.Warn("引数airがnullのためAirHoldのみが取り付けられました。予期せぬデータ構造になる可能性があります。");
+            }
+            if (!airable.IsAirAttached && air != null)
             {
                 airable.AttachAir(air);
                 airNotes.Add(air);
