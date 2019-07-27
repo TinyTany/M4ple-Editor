@@ -13,11 +13,11 @@ namespace NE4S.Operation
         {
             Invoke += () =>
             {
-                model.NoteBook.Add(note);
+                model.NoteBook.Put(note);
             };
             Undo += () =>
             {
-                model.NoteBook.Delete(note);
+                model.NoteBook.UnPut(note);
             };
         }
     }
@@ -28,35 +28,23 @@ namespace NE4S.Operation
         {
             Invoke += () =>
             {
-                model.NoteBook.Add(longNote);
+                model.NoteBook.Put(longNote);
             };
             Undo += () =>
             {
-                model.NoteBook.Delete(longNote);
+                model.NoteBook.UnPut(longNote);
             };
         }
 
-        public AddLongNoteOperation(Model model, AirHold airHold, Air air, AirableNote airable)
+        public AddLongNoteOperation(Model model, AirHold airHold, AirUpC air, AirableNote airable)
         {
             Invoke += () =>
             {
-                if (airable != null && !airable.IsAirHoldAttached)
-                {
-                    model.NoteBook.Add(airHold);
-                    airable.AttachAirHold(airHold);
-                    if (!airable.IsAirAttached)
-                    {
-                        model.NoteBook.Add(air);
-                        airable.AttachAir(air);
-                    }
-                }
+                model.NoteBook.AttachAirHoldToAirableNote(airable, airHold, air);
             };
             Undo += () =>
             {
-                model.NoteBook.Delete(airHold);
-                airable.DetachAirHold();
-                model.NoteBook.Delete(air);
-                airable.DetachAir();
+                model.NoteBook.DetachAirHoldFromAirableNote(airable, out airHold, out air);
             };
         }
     }
@@ -118,13 +106,11 @@ namespace NE4S.Operation
         {
             Invoke += () =>
             {
-                model.NoteBook.Add(air);
-                airable.AttachAir(air);
+                model.NoteBook.AttachAirToAirableNote(airable, air);
             };
             Undo += () =>
             {
-                model.NoteBook.Delete(air);
-                airable.DetachAir();
+                model.NoteBook.DetachAirFromAirableNote(airable, out air);
             };
         }
     }

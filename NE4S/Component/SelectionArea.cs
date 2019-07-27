@@ -132,11 +132,11 @@ namespace NE4S.Component
         {
             foreach(Note note in SelectedNoteList.ToArray())
             {
-                noteBook.Delete(note);
+                noteBook.UnPut(note);
             }
             foreach(LongNote longNote in SelectedLongNoteList.ToArray())
             {
-                noteBook.Delete(longNote);
+                noteBook.UnPut(longNote);
             }
         }
 
@@ -188,9 +188,7 @@ namespace NE4S.Component
                     }
                     if (newAir != null)
                     {
-                        noteBook.Delete(airable.Air);
-                        noteBook.Add(newAir);
-                        airable.AttachAir(newAir);
+                        noteBook.AttachAirToAirableNote(airable, newAir);
                     }
                 }
             });

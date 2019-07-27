@@ -56,12 +56,11 @@ namespace NE4S.Operation
         /// <summary>
         /// Clipboardのデータから貼り付けを行います
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="selectionArea"></param>
-        /// <param name="position"></param>
+        // REVIEW
         public PasteNotesOperation(Model model, SelectionArea selectionArea, Position position)
         {
             Position pastPosition = null;
+            var book = model.NoteBook;
 
             if (Clipboard.GetDataObject().GetData(typeof(SelectionArea)) is SelectionArea data)
             {
@@ -76,23 +75,23 @@ namespace NE4S.Operation
                 selectionArea.MovePositionDelta = new Position();
                 foreach (Note note in selectionArea.SelectedNoteList)
                 {
-                    model.NoteBook.Add(note);
+                    book.Put(note);
                     if (note is AirableNote)
                     {
                         AirableNote airable = note as AirableNote;
                         if (airable.IsAirAttached)
                         {
-                            model.NoteBook.Add(airable.Air);
+                            book.Put(airable.Air);
                         }
                         if (airable.IsAirHoldAttached)
                         {
-                            model.NoteBook.Add(airable.AirHold);
+                            book.Put(airable.AirHold);
                         }
                     }
                 }
                 foreach (LongNote longNote in selectionArea.SelectedLongNoteList)
                 {
-                    model.NoteBook.Add(longNote);
+                    book.Put(longNote);
                     longNote.ForEach(x =>
                     {
                         if (x is AirableNote)
@@ -100,11 +99,11 @@ namespace NE4S.Operation
                             AirableNote airable = x as AirableNote;
                             if (airable.IsAirAttached)
                             {
-                                model.NoteBook.Add(airable.Air);
+                                book.Put(airable.Air);
                             }
                             if (airable.IsAirHoldAttached)
                             {
-                                model.NoteBook.Add(airable.AirHold);
+                                book.Put(airable.AirHold);
                             }
                         }
                     });

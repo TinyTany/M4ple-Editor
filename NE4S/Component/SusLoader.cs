@@ -626,22 +626,22 @@ namespace NE4S.Component
                 switch (rawNotes[i].NoteType)
                 {
                     case RawNote.RawNoteType.Tap:
-                        model.NoteBook.Add(new Tap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
+                        model.NoteBook.Put(new Tap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
                         break;
                     case RawNote.RawNoteType.ExTap:
-                        model.NoteBook.Add(new ExTap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
+                        model.NoteBook.Put(new ExTap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
                         break;
                     case RawNote.RawNoteType.Flick:
-                        model.NoteBook.Add(new Flick(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
+                        model.NoteBook.Put(new Flick(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
                         break;
                     case RawNote.RawNoteType.HellTap:
-                        model.NoteBook.Add(new HellTap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
+                        model.NoteBook.Put(new HellTap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
                         break;
                     case RawNote.RawNoteType.AwesomeExTap:
-                        model.NoteBook.Add(new AwesomeExTap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
+                        model.NoteBook.Put(new AwesomeExTap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
                         break;
                     case RawNote.RawNoteType.ExTapDown:
-                        model.NoteBook.Add(new ExTapDown(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
+                        model.NoteBook.Put(new ExTapDown(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1));
                         break;
 
                     case RawNote.RawNoteType.HoldBegin:
@@ -661,7 +661,7 @@ namespace NE4S.Component
                             }
                             if (j != rawNotes.Count)
                             {
-                                model.NoteBook.Add(hold);
+                                model.NoteBook.Put(hold);
                             }
                             break;
                         }
@@ -705,7 +705,7 @@ namespace NE4S.Component
                             }
                             if (j != rawNotes.Count)
                             {
-                                model.NoteBook.Add(slide);
+                                model.NoteBook.Put(slide);
                             }
                             break;
                         }
@@ -733,14 +733,16 @@ namespace NE4S.Component
                             }
 
                             int j;
-                            for (j = model.NoteBook.ShortNotes.Count - 1; j >= 0; --j)
+                            for (j = model.NoteBook.ShortNotes.ToList().Count - 1; j >= 0; --j)
                             {
-                                if (model.NoteBook.ShortNotes[j].Size == rawNotes[i].Size && model.NoteBook.ShortNotes[j].Position.Equals(rawNotes[i].Position))
+                                if (model.NoteBook.ShortNotes.ElementAt(i).Size == rawNotes[i].Size && 
+                                    model.NoteBook.ShortNotes.ElementAt(j).Position.Equals(rawNotes[i].Position))
                                 {
-                                    if (model.NoteBook.ShortNotes[j] is AirableNote && !((AirableNote)model.NoteBook.ShortNotes[j]).IsAirAttached)
+                                    if (model.NoteBook.ShortNotes.ElementAt(j) is AirableNote && 
+                                        !((AirableNote)model.NoteBook.ShortNotes.ElementAt(j)).IsAirAttached)
                                     {
-                                        ((AirableNote)model.NoteBook.ShortNotes[j]).AttachAir(airNote);
-                                        model.NoteBook.Add(airNote);
+                                        var airable = model.NoteBook.ShortNotes.ElementAt(j) as AirableNote;
+                                        model.NoteBook.AttachAirToAirableNote(airable, airNote);
                                         break;
                                     }
                                 }
@@ -749,12 +751,14 @@ namespace NE4S.Component
 
                             for (j = model.NoteBook.HoldNotes.Count - 1; j >= 0; --j)
                             {
-                                if (model.NoteBook.HoldNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.HoldNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
+                                if (model.NoteBook.HoldNotes.ElementAt(j)[1].Size == rawNotes[i].Size && 
+                                    model.NoteBook.HoldNotes.ElementAt(j)[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
                                 {
-                                    if (model.NoteBook.HoldNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.HoldNotes[j][1]).IsAirAttached)
+                                    if (model.NoteBook.HoldNotes.ElementAt(j)[1] is AirableNote &&
+                                        !((AirableNote)model.NoteBook.HoldNotes.ElementAt(j)[1]).IsAirAttached)
                                     {
-                                        ((AirableNote)model.NoteBook.HoldNotes[j][1]).AttachAir(airNote);
-                                        model.NoteBook.Add(airNote);
+                                        var airable = model.NoteBook.HoldNotes.ElementAt(j)[1] as AirableNote;
+                                        model.NoteBook.AttachAirToAirableNote(airable, airNote);
                                         break;
                                     }
                                 }
@@ -763,12 +767,14 @@ namespace NE4S.Component
 
                             for (j = model.NoteBook.SlideNotes.Count - 1; j >= 0; --j)
                             {
-                                if (model.NoteBook.SlideNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.SlideNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
+                                if (model.NoteBook.SlideNotes.ElementAt(j)[1].Size == rawNotes[i].Size &&
+                                    model.NoteBook.SlideNotes.ElementAt(j)[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
                                 {
-                                    if (model.NoteBook.SlideNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.SlideNotes[j][1]).IsAirAttached)
+                                    if (model.NoteBook.SlideNotes.ElementAt(j)[1] is AirableNote &&
+                                        !((AirableNote)model.NoteBook.SlideNotes.ElementAt(j)[1]).IsAirAttached)
                                     {
-                                        ((AirableNote)model.NoteBook.SlideNotes[j][1]).AttachAir(airNote);
-                                        model.NoteBook.Add(airNote);
+                                        var airable = model.NoteBook.SlideNotes.ElementAt(j)[1] as AirableNote;
+                                        model.NoteBook.AttachAirToAirableNote(airable, airNote);
                                         break;
                                     }
                                 }
@@ -778,9 +784,8 @@ namespace NE4S.Component
                             // 設置のためのAirableNoteがないときは新しくTap作ってそれにくっつける
                             {
                                 Tap t = new Tap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
-                                t.AttachAir(airNote);
-                                model.NoteBook.Add(t);
-                                model.NoteBook.Add(airNote);
+                                model.NoteBook.Put(t);
+                                model.NoteBook.AttachAirToAirableNote(t, airNote);
                             }
 
                             break;
@@ -824,12 +829,14 @@ namespace NE4S.Component
                             {
                                 for (j = model.NoteBook.ShortNotes.Count - 1; j >= 0; --j)
                                 {
-                                    if (model.NoteBook.ShortNotes[j].Size == rawNotes[i].Size && model.NoteBook.ShortNotes[j].Position.Equals(rawNotes[i].Position))
+                                    if (model.NoteBook.ShortNotes.ElementAt(j).Size == rawNotes[i].Size && 
+                                        model.NoteBook.ShortNotes.ElementAt(j).Position.Equals(rawNotes[i].Position))
                                     {
-                                        if (model.NoteBook.ShortNotes[j] is AirableNote && !((AirableNote)model.NoteBook.ShortNotes[j]).IsAirHoldAttached)
+                                        if (model.NoteBook.ShortNotes.ElementAt(j) is AirableNote &&
+                                            !((AirableNote)model.NoteBook.ShortNotes.ElementAt(j)).IsAirHoldAttached)
                                         {
-                                            ((AirableNote)model.NoteBook.ShortNotes[j]).AttachAirHold(ah);
-                                            model.NoteBook.Add(ah);
+                                            var airable = model.NoteBook.ShortNotes.ElementAt(j) as AirableNote;
+                                            model.NoteBook.AttachAirHoldToAirableNote(airable, ah, null);
                                             break;
                                         }
                                     }
@@ -838,12 +845,14 @@ namespace NE4S.Component
 
                                 for (j = model.NoteBook.HoldNotes.Count - 1; j >= 0; --j)
                                 {
-                                    if (model.NoteBook.HoldNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.HoldNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
+                                    if (model.NoteBook.HoldNotes.ElementAt(j)[1].Size == rawNotes[i].Size &&
+                                        model.NoteBook.HoldNotes.ElementAt(j)[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にHoldEndあるよね
                                     {
-                                        if (model.NoteBook.HoldNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.HoldNotes[j][1]).IsAirHoldAttached)
+                                        if (model.NoteBook.HoldNotes.ElementAt(j)[1] is AirableNote && 
+                                            !((AirableNote)model.NoteBook.HoldNotes.ElementAt(j)[1]).IsAirHoldAttached)
                                         {
-                                            ((AirableNote)model.NoteBook.HoldNotes[j][1]).AttachAirHold(ah);
-                                            model.NoteBook.Add(ah);
+                                            var airable = ((AirableNote)model.NoteBook.HoldNotes.ElementAt(j)[1]) as AirableNote;
+                                            model.NoteBook.AttachAirHoldToAirableNote(airable, ah, null);
                                             break;
                                         }
                                         break;
@@ -853,12 +862,14 @@ namespace NE4S.Component
 
                                 for (j = model.NoteBook.SlideNotes.Count - 1; j >= 0; --j)
                                 {
-                                    if (model.NoteBook.SlideNotes[j][1].Size == rawNotes[i].Size && model.NoteBook.SlideNotes[j][1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
+                                    if (model.NoteBook.SlideNotes.ElementAt(j)[1].Size == rawNotes[i].Size && 
+                                        model.NoteBook.SlideNotes.ElementAt(j)[1].Position.Equals(rawNotes[i].Position)) // ノーツの追加の仕方的に、1番目にSlideEndあるよね
                                     {
-                                        if (model.NoteBook.SlideNotes[j][1] is AirableNote && !((AirableNote)model.NoteBook.SlideNotes[j][1]).IsAirHoldAttached)
+                                        if (model.NoteBook.SlideNotes.ElementAt(j)[1] is AirableNote &&
+                                            !((AirableNote)model.NoteBook.SlideNotes.ElementAt(j)[1]).IsAirHoldAttached)
                                         {
-                                            ((AirableNote)model.NoteBook.SlideNotes[j][1]).AttachAirHold(ah);
-                                            model.NoteBook.Add(ah);
+                                            var airable = model.NoteBook.SlideNotes.ElementAt(j)[1] as AirableNote;
+                                            model.NoteBook.AttachAirHoldToAirableNote(airable, ah, null);
                                             break;
                                         }
                                     }
@@ -868,9 +879,8 @@ namespace NE4S.Component
                                 // 設置のためのAirableNoteがないときは新しくTap作ってそれにくっつける
                                 {
                                     Tap t = new Tap(rawNotes[i].Size, rawNotes[i].Position, new PointF(), -1);
-                                    t.AttachAirHold(ah);
-                                    model.NoteBook.Add(t);
-                                    model.NoteBook.Add(ah);
+                                    model.NoteBook.Put(t);
+                                    model.NoteBook.AttachAirHoldToAirableNote(t, ah, null);
                                 }
 
                                 break;
@@ -892,9 +902,11 @@ namespace NE4S.Component
                     for (int i = 0; i < model.NoteBook.AttributeNotes.Count; ++i)
                     {
                         /* 重複するBPM指定は削除しちゃいましょうねー */
-                        if (model.NoteBook.AttributeNotes[i] is BPM && model.NoteBook.AttributeNotes[i].Position.Tick == bpmApply.Key.Position.Tick)
+                        if (model.NoteBook.AttributeNotes.ElementAt(i) is BPM &&
+                            model.NoteBook.AttributeNotes.ElementAt(i).Position.Tick == bpmApply.Key.Position.Tick)
                         {
-                            model.NoteBook.AttributeNotes.RemoveAt(i);
+                            var att = model.NoteBook.AttributeNotes.ElementAt(i);
+                            model.NoteBook.UnPut(att);
                             break;
                         }
                     }
@@ -906,7 +918,7 @@ namespace NE4S.Component
                         continue;
                     }
                     BPM bpm = new BPM(bpmApply.Key.Position, new PointF(), bpmDefs[bpmApply.Value], - 1);
-                    model.NoteBook.Add(bpm);
+                    model.NoteBook.Put(bpm);
                 }
             }
             #endregion
@@ -935,7 +947,7 @@ namespace NE4S.Component
                 {
                     for(int i=0; i<timeLine.Count; ++i)
                     {
-                        model.NoteBook.Add(timeLine[i]);
+                        model.NoteBook.Put(timeLine[i]);
                     }
                 }
                 else
@@ -998,7 +1010,8 @@ namespace NE4S.Component
                                 int k;
                                 for (k = 0; k < model.NoteBook.AttributeNotes.Count; ++k)
                                 {
-                                    if (model.NoteBook.AttributeNotes[k] is BPM && model.NoteBook.AttributeNotes[k].Position.Tick == 0)
+                                    if (model.NoteBook.AttributeNotes.ElementAt(k) is BPM &&
+                                        model.NoteBook.AttributeNotes.ElementAt(k).Position.Tick == 0)
                                     {
                                         /* 0小節目先頭のBPM定義あったので何もしなくてよい */
                                         break;
@@ -1006,7 +1019,7 @@ namespace NE4S.Component
                                 }
                                 if (k == model.NoteBook.AttributeNotes.Count)
                                 {
-                                    model.NoteBook.Add(new BPM(new Position(0, 0), new PointF(), bpm, -1));
+                                    model.NoteBook.Put(new BPM(new Position(0, 0), new PointF(), bpm, -1));
                                 }
 
                                 /* エクスポート時にオフセット再指定したいよね */

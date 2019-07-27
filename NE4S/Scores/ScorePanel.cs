@@ -1136,7 +1136,7 @@ namespace NE4S.Scores
                 #region AttributeNote
                 case NoteType.BPM:
                     // すでに同一TickにBPMノーツが配置されていた場合は、今置こうとしているBPMノーツの値で上書きをする
-                    var note = model.NoteBook.AttributeNotes.Find(x => x.Position.Tick == position.Tick && x is BPM);
+                    var note = model.NoteBook.AttributeNotes.ToList().Find(x => x.Position.Tick == position.Tick && x is BPM);
                     if (note != null)
                     {
                         if (note.NoteValue != Status.CurrentValue)
@@ -1153,7 +1153,7 @@ namespace NE4S.Scores
                     return;
                 case NoteType.HIGHSPEED:
                     // すでに同一TickにHighSpeedノーツが配置されていた場合は、今置こうとしているBPMノーツの値で上書きをする
-                    note = model.NoteBook.AttributeNotes.Find(x => x.Position.Tick == position.Tick && x is HighSpeed);
+                    note = model.NoteBook.AttributeNotes.ToList().Find(x => x.Position.Tick == position.Tick && x is HighSpeed);
                     if (note != null)
                     {
                         if (note.NoteValue != Status.CurrentValue)

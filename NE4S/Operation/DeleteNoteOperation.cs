@@ -26,22 +26,18 @@ namespace NE4S.Operation
             {
                 case Air air:
                     {
-                        var airNotes = model.NoteBook.AirNotes;
                         var baseAirable = air.GetAirable?.Invoke();
-                        Debug.Assert(baseAirable != null);
                         if (baseAirable == null)
                         {
-                            Logger.Warn("削除するAirのベースとなるAirableNoteが存在しません。");
+                            Logger.Warn("削除するAirのベースとなるAirableNoteが存在しません。", true);
                         }
                         Invoke += () =>
                         {
-                            airNotes.Remove(air);
-                            baseAirable?.DetachAir();
+                            model.NoteBook.DetachAirFromAirableNote(baseAirable, out air);
                         };
                         Undo += () =>
                         {
-                            airNotes.Add(air);
-                            baseAirable?.AttachAir(air);
+                            model.NoteBook.AttachAirToAirableNote(baseAirable, air);
                         };
                     }
                     break;
@@ -49,11 +45,10 @@ namespace NE4S.Operation
                 case HoldEnd _:
                     {
                         var holdNotes = model.NoteBook.HoldNotes;
-                        var hold = holdNotes.Find(x => x.Contains(note));
-                        Debug.Assert(hold != null);
+                        var hold = holdNotes.ToList().Find(x => x.Contains(note));
                         if (hold == null)
                         {
-                            Logger.Critical("削除対象のHoldノーツが見つからないため、削除できません。");
+                            Logger.Critical("削除対象のHoldノーツが見つからないため、削除できません。", true);
                             Canceled = true;
                             return;
                         }
@@ -72,11 +67,10 @@ namespace NE4S.Operation
                 case SlideEnd _:
                     {
                         var slideNotes = model.NoteBook.SlideNotes;
-                        var slide = slideNotes.Find(x => x.Contains(note));
-                        Debug.Assert(slide != null);
+                        var slide = slideNotes.ToList().Find(x => x.Contains(note));
                         if (slide == null)
                         {
-                            Logger.Critical("削除対象のSlideノーツが見つからないため、削除できません。");
+                            Logger.Critical("削除対象のSlideノーツが見つからないため、削除できません。", true);
                             Canceled = true;
                             return;
                         }
@@ -95,38 +89,37 @@ namespace NE4S.Operation
                 case SlideRelay _:
                 case SlideCurve _:
                     {
-                        var slideNotes = model.NoteBook.SlideNotes;
-                        var slide = slideNotes.Find(x => x.Contains(note));
-                        Debug.Assert(slide != null);
+                        var book = model.NoteBook;
+                        var slideNotes = book.SlideNotes;
+                        var slide = slideNotes.ToList().Find(x => x.Contains(note));
                         if (slide == null)
                         {
-                            Logger.Critical("削除対象のSlideノーツが見つからないため、削除できません。");
+                            Logger.Critical("削除対象のSlideノーツが見つからないため、削除できません。", true);
                             Canceled = true;
                             return;
                         }
                         var slideCopy = new Slide(slide);
                         slide.Remove(note);
-                        slideNotes.Remove(slide);
+                        book.UnPut(slide);
                         Invoke += () =>
                         {
-                            slideNotes.Add(slide);
-                            slideNotes.Remove(slideCopy);
+                            book.Put(slide);
+                            book.UnPut(slideCopy);
                         };
                         Undo += () =>
                         {
-                            slideNotes.Add(slideCopy);
-                            slideNotes.Remove(slide);
+                            book.Put(slideCopy);
+                            book.UnPut(slide);
                         };
                     }
                     break;
                 case AirHoldEnd _:
                     {
                         var airHoldNotes = model.NoteBook.AirHoldNotes;
-                        var airHold = airHoldNotes.Find(x => x.Contains(note));
-                        Debug.Assert(airHold != null);
+                        var airHold = airHoldNotes.ToList().Find(x => x.Contains(note));
                         if (airHold == null)
                         {
-                            Logger.Critical("削除対象のAirHoldが見つからないため、削除できません。");
+                            Logger.Critical("削除対象のAirHoldが見つからないため、削除できません。", true);
                             Canceled = true;
                             return;
                         }
@@ -144,11 +137,10 @@ namespace NE4S.Operation
                 case AirAction _:
                     {
                         var airHoldNotes = model.NoteBook.AirHoldNotes;
-                        var airHold = airHoldNotes.Find(x => x.Contains(note));
-                        Debug.Assert(airHold != null);
+                        var airHold = airHoldNotes.ToList().Find(x => x.Contains(note));
                         if (airHold == null)
                         {
-                            Logger.Critical("削除対象のAirHoldが見つからないため、削除できません。");
+                            Logger.Critical("削除対象のAirHoldが見つからないため、削除できません。", true);
                             Canceled = true;
                             return;
                         }
@@ -163,49 +155,16 @@ namespace NE4S.Operation
                     }
                     break;
                 // NOTE: ここまで降りてくるAirableNoteはすべてShortNote（HoldEndやSlideEndはここまでこないはず）
-                case AirableNote airable:
+                case AirableNote _:
+                case AttributeNote _:
                     {
-                        var shortNotes = model.NoteBook.ShortNotes;
-                        var airNotes = model.NoteBook.AirNotes;
-                        var airHoldNotes = model.NoteBook.AirHoldNotes;
-                        var air = airable.Air;
-                        var airHold = airable.AirHold;
                         Invoke += () =>
                         {
-                            shortNotes.Remove(airable);
-                            if (air != null)
-                            {
-                                airNotes.Remove(air);
-                            }
-                            if (airHold != null)
-                            {
-                                airHoldNotes.Remove(airHold);
-                            }
+                            model.NoteBook.UnPut(note);
                         };
                         Undo += () =>
                         {
-                            shortNotes.Add(airable);
-                            if (air != null)
-                            {
-                                airNotes.Add(air);
-                            }
-                            if (airHold != null)
-                            {
-                                airHoldNotes.Add(airHold);
-                            }
-                        };
-                    }
-                    break;
-                case AttributeNote attNote:
-                    {
-                        var attributeNotes = model.NoteBook.AttributeNotes;
-                        Invoke += () =>
-                        {
-                            attributeNotes.Remove(attNote);
-                        };
-                        Undo += () =>
-                        {
-                            attributeNotes.Add(attNote);
+                            model.NoteBook.Put(note);
                         };
                     }
                     break;

@@ -16,7 +16,7 @@ namespace NE4S.Notes.Tests
         {
             var book = new NoteBook();
             var tap = new Tap();
-            book.PutNote(tap);
+            book.Put(tap);
             Assert.IsTrue(book.Contains(tap));
             Assert.AreEqual(true, book.Contains(tap as AirableNote));
             var airable = tap as AirableNote;
