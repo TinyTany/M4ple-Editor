@@ -163,29 +163,25 @@ namespace NE4S.Operation
             #endregion
             Invoke += () =>
             {
-#if DEBUG
                 if (!slide.Any() || !before.Any() || !after.Any())
                 {
-                    System.Diagnostics.Debug.Assert(false, "空のSlideが存在します。");
+                    Logger.Warn("空のSlideが存在します。", true);
                     return;
                 }
-#endif
-                model.NoteBook.Delete(slide);
-                model.NoteBook.Add(before);
-                model.NoteBook.Add(after);
+                model.NoteBook.UnPut(slide);
+                model.NoteBook.Put(before);
+                model.NoteBook.Put(after);
             };
             Undo += () =>
             {
-#if DEBUG
                 if (!slide.Any() || !before.Any() || !after.Any())
                 {
-                    System.Diagnostics.Debug.Assert(false, "空のSlideが存在します。");
+                    Logger.Warn("空のSlideが存在します。", true);
                     return;
                 }
-#endif
-                model.NoteBook.Add(slide);
-                model.NoteBook.Delete(before);
-                model.NoteBook.Delete(after);
+                model.NoteBook.Put(slide);
+                model.NoteBook.UnPut(before);
+                model.NoteBook.UnPut(after);
             };
         }
     }
@@ -227,15 +223,15 @@ namespace NE4S.Operation
             #endregion
             Invoke += () =>
             {
-                model.NoteBook.Add(union);
-                model.NoteBook.Delete(past);
-                model.NoteBook.Delete(future);
+                model.NoteBook.Put(union);
+                model.NoteBook.UnPut(past);
+                model.NoteBook.UnPut(future);
             };
             Undo += () =>
             {
-                model.NoteBook.Add(past);
-                model.NoteBook.Add(future);
-                model.NoteBook.Delete(union);
+                model.NoteBook.Put(past);
+                model.NoteBook.Put(future);
+                model.NoteBook.UnPut(union);
             };
         }
     }
@@ -284,13 +280,15 @@ namespace NE4S.Operation
             #endregion
             Invoke += () =>
             {
-                model.NoteBook.SlideNotes.RemoveAll(x => slideList.Contains(x));
-                model.NoteBook.SlideNotes.AddRange(afterList);
+                // HACK: ルール違反（Readonlyなリストに対して変更を行っている）なので早めに修正する
+                model.NoteBook.SlideNotes.ToList().RemoveAll(x => slideList.Contains(x));
+                model.NoteBook.SlideNotes.ToList().AddRange(afterList);
             };
             Undo += () =>
             {
-                model.NoteBook.SlideNotes.RemoveAll(x => afterList.Contains(x));
-                model.NoteBook.SlideNotes.AddRange(slideList);
+                // HACK: ルール違反（Readonlyなリストに対して変更を行っている）なので早めに修正する
+                model.NoteBook.SlideNotes.ToList().RemoveAll(x => afterList.Contains(x));
+                model.NoteBook.SlideNotes.ToList().AddRange(slideList);
             };
         }
 
@@ -328,13 +326,13 @@ namespace NE4S.Operation
             #endregion
             Invoke += () =>
             {
-                model.NoteBook.SlideNotes.Remove(slide);
-                model.NoteBook.SlideNotes.Add(after);
+                model.NoteBook.UnPut(slide);
+                model.NoteBook.Put(after);
             };
             Undo += () =>
             {
-                model.NoteBook.SlideNotes.Remove(after);
-                model.NoteBook.SlideNotes.Add(slide);
+                model.NoteBook.UnPut(after);
+                model.NoteBook.Put(slide);
             };
         }
 
@@ -388,45 +386,29 @@ namespace NE4S.Operation
             {
                 if (longNote is Hold hold)
                 {
-                    index = noteBook.HoldNotes.IndexOf(hold);
-                    result = noteBook.HoldNotes.Remove(hold);
-                    noteBook.HoldNotes.Add(hold);
+                    index = noteBook.HoldNotes.ToList().IndexOf(hold);
+                    result = noteBook.MoveIndexTo(int.MaxValue, hold);
                 }
                 else if (longNote is Slide slide)
                 {
-                    index = noteBook.SlideNotes.IndexOf(slide);
-                    result = noteBook.SlideNotes.Remove(slide);
-                    noteBook.SlideNotes.Add(slide);
+                    index = noteBook.SlideNotes.ToList().IndexOf(slide);
+                    result = noteBook.MoveIndexTo(int.MaxValue, slide);
                 }
                 else if (longNote is AirHold airHold)
                 {
-                    index = noteBook.AirHoldNotes.IndexOf(airHold);
-                    result = noteBook.AirHoldNotes.Remove(airHold);
-                    noteBook.AirHoldNotes.Add(airHold);
+                    index = noteBook.AirHoldNotes.ToList().IndexOf(airHold);
+                    result = noteBook.MoveIndexTo(int.MaxValue, airHold);
                 }
-                System.Diagnostics.Debug.Assert(result, "操作に失敗しました。");
+                if (!result)
+                {
+                    Logger.Error("操作に失敗しました。", true);
+                }
             };
             Undo += () =>
             {
-                System.Diagnostics.Debug.Assert(index >= 0, "indexの値は0以上でなければなりません");
-                if (index < 0)
+                if (!noteBook.MoveIndexTo(index, longNote))
                 {
-                    return;
-                }
-                if (longNote is Hold hold)
-                {
-                    noteBook.HoldNotes.Remove(hold);
-                    noteBook.HoldNotes.Insert(index, hold);
-                }
-                else if (longNote is Slide slide)
-                {
-                    noteBook.SlideNotes.Remove(slide);
-                    noteBook.SlideNotes.Insert(index, slide);
-                }
-                else if (longNote is AirHold airHold)
-                {
-                    noteBook.AirHoldNotes.Remove(airHold);
-                    noteBook.AirHoldNotes.Insert(index, airHold);
+                    Logger.Error("操作に失敗しました。", true);
                 }
             };
         }
@@ -446,45 +428,29 @@ namespace NE4S.Operation
             {
                 if (longNote is Hold hold)
                 {
-                    index = noteBook.HoldNotes.IndexOf(hold);
-                    result = noteBook.HoldNotes.Remove(hold);
-                    noteBook.HoldNotes.Insert(0, hold);
+                    index = noteBook.HoldNotes.ToList().IndexOf(hold);
+                    result = noteBook.MoveIndexTo(0, hold);
                 }
                 else if (longNote is Slide slide)
                 {
-                    index = noteBook.SlideNotes.IndexOf(slide);
-                    result = noteBook.SlideNotes.Remove(slide);
-                    noteBook.SlideNotes.Insert(0, slide);
+                    index = noteBook.SlideNotes.ToList().IndexOf(slide);
+                    result = noteBook.MoveIndexTo(0, slide);
                 }
                 else if (longNote is AirHold airHold)
                 {
-                    index = noteBook.AirHoldNotes.IndexOf(airHold);
-                    result = noteBook.AirHoldNotes.Remove(airHold);
-                    noteBook.AirHoldNotes.Insert(0, airHold);
+                    index = noteBook.AirHoldNotes.ToList().IndexOf(airHold);
+                    result = noteBook.MoveIndexTo(0, airHold);
                 }
-                System.Diagnostics.Debug.Assert(result, "操作に失敗しました。");
+                if (!result)
+                {
+                    Logger.Error("操作に失敗しました。", true);
+                }
             };
             Undo += () =>
             {
-                System.Diagnostics.Debug.Assert(index >= 0, "indexの値は0以上でなければなりません");
-                if (index < 0)
+                if (!noteBook.MoveIndexTo(index, longNote))
                 {
-                    return;
-                }
-                if (longNote is Hold hold)
-                {
-                    noteBook.HoldNotes.Remove(hold);
-                    noteBook.HoldNotes.Insert(index, hold);
-                }
-                else if (longNote is Slide slide)
-                {
-                    noteBook.SlideNotes.Remove(slide);
-                    noteBook.SlideNotes.Insert(index, slide);
-                }
-                else if (longNote is AirHold airHold)
-                {
-                    noteBook.AirHoldNotes.Remove(airHold);
-                    noteBook.AirHoldNotes.Insert(index, airHold);
+                    Logger.Error("操作に失敗しました。", true);
                 }
             };
         }
