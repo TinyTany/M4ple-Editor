@@ -212,41 +212,6 @@ namespace NE4S.Notes
             return true;
         }
 
-        public static bool _PutStepToSlide(Slide slide, Note step)
-        {
-            if (slide == null || step == null)
-            {
-                Logger.Error("引数にnullが含まれるため、操作を行えません。", true);
-                return false;
-            }
-            switch (step)
-            {
-                case SlideTap _:
-                case SlideRelay _:
-                case SlideCurve _:
-                    {
-                        if (!slide.Add(step))
-                        {
-                            Logger.Warn("スライドへのステップノーツ追加に失敗しました。");
-                            return false;
-                        }
-                        return true;
-                    }
-                default:
-                    {
-                        Logger.Warn("スライドのステップノーツとして不適切なノーツのため操作を行いません。", true);
-                        return false;
-                    }
-            }
-        }
-
-        public bool _PutStepToAirHold(AirHold airHold, Note step)
-        {
-            // UNDONE
-            throw new NotImplementedException();
-            //return true;
-        }
-
         /// <summary>
         /// 配置済みAirableノーツに対して新規Airノーツを配置し取り付けます。
         /// </summary>
@@ -403,22 +368,6 @@ namespace NE4S.Notes
             }
         }
 
-        public bool _UnPutStepFromSlide(Slide slide, out Note step)
-        {
-            step = null;
-            // UNDONE
-            throw new NotImplementedException();
-            //return true;
-        }
-
-        public bool _UnPutStepFromAirHold(AirHold airHold, out Note step)
-        {
-            step = null;
-            // UNDONE
-            throw new NotImplementedException();
-            //return true;
-        }
-
         /// <summary>
         /// AirableノーツからAirを取り外します。
         /// 失敗した場合、出力引数はnullになります。
@@ -479,6 +428,101 @@ namespace NE4S.Notes
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// あるショートノーツのリスト中の並び順を変更します
+        /// リストの範囲を下回るインデックスの場合はリストの先頭への移動とみなされます
+        /// リストの範囲を上回るインデックスの場合はリストの末尾への移動とみなされます
+        /// </summary>
+        public bool MoveIndexTo(int index, Note note)
+        {
+            if (note == null)
+            {
+                Logger.Error("引数noteがnullのため、操作を行えません。", true);
+                return false;
+            }
+            switch (note)
+            {
+                case Tap _:
+                case ExTap _:
+                case AwesomeExTap _:
+                case ExTapDown _:
+                case Flick _:
+                case HellTap _:
+                    {
+                        if (index < 0) { index = 0; }
+                        else if (shortNotes.Count < index) { index = shortNotes.Count; }
+                        if (!shortNotes.Remove(note))
+                        {
+                            Logger.Error("ショートノーツの削除に失敗しました。", true);
+                            return false;
+                        }
+                        shortNotes.Insert(index, note);
+                        return true;
+                    }
+                default:
+                    {
+                        Logger.Error("対象のnoteはこの操作を適用できません。", true);
+                        return false;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// あるロングノーツのリスト中の並び順を変更します
+        /// リストの範囲を下回るインデックスの場合はリストの先頭への移動とみなされます
+        /// リストの範囲を上回るインデックスの場合はリストの末尾への移動とみなされます
+        /// </summary>
+        public bool MoveIndexTo(int index, LongNote lnote)
+        {
+            if (lnote == null)
+            {
+                Logger.Error("引数lnoteがnullのため、操作を行えません。", true);
+                return false;
+            }
+            if (index < 0) { index = 0; }
+            switch (lnote)
+            {
+                case Hold hold:
+                    {
+                        if (holdNotes.Count < index) { index = holdNotes.Count; }
+                        if (!holdNotes.Remove(hold))
+                        {
+                            Logger.Error("Holdの削除に失敗しました。", true);
+                            return false;
+                        }
+                        holdNotes.Insert(index, hold);
+                        return true;
+                    }
+                case Slide slide:
+                    {
+                        if (slideNotes.Count < index) { index = slideNotes.Count; }
+                        if (!slideNotes.Remove(slide))
+                        {
+                            Logger.Error("Slideの削除に失敗しました。", true);
+                            return false;
+                        }
+                        slideNotes.Insert(index, slide);
+                        return true;
+                    }
+                case AirHold ah:
+                    {
+                        if (airHoldNotes.Count < index) { index = airHoldNotes.Count; }
+                        if (!airHoldNotes.Remove(ah))
+                        {
+                            Logger.Error("AirHoldの削除に失敗しました。", true);
+                            return false;
+                        }
+                        airHoldNotes.Insert(index, ah);
+                        return true;
+                    }
+                default:
+                    {
+                        Logger.Error("不明なロングノーツに対して操作を行えません。", true);
+                        return false;
+                    }
+            }
         }
 
         /// <summary>
