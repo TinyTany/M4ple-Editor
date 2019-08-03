@@ -105,7 +105,6 @@
       <DependentUpon>ExportForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Component\LongLaneSignProvider.cs" />
-    <Compile Include="Component\ManualGraphics.cs" />
     <Compile Include="Component\NewScoreForm.cs">
       <SubType>Form</SubType>
     </Compile>
