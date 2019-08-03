@@ -183,6 +183,7 @@ namespace NE4S.Notes
 
         /// <summary>
         /// Hold, Slideを配置します。
+        /// 終端ノーツにAirやAirHoldが付随していた場合、それらも配置します。
         /// </summary>
         public bool Put(LongNote longNote)
         {
@@ -196,11 +197,39 @@ namespace NE4S.Notes
                 case Hold hold:
                     {
                         holdNotes.Add(hold);
+                        HoldEnd end = hold.EndNote as HoldEnd;
+                        if (end == null)
+                        {
+                            Logger.Warn("EndNoteがnullでした。");
+                            break;
+                        }
+                        if (end.IsAirAttached)
+                        {
+                            airNotes.Add(end.Air);
+                        }
+                        if (end.IsAirHoldAttached)
+                        {
+                            airHoldNotes.Add(end.AirHold);
+                        }
                     }
                     break;
                 case Slide slide:
                     {
                         slideNotes.Add(slide);
+                        SlideEnd end = slide.EndNote as SlideEnd;
+                        if (end == null)
+                        {
+                            Logger.Warn("EndNoteがnullでした。");
+                            break;
+                        }
+                        if (end.IsAirAttached)
+                        {
+                            airNotes.Add(end.Air);
+                        }
+                        if (end.IsAirHoldAttached)
+                        {
+                            airHoldNotes.Add(end.AirHold);
+                        }
                     }
                     break;
                 default:
@@ -244,7 +273,7 @@ namespace NE4S.Notes
         {
             if (airable == null || airHold == null)
             {
-                Logger.Error("AirHoldを取り付けできません。引数にnullが含まれます。", true);
+                Logger.Error("AirHoldを取り付けできません。引数airableまたはairHoldがnullです。", true);
                 return false;
             }
             if (!Contains(airable))
