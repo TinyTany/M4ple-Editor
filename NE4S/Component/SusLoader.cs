@@ -76,7 +76,7 @@ namespace NE4S.Component
             int measureLineTimeLineIndex = -1;
             string dirPath = Path.GetDirectoryName((new Uri(path)).LocalPath);
 
-            Regex rgxNotes = new Regex(@"^#(\d{3})(\w)(\w)(\w?)\:\s*(\w\w)+$");
+            Regex rgxNotes = new Regex(@"^#(\d{3})(\w)(\w)(\w?)\:(\s*\w\w)+\s*$");
             Regex rgxDef = new Regex(@"^#(BPM|TIL|ATR)(\w\w)\:?\s*([^\n]+)$");
             Regex rgxApply = new Regex(@"^#(\d{3})0(2)\:\s*([^\n]+)$");
             Regex rgxCommand = new Regex(@"^#(\w+)(?:\s+([^\n]+$))?");
@@ -176,17 +176,17 @@ namespace NE4S.Component
                             if (noteGenre == 0 && noteLane == 8)
                             {
                                 RawNote bpm = new RawNote(RawNote.RawNoteType.BPM, 0, 0, measure, j, divCount);
-                                bpmApplys.Add(bpm, MyUtil.ToIntAs36(c.ToString()));
+                                bpmApplys.Add(bpm, MyUtil.ToIntAs36(c.ToString().Trim()));
 
                                 if (lastMeasureCount < measure) lastMeasureCount = measure;
 
                                 continue;
                             }
 
-                            int size = MyUtil.ChangeZto35(c.ToString()[1]);
+                            int size = MyUtil.ChangeZto35(c.ToString().Trim()[1]);
                             if (size < 1 || 16 < size) continue;
 
-                            int noteType = MyUtil.ChangeZto35(c.ToString()[0]);
+                            int noteType = MyUtil.ChangeZto35(c.ToString().Trim()[0]);
                             if (noteType < 0 || 9 < noteType) continue;
                             RawNote.RawNoteType rawNoteType = RawNote.RawNoteType.Undefined;
                             switch (noteGenre)
@@ -735,7 +735,7 @@ namespace NE4S.Component
                             int j;
                             for (j = model.NoteBook.ShortNotes.ToList().Count - 1; j >= 0; --j)
                             {
-                                if (model.NoteBook.ShortNotes.ElementAt(i).Size == rawNotes[i].Size && 
+                                if (model.NoteBook.ShortNotes.ElementAt(j).Size == rawNotes[i].Size && 
                                     model.NoteBook.ShortNotes.ElementAt(j).Position.Equals(rawNotes[i].Position))
                                 {
                                     if (model.NoteBook.ShortNotes.ElementAt(j) is AirableNote && 
