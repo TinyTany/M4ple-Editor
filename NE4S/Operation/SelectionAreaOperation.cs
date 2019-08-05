@@ -9,125 +9,120 @@ using System.Windows.Forms;
 
 namespace NE4S.Operation
 {
+    /// <summary>
+    /// 矩形選択範囲内のノーツをクリップボードにコピーします
+    /// </summary>
+    /// reviewed on 2019/08/06
     public class CopyNotesOperation : Operation
     {
-        SelectionArea selectionArea = new SelectionArea();
-
         public CopyNotesOperation(SelectionArea selectionArea)
         {
-            Invoke += () =>
-            {
-                this.selectionArea.Reset(selectionArea);
-                Clipboard.SetDataObject(selectionArea);
-                //NOTE: どっちにするか（コピー後矩形を保持or破棄）迷う...
-                //selectionArea = new SelectionArea();
-            };
+            Clipboard.SetDataObject(selectionArea);
+            Canceled = true;
+
+            Invoke += () => Logger.Warn("何もしない");
+            Undo += () => Logger.Warn("何もしない");
         }
     }
 
+    /// <summary>
+    /// 矩形選択範囲内のノーツを切り取り、クリップボードに送ります
+    /// </summary>
+    /// reviewed on 2019/08/06
     public class CutNotesOperation : Operation
     {
-        SelectionArea selectionArea;
-
         public CutNotesOperation(Model model, SelectionArea selectionArea)
         {
-            this.selectionArea = new SelectionArea(selectionArea);
+            if (model == null || selectionArea == null)
+            {
+                Logger.Error("引数にnullのものが含まれるため、操作を行えません。", true);
+                Canceled = true;
+                return;
+            }
+
+            var tmpArea = new SelectionArea(selectionArea);
 
             Invoke += () =>
             {
-                new CopyNotesOperation(this.selectionArea).Invoke();
+                new CopyNotesOperation(tmpArea).Invoke();
                 new ClearAreaNotesOperation(model, selectionArea).Invoke();
             };
             Undo += () =>
             {
-                new CopyNotesOperation(this.selectionArea).Invoke();
+                new CopyNotesOperation(tmpArea).Invoke();
                 new PasteNotesOperation(
                     model,
                     selectionArea,
-                    this.selectionArea.TopLeftPosition).Invoke();
+                    tmpArea.TopLeftPosition).Invoke();
             };
         }
     }
 
+    /// <summary>
+    /// クリップボードのノーツを貼り付けます
+    /// </summary>
+    /// reviewed on 2019/08/06
     public class PasteNotesOperation : Operation
     {
-        SelectionArea selectionArea = null;
-
-        /// <summary>
-        /// Clipboardのデータから貼り付けを行います
-        /// </summary>
-        // REVIEW
         public PasteNotesOperation(Model model, SelectionArea selectionArea, Position position)
         {
-            Position pastPosition = null;
+            if (model == null || selectionArea == null || position == null)
+            {
+                Logger.Error("引数にnullのものが存在するため、操作を行えません。", true);
+                Canceled = true;
+                return;
+            }
+
             var book = model.NoteBook;
+            SelectionArea tmpArea = null;
 
             if (Clipboard.GetDataObject().GetData(typeof(SelectionArea)) is SelectionArea data)
             {
-                this.selectionArea = data;
-                pastPosition = data.TopLeftPosition;
+                tmpArea = data;
             }
+            else
+            {
+                Logger.Error("クリップボードにデータが無かったため操作を行えません。");
+                Canceled = true;
+                return;
+            }
+
+            tmpArea.Relocate(position, model.LaneBook);
 
             Invoke += () =>
             {
-                if (this.selectionArea == null) return;
-                selectionArea.Reset(this.selectionArea);
-                selectionArea.MovePositionDelta = new Position();
-                foreach (Note note in selectionArea.SelectedNoteList)
-                {
-                    book.Put(note);
-                    if (note is AirableNote)
-                    {
-                        AirableNote airable = note as AirableNote;
-                        if (airable.IsAirAttached)
-                        {
-                            book.Put(airable.Air);
-                        }
-                        if (airable.IsAirHoldAttached)
-                        {
-                            book.Put(airable.AirHold);
-                        }
-                    }
-                }
-                foreach (LongNote longNote in selectionArea.SelectedLongNoteList)
-                {
-                    book.Put(longNote);
-                    longNote.ForEach(x =>
-                    {
-                        if (x is AirableNote)
-                        {
-                            AirableNote airable = x as AirableNote;
-                            if (airable.IsAirAttached)
-                            {
-                                book.Put(airable.Air);
-                            }
-                            if (airable.IsAirHoldAttached)
-                            {
-                                book.Put(airable.AirHold);
-                            }
-                        }
-                    });
-                }
-                selectionArea.Relocate(position, model.LaneBook);
+                selectionArea.Reset(tmpArea);
+                book.PutRange(tmpArea.SelectedNoteList);
+                book.PutRange(tmpArea.SelectedLongNoteList);
             };
             Undo += () =>
             {
-                if (selectionArea == null) return;
-                selectionArea.Relocate(pastPosition, model.LaneBook);
-                new ClearAreaNotesOperation(model, selectionArea).Invoke();
+                selectionArea.Reset();
+                book.UnPutRange(tmpArea.SelectedNoteList);
+                book.UnPutRange(tmpArea.SelectedLongNoteList);
             };
         }
     }
 
+    /// <summary>
+    /// クリップボードのノーツを左右反転して貼り付けます
+    /// </summary>
+    /// reviewed on 2019/08/03
     public class PasteAndReverseNotesOperation : Operation
     {
-        PasteNotesOperation paste;
-        ReverseNotesOperation reverse;
-
         public PasteAndReverseNotesOperation(Model model, SelectionArea selectionArea, Position position)
         {
-            paste = new PasteNotesOperation(model, selectionArea, position);
-            reverse = new ReverseNotesOperation(model, selectionArea);
+            if (model == null || selectionArea == null || position == null)
+            {
+                Logger.Error("引数にnullのものが含まれるため、操作を行えません。", true);
+                Canceled = true;
+                return;
+            }
+
+            var paste = new PasteNotesOperation(model, selectionArea, position);
+            var reverse = new ReverseNotesOperation(model, selectionArea);
+
+            Canceled = paste.Canceled && reverse.Canceled;
 
             Invoke += () =>
             {
@@ -142,30 +137,42 @@ namespace NE4S.Operation
         }
     }
 
+    /// <summary>
+    /// 選択矩形内に含まれるノーツを全削除します
+    /// </summary>
+    // reviewed on 2019/08/06
     public class ClearAreaNotesOperation : Operation
     {
-        SelectionArea selectionArea;
-
         public ClearAreaNotesOperation(Model model, SelectionArea selectionArea)
         {
-            this.selectionArea = new SelectionArea(selectionArea);
+            if (model == null || selectionArea == null)
+            {
+                Logger.Error("引数にnullのものが含まれるため、操作を行えません。", true);
+                Canceled = true;
+                return;
+            }
+
+            var tmpArea = new SelectionArea(selectionArea);
+            var book = model.NoteBook;
+            selectionArea.Reset();
 
             Invoke += () =>
             {
-                selectionArea.ClearAllNotes(model.NoteBook);
-                selectionArea.Reset();
+                book.UnPutRange(tmpArea.SelectedNoteList);
+                book.UnPutRange(tmpArea.SelectedLongNoteList);
             };
             Undo += () =>
             {
-                new CopyNotesOperation(this.selectionArea).Invoke();
-                new PasteNotesOperation(
-                    model,
-                    selectionArea,
-                    this.selectionArea.TopLeftPosition).Invoke();
+                book.PutRange(tmpArea.SelectedNoteList);
+                book.PutRange(tmpArea.SelectedLongNoteList);
             };
         }
     }
 
+    /// <summary>
+    /// 選択矩形内のノーツを左右反転します
+    /// </summary>
+    /// reviewed on 2019/07/29
     public class ReverseNotesOperation : Operation
     {
         public ReverseNotesOperation(Model model, SelectionArea selectionArea)

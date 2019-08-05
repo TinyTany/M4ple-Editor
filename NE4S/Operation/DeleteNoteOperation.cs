@@ -121,14 +121,19 @@ namespace NE4S.Operation
                             Canceled = true;
                             return;
                         }
-                        var deleteAirHoldOperation = new DeleteLongNoteOperation(model, airHold);
+                        var baseAirable = airHold.GetAirable?.Invoke();
+                        if (baseAirable == null)
+                        {
+                            Logger.Warn("削除するAirHoldのベースとなるAirableNoteが存在しません。", true);
+                        }
+                        AirUpC air = null;
                         Invoke += () =>
                         {
-                            deleteAirHoldOperation.Invoke();
+                            model.NoteBook.DetachAirHoldFromAirableNote(baseAirable, out airHold, out air);
                         };
                         Undo += () =>
                         {
-                            deleteAirHoldOperation.Undo();
+                            model.NoteBook.AttachAirHoldToAirableNote(baseAirable, airHold, air);
                         };
                     }
                     break;

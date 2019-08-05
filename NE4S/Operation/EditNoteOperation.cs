@@ -119,26 +119,6 @@ namespace NE4S.Operation
     }
 
     /// <summary>
-    /// Slideを指定の分数ごとでTick方向にSlideTapまたはSldeRelayで分割します
-    /// </summary>
-    public class DivideSlideOperation : Operation
-    {
-        public DivideSlideOperation(Slide slide, Note stepPast, Note stepFuture)
-        {
-            int stepAddCount = 
-                (stepFuture.Position.Tick - stepPast.Position.Tick) * Status.Beat / 192;
-            Invoke += () =>
-            {
-                // UNDONE
-            };
-            Undo += () =>
-            {
-                // UNDONE
-            };
-        }
-    }
-
-    /// <summary>
     /// 指定したSlide帯でSlideを2つに切断します
     /// </summary>
     public class CutSlideOperation : Operation
@@ -280,15 +260,15 @@ namespace NE4S.Operation
             #endregion
             Invoke += () =>
             {
-                // HACK: ルール違反（Readonlyなリストに対して変更を行っている）なので早めに修正する
-                model.NoteBook.SlideNotes.ToList().RemoveAll(x => slideList.Contains(x));
-                model.NoteBook.SlideNotes.ToList().AddRange(afterList);
+                var lst = model.NoteBook.SlideNotes.Where(x => slideList.Contains(x));
+                model.NoteBook.UnPutRange(lst);
+                model.NoteBook.PutRange(afterList);
             };
             Undo += () =>
             {
-                // HACK: ルール違反（Readonlyなリストに対して変更を行っている）なので早めに修正する
-                model.NoteBook.SlideNotes.ToList().RemoveAll(x => afterList.Contains(x));
-                model.NoteBook.SlideNotes.ToList().AddRange(slideList);
+                var lst = model.NoteBook.SlideNotes.Where(x => afterList.Contains(x));
+                model.NoteBook.UnPutRange(lst);
+                model.NoteBook.PutRange(slideList);
             };
         }
 
