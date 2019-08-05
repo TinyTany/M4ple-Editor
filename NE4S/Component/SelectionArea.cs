@@ -14,17 +14,27 @@ namespace NE4S.Component
     [Serializable()]
     public class SelectionArea
     {
+        // REVIEW: TODO: 汚いコードでやってることも何も信用できないので全体的に見直す必要あり
+        /// <summary>
+        /// （マウスによって指定された）矩形の開始位置
+        /// </summary>
         public Position StartPosition { get; set; } = null;
+        /// <summary>
+        /// （マウスによって指定された）矩形の終了位置
+        /// </summary>
         public Position EndPosition { get; set; } = null;
-        public Position MovePositionDelta { get; set; } = null;
         public List<Note> SelectedNoteList { get; private set; } = new List<Note>();
         public List<LongNote> SelectedLongNoteList { get; private set; } = new List<LongNote>();
+        /// <summary>
+        /// StartPositionとEndPositionから矩形の左上の位置を計算する
+        /// </summary>
         public Position TopLeftPosition
         {
             get
             {
                 if (StartPosition == null || EndPosition == null)
                 {
+                    Logger.Warn("StartPositionまたはEndPositionがnullでした");
                     return new Position();
                 }
                 return new Position(
@@ -32,12 +42,16 @@ namespace NE4S.Component
                     Math.Max(StartPosition.Tick, EndPosition.Tick));
             }
         }
+        /// <summary>
+        /// StartPositionとEndPositionから矩形の右下の位置を計算する
+        /// </summary>
         public Position BottomRightPosition
         {
             get
             {
                 if (StartPosition == null || EndPosition == null)
                 {
+                    Logger.Warn("StartPositionまたはEndPositionがnullでした");
                     return new Position();
                 }
                 return new Position(
@@ -58,7 +72,6 @@ namespace NE4S.Component
         {
             StartPosition = null;
             EndPosition = null;
-            MovePositionDelta = null;
             SelectedNoteList.Clear();
             SelectedLongNoteList.Clear();
         }
@@ -67,7 +80,6 @@ namespace NE4S.Component
         {
             StartPosition = selectionArea.StartPosition;
             EndPosition = selectionArea.EndPosition;
-            MovePositionDelta = selectionArea.MovePositionDelta;
             SelectedNoteList = new List<Note>(selectionArea.SelectedNoteList);
             SelectedLongNoteList = new List<LongNote>(selectionArea.SelectedLongNoteList);
         }
@@ -124,29 +136,10 @@ namespace NE4S.Component
         }
 
         /// <summary>
-        /// NoteBookから選択範囲内のノーツを削除します
-        /// SelectionArea自体が持つ選択範囲内のノーツオブジェクトは保持されます
+        /// 保持している矩形領域内のノーツのリストを空にします。
         /// </summary>
-        /// <param name="noteBook"></param>
-        public void ClearNotes(NoteBook noteBook)
+        public void ClearSelectedList()
         {
-            foreach(Note note in SelectedNoteList.ToArray())
-            {
-                noteBook.UnPut(note);
-            }
-            foreach(LongNote longNote in SelectedLongNoteList.ToArray())
-            {
-                noteBook.UnPut(longNote);
-            }
-        }
-
-        /// <summary>
-        /// NoteBookおよびSelectionAreaから範囲内のすべてのノーツを削除します
-        /// </summary>
-        /// <param name="noteBook"></param>
-        public void ClearAllNotes(NoteBook noteBook)
-        {
-            ClearNotes(noteBook);
             SelectedNoteList.Clear();
             SelectedLongNoteList.Clear();
         }
@@ -188,6 +181,7 @@ namespace NE4S.Component
                     }
                     if (newAir != null)
                     {
+                        noteBook.DetachAirFromAirableNote(airable, out _);
                         noteBook.AttachAirToAirableNote(airable, newAir);
                     }
                 }
@@ -204,7 +198,7 @@ namespace NE4S.Component
             if (StartPosition == null || EndPosition == null || position == null) return;
             Position prevStartPosition = new Position(TopLeftPosition);
             Position areaSize = new Position(BottomRightPosition.Lane - TopLeftPosition.Lane, TopLeftPosition.Tick - BottomRightPosition.Tick);
-            int newStartLane = position.Lane - MovePositionDelta.Lane;
+            int newStartLane = position.Lane;
             if (newStartLane < 0)
             {
                 newStartLane = 0;
@@ -213,7 +207,7 @@ namespace NE4S.Component
             {
                 newStartLane = 15 - areaSize.Lane;
             }
-            int newStartTick = position.Tick - MovePositionDelta.Tick;
+            int newStartTick = position.Tick;
             if (newStartTick - areaSize.Tick < 0)
             {
                 newStartTick = areaSize.Tick;
@@ -226,18 +220,14 @@ namespace NE4S.Component
                 StartPosition.Tick - areaSize.Tick);
             SelectedNoteList.ForEach(x =>
             {
-                Position positionDelta = new Position(
-                    x.Position.Lane - prevStartPosition.Lane, 
-                    x.Position.Tick - prevStartPosition.Tick);
+                Position positionDelta = x.Position - prevStartPosition;
                 x.RelocateOnlyAndUpdate(new Position(newStartLane + positionDelta.Lane, newStartTick + positionDelta.Tick), laneBook);
             });
             SelectedLongNoteList.ForEach(x =>
             {
                 x.ForEach(y =>
                 {
-                    Position positionDelta = new Position(
-                        y.Position.Lane - prevStartPosition.Lane,
-                        y.Position.Tick - prevStartPosition.Tick);
+                    Position positionDelta = y.Position - prevStartPosition;
                     y.RelocateOnlyAndUpdate(new Position(newStartLane + positionDelta.Lane, newStartTick + positionDelta.Tick), laneBook);
                 });
             });
