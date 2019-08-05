@@ -45,6 +45,22 @@ namespace NE4S
             Tick = tick;
         }
 
+        public static Position operator+(Position lhs, Position rhs)
+        {
+            return new Position(lhs.Lane + rhs.Lane, lhs.Tick + rhs.Tick);
+        }
+
+        public static Position operator-(Position lhs, Position rhs)
+        {
+            // TODO: LaneやTickが負にならないようにバリデーションを設けるべきか？
+            return new Position(lhs.Lane - rhs.Lane, lhs.Tick - rhs.Tick);
+        }
+
+        public static Position operator-(Position p)
+        {
+            return new Position(-p.Lane, -p.Tick);
+        }
+
         public static bool operator ==(Position lhs, Position rhs)
         {
             if (object.ReferenceEquals(lhs, rhs)) { return true; }
