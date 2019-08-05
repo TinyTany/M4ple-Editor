@@ -578,6 +578,8 @@ namespace NE4S.Scores
             }
         }
 
+        private Position clickedPositionDiff = null;
+
         public void MouseDown(MouseEventArgs e)
         {
 			var laneBook = model.LaneBook;
@@ -629,9 +631,7 @@ namespace NE4S.Scores
                                 selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
                             if (selectionArea.Contains(currentPosition))
                             {
-                                selectionArea.MovePositionDelta = new Position(
-                                    currentPosition.Lane - selectionArea.TopLeftPosition.Lane,
-                                    currentPosition.Tick - selectionArea.TopLeftPosition.Tick);
+                                clickedPositionDiff = selectionArea.TopLeftPosition - currentPosition;
                                 // 現在のPosition情報を控え、矩形選択移動が行われることを覚えておく
                                 selectionAreaPrev = new SelectionArea(selectionArea);
                             }
@@ -819,10 +819,10 @@ namespace NE4S.Scores
                     {
                         Position currentPosition = 
                             selectedLane.GetLocalPosition(PointToGrid(e.Location, selectedLane, 0).Add(displayRect.Location));
-                        if (selectionArea.MovePositionDelta != null)
+                        if (clickedPositionDiff != null)
                         {
                             pictureBox.Cursor = Cursors.SizeAll;
-                            selectionArea.Relocate(currentPosition, model.LaneBook);
+                            selectionArea.Relocate(currentPosition + clickedPositionDiff, model.LaneBook);
                         }
                         else
                         {
@@ -886,9 +886,7 @@ namespace NE4S.Scores
             }
             else if (selectionAreaPrev != null && selectionArea != null)
             {
-                Position diff = new Position(
-                    selectionArea.TopLeftPosition.Lane - selectionAreaPrev.TopLeftPosition.Lane,
-                    selectionArea.TopLeftPosition.Tick - selectionAreaPrev.TopLeftPosition.Tick);
+                Position diff = selectionArea.TopLeftPosition - selectionAreaPrev.TopLeftPosition;
                 if (diff.Tick != 0 || diff.Lane != 0)
                 {
                     OperationManager.AddOperation(
@@ -904,7 +902,7 @@ namespace NE4S.Scores
             Status.IsMousePressed = false;
             Status.SelectedNote = null;
             Status.SelectedNoteArea = NoteArea.None;
-            selectionArea.MovePositionDelta = null;
+            clickedPositionDiff = null;
             if (!selectionArea.SelectedNoteList.Any() && !selectionArea.SelectedLongNoteList.Any())
             {
                 selectionArea.SetContainsNotes(model.NoteBook);
