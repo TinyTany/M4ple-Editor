@@ -241,6 +241,32 @@ namespace NE4S.Notes
             return true;
         }
 
+        public bool PutRange(IEnumerable<Note> notes)
+        {
+            var ret = true;
+            foreach (var note in notes)
+            {
+                if (!Put(note))
+                {
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+
+        public bool PutRange(IEnumerable<LongNote> lnotes)
+        {
+            var ret = true;
+            foreach (var lnote in lnotes)
+            {
+                if (!Put(lnote))
+                {
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+
         /// <summary>
         /// 配置済みAirableノーツに対して新規Airノーツを配置し取り付けます。
         /// </summary>
@@ -395,6 +421,32 @@ namespace NE4S.Notes
                         return false;
                     }
             }
+        }
+
+        public bool UnPutRange(IEnumerable<Note> notes)
+        {
+            var ret = true;
+            foreach (var note in notes)
+            {
+                if (!UnPut(note))
+                {
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+
+        public bool UnPutRange(IEnumerable<LongNote> lnotes)
+        {
+            var ret = true;
+            foreach (var lnote in lnotes)
+            {
+                if (!UnPut(lnote))
+                {
+                    ret = false;
+                }
+            }
+            return ret;
         }
 
         /// <summary>
