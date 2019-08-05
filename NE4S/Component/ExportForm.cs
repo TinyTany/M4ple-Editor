@@ -291,15 +291,15 @@ namespace NE4S.Component
                     WriteNotesByScore(noteBook.ShortNotes, score, 1, streamWriter, "");
                 }
                 streamWriter.WriteLine("\r\nHold");
-                WriteLongNotes(noteBook.HoldNotes.ConvertAll(x => x as LongNote), 2, streamWriter);
+                WriteLongNotes(noteBook.HoldNotes, 2, streamWriter);
                 streamWriter.WriteLine("\r\nSlide");
-                WriteLongNotes(noteBook.SlideNotes.ConvertAll(x => x as LongNote), 3, streamWriter);
+                WriteLongNotes(noteBook.SlideNotes, 3, streamWriter);
                 streamWriter.WriteLine("\r\nAirHold");
-                WriteLongNotes(noteBook.AirHoldNotes.ConvertAll(x => x as LongNote), 4, streamWriter);
+                WriteLongNotes(noteBook.AirHoldNotes, 4, streamWriter);
                 streamWriter.WriteLine("\r\nAir");
                 foreach (Score score in scoreBook)
                 {
-                    WriteNotesByScore(noteBook.AirNotes.ConvertAll(x => x as Note), score, 5, streamWriter, "");
+                    WriteNotesByScore(noteBook.AirNotes, score, 5, streamWriter, "");
                 }
             }
             return true;
@@ -371,12 +371,17 @@ namespace NE4S.Component
         /// <param name="laneType">レーン種別</param>
         /// <param name="streamWriter"></param>
         /// <param name="longLaneSign">ロングノーツの際に使うロングレーンの識別番号</param>
-        private static void WriteNotesByScore(in List<Note> notes, Score score, in int laneType, in StreamWriter streamWriter, in string longLaneSign)
+        private static void WriteNotesByScore<T>(
+            in IReadOnlyCollection<T> notes,
+            Score score, 
+            in int laneType,
+            in StreamWriter streamWriter,
+            in string longLaneSign) where T : Note
         {
-            List<Note> currentScoreNotes = notes.Where(x => score.StartTick <= x.Position.Tick && x.Position.Tick <= score.EndTick).ToList();
+            var currentScoreNotes = notes.Where(x => score.StartTick <= x.Position.Tick && x.Position.Tick <= score.EndTick).ToList();
             for (int lane = 0; lane < ScoreInfo.Lanes; ++lane)
             {
-                List<Note> currentLaneNotes = currentScoreNotes.Where(x => x.Position.Lane == lane).ToList();
+                var currentLaneNotes = currentScoreNotes.Where(x => x.Position.Lane == lane).ToList();
                 int noteCount = currentLaneNotes.Count;
                 for (int count = 0; currentLaneNotes.Any() && count < noteCount; ++count)
                 {
@@ -392,7 +397,7 @@ namespace NE4S.Component
                     streamWriter.Write("#" + score.Index.ToString("D3") + laneType + lane.ToString("x") + longLaneSign + ": ");
                     for (int itrTick = 0; itrTick < lcm; ++itrTick)
                     {
-                        Note writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick == itrTick * score.TickSize / lcm);
+                        var writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick == itrTick * score.TickSize / lcm);
                         if (writeNote != null)
                         {
                             streamWriter.Write(writeNote.NoteID);
@@ -416,10 +421,13 @@ namespace NE4S.Component
             }
         }
 
-        private void WriteLongNotes(in List<LongNote> longNoteList, in int laneType, in StreamWriter streamWriter)
+        private void WriteLongNotes<T>(
+            in IReadOnlyCollection<T> longNoteList,
+            in int laneType, 
+            in StreamWriter streamWriter) where T : LongNote
         {
             LongLaneSignProvider signProvider = new LongLaneSignProvider();
-            foreach (LongNote longNote in longNoteList.OrderBy(x => x.StartTick))
+            foreach (var longNote in longNoteList.OrderBy(x => x.StartTick))
             {
                 string sign = signProvider.GetAvailableSign(longNote.StartTick, longNote.EndTick);
                 foreach(Score score in scoreBook.Where(x => x.EndTick >= longNote.StartTick && x.StartTick <= longNote.EndTick))
