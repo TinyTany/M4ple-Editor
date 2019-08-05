@@ -11,6 +11,13 @@ namespace NE4S.Operation
     {
         public AddShortNoteOperation(Model model, Note note)
         {
+            if(model == null || note == null)
+            {
+                Logger.Error("引数にnullのものが含まれるため、操作を行えません。", true);
+                Canceled = true;
+                return;
+            }
+
             Invoke += () =>
             {
                 model.NoteBook.Put(note);

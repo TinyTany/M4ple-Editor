@@ -12,11 +12,9 @@ namespace NE4S.Operation
     {
         public DeleteNoteOperation(Model model, Note note)
         {
-            Debug.Assert(model != null);
-            Debug.Assert(note != null);
             if (model == null || note == null)
             {
-                Logger.Error("引数にnullのものが存在するため削除操作を行えません。");
+                Logger.Error("引数にnullのものが存在するため削除操作を行えません。", true);
                 Canceled = true;
                 return;
             }

@@ -18,13 +18,13 @@ namespace NE4S.Notes
         {
             if (slide == null)
             {
-                System.Diagnostics.Debug.Assert(false, "引数のslideがnullです");
+                Logger.Error("引数のslideがnullです", true);
                 return;
             }
             Slide = slide;
             if (!slide.Contains(start) || !slide.Contains(end))
             {
-                System.Diagnostics.Debug.Assert(false, "引数のnoteが不正です");
+                Logger.Error("引数のnoteが不正です", true);
                 return;
             }
             Partial.AddRange(
