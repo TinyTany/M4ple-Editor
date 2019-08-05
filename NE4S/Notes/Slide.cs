@@ -57,7 +57,7 @@ namespace NE4S.Notes
         /// </summary>
         public Slide() { }
 
-        // HACK: SlideEndにAirとかAirHoldがついているときとかも考慮したコピーコンストラクタになっている？？？
+        // NOTE: SlideEndコンストラクタでは、親クラスのAirableNoteのコンストラクタも呼び出しているので、AirやAirHoldのコピーもされている
         public Slide(Slide slide)
         {
             if (slide == null)
@@ -148,82 +148,88 @@ namespace NE4S.Notes
         // それ以外は全部補助的なメソッドなので直には使わない
 
         /// <summary>
-        /// Slide中継点系のノーツのみAddされます。それ以外はAddせずにアサートを吐きます。
+        /// Slide中継点系のノーツのみAddされます。それ以外はAddせずにエラーログとアサートを吐きます。
         /// </summary>
-        /// <param name="note"></param>
-        public new void Add(Note note)
+        public new bool Add(Note note)
         {
-            //*
-            if (note is SlideBegin begin) { Add(begin); }
-            else if (note is SlideEnd end) { Add(end); }
-            else if (note is SlideTap tap) { Add(tap); }
-            else if (note is SlideRelay relay) { Add(relay); }
-            else if (note is SlideCurve curve) { Add(curve); }
-            else
+            if (note == null)
             {
-                Debug.Assert(false, "Slideに対して不正なノーツ追加です。");
+                Logger.Error("引数noteがnullのため操作を行えません。", true);
+                return false;
             }
-            //*/
+            switch (note)
+            {
+                case SlideBegin begin: return Add(begin);
+                case SlideEnd end: return Add(end);
+                case SlideTap tap: return Add(tap);
+                case SlideRelay relay: return Add(relay);
+                case SlideCurve curve: return Add(curve);
+                default:
+                    {
+                        Logger.Warn("Slideに対して不正なノーツ追加です。", true);
+                        return false;
+                    }
+            }
         }
 
-        private void Add(SlideBegin slideBegin)
+        private bool Add(SlideBegin slideBegin)
         {
             if (!IsPositionTickAvailable(slideBegin, slideBegin.Position))
             {
                 Status.SelectedNote = null;
-                return;
+                return false;
             }
             base.Add(slideBegin);
             slideBegin.IsPositionAvailable += IsPositionTickAvailable;
-            return;
+            return true;
         }
 
-        private void Add(SlideTap slideTap)
+        private bool Add(SlideTap slideTap)
         {
             if (!IsPositionTickAvailable(slideTap, slideTap.Position))
             {
                 Status.SelectedNote = null;
-                return;
+                return false;
             }
             base.Add(slideTap);
             slideTap.IsPositionAvailable += IsPositionTickAvailable;
-            return;
+            return true;
         }
 
-        private void Add(SlideRelay slideRelay)
+        private bool Add(SlideRelay slideRelay)
         {
             if (!IsPositionTickAvailable(slideRelay, slideRelay.Position))
             {
                 Status.SelectedNote = null;
-                return;
+                return false;
             }
             base.Add(slideRelay);
             slideRelay.IsPositionAvailable += IsPositionTickAvailable;
-            return;
+            return true;
         }
 
-        private void Add(SlideCurve slideCurve)
+        private bool Add(SlideCurve slideCurve)
         {
             if (!IsPositionTickAvailable(slideCurve, slideCurve.Position))
             {
                 Status.SelectedNote = null;
-                return;
+                return false;
             }
             base.Add(slideCurve);
             slideCurve.IsPositionAvailable += IsPositionTickAvailable;
-            return;
+            return true;
         }
 
-        private void Add(SlideEnd slideEnd)
+        private bool Add(SlideEnd slideEnd)
         {
             if (!IsPositionTickAvailable(slideEnd, slideEnd.Position))
             {
                 Status.SelectedNote = null;
-                return;
+                return false;
             }
             base.Add(slideEnd);
             slideEnd.IsPositionAvailable += IsPositionTickAvailable;
-            return;
+            return true;
         }
         #endregion
 
@@ -359,11 +365,11 @@ namespace NE4S.Notes
                 if (list.IndexOf(note) < list.Count - 1 && !(note is SlideCurve))
                 {
                     //スライド帯のグラデーション用矩形を設定する
-                    if(note is SlideBegin || note is SlideTap || note is SlideEnd)
+                    if (note is SlideBegin || note is SlideTap || note is SlideEnd)
                     {
                         gradientNote = note;
                         gradientNext = stepList.Next(note);
-                        if(gradientNext != null)
+                        if (gradientNext != null)
                         {
                             float distance = (gradientNext.Position.Tick - gradientNote.Position.Tick) * ScoreInfo.UnitBeatHeight;
                             //x座標と幅は適当な値を入れたけどちゃんとうごいてるっぽい？重要なのはy座標と高さ
@@ -372,7 +378,7 @@ namespace NE4S.Notes
                     }
                     //スライド帯を描画する
                     next = list.Next(note);
-                    if(!(next is SlideCurve))
+                    if (!(next is SlideCurve))
                     {
                         // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
                         if (next.Position.Tick < Status.DrawTickFirst)
