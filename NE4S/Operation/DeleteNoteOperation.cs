@@ -29,6 +29,12 @@ namespace NE4S.Operation
                         {
                             Logger.Warn("削除するAirのベースとなるAirableNoteが存在しません。", true);
                         }
+                        if (baseAirable.IsAirHoldAttached)
+                        {
+                            Logger.Error("AirHoldが取り付けられているAirableNoteからAirのみの取り外しはできません。");
+                            Canceled = true;
+                            return;
+                        }
                         Invoke += () =>
                         {
                             model.NoteBook.DetachAirFromAirableNote(baseAirable, out air);

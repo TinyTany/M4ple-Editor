@@ -669,7 +669,7 @@ namespace NE4S.Scores
                         }
                         break;
 					case Mode.Delete:
-                        if (NoteDeletable(selectedNote))
+                        if (selectedNote != null)
                         {
                             OperationManager.AddOperationAndInvoke(new DeleteNoteOperation(model, selectedNote));
                         }
@@ -701,17 +701,6 @@ namespace NE4S.Scores
             #endregion
             if (selectedLane == null) System.Diagnostics.Debug.WriteLine("MouseDown(MouseEventArgs) : selectedLane = null");
 		}
-
-        private bool NoteDeletable(Note note)
-        {
-            if (note == null) return false;
-            if (note is Air air)
-            {
-                var airable = air.GetAirable.Invoke();
-                if (airable.IsAirHoldAttached) return false;
-            }
-            return true;
-        }
 
         private void SetCursor(Note selectedNote, NoteArea noteArea)
         {
