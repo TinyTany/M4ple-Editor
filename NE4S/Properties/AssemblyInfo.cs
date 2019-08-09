@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("M4ple Editor")]
-[assembly: AssemblyCopyright("Copyright © 2018 t4nishi")]
+[assembly: AssemblyCopyright("© 2018-2019 t4nishi")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
