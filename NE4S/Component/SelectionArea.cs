@@ -146,6 +146,7 @@ namespace NE4S.Component
             SelectedLongNoteList.Clear();
         }
 
+        // REVIEW: この辺の生ノーツデータを手づかみで触る処理はここじゃなくてNoteBookでやったほうが安全じゃない…？
         public void ReverseNotes(NoteBook noteBook, LaneBook laneBook)
         {
             ReverseShortNotes(SelectedNoteList, laneBook, noteBook);
@@ -155,6 +156,7 @@ namespace NE4S.Component
             });
         }
 
+        // REVIEW: この辺の生ノーツデータを手づかみで触る処理はここじゃなくてNoteBookでやったほうが安全じゃない…？
         private void ReverseShortNotes(List<Note> noteList, LaneBook laneBook, NoteBook noteBook)
         {
             noteList.ForEach(x =>
@@ -195,6 +197,7 @@ namespace NE4S.Component
         /// </summary>
         /// <param name="position"></param>
         /// <param name="laneBook"></param>
+        // REVIEW: この辺の生ノーツデータを手づかみで触る処理はここじゃなくてNoteBookでやったほうが安全じゃない…？
         public void Relocate(Position position, LaneBook laneBook)
         {
             if (StartPosition == null || EndPosition == null || position == null) return;

@@ -10,6 +10,7 @@ namespace NE4S.Component
 {
     public class EditCMenu : ContextMenuStrip
     {
+        // REVIEW: TODO: イベントでコールバックを実現するやつやる
         private readonly ToolStripItem[] stripItems;
         private readonly ToolStripItem[] barAddItems;
         private readonly ToolStripItem[] barAddWithNoteItems;

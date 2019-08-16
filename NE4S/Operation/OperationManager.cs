@@ -8,7 +8,9 @@ namespace NE4S.Operation
 {
     public class OperationManager
     {
-        private Stack<Operation> stackUndo, stackRedo;
+        private readonly Stack<Operation> stackUndo;
+        private readonly Stack<Operation> stackRedo;
+
         public event Action<bool, bool> StatusChanged;
         public event Action Edited;
 

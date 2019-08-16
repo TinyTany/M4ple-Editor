@@ -52,7 +52,6 @@ namespace NE4S
 
         public static Position operator-(Position lhs, Position rhs)
         {
-            // TODO: LaneやTickが負にならないようにバリデーションを設けるべきか？
             return new Position(lhs.Lane - rhs.Lane, lhs.Tick - rhs.Tick);
         }
 

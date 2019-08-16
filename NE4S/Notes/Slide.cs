@@ -58,6 +58,9 @@ namespace NE4S.Notes
         public Slide() { }
 
         // NOTE: SlideEndコンストラクタでは、親クラスのAirableNoteのコンストラクタも呼び出しているので、AirやAirHoldのコピーもされている
+        /// <summary>
+        /// 遅いからディープコピー使ったほうがいい（10倍くらい早い）
+        /// </summary>
         public Slide(Slide slide)
         {
             if (slide == null)

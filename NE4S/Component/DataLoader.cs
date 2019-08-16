@@ -61,9 +61,9 @@ namespace NE4S.Component
             catch (Exception)
             {
                 model = null;
+                Logger.Error("デシリアライズに失敗しました。", true);
             }
             fileStream.Close();
-            System.Diagnostics.Debug.Assert(model != null, "デシリアライズ失敗");
             return model;
         }
     }
