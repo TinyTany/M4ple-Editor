@@ -133,6 +133,8 @@ namespace NE4S.Component
             {
                 SelectedLongNoteList = SelectedLongNoteList.Union(noteBook.SlideNotes.Where(x => Contains(x))).ToList();
             }
+            var b = SelectedNoteList.Any() || SelectedLongNoteList.Any();
+            Status.OnCopyChanged(b);
         }
 
         /// <summary>
