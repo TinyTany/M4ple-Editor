@@ -102,18 +102,18 @@ namespace NE4S.Operation
                             Canceled = true;
                             return;
                         }
-                        var slideCopy = new Slide(slide);
-                        slide.Remove(note);
-                        book.UnPut(slide);
+                        var after = slide.DeepCopy();
+                        var delNote = after.ElementAt(slide.IndexOf(note));
+                        after.Remove(delNote);
                         Invoke += () =>
                         {
-                            book.Put(slide);
-                            book.UnPut(slideCopy);
+                            book.UnPut(slide);
+                            book.Put(after);
                         };
                         Undo += () =>
                         {
-                            book.Put(slideCopy);
-                            book.UnPut(slide);
+                            book.UnPut(after);
+                            book.Put(slide);
                         };
                     }
                     break;

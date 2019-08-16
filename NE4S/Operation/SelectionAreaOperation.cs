@@ -17,7 +17,9 @@ namespace NE4S.Operation
     {
         public CopyNotesOperation(SelectionArea selectionArea)
         {
-            Clipboard.SetDataObject(selectionArea);
+            // NOTE: ClipBoardに「送る」っていうのは多分送るオブジェクトに参照をするだけであって、
+            //       その場でシリアライズされたりはしない感じなはず（ディープコピーするのはそのため）
+            Clipboard.SetDataObject(selectionArea.DeepCopy());
             Canceled = true;
 
             Invoke += () => Logger.Warn("何もしない");
