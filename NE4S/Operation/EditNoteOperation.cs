@@ -235,7 +235,7 @@ namespace NE4S.Operation
                     System.Diagnostics.Debug.Assert(false, "パターン複製に失敗しました");
                     continue;
                 }
-                var after = new Slide(x.Slide);
+                var after = x.Slide.DeepCopy();
                 var pattern = ReplicatePattern(x.Partial).OrderBy(y => y.Position.Tick).ToList();
                 var patternLength = pattern.Last().Position.Tick - pattern.First().Position.Tick;
                 pattern.ForEach(y =>
@@ -276,7 +276,7 @@ namespace NE4S.Operation
             Model model, Slide slide, List<Note> pattern, int times, int tickInterval)
         {
             #region 複製したSlideを新規作成
-            var after = new Slide(slide);
+            var after = slide.DeepCopy();
             var patternLength =
                 pattern.OrderBy(x => x.Position.Tick).Last().Position.Tick -
                 pattern.OrderBy(x => x.Position.Tick).First().Position.Tick;

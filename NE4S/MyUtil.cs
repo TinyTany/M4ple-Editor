@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using NE4S.Notes;
 using NE4S.Scores;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace NE4S
 {
@@ -72,6 +74,23 @@ namespace NE4S
         public static int Lcm(int m, int n)
         {
             return m * n / Gcd(m, n);
+        }
+
+        /// <summary>
+        /// 任意の参照型オブジェクトをディープコピーします
+        /// パフォーマンスを見ながら、コピーコンストラクタによる方法も検討してください
+        /// </summary>
+        public static T DeepCopy<T>(this T target) where T : class
+        {
+            T copy = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(ms, target);
+                ms.Position = 0;
+                copy = bf.Deserialize(ms) as T;
+            }
+            return copy;
         }
 
         /// <summary>
