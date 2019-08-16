@@ -79,6 +79,9 @@ namespace NE4S
                     UpdateTextOfTabAndForm(true);
                     sPanel.IsEdited = true;
                 };
+                Status.CopyChanged += (b) => tsbCopy.Enabled = tsbCut.Enabled = b;
+                Status.PasteChanged += (b) => tsbPaste.Enabled = b;
+                tsbCut.Enabled = tsbCopy.Enabled = tsbPaste.Enabled = false;
                 sPanel.SetScore(4, 4, 200);
                 tabPageEx.ScorePanel = sPanel;
                 // PictureBoxとHScrollBarの各種デリゲートの設定

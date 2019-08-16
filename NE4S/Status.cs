@@ -12,6 +12,20 @@ namespace NE4S
     /// </summary>
     public static class Status
     {
+        public static event Action<bool> CopyChanged, PasteChanged;
+        public static void OnCopyChanged(bool b)
+        {
+            IsCopyAvailable = b;
+            CopyChanged?.Invoke(b);
+        }
+        public static void OnPasteChanged(bool b)
+        {
+            IsPasteAvailable = b;
+            PasteChanged?.Invoke(b);
+        }
+        public static bool IsCopyAvailable { get; private set; } = false;
+        public static bool IsPasteAvailable { get; private set; } = false;
+
         public static Define.Mode Mode { get; set; } = Define.Mode.Add;
         public static int Beat { get; set; } = 16;
         public static int Grid { get; set; } = 16;

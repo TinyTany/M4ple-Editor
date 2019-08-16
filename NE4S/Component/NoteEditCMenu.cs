@@ -16,12 +16,13 @@ namespace NE4S.Component
 
         public NoteEditCMenu(ScorePanel scorePanel, Position clickPosition)
         {
+            var b = Status.IsCopyAvailable;
             stripItems = new ToolStripMenuItem[]
             {
-                new ToolStripMenuItem("切り取り", null, (s, e) => scorePanel.CutNotes()),
-                new ToolStripMenuItem("コピー", null, (s, e) => scorePanel.CopyNotes()),
-                new ToolStripMenuItem("削除", null, (s, e) => scorePanel.ClearAreaNotes()),
-                new ToolStripMenuItem("左右反転", null, (s, e) => scorePanel.ReverseNotes())
+                new ToolStripMenuItem("切り取り", null, (s, e) => scorePanel.CutNotes()){ Enabled = b },
+                new ToolStripMenuItem("コピー", null, (s, e) => scorePanel.CopyNotes()){ Enabled = b },
+                new ToolStripMenuItem("削除", null, (s, e) => scorePanel.ClearAreaNotes()){ Enabled = b },
+                new ToolStripMenuItem("左右反転", null, (s, e) => scorePanel.ReverseNotes()){ Enabled = b }
             };
             Items.AddRange(stripItems);
         }

@@ -20,6 +20,7 @@ namespace NE4S.Operation
             // NOTE: ClipBoardに「送る」っていうのは多分送るオブジェクトに参照をするだけであって、
             //       その場でシリアライズされたりはしない感じなはず（ディープコピーするのはそのため）
             Clipboard.SetDataObject(selectionArea.DeepCopy());
+            Status.OnPasteChanged(true);
             Canceled = true;
 
             Invoke += () => Logger.Warn("何もしない");

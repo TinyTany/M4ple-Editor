@@ -80,11 +80,11 @@ namespace NE4S.Component
                 new ToolStripMenuItem("選択小節を改行", null, BarDivide),
                 laneFill,
                 new ToolStripSeparator(),
-                new ToolStripMenuItem("貼り付け", null, (s, e) => sPanel.PasteNotes(clickPosition)),
+                new ToolStripMenuItem("貼り付け", null, (s, e) => sPanel.PasteNotes(clickPosition)){ Enabled = Status.IsPasteAvailable },
                 new ToolStripMenuItem("左右反転して貼り付け", null, (s, e) => 
                 {
                     sPanel.PasteAndReverseNotes(clickPosition);
-                })
+                }){ Enabled = Status.IsPasteAvailable }
             };
             Items.AddRange(stripItems);
             this.sPanel = sPanel;
