@@ -31,7 +31,7 @@ namespace NE4S.Operation
     /// <summary>
     /// 矩形選択範囲内のノーツを切り取り、クリップボードに送ります
     /// </summary>
-    /// reviewed on 2019/08/06
+    /// reviewed on 2019/08/19
     public class CutNotesOperation : Operation
     {
         public CutNotesOperation(Model model, SelectionArea selectionArea)
@@ -44,19 +44,16 @@ namespace NE4S.Operation
             }
 
             var tmpArea = new SelectionArea(selectionArea);
+            var clearOp = new ClearAreaNotesOperation(model, selectionArea);
 
             Invoke += () =>
             {
                 new CopyNotesOperation(tmpArea).Invoke();
-                new ClearAreaNotesOperation(model, selectionArea).Invoke();
+                clearOp.Invoke();
             };
             Undo += () =>
             {
-                new CopyNotesOperation(tmpArea).Invoke();
-                new PasteNotesOperation(
-                    model,
-                    selectionArea,
-                    tmpArea.TopLeftPosition).Invoke();
+                clearOp.Undo();
             };
         }
     }
