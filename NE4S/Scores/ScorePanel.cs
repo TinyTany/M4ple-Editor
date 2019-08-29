@@ -1046,7 +1046,8 @@ namespace NE4S.Scores
                         return;
                     }
                     var selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
-                    if (selectedNote != null && selectedNote.IsAirHoldAttachable)
+                    if (selectedNote == null || !selectedNote.IsAirHoldAttachable) { return; }
+                    if (!selectedNote.IsAirAttached)
                     {
                         OperationManager.AddOperationAndInvoke(
                             new AddLongNoteOperation(
@@ -1057,6 +1058,18 @@ namespace NE4S.Scores
                                     selectedNote.Location,
                                     lane.Index),
                                 new AirUpC(selectedNote.Size,
+                                    selectedNote.Position,
+                                    selectedNote.Location,
+                                    lane.Index),
+                                selectedNote));
+                    }
+                    else
+                    {
+                        OperationManager.AddOperationAndInvoke(
+                            new AddLongNoteOperation(
+                                model,
+                                new AirHold(
+                                    selectedNote.Size,
                                     selectedNote.Position,
                                     selectedNote.Location,
                                     lane.Index),

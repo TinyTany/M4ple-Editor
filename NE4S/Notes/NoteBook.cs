@@ -317,8 +317,9 @@ namespace NE4S.Notes
             if (air == null)
             {
                 Logger.Warn("引数airがnullのためAirHoldのみが取り付けられました。予期せぬデータ構造になる可能性があります。");
+                return true;
             }
-            if (!airable.IsAirAttached && air != null)
+            if (!airable.IsAirAttached)
             {
                 airable.AttachAir(air);
                 airNotes.Add(air);
@@ -478,21 +479,8 @@ namespace NE4S.Notes
         /// </summary>
         public bool DetachAirHoldFromAirableNote(AirableNote airable, out AirHold airHold, out AirUpC air)
         {
-            airHold = null;
             air = null;
-            if (airable == null)
-            {
-                Logger.Error("引数のAirableNoteがnullのため、操作を行えません。");
-                return false;
-            }
-            if (!airable.IsAirHoldAttached)
-            {
-                Logger.Error("AirHold取り外し対象のAirableNoteにはAirHoldが取り付けられていませんでした。");
-                return false;
-            }
-            airHold = airable.AirHold;
-            airable.DetachAirHold();
-            airHoldNotes.Remove(airHold);
+            if (!DetachAirHoldFromAirableNote(airable, out airHold)) { return false; }
             if (airable.IsAirAttached)
             {
                 // NOTE: 本来AirHoldは単体で配置できず、かならずAirUpCが伴うはずであるが、何らかの原因でそうではない場合のために処理を分岐する。
@@ -508,6 +496,29 @@ namespace NE4S.Notes
                     Logger.Warn("取り付けられていたAirはAirUpCではありませんでした。Airを削除しません。");
                 }
             }
+            return true;
+        }
+
+        /// <summary>
+        /// AirableノーツからAirHoldを取り外します。
+        /// AirHoldを取り外せた場合成功（true）となります。
+        /// </summary>
+        public bool DetachAirHoldFromAirableNote(AirableNote airable, out AirHold airHold)
+        {
+            airHold = null;
+            if (airable == null)
+            {
+                Logger.Error("引数のAirableNoteがnullのため、操作を行えません。");
+                return false;
+            }
+            if (!airable.IsAirHoldAttached)
+            {
+                Logger.Error("AirHold取り外し対象のAirableNoteにはAirHoldが取り付けられていませんでした。");
+                return false;
+            }
+            airHold = airable.AirHold;
+            airable.DetachAirHold();
+            airHoldNotes.Remove(airHold);
             return true;
         }
 

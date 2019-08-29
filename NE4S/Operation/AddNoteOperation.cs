@@ -33,6 +33,13 @@ namespace NE4S.Operation
     {
         public AddLongNoteOperation(Model model, LongNote longNote)
         {
+            if (longNote is AirHold)
+            {
+                Logger.Warn("AirHoldはこの操作の対象ではありません");
+                Canceled = true;
+                return;
+            }
+
             Invoke += () =>
             {
                 model.NoteBook.Put(longNote);
@@ -52,6 +59,18 @@ namespace NE4S.Operation
             Undo += () =>
             {
                 model.NoteBook.DetachAirHoldFromAirableNote(airable, out airHold, out air);
+            };
+        }
+
+        public AddLongNoteOperation(Model model, AirHold airHold, AirableNote airable)
+        {
+            Invoke += () =>
+            {
+                model.NoteBook.AttachAirHoldToAirableNote(airable, airHold, null);
+            };
+            Undo += () =>
+            {
+                model.NoteBook.DetachAirHoldFromAirableNote(airable, out airHold);
             };
         }
     }
