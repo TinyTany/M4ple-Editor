@@ -1150,6 +1150,7 @@ namespace NE4S.Scores
                         return;
                     }
                     newNote = new BPM(position, locationVirtual, Status.CurrentValue, lane.Index);
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
                     return;
                 case NoteType.HIGHSPEED:
                     // すでに同一TickにHighSpeedノーツが配置されていた場合は、今置こうとしているBPMノーツの値で上書きをする
@@ -1167,6 +1168,7 @@ namespace NE4S.Scores
                         return;
                     }
                     newNote = new HighSpeed(position, locationVirtual, Status.CurrentValue, lane.Index);
+                    OperationManager.AddOperationAndInvoke(new AddShortNoteOperation(model, newNote));
                     return;
                 #endregion
                 default:
