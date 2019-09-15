@@ -8,41 +8,28 @@ namespace NE4S.Component
 {
     public class LongLaneSignProvider
     {
-        private readonly char[] signArray;
-        private List<KeyValuePair<char, TickRange>> keyValuePairs;
-
-        private class TickRange
-        {
-            public int StartTick { get; private set; }
-            public int EndTick { get; private set; }
-
-            public TickRange(int startTick, int endTick)
-            {
-                StartTick = startTick;
-                EndTick = endTick;
-            }
-        }
+        private readonly char[] signArray = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
+        private readonly List<KeyValuePair<char, (int start, int end)>> 
+            keyValuePairs = new List<KeyValuePair<char, (int start, int end)>>(64);
 
         public LongLaneSignProvider()
         {
-            signArray = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
-            keyValuePairs = new List<KeyValuePair<char, TickRange>>();
-            foreach(char sign in signArray)
+            foreach(var sign in signArray)
             {
-                keyValuePairs.Add(new KeyValuePair<char, TickRange>(sign, null));
+                keyValuePairs.Add(new KeyValuePair<char, (int, int)>(sign, (0, 0)));
             }
         }
 
         public string GetAvailableSign(int startTick, int endTick)
         {
-            var keyValuePair = keyValuePairs.Find(x => x.Value == null || (endTick < x.Value.StartTick || x.Value.EndTick < startTick));
-            if (keyValuePair.Equals(default(KeyValuePair<char, TickRange>)))
+            var keyValuePair = keyValuePairs.Find(x => x.Value == (0, 0) || (endTick < x.Value.start || x.Value.end < startTick));
+            if (keyValuePair.Equals(default(KeyValuePair<char, (int, int)>)))
             {
-                System.Diagnostics.Debug.Assert(false, "レーン識別番号を取得できませんでした");
+                Logger.Error("レーン識別番号を取得できませんでした", true);
                 return signArray.Last().ToString();
             }
             int index = keyValuePairs.IndexOf(keyValuePair);
-            keyValuePairs[index] = new KeyValuePair<char, TickRange>(keyValuePair.Key, new TickRange(startTick, endTick));
+            keyValuePairs[index] = new KeyValuePair<char, (int, int)>(keyValuePair.Key, (startTick, endTick));
             return keyValuePair.Key.ToString();
         }
     }

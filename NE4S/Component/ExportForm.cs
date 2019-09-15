@@ -205,13 +205,13 @@ namespace NE4S.Component
             {
                 streamWriter.WriteLine("This score was created by M4ple Editor.");
                 streamWriter.WriteLine("\r\nMusic info");
-                streamWriter.WriteLine("#TITLE \"" + titleText.Text + "\"");
-                streamWriter.WriteLine("#ARTIST \"" + artistText.Text + "\"");
-                streamWriter.WriteLine("#DESIGNER \"" + designerText.Text + "\"");
+                streamWriter.WriteLine($"#TITLE \"{titleText.Text}\"");
+                streamWriter.WriteLine($"#ARTIST \"{artistText.Text}\"");
+                streamWriter.WriteLine($"#DESIGNER \"{designerText.Text}\"");
                 streamWriter.Write("#DIFFICULTY ");
                 if (DifficultyBox.SelectedIndex == 4)
                 {
-                    streamWriter.WriteLine("\"4:" + weText.Text + "\"");
+                    streamWriter.WriteLine($"\"4:{weText.Text}\"");
                 }
                 else
                 {
@@ -226,12 +226,12 @@ namespace NE4S.Component
                 {
                     streamWriter.WriteLine(playLevelBox.Text);
                 }
-                streamWriter.WriteLine("#SONGID \"" + songIdText.Text + "\"");
-                streamWriter.WriteLine("#WAVE \"" + musicPathText.Text + "\"");
-                streamWriter.WriteLine("#WAVEOFFSET " + offsetUpDown.Value);
-                streamWriter.WriteLine("#JACKET \"" + JacketPathText.Text + "\"");
+                streamWriter.WriteLine($"#SONGID \"{songIdText.Text}\"");
+                streamWriter.WriteLine($"#WAVE \"{musicPathText.Text}\"");
+                streamWriter.WriteLine($"#WAVEOFFSET {offsetUpDown.Value}");
+                streamWriter.WriteLine($"#JACKET \"{JacketPathText.Text}\"");
                 streamWriter.WriteLine("\r\nRequest");
-                streamWriter.WriteLine("#REQUEST \"ticks_per_beat " + (ScoreInfo.MaxBeatDiv / 4) + "\"");
+                streamWriter.WriteLine($"#REQUEST \"ticks_per_beat {ScoreInfo.MaxBeatDiv / 4}\"");
                 if (metoronomeBox.SelectedIndex == 0)
                 {
                     streamWriter.WriteLine("#REQUEST \"metronome enabled\"");
@@ -251,12 +251,12 @@ namespace NE4S.Component
                     }
                     else
                     {
-                        streamWriter.WriteLine("#BPM01: " + bpmList.First().NoteValue);
+                        streamWriter.WriteLine($"#BPM01: {bpmList.First().NoteValue}");
                     }
                     streamWriter.WriteLine("#00008: 01");
-                    streamWriter.WriteLine("#00002: " + scoreBook.First().BarSize * 4);
+                    streamWriter.WriteLine($"#00002: {scoreBook.First().BarSize * 4}");
                     streamWriter.WriteLine("\r\nCommand");
-                    streamWriter.WriteLine("#MEASUREBS " + ((int)measureOffsetUpDown.Value).ToString("D3"));
+                    streamWriter.WriteLine($"#MEASUREBS {((int)measureOffsetUpDown.Value).ToString("D3")}");
                 }
                 streamWriter.WriteLine("\r\nBPM");
                 WriteBPMNotes(streamWriter);
@@ -265,7 +265,7 @@ namespace NE4S.Component
                 {
                     if(score == scoreBook.First() || (score.BarSize != scoreBook.Prev(score).BarSize))
                     {
-                        streamWriter.WriteLine("#" + score.Index.ToString("D3") + "02: " + score.BarSize * 4);
+                        streamWriter.WriteLine($"#{score.Index.ToString("D3")}02: {score.BarSize * 4}");
                     }
                 }
                 if(noteBook.AttributeNotes.Where(x => x is HighSpeed).Any())
@@ -280,7 +280,7 @@ namespace NE4S.Component
                             System.Diagnostics.Debug.Assert(false, "ハイスピノーツが属するスコアが見つかりませんでした");
                             continue;
                         }
-                        streamWriter.Write((score.Index + (int)measureOffsetUpDown.Value) + "'" + (speed.Position.Tick - score.StartTick) + ":" + speed.NoteValue + ", ");
+                        streamWriter.Write($"{score.Index + (int)measureOffsetUpDown.Value}'{speed.Position.Tick - score.StartTick}:{speed.NoteValue}, ");
                     }
                     streamWriter.WriteLine("\"");
                     streamWriter.WriteLine("#HISPEED 00\r\n#MEASUREHS 00");
@@ -288,7 +288,7 @@ namespace NE4S.Component
                 streamWriter.WriteLine("\r\nShortNote");
                 foreach (Score score in scoreBook)
                 {
-                    WriteNotesByScore(noteBook.ShortNotes, score, 1, streamWriter, "");
+                    WriteNotesByScore(noteBook.ShortNotes, score, 1, streamWriter);
                 }
                 streamWriter.WriteLine("\r\nHold");
                 WriteLongNotes(noteBook.HoldNotes, 2, streamWriter);
@@ -299,7 +299,7 @@ namespace NE4S.Component
                 streamWriter.WriteLine("\r\nAir");
                 foreach (Score score in scoreBook)
                 {
-                    WriteNotesByScore(noteBook.AirNotes, score, 5, streamWriter, "");
+                    WriteNotesByScore(noteBook.AirNotes, score, 5, streamWriter);
                 }
             }
             return true;
@@ -309,7 +309,7 @@ namespace NE4S.Component
         {
             float defaultValue = -1;
             var bpmNotes = noteBook.AttributeNotes.Where(x => x is BPM);
-            //BPMの値と識別番号を対応付ける
+            // BPMの値と識別番号を対応付ける
             char[] signArray = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
             List<KeyValuePair<string, float>> idList = new List<KeyValuePair<string, float>>();
             for(int i = 0; i < signArray.Length; ++i)
@@ -329,10 +329,10 @@ namespace NE4S.Component
                 {
                     int index = idList.IndexOf(idList.Find(x => x.Value == defaultValue));
                     idList[index] = new KeyValuePair<string, float>(idList[index].Key, bpm.NoteValue);
-                    streamWriter.WriteLine("#BPM" + idList[index].Key + ": " + idList[index].Value);
+                    streamWriter.WriteLine($"#BPM{idList[index].Key}: {idList[index].Value}");
                 }
             }
-            //対応づけをもとにBPMを書き出し
+            // 対応づけをもとにBPMを書き出し
             foreach(Score score in scoreBook)
             {
                 var currentScoreNotes = bpmNotes.Where(x => score.StartTick <= x.Position.Tick && x.Position.Tick <= score.EndTick).ToList();
@@ -345,7 +345,7 @@ namespace NE4S.Component
                     lcm = MyUtil.Lcm(lcm, score.TickSize / gcd);
                 });
                 //
-                streamWriter.Write("#" + score.Index.ToString("D3") + "08: ");
+                streamWriter.Write($"#{score.Index.ToString("D3")}08: ");
                 for (int i = 0; i < lcm; ++i)
                 {
                     var writeNote = currentScoreNotes.Find(x => x.Position.Tick - score.StartTick == i * score.TickSize / lcm);
@@ -376,7 +376,7 @@ namespace NE4S.Component
             Score score, 
             in int laneType,
             in StreamWriter streamWriter,
-            in string longLaneSign) where T : Note
+            in string longLaneSign = "") where T : Note
         {
             var currentScoreNotes = notes.Where(x => score.StartTick <= x.Position.Tick && x.Position.Tick <= score.EndTick).ToList();
             for (int lane = 0; lane < ScoreInfo.Lanes; ++lane)
@@ -385,7 +385,7 @@ namespace NE4S.Component
                 int noteCount = currentLaneNotes.Count;
                 for (int count = 0; currentLaneNotes.Any() && count < noteCount; ++count)
                 {
-                    //ノーツリスト内のノーツの分数の最小公倍数を求める
+                    // ノーツリスト内のノーツの分数の最小公倍数を求める
                     int lcm = 1;
                     currentLaneNotes.ForEach(x =>
                     {
@@ -394,7 +394,7 @@ namespace NE4S.Component
                         lcm = MyUtil.Lcm(lcm, score.TickSize / gcd);
                     });
                     //
-                    streamWriter.Write("#" + score.Index.ToString("D3") + laneType + lane.ToString("x") + longLaneSign + ": ");
+                    streamWriter.Write($"#{score.Index.ToString("D3")}{laneType}{lane.ToString("x")}{longLaneSign}: ");
                     for (int itrTick = 0; itrTick < lcm; ++itrTick)
                     {
                         var writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick == itrTick * score.TickSize / lcm);
