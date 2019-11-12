@@ -181,6 +181,12 @@
     <Compile Include="Notes\ExTapDown.cs" />
     <Compile Include="Notes\HighSpeedTimeLine.cs" />
     <Compile Include="Notes\HighSpeedTimeLineBook.cs" />
+    <Compile Include="Notes\Interface\IAirableNote.cs" />
+    <Compile Include="Notes\Interface\IAirNote.cs" />
+    <Compile Include="Notes\Interface\IAttributeNote.cs" />
+    <Compile Include="Notes\Interface\ILongNote.cs" />
+    <Compile Include="Notes\Interface\INote.cs" />
+    <Compile Include="Notes\Interface\IStepNote.cs" />
     <Compile Include="Notes\NoteBook.cs" />
     <Compile Include="Notes\ExTap.cs" />
     <Compile Include="Notes\Flick.cs" />
