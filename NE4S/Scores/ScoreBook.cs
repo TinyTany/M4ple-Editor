@@ -10,33 +10,44 @@ namespace NE4S.Scores
     /// 譜面そのものをすべてここで管理する
     /// </summary>
     [Serializable()]
-    public class ScoreBook : List<Score>
+    public class ScoreBook// : List<Score>
     {
+        private readonly List<Score> scores = new List<Score>();
 
         public ScoreBook() { }
 
+        #region
+        public Score First() => scores.First();
+        public Score Last() => scores.Last();
+        public IEnumerator<Score> GetEnumerator() => scores.GetEnumerator();
+        public Score Find(Predicate<Score> p) => scores.Find(p);
+        public IEnumerable<Score> Where(Func<Score, bool> p) => scores.Where(p);
+        public void ForEach(Action<Score> a) => scores.ForEach(a);
+        public void Add(Score score) => scores.Add(score);
+        #endregion
+
         public void Add(int beatNumer, int beatDenom)
         {
-			Add(new Score(beatNumer, beatDenom));
+			scores.Add(new Score(beatNumer, beatDenom));
             SetScoreIndex();
         }
 
         public void Append(List<Score> newScores)
         {
-            AddRange(newScores);
+            scores.AddRange(newScores);
             SetScoreIndex();
         }
 
         public void InsertRange(int index, List<Score> newScores)
         {
-            base.InsertRange(index, newScores);
+            scores.InsertRange(index, newScores);
             SetScoreIndex();
         }
 
         public void Delete(int begin, int count)
         {
-            if (Count < begin + count) count = Count - begin;
-            RemoveRange(begin, count);
+            if (scores.Count < begin + count) count = scores.Count - begin;
+            scores.RemoveRange(begin, count);
             SetScoreIndex();
         }
 
@@ -51,22 +62,22 @@ namespace NE4S.Scores
 
         public Score At(int index)
         {
-            if (index < 0 || index >= Count) return null;
-            return this.ElementAt(index);
+            if (index < 0 || index >= scores.Count) return null;
+            return scores.ElementAt(index);
         }
 
 		public Score Prev(Score score)
 		{
-            if (score == null) return this.Last();
+            if (score == null) return scores.Last();
 			if (score.Index <= 0) return null;
-			return this.ElementAt(score.Index - 1);
+			return scores.ElementAt(score.Index - 1);
 		}
 
 		public Score Next(Score score)
 		{
-            if (score == null) return this.First();
-			if (score.Index >= Count - 1) return null;
-			return this.ElementAt(score.Index + 1);
+            if (score == null) return scores.First();
+			if (score.Index >= scores.Count - 1) return null;
+			return scores.ElementAt(score.Index + 1);
 		}
 
         /// <summary>
@@ -75,26 +86,26 @@ namespace NE4S.Scores
         /// </summary>
         public void SetScoreIndex()
         {
-            for (int i = 0; i < Count; ++i)
+            for (int i = 0; i < scores.Count; ++i)
             {
-                this[i].Index = i;
-                if (i == 0 || this[i].BeatDenom != this[i-1].BeatDenom || this[i].BeatNumer != this[i-1].BeatNumer)
+                scores[i].Index = i;
+                if (i == 0 || scores[i].BeatDenom != scores[i-1].BeatDenom || scores[i].BeatNumer != scores[i-1].BeatNumer)
                 {
-                    this[i].IsBeatVisible = true;
+                    scores[i].IsBeatVisible = true;
                 }
                 else
                 {
-                    this[i].IsBeatVisible = false;
+                    scores[i].IsBeatVisible = false;
                 }
             }
             int tick = 0;
-            foreach(Score score in this)
+            foreach(Score score in scores)
             {
                 score.StartTick = tick;
                 tick = score.EndTick + 1;
             }
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine("ScoreCount : " + Count.ToString());
+            System.Diagnostics.Debug.WriteLine("ScoreCount : " + scores.Count.ToString());
 #endif
         }
     }
