@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Component\DataIO.cs" />
     <Compile Include="Component\DataLoader.cs" />
+    <Compile Include="Component\DisplayPanelBox.cs" />
     <Compile Include="Component\EditCMenu.cs">
       <SubType>Component</SubType>
     </Compile>
