@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NE4S.Notes.Interface;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -10,16 +11,17 @@ using System.Windows.Forms;
 namespace NE4S.Notes
 {
     [Serializable()]
-    public class HoldBegin : Note
+    public class HoldBegin : Note, IStepNote
     {
         public override int NoteID => 1;
 
         public event NoteEventHandler CheckNoteSize;
         public event NoteEventHandlerEx CheckNotePosition;
+        public event Func<Note, Position, bool> StepNotePositionChanging;
 
         public HoldBegin()
         {
-
+            
         }
 
         public HoldBegin(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex)

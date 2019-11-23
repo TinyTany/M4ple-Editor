@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NE4S.Notes.Interface;
 using NE4S.Scores;
 
 namespace NE4S.Notes
 {
     [Serializable()]
-    public class AttributeNote : Note
+    public class AttributeNote : Note, IAttributeNote
     {
         public float NoteValue { get; set; }
 

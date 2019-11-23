@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using NE4S.Define;
 using System.Drawing.Drawing2D;
 using NE4S.Notes;
+using NoteType = NE4S.Define.NoteType;
 
 namespace NE4S.Component
 {

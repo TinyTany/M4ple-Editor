@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using NE4S.Scores;
 using NE4S.Define;
+using NE4S.Notes.Interface;
 
 namespace NE4S.Notes
 {
@@ -14,7 +15,7 @@ namespace NE4S.Notes
     /// 短いノーツ1つ分を表す
     /// </summary>
     [Serializable()]
-    public class Note
+    public abstract class Note : ISizableNote
     {
         public virtual int NoteID => -1;
         /// <summary>

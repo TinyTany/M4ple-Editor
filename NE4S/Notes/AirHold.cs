@@ -28,7 +28,7 @@ namespace NE4S.Notes
             AirHoldBegin airholdBegin = new AirHoldBegin(size, pos, location, laneIndex);
             airholdBegin.CheckNotePosition += CheckNotePosition;
             airholdBegin.CheckNoteSize += CheckNoteSize;
-            Add(airholdBegin);
+            notes.Add(airholdBegin);
             location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             AirHoldEnd airHoldEnd = new AirHoldEnd(size, pos.Next(), location, laneIndex);
             airHoldEnd.CheckNotePosition += CheckNotePosition;

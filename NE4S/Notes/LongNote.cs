@@ -14,7 +14,7 @@ namespace NE4S.Notes
     /// 長いノーツ(Hold,Slide,AirHold)1つ分を表す
     /// </summary>
     [Serializable()]
-    public abstract class LongNote
+    public abstract class LongNote : ILongNote
     {
         // 帯の描画位置がちょっと上にずれてるので調節用の変数を用意
         protected static readonly PointF drawOffset = new PointF(2, 0);
@@ -22,7 +22,7 @@ namespace NE4S.Notes
         protected static readonly float deltaHeight = .2f;
 
         // NOTE: LongNoteをList<Note>を継承してしまうのはヤバいわよなので生データはこれに入れるようにしたい
-        protected readonly List<Note> notes = new List<Note>();
+        protected readonly List<IStepNote> notes = new List<IStepNote>();
 
         #region 生データへの問い合わせ用メソッド類
         public void ForEach(Action<Note> a) => notes.ForEach(a);

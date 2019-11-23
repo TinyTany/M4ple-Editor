@@ -8,5 +8,7 @@ namespace NE4S.Notes.Interface
 {
     public interface ILongNote
     {
+        bool Put(in IStepNote step);
+        bool UnPut(IStepNote step);
     }
 }

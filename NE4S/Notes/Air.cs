@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Runtime.Serialization;
+using NE4S.Notes.Interface;
 
 namespace NE4S.Notes
 {
     [Serializable()]
-	public class Air : Note
+	public class Air : Note, IAirNote
 	{
         //描画とあたり判定位置調整
         protected static readonly PointF drawOffset = new PointF(0, -25);
