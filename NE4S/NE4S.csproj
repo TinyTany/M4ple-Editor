@@ -163,47 +163,45 @@
     <Compile Include="Model.cs" />
     <Compile Include="MusicInfo.cs" />
     <Compile Include="MyUtil.cs" />
-    <Compile Include="Notes\Air.cs" />
-    <Compile Include="Notes\AirableNote.cs" />
-    <Compile Include="Notes\AirAction.cs" />
-    <Compile Include="Notes\AirDownC.cs" />
-    <Compile Include="Notes\AirDownL.cs" />
-    <Compile Include="Notes\AirDownR.cs" />
-    <Compile Include="Notes\AirHold.cs" />
-    <Compile Include="Notes\AirHoldBegin.cs" />
-    <Compile Include="Notes\AirHoldEnd.cs" />
-    <Compile Include="Notes\AirUpC.cs" />
-    <Compile Include="Notes\AirUpL.cs" />
-    <Compile Include="Notes\AirUpR.cs" />
-    <Compile Include="Notes\AwesomeExTap.cs" />
-    <Compile Include="Notes\AttributeNote.cs" />
-    <Compile Include="Notes\BPM.cs" />
-    <Compile Include="Notes\ExTapDown.cs" />
+    <Compile Include="Notes\Abstract\Air.cs" />
+    <Compile Include="Notes\Abstract\AirableNote.cs" />
+    <Compile Include="Notes\Concrete\AirAction.cs" />
+    <Compile Include="Notes\Concrete\AirDownC.cs" />
+    <Compile Include="Notes\Concrete\AirDownL.cs" />
+    <Compile Include="Notes\Concrete\AirDownR.cs" />
+    <Compile Include="Notes\Concrete\AirHold.cs" />
+    <Compile Include="Notes\Concrete\AirHoldBegin.cs" />
+    <Compile Include="Notes\Concrete\AirHoldEnd.cs" />
+    <Compile Include="Notes\Concrete\AirUpC.cs" />
+    <Compile Include="Notes\Concrete\AirUpL.cs" />
+    <Compile Include="Notes\Concrete\AirUpR.cs" />
+    <Compile Include="Notes\Concrete\AwesomeExTap.cs" />
+    <Compile Include="Notes\Abstract\AttributeNote.cs" />
+    <Compile Include="Notes\Concrete\BPM.cs" />
+    <Compile Include="Notes\Concrete\ExTapDown.cs" />
     <Compile Include="Notes\HighSpeedTimeLine.cs" />
     <Compile Include="Notes\HighSpeedTimeLineBook.cs" />
-    <Compile Include="Notes\Interface\IAirNote.cs" />
     <Compile Include="Notes\Interface\ILongNote.cs" />
     <Compile Include="Notes\Interface\INote.cs" />
-    <Compile Include="Notes\Interface\IStepNote.cs" />
     <Compile Include="Notes\NoteBook.cs" />
-    <Compile Include="Notes\ExTap.cs" />
-    <Compile Include="Notes\Flick.cs" />
-    <Compile Include="Notes\HellTap.cs" />
-    <Compile Include="Notes\Hold.cs" />
-    <Compile Include="Notes\HoldBegin.cs" />
-    <Compile Include="Notes\HoldEnd.cs" />
-    <Compile Include="Notes\LongNote.cs" />
-    <Compile Include="Notes\Note.cs" />
+    <Compile Include="Notes\Concrete\ExTap.cs" />
+    <Compile Include="Notes\Concrete\Flick.cs" />
+    <Compile Include="Notes\Concrete\HellTap.cs" />
+    <Compile Include="Notes\Concrete\Hold.cs" />
+    <Compile Include="Notes\Concrete\HoldBegin.cs" />
+    <Compile Include="Notes\Concrete\HoldEnd.cs" />
+    <Compile Include="Notes\Abstract\LongNote.cs" />
+    <Compile Include="Notes\Abstract\Note.cs" />
     <Compile Include="Notes\PartialSlide.cs" />
     <Compile Include="Notes\PreviewNote.cs" />
     <Compile Include="Notes\RawNote.cs" />
-    <Compile Include="Notes\Slide.cs" />
-    <Compile Include="Notes\SlideBegin.cs" />
-    <Compile Include="Notes\SlideCurve.cs" />
-    <Compile Include="Notes\SlideEnd.cs" />
-    <Compile Include="Notes\SlideRelay.cs" />
-    <Compile Include="Notes\SlideTap.cs" />
-    <Compile Include="Notes\HighSpeed.cs" />
+    <Compile Include="Notes\Concrete\Slide.cs" />
+    <Compile Include="Notes\Concrete\SlideBegin.cs" />
+    <Compile Include="Notes\Concrete\SlideCurve.cs" />
+    <Compile Include="Notes\Concrete\SlideEnd.cs" />
+    <Compile Include="Notes\Concrete\SlideRelay.cs" />
+    <Compile Include="Notes\Concrete\SlideTap.cs" />
+    <Compile Include="Notes\Concrete\HighSpeed.cs" />
     <Compile Include="Operation\AddNoteOperation.cs" />
     <Compile Include="Operation\DeleteLongNoteOperation.cs" />
     <Compile Include="Operation\DeleteNoteOperation.cs" />
@@ -215,7 +213,7 @@
     <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Notes\Tap.cs" />
+    <Compile Include="Notes\Concrete\Tap.cs" />
     <Compile Include="Range.cs" />
     <Compile Include="Scores\LaneBook.cs" />
     <Compile Include="Scores\Score.cs" />
@@ -326,6 +324,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

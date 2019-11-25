@@ -8,6 +8,7 @@ using System.Drawing;
 using NE4S.Scores;
 using NE4S.Define;
 using System.Diagnostics;
+using NE4S.Notes.Abstract;
 
 namespace NE4S.Notes
 {

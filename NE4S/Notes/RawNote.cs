@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using NE4S.Notes.Abstract;
 
 namespace NE4S.Notes
 {
     [Serializable()]
-    public class RawNote : Note
+    public sealed class RawNote : Note
     {
         public override int NoteID => -1;
-        public RawNoteType NoteType { get; protected set; } = RawNoteType.Undefined;
+        public new RawNoteType NoteType { get; private set; } = RawNoteType.Undefined;
         public int Measure { get; protected set; } = 0;
         public double Tick /* 小節内のどの辺にいるかを返す。 範囲は [0.0, 1.0) で扱う。 */
         {

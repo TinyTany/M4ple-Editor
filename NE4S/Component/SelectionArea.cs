@@ -8,6 +8,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using NE4S.Scores;
 using NE4S.Notes;
+using NE4S.Notes.Abstract;
 
 namespace NE4S.Component
 {

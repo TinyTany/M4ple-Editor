@@ -7,6 +7,7 @@ using NE4S.Notes;
 using NE4S.Define;
 using NE4S.Scores;
 using NE4S.Component;
+using NE4S.Notes.Abstract;
 
 namespace NE4S.Operation
 {
