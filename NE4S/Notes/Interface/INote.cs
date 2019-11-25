@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NE4S.Notes.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -84,8 +85,8 @@ namespace NE4S.Notes.Interface
         bool DetachAirHold(out AirHold ah);
     }
 
-    public interface IStepNote : ISizableNote
+    public interface IStepNote<T> : ISizableNote
     {
-        event Func<Note, Position, bool> StepNotePositionChanging;
+        event Func<T, Position, bool> StepNotePositionChanging;
     }
 }

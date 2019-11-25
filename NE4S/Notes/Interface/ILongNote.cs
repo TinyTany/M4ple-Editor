@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace NE4S.Notes.Interface
 {
-    public interface ILongNote
+    public interface ILongNote<T>
+        where T : IStepNote<T>
     {
-        bool Put(in IStepNote step);
-        bool UnPut(IStepNote step);
+        bool Put(T step);
+        bool UnPut(T step);
     }
 }
