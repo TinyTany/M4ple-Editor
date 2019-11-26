@@ -8,11 +8,13 @@ using System.Windows.Forms;
 using NE4S.Notes.Abstract;
 using NE4S.Scores;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class BPM : AttributeNote
     {
+        public override NoteType NoteType => NoteType.Bpm;
+
         private static readonly PointF adjustPoint = new PointF(2, -9);
 
         private BPM() { }

@@ -8,12 +8,12 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using NE4S.Notes.Abstract;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class ExTap : AirableNote
     {
-        public override int NoteID => 2;
+        public override NoteType NoteType => NoteType.ExTap;
 
         private ExTap() { }
 

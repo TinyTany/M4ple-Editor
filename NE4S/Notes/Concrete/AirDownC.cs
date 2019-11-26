@@ -8,12 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
+    /// <summary>
+    /// 真下（↓）向きAir
+    /// </summary>
     [Serializable()]
     public sealed class AirDownC : Air
     {
-        public override int NoteID => 2;
+        public override NoteType NoteType => NoteType.AirDownC;
 
         protected static readonly float downOffsetY = 15;
 

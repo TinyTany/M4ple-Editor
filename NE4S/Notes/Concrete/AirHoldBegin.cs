@@ -8,12 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class AirHoldBegin : Note
     {
-        public override int NoteID => 1;
+        public override NoteType NoteType => NoteType.AirHoldBegin;
 
         public event Action<Note> CheckNoteSize;
         public event Action<Note, int> CheckNotePosition;

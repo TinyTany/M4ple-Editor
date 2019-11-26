@@ -8,12 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
+    /// <summary>
+    /// 左下（↙）向きAir（クラス名と逆のため注意）
+    /// </summary>
     [Serializable()]
     public sealed class AirDownR : Air
     {
-        public override int NoteID => 5;
+        public override NoteType NoteType => NoteType.AirDownR;
 
         private AirDownR() { }
 

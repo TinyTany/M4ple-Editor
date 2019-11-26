@@ -9,6 +9,7 @@ namespace NE4S.Notes.Interface
     public interface ILongNote<T>
         where T : IStepNote<T>
     {
+        LongNoteType LongNoteType { get; }
         bool Put(T step);
         bool UnPut(T step);
     }

@@ -8,12 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class SlideRelay : Note
     {
-        public override int NoteID => 5;
+        public override NoteType NoteType => NoteType.SlideRelay;
 
         public event Func<Note, Position, bool> IsPositionAvailable;
 

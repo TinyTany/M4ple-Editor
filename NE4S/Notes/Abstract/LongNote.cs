@@ -56,6 +56,8 @@ namespace NE4S.Notes.Abstract
 
         public virtual Note EndNote => null;
 
+        public abstract LongNoteType LongNoteType { get; }
+
         protected LongNote() { }
 
         public abstract bool Put(T step);

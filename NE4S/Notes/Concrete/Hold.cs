@@ -9,11 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class Hold : LongNote
     {
+        public override LongNoteType LongNoteType => LongNoteType.Hold;
+
         /// <summary>
         /// ホールド全体の背景色（オレンジ色）
         /// </summary>

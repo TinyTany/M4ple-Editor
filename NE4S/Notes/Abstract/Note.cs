@@ -17,8 +17,8 @@ namespace NE4S.Notes.Abstract
     [Serializable()]
     public abstract class Note : ISizableNote
     {
-        public virtual NoteType NoteType => NoteType.Unknown;
-        public virtual int NoteID => -1;
+        public abstract NoteType NoteType { get; }
+        
         /// <summary>
         /// 1 ≦ Size ≦ 16
         /// </summary>

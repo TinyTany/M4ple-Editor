@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class AirHoldEnd : AirAction
     {
-        public override int NoteID => 2;
+        public override NoteType NoteType => NoteType.AirHoldEnd;
 
         private AirHoldEnd() { }
 

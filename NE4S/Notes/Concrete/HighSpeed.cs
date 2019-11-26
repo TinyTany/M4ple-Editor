@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class HighSpeed : AttributeNote
     {
+        public override NoteType NoteType => NoteType.HighSpeed;
+
         private static readonly PointF adjustPoint = new PointF(22, -9);
 
         public enum VisibleState

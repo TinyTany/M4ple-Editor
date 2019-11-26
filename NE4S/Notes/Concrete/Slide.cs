@@ -10,11 +10,13 @@ using System.Drawing.Drawing2D;
 using System.Diagnostics;
 using NE4S.Notes.Abstract;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class Slide : LongNote
     {
+        public override LongNoteType LongNoteType => LongNoteType.Slide;
+
         /// <summary>
         /// スライド全体の背景色（水色）
         /// </summary>

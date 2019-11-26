@@ -10,11 +10,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NE4S.Notes
+namespace NE4S.Notes.Concrete
 {
     [Serializable()]
     public sealed class AirHold : LongNote
     {
+        public override LongNoteType LongNoteType => LongNoteType.AirHold;
+
         private static readonly float lineWidth = 5f;
         private static readonly Color lineColor = Color.FromArgb(225, 115, 255, 20);
 
