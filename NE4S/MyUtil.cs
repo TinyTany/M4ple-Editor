@@ -9,60 +9,12 @@ using NE4S.Notes;
 using NE4S.Scores;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using NE4S.Notes.Abstract;
 
 namespace NE4S
 {
-    public enum NoteCategory
-    {
-        ShortNote,
-        Air,
-        HoldStep,
-        SlideStep,
-        AirHoldStep,
-        Attribute,
-        Unknown
-    }
-
 	public static class MyUtil
 	{
-        /// <summary>
-        /// あるノーツがどのノーツカデゴリに属するかを調べます
-        /// </summary>
-        /// <param name="note"></param>
-        /// <returns></returns>
-        public static NoteCategory GetNoteCategory(Note note)
-        {
-            switch (note)
-            {
-                case Tap _:
-                case ExTap _:
-                case AwesomeExTap _:
-                case ExTapDown _:
-                case Flick _:
-                case HellTap _:
-                    return NoteCategory.ShortNote;
-                case Air _:
-                    return NoteCategory.Air;
-                case HoldBegin _:
-                case HoldEnd _:
-                    return NoteCategory.HoldStep;
-                case SlideBegin _:
-                case SlideEnd _:
-                case SlideTap _:
-                case SlideRelay _:
-                case SlideCurve _:
-                    return NoteCategory.SlideStep;
-                case AirHoldBegin _:
-                case AirHoldEnd _:
-                case AirAction _:
-                    return NoteCategory.AirHoldStep;
-                case AttributeNote _:
-                    return NoteCategory.Attribute;
-                default:
-                    return NoteCategory.Unknown;
-            }
-        }
-
 		public static int Gcd(int m, int n)
 		{
 			if (m < n) return Gcd(n, m);
@@ -366,6 +318,39 @@ namespace NE4S
             if (str[0] == '"' && str[str.Length - 1] == '"') return str.Substring(1, str.Length - 2);
 
             return str;
+        }
+
+        /// <summary>
+        /// ノーツのNoteType情報をもとに、SUS仕様のノーツIDを取得します
+        /// </summary>
+        public static int GetSusNoteID(Note note)
+        {
+            switch (note.NoteType)
+            {
+                case NoteType.Tap: return 1;
+                case NoteType.ExTap: return 2;
+                case NoteType.Flick: return 3;
+                case NoteType.Damage: return 4;
+                case NoteType.AwExTap: return 5;
+                case NoteType.ExTapDown: return 6;
+                case NoteType.HoldBegin: return 1;
+                case NoteType.HoldEnd: return 2;
+                case NoteType.SlideBegin: return 1;
+                case NoteType.SlideEnd: return 2;
+                case NoteType.SlideTap: return 3;
+                case NoteType.SlideCurve: return 4;
+                case NoteType.SlideRelay: return 5;
+                case NoteType.AirHoldBegin: return 1;
+                case NoteType.AirHoldEnd: return 2;
+                case NoteType.AirAction: return 3;
+                case NoteType.AirUpC: return 1;
+                case NoteType.AirDownC: return 2;
+                case NoteType.AirUpL: return 3;
+                case NoteType.AirUpR: return 4;
+                case NoteType.AirDownR: return 5;
+                case NoteType.AirDownL: return 6;
+                default: return 0;
+            }
         }
     }
 }

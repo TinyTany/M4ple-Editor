@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using NE4S.Scores;
 using NE4S.Notes;
 using System.IO;
+using NE4S.Notes.Abstract;
 
 namespace NE4S.Component
 {
@@ -400,7 +401,7 @@ namespace NE4S.Component
                         var writeNote = currentLaneNotes.Find(x => x.Position.Tick - score.StartTick == itrTick * score.TickSize / lcm);
                         if (writeNote != null)
                         {
-                            streamWriter.Write(writeNote.NoteID);
+                            streamWriter.Write(MyUtil.GetSusNoteID(writeNote));
                             if (writeNote.Size == 16)
                             {
                                 streamWriter.Write("g");
