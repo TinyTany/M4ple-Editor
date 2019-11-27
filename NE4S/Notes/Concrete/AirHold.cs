@@ -233,7 +233,7 @@ namespace NE4S.Notes.Concrete
             foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
             {
                 //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
-                itrNote.ReSizeOnly(note.Size);
+                itrNote.ReSizeOnly(note.NoteSize);
             }
             return;
         }

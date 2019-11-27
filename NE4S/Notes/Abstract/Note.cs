@@ -20,9 +20,9 @@ namespace NE4S.Notes.Abstract
         public abstract NoteType NoteType { get; }
         
         /// <summary>
-        /// 1 ≦ Size ≦ 16
+        /// 1 ≦ NoteSize ≦ 16
         /// </summary>
-        public int Size { get; protected set; }
+        public int NoteSize { get; protected set; }
         public Position Position { get; protected set; }
 		protected RectangleF noteRect;
         protected PointF adjustNoteRect = new PointF(0, -2);
@@ -33,7 +33,7 @@ namespace NE4S.Notes.Abstract
 
 		protected Note()
 		{
-			Size = 0;
+			NoteSize = 0;
 			Position = null;
 			noteRect = new RectangleF();
 		}
@@ -43,12 +43,12 @@ namespace NE4S.Notes.Abstract
             if (note == null)
             {
                 Logger.Error("Noteのコピーに失敗しました。引数がnullです。");
-                Size = 0;
+                NoteSize = 0;
                 Position = new Position();
                 noteRect = new RectangleF();
                 return;
             }
-            InitializeInstance(note.Size, note.Position, note.Location, note.LaneIndex);
+            InitializeInstance(note.NoteSize, note.Position, note.Location, note.LaneIndex);
         }
 
         protected Note(int size, Position pos, PointF location, int laneIndex)
@@ -98,8 +98,8 @@ namespace NE4S.Notes.Abstract
         /// <param name="size"></param>
         public void ReSizeOnly(int size)
         {
-            int diffSize = size - Size;
-            Size = size;
+            int diffSize = size - NoteSize;
+            NoteSize = size;
             noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
             if (Status.SelectedNoteArea == NoteArea.Left)
             {

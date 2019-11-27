@@ -102,7 +102,7 @@ namespace NE4S.Component
             if (position.Tick < BottomRightPosition.Tick) return false;
             if (position.Tick > TopLeftPosition.Tick) return false;
             if (position.Lane < TopLeftPosition.Lane) return false;
-            if (position.Lane + note.Size - 1 > BottomRightPosition.Lane) return false;
+            if (position.Lane + note.NoteSize - 1 > BottomRightPosition.Lane) return false;
             return true;
         }
 
@@ -162,7 +162,7 @@ namespace NE4S.Component
         {
             noteList.ForEach(x =>
             {
-                int reverseLane = BottomRightPosition.Lane - (x.Position.Lane - TopLeftPosition.Lane + x.Size) + 1;
+                int reverseLane = BottomRightPosition.Lane - (x.Position.Lane - TopLeftPosition.Lane + x.NoteSize) + 1;
                 Position newPosition = new Position(reverseLane, x.Position.Tick);
                 x.RelocateOnlyAndUpdate(newPosition, laneBook);
                 if (x is AirableNote airable && airable.IsAirAttached)

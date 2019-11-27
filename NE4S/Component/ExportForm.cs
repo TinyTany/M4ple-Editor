@@ -402,13 +402,13 @@ namespace NE4S.Component
                         if (writeNote != null)
                         {
                             streamWriter.Write(MyUtil.GetSusNoteID(writeNote));
-                            if (writeNote.Size == 16)
+                            if (writeNote.NoteSize == 16)
                             {
                                 streamWriter.Write("g");
                             }
                             else
                             {
-                                streamWriter.Write(writeNote.Size.ToString("x"));
+                                streamWriter.Write(writeNote.NoteSize.ToString("x"));
                             }
                             currentLaneNotes.Remove(writeNote);
                         }

@@ -855,12 +855,12 @@ namespace NE4S.Scores
             {
                 // NOTE: ノーツの左からサイズ変更を行うとノーツの位置も変更されるので、
                 // 条件分岐に気をつける（そもそも1回の操作で位置とサイズ変更は行えないしね）
-                if (selectedNotePrev.Size != Status.SelectedNote.Size)
+                if (selectedNotePrev.NoteSize != Status.SelectedNote.Size)
                 {
                     OperationManager.AddOperation(
                         new ReSizeNoteOperation(
                             Status.SelectedNote,
-                            selectedNotePrev.Size,
+                            selectedNotePrev.NoteSize,
                             Status.SelectedNote.Size,
                             Status.SelectedNoteArea));
                 }
@@ -1055,11 +1055,11 @@ namespace NE4S.Scores
                             new AddLongNoteOperation(
                                 model,
                                 new AirHold(
-                                    selectedNote.Size,
+                                    selectedNote.NoteSize,
                                     selectedNote.Position, 
                                     selectedNote.Location,
                                     lane.Index),
-                                new AirUpC(selectedNote.Size,
+                                new AirUpC(selectedNote.NoteSize,
                                     selectedNote.Position,
                                     selectedNote.Location,
                                     lane.Index),
@@ -1071,7 +1071,7 @@ namespace NE4S.Scores
                             new AddLongNoteOperation(
                                 model,
                                 new AirHold(
-                                    selectedNote.Size,
+                                    selectedNote.NoteSize,
                                     selectedNote.Position,
                                     selectedNote.Location,
                                     lane.Index),
@@ -1085,7 +1085,7 @@ namespace NE4S.Scores
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirUpC air = new AirUpC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
+                        AirUpC air = new AirUpC(selectedNote.NoteSize, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
                     return;
@@ -1094,7 +1094,7 @@ namespace NE4S.Scores
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirUpL air = new AirUpL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
+                        AirUpL air = new AirUpL(selectedNote.NoteSize, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
                     return;
@@ -1103,7 +1103,7 @@ namespace NE4S.Scores
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirUpR air = new AirUpR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
+                        AirUpR air = new AirUpR(selectedNote.NoteSize, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
                     return;
@@ -1112,7 +1112,7 @@ namespace NE4S.Scores
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirDownC air = new AirDownC(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
+                        AirDownC air = new AirDownC(selectedNote.NoteSize, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
                     return;
@@ -1121,7 +1121,7 @@ namespace NE4S.Scores
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirDownL air = new AirDownL(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
+                        AirDownL air = new AirDownL(selectedNote.NoteSize, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
                     return;
@@ -1130,7 +1130,7 @@ namespace NE4S.Scores
                     selectedNote = model.NoteBook.SelectedNote(location.Add(displayRect.Location)) as AirableNote;
                     if (selectedNote != null && !selectedNote.IsAirAttached)
                     {
-                        AirDownR air = new AirDownR(selectedNote.Size, selectedNote.Position, selectedNote.Location, lane.Index);
+                        AirDownR air = new AirDownR(selectedNote.NoteSize, selectedNote.Position, selectedNote.Location, lane.Index);
                         OperationManager.AddOperationAndInvoke(new AddAirNoteOperation(model, air, selectedNote));
                     }
                     return;

@@ -105,12 +105,12 @@ namespace NE4S.Notes.Concrete
             {
                 if (itrNote is AirableNote airableNote)
                 {
-                    airableNote.ReSize(note.Size);
+                    airableNote.ReSize(note.NoteSize);
                 }
                 else
                 {
                     //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
-                    itrNote.ReSizeOnly(note.Size);
+                    itrNote.ReSizeOnly(note.NoteSize);
                 }
             }
             return;

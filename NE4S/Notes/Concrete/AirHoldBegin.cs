@@ -24,7 +24,7 @@ namespace NE4S.Notes.Concrete
             : base(size, pos, location, laneIndex) { }
 
         public AirHoldBegin(Note note) 
-            : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
+            : this(note.NoteSize, note.Position, note.Location, note.LaneIndex) { }
 
         public override void ReSize(int size)
         {

@@ -64,8 +64,8 @@ namespace NE4S.Notes.Abstract
             GraphicsPath graphicsPath = new GraphicsPath();
             PointF baseLocation = Location.Add(-drawLocation.X, -drawLocation.Y);
             PointF topCenter = baseLocation.AddX(Width / 2f).AddY(borderWidth).Add(drawOffset);
-            PointF topRight = topCenter.AddX(Width / 2f - (Size - 1) * widthRatio).AddY(airHeight - airLineHeight - borderWidth);
-            PointF topLeft = topCenter.AddX(-(Width / 2f - (Size - 1) * widthRatio)).AddY(airHeight - airLineHeight - borderWidth);
+            PointF topRight = topCenter.AddX(Width / 2f - (NoteSize - 1) * widthRatio).AddY(airHeight - airLineHeight - borderWidth);
+            PointF topLeft = topCenter.AddX(-(Width / 2f - (NoteSize - 1) * widthRatio)).AddY(airHeight - airLineHeight - borderWidth);
             PointF bottomCenter = topCenter.AddY(airLineHeight - borderWidth);
             PointF bottomRight = topRight.AddY(airLineHeight - borderWidth);
             PointF bottomLeft = topLeft.AddY(airLineHeight - borderWidth);

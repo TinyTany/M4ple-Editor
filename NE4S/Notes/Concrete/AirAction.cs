@@ -24,7 +24,7 @@ namespace NE4S.Notes.Concrete
 
         public AirAction(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
 
-        public AirAction(Note note) : this(note.Size, note.Position, note.Location, note.LaneIndex) { }
+        public AirAction(Note note) : this(note.NoteSize, note.Position, note.Location, note.LaneIndex) { }
 
         public override void ReSize(int size)
         {
