@@ -51,7 +51,7 @@ namespace NE4S.Notes.Concrete
             using (Font myFont = new Font("MS UI Gothic", ScoreInfo.FontSize, FontStyle.Bold))
             {
                 g.DrawString(
-                "x" + NoteValue.ToString(),
+                "x" + Value.ToString(),
                 myFont,
                 Brushes.Red,
                 new PointF(

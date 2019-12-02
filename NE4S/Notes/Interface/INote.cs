@@ -64,7 +64,7 @@ namespace NE4S.Notes.Interface
     {
         double Value { get; }
         int Tick { get; }
-        bool SetValue(int value);
+        bool SetValue(double value);
         bool Relocate(int tick);
     }
 

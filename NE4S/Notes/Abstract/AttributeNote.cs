@@ -13,7 +13,7 @@ namespace NE4S.Notes.Abstract
     [Serializable()]
     public abstract class AttributeNote : Note, IAttributeNote
     {
-        public float NoteValue { get; set; }
+        public double Value { get; private set; }
 
         protected AttributeNote() { }
 

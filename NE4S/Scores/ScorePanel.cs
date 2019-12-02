@@ -10,6 +10,7 @@ using NE4S.Notes;
 using NE4S.Define;
 using NE4S.Operation;
 using NE4S.Notes.Abstract;
+using NE4S.Notes.Concrete;
 
 namespace NE4S.Scores
 {
@@ -686,14 +687,14 @@ namespace NE4S.Scores
                 var selectedNote = model.NoteBook.SelectedNote(e.Location.Add(displayRect.Location));
                 if (Status.Mode == Mode.Edit && selectedNote is AttributeNote attributeNote)
                 {
-                    float noteValue = attributeNote.NoteValue;
+                    float noteValue = attributeNote.Value;
                     new SetValueCustomForm(attributeNote).ShowDialog();
-                    if (attributeNote.NoteValue != noteValue)
+                    if (attributeNote.Value != noteValue)
                     {
                         OperationManager.AddOperation(new ChangeNoteValueOperation(
                             attributeNote,
                             noteValue,
-                            attributeNote.NoteValue));
+                            attributeNote.Value));
                     }
                     pictureBox.Cursor = Cursors.Default;
                     Status.IsMousePressed = false;
@@ -1141,11 +1142,11 @@ namespace NE4S.Scores
                     var note = model.NoteBook.AttributeNotes.ToList().Find(x => x.Position.Tick == position.Tick && x is BPM);
                     if (note != null)
                     {
-                        if (note.NoteValue != Status.CurrentValue)
+                        if (note.Value != Status.CurrentValue)
                         {
                             OperationManager.AddOperationAndInvoke(new ChangeNoteValueOperation(
                             note,
-                            note.NoteValue,
+                            note.Value,
                             Status.CurrentValue));
                         }
                         else { }
@@ -1159,11 +1160,11 @@ namespace NE4S.Scores
                     note = model.NoteBook.AttributeNotes.ToList().Find(x => x.Position.Tick == position.Tick && x is HighSpeed);
                     if (note != null)
                     {
-                        if (note.NoteValue != Status.CurrentValue)
+                        if (note.Value != Status.CurrentValue)
                         {
                             OperationManager.AddOperationAndInvoke(new ChangeNoteValueOperation(
                             note,
-                            note.NoteValue,
+                            note.Value,
                             Status.CurrentValue));
                         }
                         else { }

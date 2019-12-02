@@ -106,15 +106,15 @@ namespace NE4S.Operation
 
     public class ChangeNoteValueOperation : Operation
     {
-        public ChangeNoteValueOperation(AttributeNote note, float valueBefore, float valueAfter)
+        public ChangeNoteValueOperation(AttributeNote note, double valueBefore, double valueAfter)
         {
             Invoke += () =>
             {
-                note.NoteValue = valueAfter;
+                note.SetValue(valueAfter);
             };
             Undo += () =>
             {
-                note.NoteValue = valueBefore;
+                note.SetValue(valueBefore);
             };
         }
     }
