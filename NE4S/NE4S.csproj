@@ -192,6 +192,7 @@
     <Compile Include="Notes\Concrete\HoldEnd.cs" />
     <Compile Include="Notes\Abstract\LongNote.cs" />
     <Compile Include="Notes\Abstract\Note.cs" />
+    <Compile Include="Notes\NoteBox.cs" />
     <Compile Include="Notes\PartialSlide.cs" />
     <Compile Include="Notes\PreviewNote.cs" />
     <Compile Include="Notes\RawNote.cs" />
