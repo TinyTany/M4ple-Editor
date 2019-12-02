@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NE4S.Scores;
 using System.Diagnostics;
+using NE4S.Notes.Concrete;
+using NE4S.Notes.Interface;
 
 namespace NE4S.Notes.Abstract
 {
     [Serializable()]
-    public abstract class AirableNote : Note
+    public abstract class AirableNote : Note, IAirableNote
     {
         public Air Air { get; private set; } = null;
         public AirHold AirHold { get; private set; } = null;
@@ -72,42 +74,43 @@ namespace NE4S.Notes.Abstract
             }
         }
 
-        public void AttachAir(Air air)
+        public bool AttachAir(Air air)
         {
             if (air == null)
             {
                 Logger.Error("AirableNoteへのAirの紐づけに失敗しました。引数airがnullです。");
-                return;
+                return false;
             }
             Air = air;
             air.GetAirable += () => this;
+            return true;
         }
 
-        public void AttachAirHold(AirHold airHold)
+        public bool AttachAirHold(AirHold airHold)
         {
             if (airHold == null)
             {
                 Logger.Error("AirableNoteへのAirHoldの紐づけに失敗しました。引数airHoldがnullです。");
-                return;
+                return false;
             }
             AirHold = airHold;
             airHold.GetAirable += () => this;
             airHoldBegin = airHold.AirHoldBegin;
             Debug.Assert(airHoldBegin != null);
-            return;
+            return true;
         }
 
-        public void DetachAir()
+        public bool DetachAir()
         {
             Air = null;
-            return;
+            return true;
         }
 
-        public void DetachAirHold()
+        public bool DetachAirHold()
         {
             AirHold = null;
             airHoldBegin = null;
-            return;
+            return true;
         }
 
         public override void ReSize(int size)

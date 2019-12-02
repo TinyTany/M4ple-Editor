@@ -77,11 +77,11 @@ namespace NE4S.Notes.Interface
     {
         Air Air { get; }
         AirHold AirHold { get; }
-        bool AirAttached { get; }
-        bool AirHoldAttached { get; }
-        bool AttachAir(in Air air);
+        bool IsAirAttached { get; }
+        bool IsAirHoldAttached { get; }
+        bool AttachAir(Air air);
         bool DetachAir(out Air air);
-        bool AttachAirHold(in AirHold ah);
+        bool AttachAirHold(AirHold ah);
         bool DetachAirHold(out AirHold ah);
     }
 
