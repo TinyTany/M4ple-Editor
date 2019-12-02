@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NE4S.Notes;
+using NE4S.Notes.Abstract;
+using NE4S.Notes.Concrete;
 
 namespace NE4S.Operation
 {
