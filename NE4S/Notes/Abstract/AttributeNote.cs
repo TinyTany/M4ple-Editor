@@ -11,21 +11,22 @@ using NE4S.Scores;
 namespace NE4S.Notes.Abstract
 {
     [Serializable()]
-    public abstract class AttributeNote : Note, IAttributeNote
+    public abstract class AttributeNote : IAttributeNote
     {
         public double Value { get; private set; }
+        public int Tick { get; private set; }
+        public abstract NoteType NoteType { get; }
 
         protected AttributeNote() { }
 
-        protected AttributeNote(Position position, PointF location, float noteValue, int laneIndex)
+        protected AttributeNote(int tick, double value)
         {
-            Position = position;
-            noteRect.Location = location;
-            LaneIndex = laneIndex;
-            NoteValue = noteValue;
-            Size = 1;
+            Tick = tick;
+            Value = value;
         }
 
-        public override void Draw(Graphics g, Point drawLocation) { }
+        public abstract bool SetValue(double value);
+
+        public abstract bool Relocate(int tick);
     }
 }
