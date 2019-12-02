@@ -1,4 +1,5 @@
 ﻿using NE4S.Notes.Abstract;
+using NE4S.Notes.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,10 +69,7 @@ namespace NE4S.Notes.Interface
         bool Relocate(int tick);
     }
 
-    public interface IAirNote : ISizableNote
-    {
-        event Func<IAirableNote> GetAirable;
-    }
+    public interface IAirNote : ISizableNote { }
 
     public interface IAirableNote : ISizableNote
     {
@@ -86,6 +84,7 @@ namespace NE4S.Notes.Interface
     }
 
     public interface IStepNote<T> : ISizableNote
+        where T : IStepNote<T>
     {
         event Func<T, Position, bool> StepNotePositionChanging;
     }

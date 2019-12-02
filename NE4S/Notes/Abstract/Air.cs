@@ -40,7 +40,6 @@ namespace NE4S.Notes.Abstract
         /// </summary>
         private static readonly float widthRatio = 0.8f;
 
-        public delegate void VoidHandler();
         [OptionalField]
         public Func<AirableNote> GetAirable;
 
@@ -48,7 +47,8 @@ namespace NE4S.Notes.Abstract
 
         protected Air(Note note) : base(note) { }
 
-        protected Air(int size, Position pos, PointF location, int laneIndex) : base(size, pos, location, laneIndex) { }
+        protected Air(int size, Position pos, PointF location, int laneIndex)
+            : base(size, pos, location, laneIndex) { }
 
         public override bool Contains(PointF location)
         {

@@ -58,7 +58,7 @@ namespace NE4S.Notes.Abstract
 
         private void InitializeInstance(int size, Position pos, PointF location, int laneIndex)
         {
-            Size = size;
+            NoteSize = size;
             Position = new Position(pos);
             noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
             noteRect.Location = location;
@@ -86,10 +86,10 @@ namespace NE4S.Notes.Abstract
         }
 
         #region ノーツの位置やサイズを変えるメソッドたち
-        public virtual void ReSize(int size)
+        public virtual bool ReSize(int size)
         {
             ReSizeOnly(size);
-            return;
+            return true;
 		}
 
         /// <summary>
@@ -122,10 +122,10 @@ namespace NE4S.Notes.Abstract
             return;
         }
 
-        public virtual void Relocate(Position pos)
+        public virtual bool Relocate(Position pos)
 		{
             RelocateOnly(pos);
-			return;
+			return true;
 		}
 
         public void RelocateOnly(Position pos)

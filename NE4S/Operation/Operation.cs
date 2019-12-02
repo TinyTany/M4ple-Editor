@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NE4S.Operation
 {
-    public class Operation
+    public abstract class Operation
     {
         public Action Invoke, Undo;
 
