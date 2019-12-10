@@ -211,7 +211,7 @@
     <Compile Include="Operation\OperationManager.cs" />
     <Compile Include="Operation\ScoreOperation.cs" />
     <Compile Include="Operation\SelectionAreaOperation.cs" />
-    <Compile Include="Position.cs" />
+    <Compile Include="Data\Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Notes\Concrete\Tap.cs" />

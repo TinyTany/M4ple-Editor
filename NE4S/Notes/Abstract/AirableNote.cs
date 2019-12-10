@@ -10,6 +10,7 @@ using NE4S.Scores;
 using System.Diagnostics;
 using NE4S.Notes.Concrete;
 using NE4S.Notes.Interface;
+using NE4S.Data;
 
 namespace NE4S.Notes.Abstract
 {

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using NE4S.Scores;
 using NE4S.Notes;
 using NE4S.Notes.Abstract;
+using NE4S.Data;
 
 namespace NE4S.Component
 {

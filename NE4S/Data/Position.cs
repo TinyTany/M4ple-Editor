@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using System.Drawing;
 using NE4S.Scores;
 
-namespace NE4S
+namespace NE4S.Data
 {
     /// <summary>
     /// 置いたノーツの位置情報
     /// </summary>
     [Serializable()]
-    public class Position
+    public sealed class Position
     {
         /// <summary>
         /// ノーツの左端のレーン番号（0-15）
@@ -88,11 +88,12 @@ namespace NE4S
             hashCode = hashCode * -1521134295 + Tick.GetHashCode();
             return hashCode;
         }
-        public void PrintPosition()
+        public void Print()
         {
             System.Diagnostics.Debug.WriteLine("(Lane, Tick) = (" + Lane + ", " + Tick + ")");
         }
 
+        // HACK: 廃止せよ
         public Position Next()
         {
             return new Position(Lane, Tick + (ScoreInfo.MaxBeatDiv / Status.Beat));

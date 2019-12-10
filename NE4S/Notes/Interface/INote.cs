@@ -1,4 +1,5 @@
-﻿using NE4S.Notes.Abstract;
+﻿using NE4S.Data;
+using NE4S.Notes.Abstract;
 using NE4S.Notes.Concrete;
 using System;
 using System.Collections.Generic;

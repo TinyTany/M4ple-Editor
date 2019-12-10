@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using NE4S.Scores;
 using NE4S.Notes.Interface;
+using NE4S.Data;
 
 namespace NE4S.Notes.Abstract
 {

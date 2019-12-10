@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Runtime.Serialization;
 using NE4S.Notes.Interface;
+using NE4S.Data;
 
 namespace NE4S.Notes.Abstract
 {
