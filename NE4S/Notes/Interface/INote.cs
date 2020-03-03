@@ -84,9 +84,9 @@ namespace NE4S.Notes.Interface
         bool DetachAirHold(out AirHold ah);
     }
 
-    public interface IStepNote<T> : ISizableNote
-        where T : IStepNote<T>
+    public abstract class StepNote<T> : Note
+        where T : StepNote<T>
     {
-        event Func<T, Position, bool> StepNotePositionChanging;
+        protected event Func<T, Position, bool> StepNotePositionChanging;
     }
 }
