@@ -151,6 +151,7 @@
     <Compile Include="Component\VersionInfoForm.Designer.cs">
       <DependentUpon>VersionInfoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data\NoteSize.cs" />
     <Compile Include="Define.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
