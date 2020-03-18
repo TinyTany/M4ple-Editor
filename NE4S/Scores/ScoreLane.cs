@@ -199,7 +199,7 @@ namespace NE4S.Scores
         /// </summary>
         /// <param name="newScore">追加するScore</param>
         /// <param name="newRange">追加するRegion</param>
-        public void AddScore(Score newScore, Range newRange)
+        public void AddScore(Score newScore, ScoreRange newRange)
         {
 			if (newScore != null && newRange != null)
             {
@@ -234,7 +234,7 @@ namespace NE4S.Scores
         /// <param name="newScore"></param>
         public void AddScore(Score newScore)
         {
-            AddScore(newScore, new Range(1, newScore.BeatNumer));
+            AddScore(newScore, new ScoreRange(1, newScore.BeatNumer));
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace NE4S.Scores
             }            
         }
 
-        public Range FirstRange
+        public ScoreRange FirstRange
         {
             get
             {

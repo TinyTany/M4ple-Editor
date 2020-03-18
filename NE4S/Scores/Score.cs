@@ -86,7 +86,7 @@ namespace NE4S.Scores
         /// <param name="drawPosX">描画位置の右上のX座標</param>
         /// <param name="drawPosY">描画位置の右上のY座標</param>
         /// <param name="range">描画するScoreの範囲</param>
-        public void PaintScore(Graphics g, float drawPosX, float drawPosY, Range range)
+        public void PaintScore(Graphics g, float drawPosX, float drawPosY, ScoreRange range)
         {
             //レーンを区切る縦線を描画
             for (int i = 0; i <= ScoreInfo.Lanes; ++i)

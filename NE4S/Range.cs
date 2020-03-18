@@ -10,7 +10,7 @@ namespace NE4S
     /// ScoreLaneが持つ各Scoreの範囲
     /// </summary>
     [Serializable()]
-    public class Range
+    public class ScoreRange
     {
         public int Min { get; set; }
         public int Max { get; set; }
@@ -21,7 +21,7 @@ namespace NE4S
         /// </summary>
         /// <param name="min">下限</param>
         /// <param name="max">上限</param>
-        public Range(int min, int max)
+        public ScoreRange(int min, int max)
         {
             Min = min;
             Max = max;

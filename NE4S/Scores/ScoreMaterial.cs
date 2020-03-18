@@ -12,7 +12,7 @@ namespace NE4S.Scores
 	public class ScoreMaterial
 	{
         public Score Score { get; }
-        public Range Range { get; }
+        public ScoreRange Range { get; }
         public RectangleF HitRect { get; set; }
         public float Width { get; }
         public float Height { get; }
@@ -27,7 +27,7 @@ namespace NE4S.Scores
             get { return StartTick + Range.Size * ScoreInfo.MaxBeatDiv / Score.BeatDenom - 1; }
         }
 
-        public ScoreMaterial(Score score, Range scoreRange, RectangleF hitRect)
+        public ScoreMaterial(Score score, ScoreRange scoreRange, RectangleF hitRect)
 		{
 			Score = score;
 			Range = scoreRange;

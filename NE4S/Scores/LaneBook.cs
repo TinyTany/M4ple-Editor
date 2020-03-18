@@ -77,7 +77,7 @@ namespace NE4S.Scores
                         //末尾のレーンに新たなScoreを範囲を指定して格納
                         this.Last().AddScore(
                             score,
-                            new Range(
+                            new ScoreRange(
                                 i * numerCountPerLane + 1,
                                 Math.Min(score.BeatNumer, (i + 1) * numerCountPerLane)));
                     }
@@ -185,7 +185,7 @@ namespace NE4S.Scores
                         newLanes.Add(new ScoreLane());
                     }
                     //レーン末尾にnewScoreを格納
-                    newLanes.Last().AddScore(newScore, new Range(1, newScore.BeatNumer));
+                    newLanes.Last().AddScore(newScore, new ScoreRange(1, newScore.BeatNumer));
                 }
                 //収まらなかった場合
                 else
@@ -198,7 +198,7 @@ namespace NE4S.Scores
                         //末尾のレーンに新たなScoreを範囲を指定して格納
                         newLanes.Last().AddScore(
                             newScore,
-                            new Range(
+                            new ScoreRange(
                                 (int)(i * newScore.BeatDenom * ScoreInfo.LaneMaxBar + 1),
                                 Math.Min(newScore.BeatNumer, (int)((i + 1) * newScore.BeatDenom * ScoreInfo.LaneMaxBar))));
                     }
