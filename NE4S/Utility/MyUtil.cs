@@ -63,16 +63,23 @@ namespace NE4S
         }
 
         /// <summary>
-        /// list内のnoteの1つ次の要素を返します。noteがlistに含まれていないか、末尾の場合はnullを返します。
+        /// list内のitemの1つ前の要素を返します。itemがlistに含まれていないか、先頭の場合は既定値を返します。
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="note"></param>
-        /// <returns></returns>
-        public static Note Next(this List<Note> list, Note note)
+        public static T Prev<T>(this List<T> list, T item)
         {
-            if (!list.Contains(note)) return null;
-            if (list.IndexOf(note) >= list.Count - 1) return null;
-            return list.ElementAt(list.IndexOf(note) + 1);
+            if (!list.Contains(item)) return default;
+            if (list.IndexOf(item) <= 0) return default;
+            return list.ElementAt(list.IndexOf(item) - 1);
+        }
+
+        /// <summary>
+        /// list内のitemの1つ次の要素を返します。itemがlistに含まれていないか、末尾の場合は既定値を返します。
+        /// </summary>
+        public static T Next<T>(this List<T> list, T item)
+        {
+            if (!list.Contains(item)) return default;
+            if (list.IndexOf(item) >= list.Count - 1) return default;
+            return list.ElementAt(list.IndexOf(item) + 1);
         }
 
         /// <summary>

@@ -153,7 +153,7 @@
     </Compile>
     <Compile Include="Data\NoteSize.cs" />
     <Compile Include="Define.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Utility\Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,7 +163,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MusicInfo.cs" />
-    <Compile Include="MyUtil.cs" />
+    <Compile Include="Utility\MyUtil.cs" />
     <Compile Include="Notes\Abstract\Air.cs" />
     <Compile Include="Notes\Abstract\AirableNote.cs" />
     <Compile Include="Notes\Concrete\AirAction.cs" />
