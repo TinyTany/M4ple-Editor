@@ -39,4 +39,23 @@ namespace NE4S
             }
         }
     }
+
+    /// <summary>
+    /// 範囲を表すための汎用クラス
+    /// </summary>
+    public sealed class Range<T>
+        where T : IComparable
+    {
+        public T Min { get; private set; }
+        public T Max { get; private set; }
+
+        private Range() { }
+
+        public Range(T min, T max)
+        {
+            // TODO: バリデーションチェックは？
+            Min = min;
+            Max = max;
+        }
+    }
 }
