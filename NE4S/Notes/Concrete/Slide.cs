@@ -238,18 +238,19 @@ namespace NE4S.Notes.Concrete
         #endregion
 
         /// <summary>
-        /// 削除後にノーツのチェックも行う
+        /// 中継点ノーツを削除
+        /// 削除によってSlideCurveが2つ連続した場合は、そのどちらか一方も削除される
         /// </summary>
-        /// <param name="note"></param>
-        public new void Remove(Note note)
+        public override bool UnPut(SlideStep step)
         {
-            base.Remove(note);
-            Note past = this.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < note.Position.Tick).Last();
-            Note future = this.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > note.Position.Tick).First();
+            if (!steps.Remove(step)) { return false; }
+            var past = steps.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < step.Position.Tick).Last();
+            var future = steps.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > step.Position.Tick).First();
             if(past is SlideCurve && future is SlideCurve)
             {
-                base.Remove(future);
+                steps.Remove(future);
             }
+            return true;
         }
 
         /// <summary>

@@ -453,7 +453,7 @@ namespace NE4S.Operation
             };
             Undo += () =>
             {
-                relayList.ForEach(x => slide.Remove(x));
+                relayList.ForEach(x => slide.UnPut(x));
                 tapList.ForEach(x => slide.Add(x));
             };
         }
@@ -473,7 +473,7 @@ namespace NE4S.Operation
             };
             Undo += () =>
             {
-                tapList.ForEach(x => slide.Remove(x));
+                tapList.ForEach(x => slide.UnPut(x));
                 relayList.ForEach(x => slide.Add(x));
             };
         }

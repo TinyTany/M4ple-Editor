@@ -87,7 +87,7 @@ namespace NE4S.Operation
             };
             Undo += () =>
             {
-                slide.Remove(slideTap);
+                slide.UnPut(slideTap);
             };
         }
 
@@ -99,7 +99,7 @@ namespace NE4S.Operation
             };
             Undo += () =>
             {
-                slide.Remove(slideRelay);
+                slide.UnPut(slideRelay);
             };
         }
 
@@ -111,7 +111,7 @@ namespace NE4S.Operation
             };
             Undo += () =>
             {
-                slide.Remove(slideCurve);
+                slide.UnPut(slideCurve);
             };
         }
 
