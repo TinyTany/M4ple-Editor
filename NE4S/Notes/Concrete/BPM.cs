@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NE4S.Data;
 using NE4S.Notes.Abstract;
 using NE4S.Scores;
 

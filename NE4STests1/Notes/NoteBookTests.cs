@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using NE4S.Notes.Concrete;
+using NE4S.Data;
+using NE4S.Notes.Abstract;
 
 namespace NE4S.Notes.Tests
 {

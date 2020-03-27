@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using NE4S.Notes.Abstract;
+using NE4S.Data;
 
 namespace NE4S.Scores
 {

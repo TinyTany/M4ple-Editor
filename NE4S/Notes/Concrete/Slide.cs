@@ -9,6 +9,7 @@ using NE4S.Scores;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
 using NE4S.Notes.Abstract;
+using NE4S.Data;
 
 namespace NE4S.Notes.Concrete
 {
