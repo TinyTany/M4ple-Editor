@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 using System.Runtime.Serialization;
 using NE4S.Notes.Interface;
 using NE4S.Data;
+using NE4S.Notes.Concrete;
 
 namespace NE4S.Notes.Abstract
 {
@@ -48,8 +49,27 @@ namespace NE4S.Notes.Abstract
 
         protected Air(Note note) : base(note) { }
 
-        protected Air(int size, Position pos, PointF location, int laneIndex)
-            : base(size, pos, location, laneIndex) { }
+        protected Air(int size, Position pos, PointF location)
+            : base(size, pos, location) { }
+
+        public static Air Factory(Air air)
+        {
+            switch (air.NoteType)
+            {
+                case NoteType.AirDownC: return new AirDownC(air);
+                case NoteType.AirDownL: return new AirDownL(air);
+                case NoteType.AirDownR: return new AirDownR(air);
+                case NoteType.AirUpC: return new AirUpC(air);
+                case NoteType.AirUpL: return new AirUpL(air);
+                case NoteType.AirUpR: return new AirUpR(air);
+                default:
+                    {
+                        // NOTE: ここに入ることはありえないはず。入ったらなにかおかしい
+                        Logger.Error("ロジック的に到達できないはずの場所です。", true);
+                        return default;
+                    }
+            }
+        }
 
         public override bool Contains(PointF location)
         {

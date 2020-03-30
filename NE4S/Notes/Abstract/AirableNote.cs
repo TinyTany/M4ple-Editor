@@ -23,8 +23,8 @@ namespace NE4S.Notes.Abstract
 
         protected AirableNote() { }
 
-        protected AirableNote(int size, Position pos, PointF location, int laneIndex) 
-            : base(size, pos, location, laneIndex) { }
+        protected AirableNote(int size, Position pos, PointF location) 
+            : base(size, pos, location) { }
 
         protected AirableNote(Note note) : base(note)
         {
@@ -32,7 +32,7 @@ namespace NE4S.Notes.Abstract
             {
                 if (airable.Air != null)
                 {
-                    Air = new Air(airable.Air);
+                    Air = Air.Factory(airable.Air);
                 }
                 if (airable.AirHold != null)
                 {
@@ -101,69 +101,35 @@ namespace NE4S.Notes.Abstract
             return true;
         }
 
-        public bool DetachAir()
+        public bool DetachAir(out Air air)
         {
+            air = Air;
             Air = null;
             return true;
         }
 
-        public bool DetachAirHold()
+        public bool DetachAirHold(out AirHold ah)
         {
+            ah = AirHold;
             AirHold = null;
             airHoldBegin = null;
             return true;
         }
 
-        public override void ReSize(int size)
+        public override bool ReSize(int size)
         {
-            base.ReSize(size);
+            if (!base.ReSize(size)) { return false; }
             Air?.ReSize(size);
             airHoldBegin?.ReSize(size);
-            return;
+            return true;
         }
 
-        /// <summary>
-        /// このノーツの位置変更とそれに付随するAir、AirHoldノーツの位置のみを変更します
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <param name="location"></param>
-        /// <param name="laneIndex"></param>
-        public new void RelocateOnly(Position pos, PointF location, int laneIndex)
+        public override bool Relocate(Position pos)
         {
-            base.RelocateOnly(pos, location, laneIndex);
-            Air?.RelocateOnly(pos, location, laneIndex);
-            //AirHold全体に変更を反映させるためRelocateを使う
-            airHoldBegin?.Relocate(pos, location, laneIndex);
-        }
-
-        public override void Relocate(Position pos, PointF location, int laneIndex)
-        {
-            Relocate(location, laneIndex);
-            Relocate(pos);
-        }
-
-        public override void Relocate(PointF location, int laneIndex)
-        {
-            base.Relocate(location, laneIndex);
-            Air?.Relocate(location, laneIndex);
-            airHoldBegin?.Relocate(location, laneIndex);
-            return;
-        }
-
-        public override void Relocate(Position pos)
-        {
-            base.Relocate(pos);
+            if (!base.Relocate(pos)) { return false; }
             Air?.Relocate(pos);
             airHoldBegin?.Relocate(pos);
-            return;
-        }
-
-        public override void RelocateOnlyAndUpdate(Position position, LaneBook laneBook)
-        {
-            base.RelocateOnlyAndUpdate(position, laneBook);
-            Air?.RelocateOnlyAndUpdate(position, laneBook);
-            airHoldBegin?.Relocate(position);
-            airHoldBegin?.UpdateLocation(laneBook);
+            return true;
         }
 
         public override void Draw(Graphics g, Point drawLocation)

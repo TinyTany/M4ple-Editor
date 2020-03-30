@@ -18,8 +18,8 @@ namespace NE4S.Notes.Concrete
 
         private ExTap() { }
 
-		public ExTap(int size, Position pos, PointF location, int laneIndex)
-            : base(size, pos, location, laneIndex) { }
+		public ExTap(int size, Position pos, PointF location)
+            : base(size, pos, location) { }
 
 		public override void Draw(Graphics g, Point drawLocation)
 		{

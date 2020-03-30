@@ -19,25 +19,28 @@ namespace NE4S.Notes.Abstract
     public abstract class Note : ISizableNote
     {
         public abstract NoteType NoteType { get; }
-        
+
         /// <summary>
         /// 1 ≦ NoteSize ≦ 16
         /// </summary>
         public int NoteSize { get; protected set; }
+
         public Position Position { get; protected set; }
-		protected RectangleF noteRect;
-        protected PointF adjustNoteRect = new PointF(0, -2);
-        public virtual int LaneIndex { get; protected set; } = -1;
+
+        protected RectangleF noteRect;
+
+        public PointF Location => noteRect.Location;
+
+        public float Width => noteRect.Width;
+
+        // HACK: なんとかしたい...
+        // NOTE: 当たり判定や描画位置のための矩形のLocationとして、NoteRectのものにこれを足して使用している気がする
+        protected readonly PointF adjustNoteRect = new PointF(0, -2);
 
         [field: NonSerialized]
         public int TimeLineIndex { get; set; } = 0;
 
-		protected Note()
-		{
-			NoteSize = 0;
-			Position = null;
-			noteRect = new RectangleF();
-		}
+        protected Note() { }
 
         protected Note(Note note)
         {
@@ -49,35 +52,20 @@ namespace NE4S.Notes.Abstract
                 noteRect = new RectangleF();
                 return;
             }
-            InitializeInstance(note.NoteSize, note.Position, note.Location, note.LaneIndex);
+            InitializeInstance(note.NoteSize, note.Position, note.Location);
         }
 
-        protected Note(int size, Position pos, PointF location, int laneIndex)
+        protected Note(int size, Position pos, PointF location)
         {
-            InitializeInstance(size, pos, location, laneIndex);
+            InitializeInstance(size, pos, location);
         }
 
-        private void InitializeInstance(int size, Position pos, PointF location, int laneIndex)
+        private void InitializeInstance(int size, Position pos, PointF location)
         {
             NoteSize = size;
             Position = new Position(pos);
             noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
             noteRect.Location = location;
-            LaneIndex = laneIndex;
-        }
-
-        public PointF Location
-        {
-            get { return noteRect.Location; }
-        }
-
-        /// <summary>
-        /// hitrectのWidth
-        /// つまりノーツの物理的幅サイズ
-        /// </summary>
-        public float Width
-        {
-            get { return noteRect.Width; }
         }
 
         public virtual bool Contains(PointF location)
@@ -86,98 +74,72 @@ namespace NE4S.Notes.Abstract
             return hitRect.Contains(location);
         }
 
-        #region ノーツの位置やサイズを変えるメソッドたち
-        public virtual bool ReSize(int size)
-        {
-            ReSizeOnly(size);
-            return true;
-		}
-
         /// <summary>
-        /// ノーツの種類にかかわらずノーツのサイズを変更することのみ行います
+        /// ノーツのサイズを変更します
+        /// ノーツの種類によって、ノーツのサイズ変更に伴った追加の処理なども行うことも仕様とします
         /// </summary>
         /// <param name="size"></param>
-        public void ReSizeOnly(int size)
+        /// <returns></returns>
+        public virtual bool ReSize(int size)
         {
+            if (size <= 0 || ScoreInfo.Lanes < size)
+            {
+                Logger.Error("引数sizeの値が不正です。");
+                return false;
+            }
+            if (Position.Lane + size > ScoreInfo.Lanes)
+            {
+                Logger.Error("ノーツがレーン範囲外になるため、操作は実行できません。");
+                return false;
+            }
             int diffSize = size - NoteSize;
             NoteSize = size;
             noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
+            // HACK: こういう操作をここでやるのはちょっと...
             if (Status.SelectedNoteArea == NoteArea.Left)
             {
                 noteRect.X -= diffSize * ScoreInfo.UnitLaneWidth;
                 Position = new Position(Position.Lane - diffSize, Position.Tick);
             }
-            return;
+            return true;
         }
 
-        public virtual void Relocate(Position pos, PointF location, int laneIndex)
-		{
-            RelocateOnly(pos, location, laneIndex);
-			return;
-		}
-
-        public void RelocateOnly(Position pos, PointF location, int laneIndex)
-        {
-            RelocateOnly(pos);
-            RelocateOnly(location, laneIndex);
-            return;
-        }
-
+        /// <summary>
+        /// ノーツのPositionを変更します
+        /// ノーツの種類や状態によって、ノーツのPosition変更に伴った追加の処理なども行うことを仕様とします
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public virtual bool Relocate(Position pos)
-		{
-            RelocateOnly(pos);
-			return true;
-		}
-
-        public void RelocateOnly(Position pos)
         {
+            if (pos is null) 
+            {
+                Logger.Error("引数がnullのため、操作を実行できません。", true);
+                return false;
+            }
+            if (pos.Lane + NoteSize > ScoreInfo.Lanes)
+            {
+                Logger.Error("ノーツがレーン範囲外になるため、操作は実行できません。");
+                return false;
+            }
             Position = pos;
-            return;
+            return true;
         }
 
-        public virtual void Relocate(PointF location, int laneIndex)
-		{
-            RelocateOnly(location, laneIndex);
-			return;
-		}
-
-        public void RelocateOnly(PointF location, int laneIndex)
-        {
-            noteRect.Location = location;
-            LaneIndex = laneIndex;
-            return;
-        }
-
-        public virtual void RelocateOnlyAndUpdate(Position position, LaneBook laneBook)
-        {
-            RelocateOnly(position);
-            UpdateLocation(laneBook);
-        }
-        #endregion
-
+        /// <summary>
+        /// Positionの値から、ノーツの絶対位置(noteRect.Location)を更新します。
+        /// </summary>
+        /// <param name="laneBook"></param>
         public void UpdateLocation(LaneBook laneBook)
         {
             ScoreLane lane = laneBook.Find(x => x.StartTick <= Position.Tick && Position.Tick <= x.EndTick);
             if (lane == null) return;
-            PointF location = new PointF(
+            noteRect.Location = new PointF(
                 lane.LaneRect.Left + Position.Lane * ScoreInfo.UnitLaneWidth,
-                //HACK: Y座標が微妙にずれるので-1して調節する
+                // HACK: Y座標が微妙にずれるので-1して調節する
                 lane.HitRect.Bottom - (Position.Tick - lane.StartTick) * ScoreInfo.UnitBeatHeight - 1);
-            RelocateOnly(location, lane.Index);
         }
 
-        public virtual void Draw(Graphics g, Point drawLocation)
-		{
-			RectangleF drawRect = new RectangleF(
-				noteRect.X - drawLocation.X + adjustNoteRect.X,
-				noteRect.Y - drawLocation.Y + adjustNoteRect.Y,
-				noteRect.Width,
-				noteRect.Height);
-			using (SolidBrush myBrush = new SolidBrush(Color.White))
-			{
-				g.FillRectangle(myBrush, drawRect);
-			}
-			return;
-		}
+        public abstract void Draw(Graphics g, Point drawLocation);
     }
 }

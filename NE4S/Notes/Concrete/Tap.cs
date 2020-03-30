@@ -18,8 +18,8 @@ namespace NE4S.Notes.Concrete
 
         private Tap() { }
 
-        public Tap(int size, Position pos, PointF location, int laneIndex) 
-            : base(size, pos, location, laneIndex) { }
+        public Tap(int size, Position pos, PointF location) 
+            : base(size, pos, location) { }
 
         public override void Draw(Graphics g, Point drawLocation)
         {
@@ -43,7 +43,7 @@ namespace NE4S.Notes.Concrete
             return;
         }
 
-        //NOTE: NoteButtonでのノーツイメージ描画用に作ったけど本当にこんなのでええんか？
+        // NOTE: NoteButtonでのノーツイメージ描画用に作ったけど本当にこんなのでええんか？
         public static void Draw(PaintEventArgs e, PointF location, SizeF size)
         {
             RectangleF drawRect = new RectangleF(location.X - size.Width / 2f, location.Y - size.Height / 2f, size.Width, size.Height);
