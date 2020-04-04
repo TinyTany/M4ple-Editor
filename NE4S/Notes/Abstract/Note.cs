@@ -29,6 +29,10 @@ namespace NE4S.Notes.Abstract
 
         protected RectangleF noteRect;
 
+        // NOTE: LongNoteの帯を何レーンに渡って描画するかをO(1)で取りたいのでLaneIndexとして保持する
+        //       なので、このプロパティの値はLongNoteを構成するノーツ以外では基本的に使わない（読み取らない）はず
+        public int LaneIndex { get; private set; }
+
         public PointF Location => noteRect.Location;
 
         public float Width => noteRect.Width;
@@ -52,20 +56,21 @@ namespace NE4S.Notes.Abstract
                 noteRect = new RectangleF();
                 return;
             }
-            InitializeInstance(note.NoteSize, note.Position, note.Location);
+            InitializeInstance(note.NoteSize, note.Position, note.Location, note.LaneIndex);
         }
 
-        protected Note(int size, Position pos, PointF location)
+        protected Note(int size, Position pos, PointF location, int laneIndex)
         {
-            InitializeInstance(size, pos, location);
+            InitializeInstance(size, pos, location, laneIndex);
         }
 
-        private void InitializeInstance(int size, Position pos, PointF location)
+        private void InitializeInstance(int size, Position pos, PointF location, int laneIndex)
         {
             NoteSize = size;
             Position = new Position(pos);
             noteRect.Size = new SizeF(ScoreInfo.UnitLaneWidth * size, ScoreInfo.NoteHeight);
             noteRect.Location = location;
+            LaneIndex = laneIndex;
         }
 
         public virtual bool Contains(PointF location)
@@ -138,6 +143,7 @@ namespace NE4S.Notes.Abstract
                 lane.LaneRect.Left + Position.Lane * ScoreInfo.UnitLaneWidth,
                 // HACK: Y座標が微妙にずれるので-1して調節する
                 lane.HitRect.Bottom - (Position.Tick - lane.StartTick) * ScoreInfo.UnitBeatHeight - 1);
+            LaneIndex = lane.Index;
         }
 
         public abstract void Draw(Graphics g, Point drawLocation);

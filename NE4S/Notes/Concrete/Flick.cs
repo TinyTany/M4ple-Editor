@@ -18,8 +18,8 @@ namespace NE4S.Notes.Concrete
 
         private Flick() { }
 
-		public Flick(int size, Position pos, PointF location)
-            : base(size, pos, location) { }
+		public Flick(int size, Position pos, PointF location, int laneIndex)
+            : base(size, pos, location, laneIndex) { }
 
 		public override void Draw(Graphics g, Point drawLocation)
 		{

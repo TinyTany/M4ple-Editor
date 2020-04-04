@@ -23,8 +23,8 @@ namespace NE4S.Notes.Abstract
 
         protected AirableNote() { }
 
-        protected AirableNote(int size, Position pos, PointF location) 
-            : base(size, pos, location) { }
+        protected AirableNote(int size, Position pos, PointF location, int laneIndex) 
+            : base(size, pos, location, laneIndex) { }
 
         protected AirableNote(Note note) : base(note)
         {

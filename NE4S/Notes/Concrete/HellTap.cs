@@ -18,8 +18,8 @@ namespace NE4S.Notes.Concrete
 
         private HellTap() { }
 
-        public HellTap(int size, Position pos, PointF location)
-            : base(size, pos, location) { }
+        public HellTap(int size, Position pos, PointF location, int laneIndex)
+            : base(size, pos, location, laneIndex) { }
 
 		public override void Draw(Graphics g, Point drawLocation)
 		{
