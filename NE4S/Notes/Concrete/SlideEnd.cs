@@ -12,11 +12,11 @@ using NE4S.Data;
 namespace NE4S.Notes.Concrete
 {
     [Serializable()]
-    public sealed class SlideEnd : AirableNote
+    public sealed class SlideEnd : LongNoteEnd
     {
         public override NoteType NoteType => NoteType.SlideEnd;
 
-        public event Func<Note, Position, bool> IsPositionAvailable;
+        public override event Func<Note, Position, bool> PositionChanging;
 
         private SlideEnd() { }
 
@@ -25,34 +25,35 @@ namespace NE4S.Notes.Concrete
 
         public SlideEnd(Note note) : base(note) { }
 
-        public override void Relocate(Position pos, PointF location, int laneIndex)
+        #region HACK: このコードは、SlideStep, SlideBegin, SlideEndで全く同じものがWETされているので注意！
+        public override bool Relocate(Position pos, PointF location, int laneIndex)
         {
-
-            if (IsPositionAvailable == null) { return; }
-            if (IsPositionAvailable(this, pos))
+            // TODO: ロジックの確認
+            if (PositionChanging == null) { return false; }
+            if (PositionChanging(this, pos))
             {
-                base.Relocate(pos);
-                base.Relocate(location, laneIndex);
+                return base.Relocate(pos, location, laneIndex);
             }
             else if (laneIndex == LaneIndex)
             {
-                base.Relocate(new Position(pos.Lane, Position.Tick));
-                base.Relocate(new PointF(location.X, Location.Y), laneIndex);
+                return base.Relocate(new Position(pos.Lane, Position.Tick), new PointF(location.X, Location.Y), laneIndex);
             }
+            return false;
         }
 
-        public override void Relocate(Position pos)
+        public override bool Relocate(Position pos)
         {
-            if (IsPositionAvailable == null) { return; }
-            if (IsPositionAvailable(this, pos))
+            if (PositionChanging == null) { return false; }
+            if (PositionChanging(this, pos))
             {
-                base.Relocate(pos);
+                return base.Relocate(pos);
             }
             else
             {
-                base.Relocate(new Position(pos.Lane, Position.Tick));
+                return base.Relocate(new Position(pos.Lane, Position.Tick));
             }
         }
+        #endregion
 
         public override void Draw(Graphics g, Point drawLocation)
         {

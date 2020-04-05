@@ -14,7 +14,47 @@ using NE4S.Data;
 namespace NE4S.Notes.Concrete
 {
     [Serializable()]
-    public sealed class Slide : LongNote
+    public abstract class SlideStep : LongNoteStep
+    {
+        public override event Func<Note, Position, bool> PositionChanging;
+        protected SlideStep() { }
+        protected SlideStep(Note note) : base(note) { }
+        protected SlideStep(int size, Position pos, PointF location, int laneIndex)
+            : base(size, pos, location, laneIndex) { }
+
+        #region HACK: このコードは、SlideStep, SlideBegin, SlideEndで全く同じものがWETされているので注意！
+        public override bool Relocate(Position pos, PointF location, int laneIndex)
+        {
+            // TODO: ロジックの確認
+            if (PositionChanging == null) { return false; }
+            if (PositionChanging(this, pos))
+            {
+                return base.Relocate(pos, location, laneIndex);
+            }
+            else if (laneIndex == LaneIndex)
+            {
+                return base.Relocate(new Position(pos.Lane, Position.Tick), new PointF(location.X, Location.Y), laneIndex);
+            }
+            return false;
+        }
+
+        public override bool Relocate(Position pos)
+        {
+            if (PositionChanging == null) { return false; }
+            if (PositionChanging(this, pos))
+            {
+                return base.Relocate(pos);
+            }
+            else
+            {
+                return base.Relocate(new Position(pos.Lane, Position.Tick));
+            }
+        }
+        #endregion
+    }
+
+    [Serializable()]
+    public sealed class Slide : LongNote<SlideBegin, SlideStep, SlideEnd>
     {
         public override LongNoteType LongNoteType => LongNoteType.Slide;
 
@@ -39,28 +79,12 @@ namespace NE4S.Notes.Concrete
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
-        public override Note EndNote
-        {
-            get
-            {
-                var ret = Find(x => x is SlideEnd);
-                if (ret == null)
-                {
-                    Logger.Warn("EndNoteがnullです。");
-                }
-                if (!(ret is AirableNote))
-                {
-                    Logger.Warn("EndNoteはAirableNoteであるべきです。");
-                }
-                return ret;
-            }
-        }
-
         private Slide() { }
 
         // NOTE: SlideEndコンストラクタでは、親クラスのAirableNoteのコンストラクタも呼び出しているので、AirやAirHoldのコピーもされている
         /// <summary>
         /// 遅いからディープコピー使ったほうがいい（10倍くらい早い）
+        /// 追記: 型を調べない実装（多態性でやる方法）にしたので，速度については要再実験
         /// </summary>
         public Slide(Slide slide)
         {
@@ -69,53 +93,60 @@ namespace NE4S.Notes.Concrete
                 Logger.Error("Slideのコピーに失敗しました。引数がnullです。");
                 return;
             }
-            slide.ForEach(x =>
+            BeginNote = new SlideBegin(slide.BeginNote);
+            BeginNote.PositionChanging += IsPositionAvailable;
+            EndNote = new SlideEnd(slide.EndNote);
+            EndNote.PositionChanging += IsPositionAvailable;
+            slide.steps.ForEach(x =>
             {
-                if (x is SlideBegin)
+                // HACK: Putメソッドを呼び出して無駄なバリデーションチェックが行われるのが嫌だったので直書きした
+                switch (x.NoteType)
                 {
-                    Add(new SlideBegin(x));
-                }
-                else if (x is SlideTap)
-                {
-                    Add(new SlideTap(x));
-                }
-                else if (x is SlideRelay)
-                {
-                    Add(new SlideRelay(x));
-                }
-                else if (x is SlideCurve)
-                {
-                    Add(new SlideCurve(x));
-                }
-                else if (x is SlideEnd)
-                {
-                    Add(new SlideEnd(x));
+                    case NoteType.SlideTap:
+                        {
+                            var step = new SlideTap(x);
+                            steps.Add(step);
+                            step.PositionChanging += IsPositionAvailable;
+                            break;
+                        }
+                    case NoteType.SlideRelay:
+                        {
+                            var step = new SlideRelay(x);
+                            Put(step);
+                            step.PositionChanging += IsPositionAvailable;
+                            break;
+                        }
+                    case NoteType.SlideCurve:
+                        {
+                            var step = new SlideCurve(x);
+                            Put(step);
+                            step.PositionChanging += IsPositionAvailable;
+                            break;
+                        }
+                    default: Logger.Warn("不正なNoteTypeです"); break;
                 }
             });
         }
 
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
-            SlideBegin slideBegin = new SlideBegin(size, pos, location, laneIndex);
-            Add(slideBegin);
+            BeginNote = new SlideBegin(size, pos, location, laneIndex);
+            BeginNote.PositionChanging += IsPositionAvailable;
             location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            SlideEnd slideEnd = new SlideEnd(size, pos.Next(), location, laneIndex);
-            Add(slideEnd);
-            Status.SelectedNote = slideEnd;
+            EndNote = new SlideEnd(size, pos.Next(), location, laneIndex);
+            EndNote.PositionChanging += IsPositionAvailable;
+            Status.SelectedNote = EndNote;
         }
 
         /// <summary>
-        /// このSlide内のノーツに対してのTick方向の移動が有効かを調べます
+        /// このSlide内のノーツに対しての移動が有効かを調べます
         /// </summary>
-        /// <param name="note"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        protected override bool IsPositionTickAvailable(Note note, Position position)
+        protected override bool IsPositionAvailable(Note note, Position position)
         {
-            var list = this.OrderBy(x => x.Position.Tick).Where(x => x != note);
+            var list = steps.OrderBy(x => x.Position.Tick).Where(x => x != note);
             var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
             var listOverPosition = list.Where(x => x.Position.Tick > position.Tick);
-            if (!this.Any()) return true;
+            if (!steps.Any()) return true;
             if (note is SlideBegin && position.Tick > list.First().Position.Tick) return false;
             if (note is SlideEnd && position.Tick < list.Last().Position.Tick) return false;
             if (note is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
@@ -132,110 +163,36 @@ namespace NE4S.Notes.Concrete
 
         public bool IsPositionTickAvailable(PartialSlide partialSlide, Position delta)
         {
-            // UNDONE
-            return true;
+            throw new NotImplementedException();
         }
 
-        private bool IsCurvesValid(List<Note> list)
+        private bool IsCurvesValid(List<SlideStep> list)
         {
-            foreach(Note note in list)
+            foreach(var note in list)
             {
-                Note next = list.Next(note);
+                var next = list.Next(note);
                 if (next == null) break;
                 if (note is SlideCurve && next is SlideCurve) return false;
             }
             return true;
         }
 
-        #region Add系のメソッド（なぜかいっぱいある）
-        // 普段使うのは1番上のやつだけ
-        // それ以外は全部補助的なメソッドなので直には使わない
-
-        /// <summary>
-        /// Slide中継点系のノーツのみAddされます。それ以外はAddせずにエラーログとアサートを吐きます。
-        /// </summary>
-        public new bool Add(Note note)
+        public override bool Put(SlideStep step)
         {
-            if (note == null)
+            if (step == null)
             {
-                Logger.Error("引数noteがnullのため操作を行えません。", true);
+                Logger.Error("引数stepがnullのため操作を行えません。", true);
                 return false;
             }
-            switch (note)
+            if (!IsPositionAvailable(step, step.Position))
             {
-                case SlideBegin begin: return Add(begin);
-                case SlideEnd end: return Add(end);
-                case SlideTap tap: return Add(tap);
-                case SlideRelay relay: return Add(relay);
-                case SlideCurve curve: return Add(curve);
-                default:
-                    {
-                        Logger.Warn("Slideに対して不正なノーツ追加です。", true);
-                        return false;
-                    }
-            }
-        }
-
-        private bool Add(SlideBegin slideBegin)
-        {
-            if (!IsPositionTickAvailable(slideBegin, slideBegin.Position))
-            {
-                Status.SelectedNote = null;
+                Logger.Error("Positionが有効ではないためstepを追加できません", true);
                 return false;
             }
-            base.Add(slideBegin);
-            slideBegin.IsPositionAvailable += IsPositionTickAvailable;
+            steps.Add(step);
+            step.PositionChanging += IsPositionAvailable;
             return true;
         }
-
-        private bool Add(SlideTap slideTap)
-        {
-            if (!IsPositionTickAvailable(slideTap, slideTap.Position))
-            {
-                Status.SelectedNote = null;
-                return false;
-            }
-            base.Add(slideTap);
-            slideTap.IsPositionAvailable += IsPositionTickAvailable;
-            return true;
-        }
-
-        private bool Add(SlideRelay slideRelay)
-        {
-            if (!IsPositionTickAvailable(slideRelay, slideRelay.Position))
-            {
-                Status.SelectedNote = null;
-                return false;
-            }
-            base.Add(slideRelay);
-            slideRelay.IsPositionAvailable += IsPositionTickAvailable;
-            return true;
-        }
-
-        private bool Add(SlideCurve slideCurve)
-        {
-            if (!IsPositionTickAvailable(slideCurve, slideCurve.Position))
-            {
-                Status.SelectedNote = null;
-                return false;
-            }
-            base.Add(slideCurve);
-            slideCurve.IsPositionAvailable += IsPositionTickAvailable;
-            return true;
-        }
-
-        private bool Add(SlideEnd slideEnd)
-        {
-            if (!IsPositionTickAvailable(slideEnd, slideEnd.Position))
-            {
-                Status.SelectedNote = null;
-                return false;
-            }
-            base.Add(slideEnd);
-            slideEnd.IsPositionAvailable += IsPositionTickAvailable;
-            return true;
-        }
-        #endregion
 
         /// <summary>
         /// 中継点ノーツを削除
@@ -258,25 +215,25 @@ namespace NE4S.Notes.Concrete
         /// </summary>
         public bool Contains(PointF locationVirtual, LaneBook laneBook)
         {
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
-            foreach(Note note in list)
+            var list = steps.OrderBy(x => x.Position.Tick).ToList();
+            foreach(var step in list)
             {
-                if (list.IndexOf(note) >= list.Count - 1) break;
-                Note next = list.ElementAt(list.IndexOf(note) + 1);
-                if (note is SlideCurve) continue;
+                if (list.IndexOf(step) >= list.Count - 1) break;
+                var next = list.ElementAt(list.IndexOf(step) + 1);
+                if (step is SlideCurve) continue;
                 else if (next is SlideCurve)
                 {
-                    var ret = ContainsInCurve(note, next, list.ElementAt(list.IndexOf(next) + 1), laneBook, locationVirtual);
+                    var ret = ContainsInCurve(step, next, list.ElementAt(list.IndexOf(next) + 1), laneBook, locationVirtual);
                     if (ret) return true;
                 }
                 //
-                int passingLanes = next.LaneIndex - note.LaneIndex;
+                int passingLanes = next.LaneIndex - step.LaneIndex;
                 if(passingLanes == 0)
                 {
                     PointF topLeft = next.Location.Add(drawOffset);
                     PointF topRight = next.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width);
-                    PointF bottomLeft = note.Location.Add(drawOffset);
-                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(note.Width);
+                    PointF bottomLeft = step.Location.Add(drawOffset);
+                    PointF bottomRight = step.Location.Add(-drawOffset.X, drawOffset.Y).AddX(step.Width);
                     using (GraphicsPath hitPath = new GraphicsPath())
                     { 
                         hitPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
@@ -285,13 +242,13 @@ namespace NE4S.Notes.Concrete
                 }
                 else if(passingLanes >= 1)
                 {
-                    float positionDistance = (next.Position.Tick - note.Position.Tick) * ScoreInfo.UnitBeatHeight;
-                    float diffX = (next.Position.Lane - note.Position.Lane) * ScoreInfo.UnitLaneWidth;
+                    float positionDistance = (next.Position.Tick - step.Position.Tick) * ScoreInfo.UnitBeatHeight;
+                    float diffX = (next.Position.Lane - step.Position.Lane) * ScoreInfo.UnitLaneWidth;
                     #region 最初のレーンでの判定処理
-                    PointF topLeft = note.Location.Add(drawOffset).Add(diffX, -positionDistance);
-                    PointF topRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width).Add(diffX, -positionDistance);
-                    PointF bottomLeft = note.Location.Add(drawOffset);
-                    PointF bottomRight = note.Location.Add(-drawOffset.X, drawOffset.Y).AddX(note.Width);
+                    PointF topLeft = step.Location.Add(drawOffset).Add(diffX, -positionDistance);
+                    PointF topRight = step.Location.Add(-drawOffset.X, drawOffset.Y).AddX(next.Width).Add(diffX, -positionDistance);
+                    PointF bottomLeft = step.Location.Add(drawOffset);
+                    PointF bottomRight = step.Location.Add(-drawOffset.X, drawOffset.Y).AddX(step.Width);
                     using (GraphicsPath hitPath = new GraphicsPath())
                     {
                         hitPath.AddLines(new PointF[] { topLeft, bottomLeft, bottomRight, topRight });
@@ -300,7 +257,7 @@ namespace NE4S.Notes.Concrete
                     #endregion
                     #region 以降最後までの判定処理
                     ScoreLane prevLane, curLane;
-                    for (prevLane = laneBook.Find(x => x.Contains(note)), curLane = laneBook.Next(prevLane);
+                    for (prevLane = laneBook.Find(x => x.Contains(step)), curLane = laneBook.Next(prevLane);
                     curLane != null && laneBook.IndexOf(curLane) <= next.LaneIndex;
                     prevLane = curLane, curLane = laneBook.Next(curLane))
                     {
@@ -308,9 +265,9 @@ namespace NE4S.Notes.Concrete
                         topLeft.Y += prevLane.LaneRect.Height;
                         topRight.X = topLeft.X + next.Width - 2 * drawOffset.X;
                         topRight.Y += prevLane.LaneRect.Height;
-                        bottomLeft.X = curLane.LaneRect.X + note.Position.Lane * ScoreInfo.UnitLaneWidth + drawOffset.X;
+                        bottomLeft.X = curLane.LaneRect.X + step.Position.Lane * ScoreInfo.UnitLaneWidth + drawOffset.X;
                         bottomLeft.Y += prevLane.LaneRect.Height;
-                        bottomRight.X = bottomLeft.X + note.Width - 2 * drawOffset.X;
+                        bottomRight.X = bottomLeft.X + step.Width - 2 * drawOffset.X;
                         bottomRight.Y += prevLane.LaneRect.Height;
                         using (GraphicsPath hitPath = new GraphicsPath())
                         {
@@ -327,7 +284,7 @@ namespace NE4S.Notes.Concrete
         /// <summary>
         /// SlideCurveの当たり判定
         /// </summary>
-        private bool ContainsInCurve(Note past, Note curve, Note future, LaneBook laneBook, PointF locationVirtual)
+        private bool ContainsInCurve(SlideStep past, SlideStep curve, SlideStep future, LaneBook laneBook, PointF locationVirtual)
         {
             int passingLanes = future.LaneIndex - past.LaneIndex;
             using (GraphicsPath graphicsPath = MyUtil.CreateSlideCurvePath(past, curve, future, drawOffset))
@@ -354,13 +311,15 @@ namespace NE4S.Notes.Concrete
         /// ノーツのリストに対して前から回して、そのノーツとそれと次のノーツまでの帯を描画し、そのノーツを描画
         public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
+            // TODO: LongNoteクラスの設計を見直した結果、BeginとEndのノーツをメンバとして持つようになり、
+            // 中継点のみをリストに入れるようにしたため、従来の実装のままではBeginと次の中継点間、Endと前の中継点間の帯が描画されない
+            // 気がするので、設計の変更を反映にした実装にする。
             if (g == null) return;
-            base.Draw(g, drawLocation, laneBook);
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
+            var list = steps.OrderBy(x => x.Position.Tick).ToList();
             RectangleF gradientRect = new RectangleF();
             var stepList = list.Where(x => x is SlideBegin || x is SlideTap || x is SlideEnd).ToList();
-            Note gradientNote, gradientNext, next, curve;
-            foreach (Note note in list)
+            SlideStep gradientNote, gradientNext, next, curve;
+            foreach (var note in list)
             {
                 // 画面外の場合は描画しないようにしてなるべく処理を軽くしたい
                 if (note.Position.Tick > Status.DrawTickLast)

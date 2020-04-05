@@ -12,11 +12,9 @@ using System.Windows.Forms;
 namespace NE4S.Notes.Concrete
 {
     [Serializable()]
-    public sealed class SlideCurve : Note
+    public sealed class SlideCurve : SlideStep
     {
         public override NoteType NoteType => NoteType.SlideCurve;
-
-        public event Func<Note, Position, bool> IsPositionAvailable;
 
         private SlideCurve() { }
 
@@ -24,35 +22,6 @@ namespace NE4S.Notes.Concrete
             : base(size, pos, location, laneIndex) { }
 
         public SlideCurve(Note note) : base(note) { }
-
-        public override void Relocate(Position pos, PointF location, int laneIndex)
-        {
-
-            if (IsPositionAvailable == null) { return; }
-            if (IsPositionAvailable(this, pos))
-            {
-                base.Relocate(pos);
-                base.Relocate(location, laneIndex);
-            }
-            else if (laneIndex == LaneIndex)
-            {
-                base.Relocate(new Position(pos.Lane, Position.Tick));
-                base.Relocate(new PointF(location.X, Location.Y), laneIndex);
-            }
-        }
-
-        public override void Relocate(Position pos)
-        {
-            if (IsPositionAvailable == null) { return; }
-            if (IsPositionAvailable(this, pos))
-            {
-                base.Relocate(pos);
-            }
-            else
-            {
-                base.Relocate(new Position(pos.Lane, Position.Tick));
-            }
-        }
 
         public override void Draw(Graphics g, Point drawLocation)
         {
