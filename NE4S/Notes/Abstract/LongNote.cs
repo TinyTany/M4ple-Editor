@@ -11,106 +11,124 @@ using NE4S.Data;
 
 namespace NE4S.Notes.Abstract
 {
+    // HACK: 多重継承とかあればBegin, Step, Endを同じ基底クラスから派生させたりできたかもしれないが、現状どうしてもまとまらなかったのでWETになっている...
+    //       インターフェースを使う？
+    #region
+    [Serializable()]
+    public abstract class LongNoteBegin : Note
+    {
+        public abstract event Func<Note, Position, bool> PositionChanging;
+
+        protected LongNoteBegin() { }
+        protected LongNoteBegin(Note note) : base(note) { }
+        protected LongNoteBegin(int size, Position pos, PointF location, int laneIndex)
+            : base(size, pos, location, laneIndex) { }
+    }
+
+    [Serializable()]
+    public abstract class LongNoteStep : Note
+    {
+        public abstract event Func<Note, Position, bool> PositionChanging;
+
+        protected LongNoteStep() { }
+        protected LongNoteStep(Note note) : base(note) { }
+        protected LongNoteStep(int size, Position pos, PointF location, int laneIndex)
+            : base(size, pos, location, laneIndex) { }
+    }
+
+    [Serializable()]
+    public abstract class LongNoteEnd : AirableNote
+    {
+        public abstract event Func<Note, Position, bool> PositionChanging;
+
+        protected LongNoteEnd() { }
+        protected LongNoteEnd(Note note) : base(note) { }
+        protected LongNoteEnd(int size, Position pos, PointF location, int laneIndex)
+            : base(size, pos, location, laneIndex) { }
+    }
+    #endregion
+
+    [Serializable()]
+    public abstract class LongNote
+    {
+        public abstract LongNoteType LongNoteType { get; }
+        public abstract int StartTick { get; }
+        public abstract int EndTick { get; }
+    }
+
+    [Serializable()]
+    public abstract class LongNote<TBegin, TEnd> : LongNote
+        where TBegin : LongNoteBegin
+        where TEnd : LongNoteEnd
+    {
+        public TBegin BeginNote { get; protected set; }
+        public TEnd EndNote { get; protected set; }
+
+        public override int StartTick => BeginNote?.Position.Tick ?? -1;
+        public override int EndTick => EndNote?.Position.Tick ?? -1;
+
+        protected abstract bool IsPositionAvailable(Note note, Position position);
+
+        public abstract void Draw(Graphics g, Point drawLocation, LaneBook laneBook);
+    }
+
     /// <summary>
     /// 長いノーツ(Hold,Slide,AirHold)1つ分を表す
     /// </summary>
     [Serializable()]
-    public abstract class LongNote<T> : ILongNote<T>
-        where T : IStepNote<T>
+    public abstract class LongNote<TBegin, TStep, TEnd> : LongNote<TBegin, TEnd>
+        where TBegin : LongNoteBegin
+        where TStep : LongNoteStep
+        where TEnd : LongNoteEnd
     {
         // 帯の描画位置がちょっと上にずれてるので調節用の変数を用意
         protected static readonly PointF drawOffset = new PointF(2, 0);
         // 帯の大きさが縦に少し短いので調整
         protected static readonly float deltaHeight = .2f;
 
-        // NOTE: LongNoteをList<Note>を継承してしまうのはヤバいわよなので生データはこれに入れるようにしたい
-        protected readonly List<T> notes = new List<T>();
+        protected readonly List<TStep> steps = new List<TStep>();
 
-        #region 生データへの問い合わせ用メソッド類
-        public void ForEach(Action<Note> a) => notes.ForEach(a);
-        public bool Any() => notes.Any();
-        public Note First() => notes.First();
-        public Note Last() => notes.Last();
-        public Note Find(Predicate<Note> p) => notes.Find(p);
-        public Note FindLast(Predicate<Note> p) => notes.FindLast(p);
-        public IEnumerable<Note> Where(Func<Note, bool> p) => notes.Where(p);
-        public bool Contains(Note note) => notes.Contains(note);
-        public IOrderedEnumerable<Note> OrderBy<TKey>(Func<Note, TKey> key) => notes.OrderBy(key);
-        public IEnumerator<Note> GetEnumerator() => notes.GetEnumerator();
-        public Note this[int index]
+        public IReadOnlyList<TStep> Steps => steps;
+
+        public int LaneLeft
         {
             get
             {
-                if (index < 0 || notes.Count <= index) { return null; }
-                return notes[index];
+                var stepMin = steps.Min(x => x.Position.Lane);
+                return Math.Min(stepMin, Math.Min(BeginNote.Position.Lane, EndNote.Position.Lane));
             }
         }
-        #endregion
 
-        public int StartTick => notes.OrderBy(x => x.Position.Tick).First().Position.Tick;
-
-        public int EndTick => notes.OrderBy(x => x.Position.Tick).Last().Position.Tick;
-
-        public int LaneLeft => notes.OrderBy(x => x.Position.Lane).First().Position.Lane;
-
-        public int LaneRight => notes.OrderBy(x => x.Position.Lane + x.Size).Last().Position.Lane;
-
-        public virtual Note EndNote => null;
-
-        public abstract LongNoteType LongNoteType { get; }
+        public int LaneRight
+        {
+            get
+            {
+                var stepMax = steps.Max(x => x.Position.Lane + x.NoteSize);
+                var begin = BeginNote.Position.Lane + BeginNote.NoteSize;
+                var end = EndNote.Position.Lane + EndNote.NoteSize;
+                return Math.Max(stepMax, Math.Max(begin, end));
+            }
+        }
 
         protected LongNote() { }
 
-        public abstract bool Put(T step);
+        public abstract bool Put(TStep step);
 
-        public abstract bool UnPut(T step);
+        public abstract bool UnPut(TStep step);
 
-        protected virtual bool IsPositionTickAvailable(Note note, Position position)
+        public bool IsDrawable(Range<int> tickRange)
         {
-            if (position.Tick < notes.OrderBy(x => x.Position.Tick).First().Position.Tick) return false;
-            foreach (Note itrNote in notes.Where(x => x != note))
+            // NOTE: HACK: 範囲の上限が正しく設定されているかはRangeクラス側で責任を持つべきなのでは？
+            if (!(tickRange.Min < tickRange.Max))
             {
-                if (position.Tick == itrNote.Position.Tick) return false;
+                Logger.Error("Tick範囲が不正です", true);
+                return false;
             }
-            return true;
-        }
-
-        public void RelocateNoteTickAfterScoreTick(int scoreTick, int deltaTick)
-        {
-            notes.Where(x => x.Position.Tick >= scoreTick).ToList().ForEach(x => x.RelocateOnly(new Position(x.Position.Lane, x.Position.Tick + deltaTick)));
-        }
-
-        public bool IsDrawable()
-        {
-            bool isAllNoteBehind = !notes.Where(x => x.Position.Tick >= Status.DrawTickFirst).Any();
-            bool isAllNoteBeyond = !notes.Where(x => x.Position.Tick <= Status.DrawTickLast).Any();
+            bool isAllNoteBehind = !steps.Where(x => x.Position.Tick >= tickRange.Min).Any();
+            bool isAllNoteBeyond = !steps.Where(x => x.Position.Tick <= tickRange.Max).Any();
             return !(isAllNoteBehind && isAllNoteBeyond);
         }
 
-        public void UpdateLocation(LaneBook laneBook) => notes.ForEach(x => x.UpdateLocation(laneBook));
-
-        /// <summary>
-        /// ノーツ位置のチェックのみ行う
-        /// </summary>
-        public virtual void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
-        {
-            var list = notes.OrderBy(x => x.Position.Tick).ToList();
-            //ノーツ位置のチェック
-            for (Note past = list.First(); past != list.Last(); past = list.Next(past))
-            {
-                Note future = list.Next(past);
-                //
-                if (laneBook.Find(x => x.HitRect.Contains(future.Location)) == null)
-                {
-                    ScoreLane lane = laneBook.Find(x => x.StartTick <= future.Position.Tick && future.Position.Tick <= x.EndTick);
-                    if (lane == null) break;
-                    PointF location = new PointF(
-                        lane.LaneRect.Left + future.Position.Lane * ScoreInfo.UnitLaneWidth,
-                        //HACK: Y座標が微妙にずれるので-1して調節する
-                        lane.HitRect.Bottom - (future.Position.Tick - lane.StartTick) * ScoreInfo.UnitBeatHeight - 1);
-                    future.RelocateOnly(location, lane.Index);
-                }
-            }
-        }
+        public void UpdateLocation(LaneBook laneBook) => steps.ForEach(x => x.UpdateLocation(laneBook));
     }
 }
