@@ -28,6 +28,11 @@ namespace NE4S
             return m * n / Gcd(m, n);
         }
 
+        public static Position Next(this Position p)
+        {
+            return new Position(p.Lane, p.Tick + (ScoreInfo.MaxBeatDiv / Status.Beat));
+        }
+
         /// <summary>
         /// 任意の参照型オブジェクトをディープコピーします
         /// パフォーマンスを見ながら、コピーコンストラクタによる方法も検討してください
