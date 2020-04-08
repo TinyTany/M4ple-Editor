@@ -8,54 +8,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NE4S.Scores;
 
 namespace NE4S.Notes.Concrete
 {
     [Serializable()]
-    public sealed class HoldEnd : AirableNote
+    public sealed class HoldEnd : LongNoteEnd
     {
         public override NoteType NoteType => NoteType.HoldEnd;
 
-        public event Action<Note> CheckNoteSize;
-        public event Action<Note, int> CheckNotePosition;
-        public event Func<Note, Position, bool> IsPositionAvailable;
+        public override event Func<Note, Position, bool> IsNewTickAvailable;
 
         private HoldEnd() { }
 
         public HoldEnd(int size, Position pos, PointF location, int laneIndex) 
             : base(size, pos, location, laneIndex) { }
 
-        public override void ReSize(int size)
+        public override bool ReSize(int size)
         {
-            base.ReSize(size);
-            CheckNoteSize?.Invoke(this);
-            return;
+            if (!base.ReSize(size)) { return false; }
+            return true;
         }
 
-        public override void Relocate(Position pos, PointF location, int laneIndex)
+        public override bool Relocate(Position pos, PointF location, int laneIndex)
         {
-            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
-            int deltaTick = pos.Tick - Position.Tick;
-            base.Relocate(pos);
-            base.Relocate(location, laneIndex);
-            CheckNotePosition?.Invoke(this, deltaTick);
-            return;
+            if (IsNewTickAvailable == null || !IsNewTickAvailable(this, pos))
+            {
+                return false;
+            }
+            // ノーツの水平位置を合わせるための座標調節
+            var diffLane = pos.Lane - Position.Lane;
+            var newLocation = new PointF(location.X + diffLane * ScoreInfo.UnitLaneWidth, location.Y);
+            if (!base.Relocate(pos, newLocation, laneIndex)) { return false; }
+            return true;
         }
 
-        public override void Relocate(Position pos)
+        public override bool Relocate(Position pos)
         {
-            if (IsPositionAvailable == null || !IsPositionAvailable(this, pos)) return;
-            int deltaTick = pos.Tick - Position.Tick;
-            base.Relocate(pos);
-            CheckNotePosition?.Invoke(this, deltaTick);
-            return;
-        }
-
-        public override void Relocate(PointF location, int laneIndex)
-        {
-            base.Relocate(location, laneIndex);
-            CheckNotePosition?.Invoke(this, 0);
-            return;
+            if (IsNewTickAvailable == null || !IsNewTickAvailable(this, pos))
+            {
+                return false;
+            }
+            if (!base.Relocate(pos)) { return false; }
+            return true;
         }
 
         public override void Draw(Graphics g, Point drawLocation)

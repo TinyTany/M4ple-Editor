@@ -13,48 +13,39 @@ using NE4S.Data;
 namespace NE4S.Notes.Concrete
 {
     [Serializable()]
-    public sealed class HoldBegin : Note, IStepNote
+    public sealed class HoldBegin : LongNoteBegin
     {
         public override NoteType NoteType => NoteType.HoldBegin;
 
-        public event Action<Note> CheckNoteSize;
-        public event Action<Note, int> CheckNotePosition;
-        public event Func<Note, Position, bool> StepNotePositionChanging;
+        public override event Action<int> ReflectNoteSize;
+        public override event Action<Position> ReflectNotePosition;
 
         private HoldBegin() { }
 
         public HoldBegin(int size, Position pos, PointF location, int laneIndex)
             : base(size, pos, location, laneIndex) { }
 
-        public override void ReSize(int size)
+        public override bool ReSize(int size)
         {
-            base.ReSize(size);
-            CheckNoteSize?.Invoke(this);
-            return;
+            if (!base.ReSize(size)) { return false; }
+            ReflectNoteSize?.Invoke(size);
+            return true;
         }
 
-        public override void Relocate(Position pos, PointF location, int laneIndex)
+        public override bool Relocate(Position pos, PointF location, int laneIndex)
         {
-            int deltaTick = pos.Tick - Position.Tick;
-            base.Relocate(pos);
-            base.Relocate(location, laneIndex);
-            CheckNotePosition?.Invoke(this, deltaTick);
-            return;
+            if (!base.Relocate(pos, location, laneIndex)) { return false; }
+            var deltaPosition = pos - Position;
+            ReflectNotePosition?.Invoke(deltaPosition);
+            return true;
         }
 
-        public override void Relocate(Position pos)
+        public override bool Relocate(Position pos)
         {
-            int deltaTick = pos.Tick - Position.Tick;
-            base.Relocate(pos);
-            CheckNotePosition?.Invoke(this, deltaTick);
-            return;
-        }
-
-        public override void Relocate(PointF location, int laneIndex)
-        {
-            base.Relocate(location, laneIndex);
-            CheckNotePosition?.Invoke(this, 0);
-            return;
+            if (!base.Relocate(pos)) { return false; }
+            var deltaPosition = pos - Position;
+            ReflectNotePosition?.Invoke(deltaPosition);
+            return true;
         }
 
         public override void Draw(Graphics g, Point drawLocation)

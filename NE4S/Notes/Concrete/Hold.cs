@@ -13,7 +13,7 @@ using System.Windows.Forms;
 namespace NE4S.Notes.Concrete
 {
     [Serializable()]
-    public sealed class Hold : LongNote
+    public sealed class Hold : LongNote<HoldBegin, HoldEnd>
     {
         public override LongNoteType LongNoteType => LongNoteType.Hold;
 
@@ -34,104 +34,25 @@ namespace NE4S.Notes.Concrete
             Positions = new float[] { 0.0f, 0.3f, 0.7f, 1.0f }
         };
 
-        public override Note EndNote
-        {
-            get
-            {
-                var ret = Find(x => x is HoldEnd);
-                if (ret == null)
-                {
-                    Logger.Warn("EndNoteがnullです。");
-                }
-                if (!(ret is AirableNote))
-                {
-                    Logger.Warn("EndNoteはAirableNoteであるべきです。");
-                }
-                return ret;
-            }
-        }
-
         private Hold() { }
 
         public Hold(int size, Position pos, PointF location, int laneIndex)
         {
-            HoldBegin holdBegin = new HoldBegin(size, pos, location, laneIndex);
-            holdBegin.CheckNotePosition += CheckNotePosition;
-            holdBegin.CheckNoteSize += CheckNoteSize;
-            Add(holdBegin);
+            BeginNote = new HoldBegin(size, pos, location, laneIndex);
+            BeginNote.ReflectNotePosition += (dp) => { EndNote?.Relocate(EndNote?.Position + dp); };
+            BeginNote.ReflectNoteSize += (s) => { EndNote.ReSize(s); };
             location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
-            HoldEnd holdEnd = new HoldEnd(size, pos.Next(), location, laneIndex);
-            holdEnd.CheckNotePosition += CheckNotePosition;
-            holdEnd.CheckNoteSize += CheckNoteSize;
-            holdEnd.IsPositionAvailable += IsPositionTickAvailable;
-            Add(holdEnd);
-            Status.SelectedNote = holdEnd;
-        }
-
-        private void CheckNotePosition(Note note, int deltaTick)
-        {
-            if(note is HoldBegin)
-            {
-                int diffLane;
-                foreach (Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
-                {
-                    diffLane = itrNote.Position.Lane - note.Position.Lane;
-                    //貫通する
-                    itrNote.Relocate(
-                        new Position(note.Position.Lane, itrNote.Position.Tick + deltaTick),
-                        new PointF(itrNote.Location.X - diffLane * ScoreInfo.UnitLaneWidth, itrNote.Location.Y - deltaTick * ScoreInfo.UnitBeatHeight),
-                        itrNote.LaneIndex);
-                }
-            }
-            else if(note is HoldEnd)
-            {
-                Note holdBegin = this.OrderBy(x => x.Position.Tick).First();
-                int diffLane = holdBegin.Position.Lane - note.Position.Lane;
-                (note as AirableNote).RelocateOnly(
-                        new Position(holdBegin.Position.Lane, note.Position.Tick),
-                        new PointF(note.Location.X + diffLane * ScoreInfo.UnitLaneWidth, note.Location.Y),
-                        note.LaneIndex);
-            }
-            else
-            {
-                //ここに入ることは無いはずだし入ったとしても何もしない一応警告でも出しとけ
-                System.Diagnostics.Debug.Assert(false, "不正なノーツの種類です。");
-            }
-            return;
-        }
-
-        private void CheckNoteSize(Note note)
-        {
-            foreach(Note itrNote in this.OrderBy(x => x.Position.Tick).Where(x => x != note))
-            {
-                if (itrNote is AirableNote airableNote)
-                {
-                    airableNote.ReSize(note.NoteSize);
-                }
-                else
-                {
-                    //ここで普通のReSizeメソッドを使うと無限再帰みたくなっちゃう...
-                    itrNote.ReSizeOnly(note.NoteSize);
-                }
-            }
-            return;
+            EndNote = new HoldEnd(size, pos.Next(), location, laneIndex);
+            EndNote.IsNewTickAvailable += (n, p) => { return BeginNote.Position.Tick <= p.Tick; };
+            // HACK: 気持ち悪いからやめろ　外でやれ
+            Status.SelectedNote = EndNote;
         }
 
         public override void Draw(Graphics g, Point drawLocation, LaneBook laneBook)
         {
-            base.Draw(g, drawLocation, laneBook);
-            var list = this.OrderBy(x => x.Position.Tick).ToList();
-            foreach (Note note in list)
-            {
-                if(list.IndexOf(note) < list.Count - 1)
-                {
-                    Note next = list.Next(note);
-                    DrawHoldLine(g, note, next, drawLocation, laneBook);
-                }
-                //クリッピングの解除を忘れないこと
-                g.ResetClip();
-                note.Draw(g, drawLocation);
-            }
+            DrawHoldLine(g, BeginNote, EndNote, drawLocation, laneBook);
+            BeginNote.Draw(g, drawLocation);
+            EndNote.Draw(g, drawLocation);
         }
 
         private static void DrawHoldLine(Graphics g, Note past, Note future, Point drawLocation, LaneBook laneBook)
@@ -181,6 +102,7 @@ namespace NE4S.Notes.Concrete
                 }
                 
             }
+            g.ResetClip();
         }
 
         public static void Draw(PaintEventArgs e, PointF location, SizeF size)
