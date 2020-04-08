@@ -153,6 +153,7 @@
     </Compile>
     <Compile Include="Data\NoteSize.cs" />
     <Compile Include="Define.cs" />
+    <Compile Include="Exchange\IExchanger.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
