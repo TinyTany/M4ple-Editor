@@ -16,7 +16,7 @@ namespace NE4S.Notes.Concrete
     {
         public override NoteType NoteType => NoteType.SlideEnd;
 
-        public override event Func<Note, Position, bool> PositionChanging;
+        public override event Func<Note, Position, bool> IsNewTickAvailable;
 
         private SlideEnd() { }
 
@@ -28,23 +28,18 @@ namespace NE4S.Notes.Concrete
         #region HACK: このコードは、SlideStep, SlideBegin, SlideEndで全く同じものがWETされているので注意！
         public override bool Relocate(Position pos, PointF location, int laneIndex)
         {
-            // TODO: ロジックの確認
-            if (PositionChanging == null) { return false; }
-            if (PositionChanging(this, pos))
+            if (IsNewTickAvailable == null) { return false; }
+            if (IsNewTickAvailable(this, pos))
             {
                 return base.Relocate(pos, location, laneIndex);
             }
-            else if (laneIndex == LaneIndex)
-            {
-                return base.Relocate(new Position(pos.Lane, Position.Tick), new PointF(location.X, Location.Y), laneIndex);
-            }
-            return false;
+            return base.Relocate(new Position(pos.Lane, Position.Tick), new PointF(location.X, Location.Y), laneIndex);
         }
 
         public override bool Relocate(Position pos)
         {
-            if (PositionChanging == null) { return false; }
-            if (PositionChanging(this, pos))
+            if (IsNewTickAvailable == null) { return false; }
+            if (IsNewTickAvailable(this, pos))
             {
                 return base.Relocate(pos);
             }

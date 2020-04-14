@@ -16,7 +16,7 @@ namespace NE4S.Notes.Concrete
     [Serializable()]
     public abstract class SlideStep : LongNoteStep
     {
-        public override event Func<Note, Position, bool> PositionChanging;
+        public override event Func<Note, Position, bool> IsNewTickAvailable;
         protected SlideStep() { }
         protected SlideStep(Note note) : base(note) { }
         protected SlideStep(int size, Position pos, PointF location, int laneIndex)
@@ -25,23 +25,18 @@ namespace NE4S.Notes.Concrete
         #region HACK: このコードは、SlideStep, SlideBegin, SlideEndで全く同じものがWETされているので注意！
         public override bool Relocate(Position pos, PointF location, int laneIndex)
         {
-            // TODO: ロジックの確認
-            if (PositionChanging == null) { return false; }
-            if (PositionChanging(this, pos))
+            if (IsNewTickAvailable == null) { return false; }
+            if (IsNewTickAvailable(this, pos))
             {
                 return base.Relocate(pos, location, laneIndex);
             }
-            else if (laneIndex == LaneIndex)
-            {
-                return base.Relocate(new Position(pos.Lane, Position.Tick), new PointF(location.X, Location.Y), laneIndex);
-            }
-            return false;
+            return base.Relocate(new Position(pos.Lane, Position.Tick), new PointF(location.X, Location.Y), laneIndex);
         }
 
         public override bool Relocate(Position pos)
         {
-            if (PositionChanging == null) { return false; }
-            if (PositionChanging(this, pos))
+            if (IsNewTickAvailable == null) { return false; }
+            if (IsNewTickAvailable(this, pos))
             {
                 return base.Relocate(pos);
             }
@@ -94,9 +89,9 @@ namespace NE4S.Notes.Concrete
                 return;
             }
             BeginNote = new SlideBegin(slide.BeginNote);
-            BeginNote.PositionChanging += IsPositionAvailable;
+            BeginNote.IsNewTickAvailable += IsNewTickAvailable;
             EndNote = new SlideEnd(slide.EndNote);
-            EndNote.PositionChanging += IsPositionAvailable;
+            EndNote.IsNewTickAvailable += IsNewTickAvailable;
             slide.steps.ForEach(x =>
             {
                 // HACK: Putメソッドを呼び出して無駄なバリデーションチェックが行われるのが嫌だったので直書きした
@@ -106,21 +101,21 @@ namespace NE4S.Notes.Concrete
                         {
                             var step = new SlideTap(x);
                             steps.Add(step);
-                            step.PositionChanging += IsPositionAvailable;
+                            step.IsNewTickAvailable += IsNewTickAvailable;
                             break;
                         }
                     case NoteType.SlideRelay:
                         {
                             var step = new SlideRelay(x);
-                            Put(step);
-                            step.PositionChanging += IsPositionAvailable;
+                            steps.Add(step);
+                            step.IsNewTickAvailable += IsNewTickAvailable;
                             break;
                         }
                     case NoteType.SlideCurve:
                         {
                             var step = new SlideCurve(x);
-                            Put(step);
-                            step.PositionChanging += IsPositionAvailable;
+                            steps.Add(step);
+                            step.IsNewTickAvailable += IsNewTickAvailable;
                             break;
                         }
                     default: Logger.Warn("不正なNoteTypeです"); break;
@@ -131,48 +126,55 @@ namespace NE4S.Notes.Concrete
         public Slide(int size, Position pos, PointF location, int laneIndex)
         {
             BeginNote = new SlideBegin(size, pos, location, laneIndex);
-            BeginNote.PositionChanging += IsPositionAvailable;
+            BeginNote.IsNewTickAvailable += IsNewTickAvailable;
             location.Y -= ScoreInfo.UnitBeatHeight * ScoreInfo.MaxBeatDiv / Status.Beat;
             EndNote = new SlideEnd(size, pos.Next(), location, laneIndex);
-            EndNote.PositionChanging += IsPositionAvailable;
+            EndNote.IsNewTickAvailable += IsNewTickAvailable;
             Status.SelectedNote = EndNote;
         }
 
         /// <summary>
         /// このSlide内のノーツに対しての移動が有効かを調べます
         /// </summary>
-        protected override bool IsPositionAvailable(Note note, Position position)
+        protected override bool IsNewTickAvailable(Note note, Position position)
         {
-            var list = steps.OrderBy(x => x.Position.Tick).Where(x => x != note);
-            var listUnderPosition = list.Where(x => x.Position.Tick < position.Tick);
-            var listOverPosition = list.Where(x => x.Position.Tick > position.Tick);
-            if (!steps.Any()) return true;
-            if (note is SlideBegin && position.Tick > list.First().Position.Tick) return false;
-            if (note is SlideEnd && position.Tick < list.Last().Position.Tick) return false;
-            if (note is SlideCurve && (!listUnderPosition.Any() || listUnderPosition.Last() is SlideCurve)) return false;
-            if (note is SlideCurve && (!listOverPosition.Any() || listOverPosition.First() is SlideCurve)) return false;
-            if (!(IsCurvesValid(listUnderPosition.ToList()) && IsCurvesValid(listOverPosition.ToList()))) return false;
-            foreach (Note itrNote in list)
+            if (note == BeginNote)
             {
-                if (itrNote is SlideBegin && position.Tick < itrNote.Position.Tick) return false;
-                else if (itrNote is SlideEnd && position.Tick > itrNote.Position.Tick) return false;
-                else if (position.Tick == itrNote.Position.Tick) return false;
+                if (!steps.Any()) { return position.Tick < EndNote.Position.Tick; }
+                var min = steps.Min(x => x.Position.Tick);
+                return position.Tick < min;
             }
-            return true;
+            if (note == EndNote)
+            {
+                if (!steps.Any()) { return BeginNote.Position.Tick < position.Tick; }
+                var max = steps.Max(x => x.Position.Tick);
+                return max < position.Tick;
+            }
+            if (!steps.Contains(note)) { return false; }
+            if (!(BeginNote.Position.Tick < position.Tick && position.Tick < EndNote.Position.Tick))
+            {
+                return false;
+            }
+            if (!steps.All(x => x.Position.Tick != position.Tick))
+            {
+                return false;
+            }
+            var behind = steps.Where(x => x != note && x.Position.Tick < position.Tick).OrderBy(x => x.Position.Tick);
+            var beyond = steps.Where(x => x != note && position.Tick < x.Position.Tick).OrderBy(x => x.Position.Tick);
+            return IsCurvesValid(behind) && IsCurvesValid(beyond);
         }
 
-        public bool IsPositionTickAvailable(PartialSlide partialSlide, Position delta)
+        private bool IsCurvesValid(IOrderedEnumerable<SlideStep> steps)
         {
-            throw new NotImplementedException();
-        }
-
-        private bool IsCurvesValid(List<SlideStep> list)
-        {
+            var list = steps.ToList();
             foreach(var note in list)
             {
                 var next = list.Next(note);
-                if (next == null) break;
-                if (note is SlideCurve && next is SlideCurve) return false;
+                if (next == null) { break; }
+                if (note.NoteType == NoteType.SlideCurve && next.NoteType == NoteType.SlideCurve)
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -184,13 +186,13 @@ namespace NE4S.Notes.Concrete
                 Logger.Error("引数stepがnullのため操作を行えません。", true);
                 return false;
             }
-            if (!IsPositionAvailable(step, step.Position))
+            if (!IsNewTickAvailable(step, step.Position))
             {
                 Logger.Error("Positionが有効ではないためstepを追加できません", true);
                 return false;
             }
             steps.Add(step);
-            step.PositionChanging += IsPositionAvailable;
+            step.IsNewTickAvailable += IsNewTickAvailable;
             return true;
         }
 
@@ -200,9 +202,9 @@ namespace NE4S.Notes.Concrete
         /// </summary>
         public override bool UnPut(SlideStep step)
         {
-            if (!steps.Remove(step)) { return false; }
             var past = steps.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick < step.Position.Tick).Last();
             var future = steps.OrderBy(x => x.Position.Tick).Where(x => x.Position.Tick > step.Position.Tick).First();
+            if (!steps.Remove(step)) { return false; }
             if(past is SlideCurve && future is SlideCurve)
             {
                 steps.Remove(future);
