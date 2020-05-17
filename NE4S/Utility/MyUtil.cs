@@ -10,6 +10,7 @@ using NE4S.Scores;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NE4S.Notes.Abstract;
+using NE4S.Data;
 
 namespace NE4S
 {

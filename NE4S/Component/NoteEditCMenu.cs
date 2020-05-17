@@ -8,6 +8,8 @@ using NE4S.Scores;
 using NE4S.Notes;
 using NE4S.Operation;
 using NE4S.Data;
+using NE4S.Notes.Abstract;
+using NE4S.Notes.Concrete;
 
 namespace NE4S.Component
 {

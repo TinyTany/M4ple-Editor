@@ -1,9 +1,14 @@
-﻿using System;
+﻿using NE4S.Data;
+using NE4S.Notes.Abstract;
+using NE4S.Scores;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NE4S.Notes.Concrete
 {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NE4S.Notes;
+using NE4S.Notes.Abstract;
 
 namespace NE4S
 {
