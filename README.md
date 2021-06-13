@@ -23,7 +23,7 @@
 
 ## バグ報告・要望など
 
-[M4ple Editor公式Twitter](https://twitter.com/m4ed_)、[開発者のTwitterアカウント](https://twitter.com/t4nishi)、[Issues](https://github.com/TinyTany/M4ple/issues)などに報告をお願いします。  
+[M4ple Editor公式Twitter](https://twitter.com/m4ed_)、[Issues](https://github.com/TinyTany/M4ple/issues)などに報告をお願いします。  
 
 ## 今後のアナウンスなど
 
